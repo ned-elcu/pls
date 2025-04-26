@@ -434,7 +434,7 @@
             background-color: var(--accent-color);
         }
         
-        /* Dropdown Menu Styles - Improved and Vertical */
+        /* Dropdown Menu Styles - Fixed for vertical display */
         .main-nav ul li.has-dropdown {
             position: relative;
         }
@@ -442,7 +442,7 @@
         .main-nav ul li.has-dropdown > a {
             display: flex;
             align-items: center;
-            padding-right: 0.4rem;
+            padding-right: 1.2rem;
         }
         
         .main-nav ul li.has-dropdown > a .dropdown-icon {
@@ -455,81 +455,63 @@
             transform: rotate(180deg);
         }
         
+        /* Fixed dropdown menu styling */
         .dropdown-menu {
             position: absolute;
             top: 100%;
-            left: 50%;
-            transform: translateX(-50%) translateY(10px);
-            background-color: white;
-            width: 250px;
-            padding: 0.8rem 0;
-            border-radius: var(--border-radius-small);
+            left: 0;
+            background-color: var(--primary-color);
+            min-width: 250px;
+            display: block;
+            padding: 0;
+            margin: 0;
+            border-radius: 0 0 4px 4px;
             box-shadow: var(--shadow-medium);
+            z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 100;
-            margin-top: 0.5rem;
-            text-align: left;
+            transform: translateY(10px);
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
         }
         
         .main-nav ul li.has-dropdown:hover .dropdown-menu {
             opacity: 1;
             visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-        
-        .dropdown-menu::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-bottom: 8px solid white;
+            transform: translateY(0);
         }
         
         .dropdown-menu li {
-            margin: 0 !important;
+            display: block;
             width: 100%;
+            margin: 0 !important;
             padding: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-menu li:last-child {
+            border-bottom: none;
         }
         
         .dropdown-menu li a {
             display: block;
-            padding: 0.8rem 1.5rem;
             width: 100%;
-            font-size: 0.9rem;
-            font-weight: 400;
-            color: var(--text-secondary);
-            border-left: 3px solid transparent;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
             transition: all 0.2s ease;
-            position: relative;
+            white-space: nowrap;
+            border-left: 3px solid transparent;
         }
         
         .dropdown-menu li a:hover {
-            background-color: rgba(30, 136, 229, 0.05);
-            color: var(--secondary-color);
-            border-left-color: var(--secondary-color);
-            font-weight: 500;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left: 3px solid var(--accent-color);
+            padding-left: 25px;
         }
         
         .dropdown-menu li a::after {
             display: none;
-        }
-        
-        /* Fixed width nested dropdown menu items */
-        .main-nav > ul > li.has-dropdown > .dropdown-menu {
-            min-width: 250px;
-            left: 50%;
-            transform: translateX(-50%) translateY(10px);
-        }
-        
-        .dropdown-menu li:not(:last-child) {
-            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         
         /* Search Bar styles */
@@ -1025,6 +1007,12 @@
             
             .dropdown-menu li a {
                 padding-left: 3rem;
+                color: var(--text-secondary);
+            }
+            
+            .dropdown-menu li a:hover {
+                background-color: rgba(30, 136, 229, 0.05);
+                color: var(--primary-color);
             }
             
             .slide-title {
