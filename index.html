@@ -434,32 +434,25 @@
             background-color: var(--accent-color);
         }
         
-        /* Dropdown Menu Styles */
+        /* Dropdown Menu Styles - Improved and Vertical */
         .main-nav ul li.has-dropdown {
             position: relative;
         }
         
         .main-nav ul li.has-dropdown > a {
-            padding-right: 1.2rem;
-            position: relative;
+            display: flex;
+            align-items: center;
+            padding-right: 0.4rem;
         }
         
-        .main-nav ul li.has-dropdown > a:after {
-            content: '';
-            width: 0;
-            height: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 5px solid var(--text-secondary);
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
+        .main-nav ul li.has-dropdown > a .dropdown-icon {
+            margin-left: 0.3rem;
+            font-size: 1rem;
             transition: var(--transition-fast);
         }
         
-        .main-nav ul li.has-dropdown:hover > a:after {
-            border-top-color: var(--secondary-color);
+        .main-nav ul li.has-dropdown:hover > a .dropdown-icon {
+            transform: rotate(180deg);
         }
         
         .dropdown-menu {
@@ -468,15 +461,16 @@
             left: 50%;
             transform: translateX(-50%) translateY(10px);
             background-color: white;
-            min-width: 250px;
-            padding: 0.5rem 0;
-            border-radius: var(--border-radius-medium);
+            width: 250px;
+            padding: 0.8rem 0;
+            border-radius: var(--border-radius-small);
             box-shadow: var(--shadow-medium);
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
             z-index: 100;
             margin-top: 0.5rem;
+            text-align: left;
         }
         
         .main-nav ul li.has-dropdown:hover .dropdown-menu {
@@ -485,46 +479,60 @@
             transform: translateX(-50%) translateY(0);
         }
         
-        .dropdown-menu:before {
+        .dropdown-menu::before {
             content: '';
             position: absolute;
-            top: -6px;
+            top: -8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 12px;
-            height: 12px;
-            background-color: white;
-            border-radius: 2px;
-            transform: translateX(-50%) rotate(45deg);
-            z-index: -1;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid white;
         }
         
         .dropdown-menu li {
-            margin: 0;
-            padding: 0;
-            display: block;
+            margin: 0 !important;
             width: 100%;
+            padding: 0;
         }
         
         .dropdown-menu li a {
             display: block;
-            padding: 0.7rem 1.5rem;
+            padding: 0.8rem 1.5rem;
+            width: 100%;
             font-size: 0.9rem;
+            font-weight: 400;
             color: var(--text-secondary);
             border-left: 3px solid transparent;
             transition: all 0.2s ease;
+            position: relative;
         }
         
         .dropdown-menu li a:hover {
             background-color: rgba(30, 136, 229, 0.05);
             color: var(--secondary-color);
             border-left-color: var(--secondary-color);
+            font-weight: 500;
         }
         
         .dropdown-menu li a::after {
             display: none;
         }
         
+        /* Fixed width nested dropdown menu items */
+        .main-nav > ul > li.has-dropdown > .dropdown-menu {
+            min-width: 250px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+        }
+        
+        .dropdown-menu li:not(:last-child) {
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        /* Search Bar styles */
         .search-bar {
             position: relative;
             width: 250px;
@@ -993,9 +1001,11 @@
                 max-height: 0;
                 overflow: hidden;
                 transition: max-height 0.3s ease;
+                width: 100%;
+                margin-top: 0;
             }
             
-            .dropdown-menu:before {
+            .dropdown-menu::before {
                 display: none;
             }
             
@@ -1003,8 +1013,14 @@
                 max-height: 500px;
             }
             
-            .main-nav ul li.has-dropdown > a:after {
-                right: 2rem;
+            .main-nav ul li.has-dropdown > a .dropdown-icon {
+                margin-left: auto;
+            }
+            
+            .main-nav ul li.has-dropdown > a {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
             
             .dropdown-menu li a {
@@ -1837,347 +1853,6 @@
         .divider::after {
             margin-left: 1rem;
         }
-        
-        /* Achievements list */
-        .achievements-list {
-            margin: 1.5rem 0;
-        }
-        
-        .achievement-item {
-            display: flex;
-            align-items: baseline;
-            margin-bottom: 0.7rem;
-        }
-        
-        .check-icon {
-            color: var(--success-color);
-            margin-right: 0.8rem;
-            font-weight: bold;
-        }
-        
-        /* Stats highlight */
-        .stat-highlight {
-            background-color: var(--background-light);
-            border-radius: var(--border-radius-medium);
-            padding: 1.5rem;
-            margin: 2rem 0 1rem;
-        }
-        
-        .stat-highlight h4 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 1.2rem;
-            font-size: 1.3rem;
-        }
-        
-        .stat-items {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .stat-item {
-            text-align: center;
-            min-width: 150px;
-        }
-        
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--secondary-color);
-            margin-bottom: 0.3rem;
-        }
-        
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-        
-        /* Data highlight */
-        .data-highlight {
-            background-color: rgba(30, 136, 229, 0.05);
-            border-radius: var(--border-radius-small);
-            padding: 1.2rem;
-            margin: 1.2rem 0;
-        }
-        
-        .data-row {
-            display: flex;
-            margin-bottom: 0.5rem;
-            align-items: center;
-        }
-        
-        .data-row:last-child {
-            margin-bottom: 0;
-        }
-        
-        .data-label {
-            font-weight: 600;
-            width: 160px;
-            color: var(--primary-color);
-        }
-        
-        .data-value {
-            flex: 1;
-        }
-        
-        /* Org structure */
-        .org-structure {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-        }
-        
-        .org-item {
-            flex: 1;
-            min-width: 250px;
-        }
-        
-        .org-title {
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 0.8rem;
-            font-size: 1.1rem;
-        }
-        
-        .org-list {
-            list-style: none;
-        }
-        
-        .org-list li {
-            margin-bottom: 0.6rem;
-            position: relative;
-            padding-left: 1.2rem;
-        }
-        
-        /* Infra highlight */
-        .infra-highlight {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-        }
-        
-        .infra-item {
-            flex: 1;
-            min-width: 250px;
-            background-color: white;
-            border-radius: var(--border-radius-medium);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-small);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .infra-item:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        .infra-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--secondary-color);
-        }
-        
-        .infra-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 0.3rem;
-        }
-        
-        .infra-subtitle {
-            color: var(--secondary-color);
-            font-size: 0.9rem;
-            margin-bottom: 0.8rem;
-        }
-        
-        .infra-desc {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            margin-bottom: 0;
-        }
-        
-        /* Tech grid */
-        .tech-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .tech-item {
-            display: flex;
-            background-color: white;
-            padding: 1rem;
-            border-radius: var(--border-radius-small);
-            box-shadow: var(--shadow-small);
-            align-items: center;
-        }
-        
-        .tech-icon {
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            color: var(--secondary-color);
-        }
-        
-        /* Vehicle container */
-        .vehicle-container {
-            margin: 1.5rem 0;
-        }
-        
-        .vehicle-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .vehicle-item {
-            display: flex;
-            background-color: white;
-            padding: 1rem;
-            border-radius: var(--border-radius-small);
-            box-shadow: var(--shadow-small);
-            width: calc(50% - 0.5rem);
-            min-width: 250px;
-            align-items: center;
-        }
-        
-        .vehicle-icon {
-            font-size: 1.8rem;
-            margin-right: 1rem;
-        }
-        
-        .vehicle-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.3rem;
-        }
-        
-        .vehicle-details p {
-            margin-bottom: 0;
-            font-size: 0.9rem;
-        }
-        
-        /* Equipment list */
-        .equipment-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .equipment-item {
-            display: flex;
-            align-items: center;
-            background-color: white;
-            padding: 1rem;
-            border-radius: var(--border-radius-small);
-            box-shadow: var(--shadow-small);
-        }
-        
-        .equipment-icon {
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            color: var(--primary-color);
-        }
-        
-        .equipment-text {
-            font-size: 0.95rem;
-        }
-        
-        /* Timeline */
-        .timeline {
-            position: relative;
-            margin: 2rem 0;
-            padding-left: 2rem;
-        }
-        
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 7px;
-            top: 0;
-            height: 100%;
-            width: 2px;
-            background-color: var(--secondary-light);
-        }
-        
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-        }
-        
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2rem;
-            top: 4px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background-color: var(--secondary-color);
-            border: 3px solid white;
-            box-shadow: var(--shadow-small);
-        }
-        
-        .timeline-date {
-            font-weight: 700;
-            color: var(--secondary-color);
-            margin-bottom: 0.5rem;
-        }
-        
-        .timeline-content h4 {
-            color: var(--primary-color);
-            margin-bottom: 0.7rem;
-        }
-        
-        .timeline-list {
-            margin: 0.8rem 0 0 1.5rem;
-        }
-        
-        .timeline-list li {
-            margin-bottom: 0.4rem;
-        }
-        
-        /* Future projects */
-        .future-projects {
-            margin: 2rem 0 1rem;
-        }
-        
-        .project-item {
-            display: flex;
-            margin-bottom: 1.5rem;
-            background-color: rgba(255, 202, 40, 0.05);
-            border-radius: var(--border-radius-medium);
-            padding: 1.2rem;
-        }
-        
-        .project-icon {
-            font-size: 2rem;
-            margin-right: 1.2rem;
-            color: var(--accent-color);
-        }
-        
-        .project-content h5 {
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            margin-bottom: 0.7rem;
-        }
-        
-        .project-content p {
-            margin-bottom: 0.5rem;
-        }
-        
-        .inline-list {
-            margin-left: 1.5rem;
-        }
-        
-        .inline-list li {
-            margin-bottom: 0.3rem;
-        }
     </style>
 </head>
 <body>
@@ -2221,7 +1896,10 @@
                     <li><a href="#">Despre Noi</a></li>
                     <li><a href="#">Servicii</a></li>
                     <li class="has-dropdown">
-                        <a href="#">Integritate instituțională</a>
+                        <a href="#">
+                            Integritate instituțională
+                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                        </a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Strategia Națională Anticorupție</a></li>
                             <li><a href="#">Cod etic</a></li>
@@ -2229,7 +1907,10 @@
                         </ul>
                     </li>
                     <li class="has-dropdown">
-                        <a href="#">Informații de interes public</a>
+                        <a href="#">
+                            Informații de interes public
+                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                        </a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Raportare salarială</a></li>
                             <li><a href="#">Declarații interese</a></li>
@@ -2453,7 +2134,7 @@
                 </div>
             </div>
             
-            <!-- Remaining sections omitted for brevity but should be included in the final code -->
+            <!-- Additional sections would go here -->
             
         </div>
     </section>
@@ -2592,7 +2273,7 @@
                 // Check if we're in mobile view
                 if (window.innerWidth <= 992) {
                     // Only apply to direct child a tag
-                    if (e.target === this.querySelector('a')) {
+                    if (e.target === this.querySelector('a') || e.target === this.querySelector('a .dropdown-icon')) {
                         e.preventDefault();
                         this.classList.toggle('active');
                     }
@@ -2672,91 +2353,91 @@
             });
         });
         
-// Start auto slide
-    startSlideInterval();
-    
-    // Smooth scroll for the scroll down button
-    document.querySelector('.scroll-down').addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector('#stats-section').scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
-    
-    // Stats animation
-    function animateValue(element, start, end, duration) {
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            let value = progress * (end - start) + start;
-            
-            if (Number.isInteger(end)) {
-                element.textContent = Math.floor(value);
-            } else {
-                element.textContent = value.toFixed(1);
-            }
-            
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            }
-        };
-        window.requestAnimationFrame(step);
-    }
-    
-    // Accordion functionality
-    const accordionHeaders = document.querySelectorAll('.accordion-header');
-    
-    accordionHeaders.forEach(header => {
-        header.addEventListener('click', function() {
-            const content = this.nextElementSibling;
-            const isActive = this.classList.contains('active');
-            
-            // Close all other accordions first
-            accordionHeaders.forEach(item => {
-                if (item !== this) {
-                    item.classList.remove('active');
-                    item.nextElementSibling.style.maxHeight = null;
-                }
+        // Start auto slide
+        startSlideInterval();
+        
+        // Smooth scroll for the scroll down button
+        document.querySelector('.scroll-down').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('#stats-section').scrollIntoView({
+                behavior: 'smooth'
             });
-            
-            // Toggle current accordion
-            if (!isActive) {
-                this.classList.add('active');
-                content.style.maxHeight = content.scrollHeight + 'px';
-            } else {
-                this.classList.remove('active');
-                content.style.maxHeight = null;
-            }
         });
-    });
-    
-    // Intersection Observer for animations
-    const animateElements = (entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // If it's a stat number, animate the count
-                if (entry.target.classList.contains('stat-number')) {
-                    const statValue = entry.target;
-                    const endValue = parseFloat(statValue.getAttribute('data-count'));
-                    animateValue(statValue, 0, endValue, 2000);
+        
+        // Stats animation
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                let value = progress * (end - start) + start;
+                
+                if (Number.isInteger(end)) {
+                    element.textContent = Math.floor(value);
+                } else {
+                    element.textContent = value.toFixed(1);
                 }
                 
-                // Once animated, unobserve the element
-                observer.unobserve(entry.target);
-            }
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+        
+        // Accordion functionality
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const isActive = this.classList.contains('active');
+                
+                // Close all other accordions first
+                accordionHeaders.forEach(item => {
+                    if (item !== this) {
+                        item.classList.remove('active');
+                        item.nextElementSibling.style.maxHeight = null;
+                    }
+                });
+                
+                // Toggle current accordion
+                if (!isActive) {
+                    this.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                } else {
+                    this.classList.remove('active');
+                    content.style.maxHeight = null;
+                }
+            });
         });
-    };
-    
-    const observer = new IntersectionObserver(animateElements, {
-        threshold: 0.2,
-        rootMargin: '0px 0px -100px 0px'
-    });
-    
-    // Observe all elements that need animation
-    document.querySelectorAll('.stat-number').forEach(el => {
-        observer.observe(el);
-    });
-</script>
+        
+        // Intersection Observer for animations
+        const animateElements = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // If it's a stat number, animate the count
+                    if (entry.target.classList.contains('stat-number')) {
+                        const statValue = entry.target;
+                        const endValue = parseFloat(statValue.getAttribute('data-count'));
+                        animateValue(statValue, 0, endValue, 2000);
+                    }
+                    
+                    // Once animated, unobserve the element
+                    observer.unobserve(entry.target);
+                }
+            });
+        };
+        
+        const observer = new IntersectionObserver(animateElements, {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        });
+        
+        // Observe all elements that need animation
+        document.querySelectorAll('.stat-number').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>
