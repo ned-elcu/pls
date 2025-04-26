@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metro Police Department - Protecting & Serving</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Styles */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+        }
+        
+        .header-top {
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 3rem;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-top::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/api/placeholder/1920/100') center/cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .header-top.scrolled {
+            padding: 0.5rem 3rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo-badge {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            margin-right: 1rem;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: var(--transition-fast);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo-badge::before {
+            content: '★';
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo:hover .logo-badge {
+            transform: rotate(15deg);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo h1 {
+            color: var(--text-light);
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin: 0;
+            line-height: 1;
+        }
+        
+        .logo-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .utility-menu {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .utility-item {
+            margin-left: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            padding: 0.3rem 0;
+            transition: var(--transition-fast);
+        }
+        
+        .utility-item:hover {
+            color: var(--accent-color);
+        }
+        
+        .utility-item.emergency {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius-small);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .utility-item.emergency::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            z-index: -1;
+        }
+        
+        .utility-item.emergency::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: var(--transition-fast);
+            z-index: -1;
+        }
+        
+        .utility-item.emergency:hover::after {
+            opacity: 1;
+            top: -100%;
+            left: -100%;
+        }
+        
+        .utility-item.emergency i {
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .accent-line {
+            height: 3px;
+            width: 100%;
+            background-color: var(--secondary-color);
+        }
+        
+        .header-main {
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 3rem;
+            box-shadow: var(--shadow-small);
+            transition: var(--transition-fast);
+        }
+        
+        .header-main.scrolled {
+            padding: 0.7rem 3rem;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        .main-nav ul li {
+            margin: 0 1rem;
+            position: relative;
+        }
+        
+        .main-nav ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0;
+            transition: var(--transition-fast);
+            font-size: 0.95rem;
+        }
+        
+        .main-nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .main-nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary-color);
+            transition: var(--transition-fast);
+        }
+        
+        .main-nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .main-nav ul li.active a {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .main-nav ul li.active a::after {
+            width: 100%;
+            background-color: var(--accent-color);
+        }
+        
+        .search-bar {
+            position: relative;
+            width: 250px;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 30px;
+            outline: none;
+            transition: var(--transition-fast);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+        }
+        
+        .search-bar input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9e9e9e;
+            transition: var(--transition-fast);
+        }
+        
+        .search-bar input:focus + i {
+            color: var(--secondary-color);
+        }
+        
+        /* Hero Section with Slider */
+        .hero-slider {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--background-dark);
+        }
+        
+        .slides-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease, transform 1.5s ease;
+            transform: scale(1.05);
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            z-index: 1;
+        }
+        
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(26, 47, 95, 0.9) 0%, rgba(26, 47, 95, 0.7) 40%, rgba(26, 47, 95, 0.4) 100%);
+            display: flex;
+            align-items: center;
+        }
+        
+        .slide-content {
+            width: 50%;
+            max-width: 650px;
+            margin-left: 10%;
+            transform: translateX(-50px);
+            opacity: 0;
+            transition: all 1s ease 0.5s;
+            padding-bottom: 80px; /* Offset for header height */
+        }
+        
+        .slide.active .slide-content {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .slide-badge {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1.5rem;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.8s ease 0.6s;
+        }
+        
+        .slide.active .slide-badge {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .slide-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.8s ease 0.8s;
+        }
+        
+        .slide.active .slide-title {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .slide-title span {
+            color: var(--accent-color);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .slide-title span::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: var(--accent-color);
+            opacity: 0.3;
+            border-radius: 4px;
+        }
+        
+        .slide-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            max-width: 570px;
+            transform: translateY(40px);
+            opacity: 0;
+            transition: all 0.8s ease 1s;
+        }
+        
+        .slide.active .slide-description {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .slide-buttons {
+            display: flex;
+            gap: 1.2rem;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.8s ease 1.2s;
+        }
+        
+        .slide.active .slide-buttons {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .btn i {
+            margin-left: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+        
+        .slide-indicators {
+            position: absolute;
+            bottom: 50px;
+            left: 10%;
+            z-index: 10;
+            display: flex;
+        }
+        
+        .slide-indicator {
+            width: 50px;
+            height: 4px;
+            margin-right: 10px;
+            background-color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide-indicator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background-color: var(--accent-color);
+            transition: var(--transition-medium);
+        }
+        
+        .slide-indicator.active {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .slide-indicator.active::before {
+            width: 100%;
+            animation: indicatorProgress 6s linear forwards;
+        }
+        
+        @keyframes indicatorProgress {
+            0% {
+                width: 0;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+        
+        .slide-arrows {
+            position: absolute;
+            bottom: 50px;
+            right: 10%;
+            z-index: 10;
+            display: flex;
+        }
+        
+        .slide-arrow {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .slide-arrow:hover {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .scroll-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+        
+        .scroll-icon {
+            width: 30px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .scroll-icon::before {
+            content: '';
+            width: 4px;
+            height: 10px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+            position: absolute;
+            top: 10px;
+            animation: scrollAnim 2.5s infinite;
+        }
+        
+        @keyframes scrollAnim {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            70% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            padding: 7rem 2rem;
+            background-color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(30, 136, 229, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(255, 202, 40, 0.05) 0%, transparent 50%);
+            z-index: 0;
+        }
+        
+        .section-title-container {
+            text-align: center;
+            margin-bottom: 5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-subtitle {
+            color: var(--secondary-color);
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .section-subtitle::before, 
+        .section-subtitle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30px;
+            height: 1px;
+            background-color: var(--secondary-color);
+        }
+        
+        .section-subtitle::before {
+            left: -40px;
+        }
+        
+        .section-subtitle::after {
+            right: -40px;
+        }
+        
+        .section-title {
+            font-size: 2.8rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .section-title span {
+            color: var(--secondary-color);
+            position: relative;
+        }
+        
+        .section-title span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: var(--accent-color);
+            opacity: 0.3;
+            border-radius: 4px;
+            z-index: -1;
+        }
+        
+        .section-description {
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem 2.5rem;
+            width: 320px;
+            text-align: center;
+            transition: var(--transition-medium);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: var(--secondary-color);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .stat-icon {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 2rem;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            transition: var(--transition-medium);
+        }
+        
+        .stat-card:hover .stat-icon {
+            transform: rotateY(180deg);
+            background-color: rgba(255, 202, 40, 0.1);
+            color: var(--accent-color);
+        }
+        
+        .stat-number-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .stat-number {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-unit {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .stat-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            overflow: hidden;
+        }
+        
+        .stat-progress-bar {
+            height: 100%;
+            width: 0;
+            position: relative;
+            transition: width 2s ease;
+        }
+        
+        .stat-progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(30, 136, 229, 0.2);
+            border-radius: 20px;
+        }
+        
+        .stat-label {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .stat-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+        
+        /* Expandable Sections */
+        .info-section {
+            padding: 7rem 2rem;
+            background-color: var(--background-light);
+        }
+        
+        .accordion-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .accordion-item {
+            margin-bottom: 1.5rem;
+            border-radius: var(--border-radius-medium);
+            background-color: white;
+            box-shadow: var(--shadow-small);
+            overflow: hidden;
+            transition: var(--transition-medium);
+        }
+        
+        .accordion-item:hover {
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-5px);
+        }
+        
+        .accordion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            cursor: pointer;
+            background-color: white;
+            transition: var(--transition-fast);
+            border-left: 5px solid transparent;
+        }
+        
+        .accordion-header:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .accordion-header.active {
+            border-left-color: var(--secondary-color);
+            background-color: #f9f9f9;
+        }
+        
+        .accordion-title-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .accordion-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .accordion-header:hover .accordion-icon {
+            background-color: rgba(30, 136, 229, 0.2);
+        }
+        
+        .accordion-header.active .accordion-icon {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .accordion-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .accordion-toggle {
+            width: 24px;
+            height: 24px;
+            position: relative;
+            transition: var(--transition-fast);
+        }
+        
+        .accordion-toggle::before,
+        .accordion-toggle::after {
+            content: '';
+            position: absolute;
+            background-color: var(--secondary-color);
+            transition: var(--transition-fast);
+        }
+        
+        .accordion-toggle::before {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .accordion-toggle::after {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .accordion-header.active .accordion-toggle::before {
+            transform: translateX(-50%) scaleY(0);
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .accordion-body {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        .accordion-body p {
+            margin-bottom: 1rem;
+        }
+        
+        .accordion-body ul {
+            margin-bottom: 1rem;
+            margin-left: 2rem;
+        }
+        
+        .accordion-body li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .accordion-body h4 {
+            margin: 1.5rem 0 0.8rem;
+            color: var(--primary-color);
+        }
+        
+        .accordion-body a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+        
+        .accordion-body a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5rem 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer-bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                url('/api/placeholder/1920/100');
+            background-size: cover;
+            opacity: 0.05;
+            z-index: 0;
+        }
+        
+        .footer-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .footer-top {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 4rem;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 2rem;
+            padding-right: 2rem;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-logo img {
+            height: 50px;
+            margin-right: 1rem;
+        }
+        
+        .footer-logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .footer-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            font-size: 1.2rem;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+        
+        .footer-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            transition: var(--transition-fast);
+        }
+        
+        .footer-link i {
+            margin-right: 0.8rem;
+            color: var(--accent-color);
+            transition: var(--transition-fast);
+        }
+        
+        .footer-link:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .footer-link:hover i {
+            color: var(--accent-color);
+        }
+        
+        .footer-contact-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .footer-contact-icon {
+            margin-right: 1rem;
+            color: var(--accent-color);
+        }
+        
+        .footer-contact-text h4 {
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .footer-contact-text p {
+            line-height: 1.6;
+        }
+        
+        .footer-form {
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-form input {
+            width: 100%;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: var(--border-radius-medium);
+            color: white;
+            margin-bottom: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .footer-form input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .footer-form button {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .footer-form button:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-copyright {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .footer-links-bottom {
+            display: flex;
+        }
+        
+        .footer-bottom-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .footer-bottom-link:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 1200px) {
+            .slide-title {
+                font-size: 3rem;
+            }
+            
+            .slide-content {
+                width: 60%;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .header-top,
+            .header-main {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+            
+            .slide-title {
+                font-size: 2.5rem;
+            }
+            
+            .slide-content {
+                width: 70%;
+            }
+            
+            .stat-card {
+                width: 45%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-top,
+            .header-main {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.1rem;
+            }
+            
+            .utility-item {
+                display: none;
+            }
+            
+            .utility-item.emergency {
+                display: flex;
+                margin-left: 0;
+            }
+            
+            .slide-title {
+                font-size: 2rem;
+            }
+            
+            .slide-content {
+                width: 80%;
+                margin-left: 5%;
+            }
+            
+            .stat-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header from Concept 3 - Modified for institutional look -->
+    <div class="header-container">
+        <div class="header-top" id="header-top">
+            <div class="logo">
+                <div class="logo-badge"></div>
+                <div class="logo-text">
+                    <h1>METRO POLICE DEPARTMENT</h1>
+                    <span class="logo-subtitle">Protect & Serve</span>
+                </div>
+            </div>
+            <div class="utility-menu">
+                <a href="#" class="utility-item">Career Opportunities</a>
+                <a href="#" class="utility-item">Public Records</a>
+                <a href="#" class="utility-item">File a Report</a>
+                <a href="#" class="utility-item emergency">
+                    <i>!</i> Emergency: 911
+                </a>
+            </div>
+        </div>
+        <div class="accent-line"></div>
+        <div class="header-main" id="header-main">
+            <nav class="main-nav">
+                <ul>
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Divisions</a></li>
+                    <li><a href="#">Community</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+                <i class="icon">S</i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section with Slider from Concept 2 -->
+    <section class="hero-slider">
+        <div class="slides-container">
+            <div class="slide active" style="background-image: url('/api/placeholder/1920/1080')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge">Serving With Excellence</div>
+                        <h2 class="slide-title">Building a <span>Safer Tomorrow</span> Together</h2>
+                        <p class="slide-description">The Metro Police Department is committed to fostering trust and transparency within our community while ensuring the highest level of public safety and security for all citizens.</p>
+                        <div class="slide-buttons">
+                            <a href="#" class="btn btn-primary">Learn More <i>→</i></a>
+                            <a href="#" class="btn btn-secondary">Connect With Us <i>→</i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide" style="background-image: url('/api/placeholder/1920/1080')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge">Community Partnership</div>
+                        <h2 class="slide-title">Stronger <span>Together</span> Through Trust</h2>
+                        <p class="slide-description">We believe in collaborative policing that engages residents as partners in public safety. Through transparency and accountability, we're building meaningful relationships that strengthen our community.</p>
+                        <div class="slide-buttons">
+                            <a href="#" class="btn btn-primary">Community Programs <i>→</i></a>
+                            <a href="#" class="btn btn-secondary">Volunteer <i>→</i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide" style="background-image: url('/api/placeholder/1920/1080')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge">Join Our Team</div>
+                        <h2 class="slide-title">Become Part of Our <span>Legacy</span> of Excellence</h2>
+                        <p class="slide-description">We're seeking dedicated individuals who share our values of integrity, service, and respect. Join our diverse team and make a meaningful difference in the lives of those we serve.</p>
+                        <div class="slide-buttons">
+                            <a href="#" class="btn btn-primary">Careers <i>→</i></a>
+                            <a href="#" class="btn btn-secondary">Requirements <i>→</i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide-indicators">
+            <div class="slide-indicator active"></div>
+            <div class="slide-indicator"></div>
+            <div class="slide-indicator"></div>
+        </div>
+        
+        <div class="slide-arrows">
+            <div class="slide-arrow prev">◀</div>
+            <div class="slide-arrow next">▶</div>
+        </div>
+        
+        <a href="#stats-section" class="scroll-down">
+            <span class="scroll-text">Discover More</span>
+            <div class="scroll-icon"></div>
+        </a>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats-section" class="stats-section">
+        <div class="stats-bg-pattern"></div>
+        <div class="section-title-container">
+            <div class="section-subtitle">Our Infrastructure</div>
+            <h2 class="section-title">Making a <span>Difference</span> Through Technology</h2>
+            <p class="section-description">Our commitment to public safety includes continuous investment in modern infrastructure and technology to better protect and serve our community.</p>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">📹</div>
+                <div class="stat-number-container">
+                    <div class="stat-number" data-count="248">0</div>
+                    <div class="stat-unit">active cameras</div>
+                    <div class="stat-progress">
+                        <div class="stat-progress-bar" data-percent="85"></div>
+                    </div>
+                </div>
+                <div class="stat-label">Webcams</div>
+                <p class="stat-description">Strategically placed throughout the city to monitor public spaces, intersections, and critical infrastructure for improved security and incident response.</p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🚦</div>
+                <div class="stat-number-container">
+                    <div class="stat-number" data-count="76">0</div>
+                    <div class="stat-unit">intersections</div>
+                    <div class="stat-progress">
+                        <div class="stat-progress-bar" data-percent="76"></div>
+                    </div>
+                </div>
+                <div class="stat-label">Monitored Traffic Points</div>
+                <p class="stat-description">Advanced traffic monitoring systems that improve flow, reduce congestion, and allow officers to respond quickly to accidents and incidents.</p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">🏫</div>
+                <div class="stat-number-container">
+                    <div class="stat-number" data-count="16">0</div>
+                    <div class="stat-unit">protected</div>
+                    <div class="stat-progress">
+                        <div class="stat-progress-bar" data-percent="100"></div>
+                    </div>
+                </div>
+                <div class="stat-label">Sixteen Schools</div>
+                <p class="stat-description">Dedicated School Resource Officers and enhanced security protocols at all 16 schools in our district to ensure student safety and positive youth engagement.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expandable Sections -->
+    <section class="info-section">
+        <div class="section-title-container">
+            <div class="section-subtitle">Department Information</div>
+            <h2 class="section-title">Essential <span>Resources</span></h2>
+            <p class="section-description">Learn more about our services, programs, and resources available to the community.</p>
+        </div>
+        
+        <div class="accordion-container">
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <div class="accordion-title-container">
+                        <div class="accordion-icon">🚨</div>
+                        <h3 class="accordion-title">Emergency Services</h3>
+                    </div>
+                    <div class="accordion-toggle"></div>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <p>Our Emergency Services Division operates 24/7 to respond to critical situations throughout our jurisdiction. We employ state-of-the-art dispatch technology and rigorous training to ensure the fastest possible response times.</p>
+                        
+                        <h4>When to call 911:</h4>
+                        <ul>
+                            <li>Life-threatening situations or medical emergencies</li>
+                            <li>Crimes in progress or that have just occurred</li>
+                            <li>Suspicious activities that pose an immediate threat</li>
+                            <li>Serious car accidents, especially with injuries</li>
+                            <li>Fire emergencies</li>
+                        </ul>
+                        
+                        <h4>For non-emergency situations</h4>
+                        <p>Please call our non-emergency line at (555) 123-4567. This includes:</p>
+                        <ul>
+                            <li>Non-injury accidents</li>
+                            <li>Noise complaints</li>
+                            <li>Reports of crimes that occurred hours or days ago</li>
+                            <li>General questions or concerns</li>
+                        </ul>
+                        
+                        <p>Our dispatch center is staffed with highly trained professionals who will assess your situation and direct the appropriate resources to address your needs. In emergencies, stay calm, speak clearly, and provide your location and the nature of your emergency.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <div class="accordion-title-container">
+                        <div class="accordion-icon">👥</div>
+                        <h3 class="accordion-title">Community Programs</h3>
+                    </div>
+                    <div class="accordion-toggle"></div>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <p>The Metro Police Department is committed to building strong relationships with the community through a variety of outreach programs and initiatives:</p>
+                        
+                        <h4>Neighborhood Watch</h4>
+                        <p>We provide training and resources to help residents form effective neighborhood watch programs. These groups serve as an extra set of eyes and ears for law enforcement and help build community cohesion.</p>
+                        
+                        <h4>Youth Programs:</h4>
+                        <ul>
+                            <li>Explorer Program - For teenagers interested in law enforcement careers</li>
+                            <li>Police Athletic League - Sports and mentoring for at-risk youth</li>
+                            <li>School Resource Officers - Officers assigned to schools to build positive relationships</li>
+                            <li>Summer Youth Academy - Educational program teaching public safety</li>
+                        </ul>
+                        
+                        <h4>Community Engagement:</h4>
+                        <ul>
+                            <li>Coffee with a Cop - Informal meetings with officers at local cafes</li>
+                            <li>Citizen Police Academy - 10-week program giving citizens insight into policing</li>
+                            <li>Town Hall Meetings - Regular forums for community feedback</li>
+                            <li>National Night Out - Annual community-building campaign</li>
+                        </ul>
+                        
+                        <p>To get involved in any of these programs, please contact our Community Relations Unit at (555) 234-5678 or email <a href="#">community@metropolice.gov</a>.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <div class="accordion-title-container">
+                        <div class="accordion-icon">🛡️</div>
+                        <h3 class="accordion-title">Special Units</h3>
+                    </div>
+                    <div class="accordion-toggle"></div>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <p>Our department maintains various specialized units to address specific types of crime and community needs:</p>
+                        
+                        <h4>Special Weapons and Tactics (SWAT) Team</h4>
+                        <p>Highly trained officers equipped to handle high-risk situations including hostage rescues, barricaded suspects, and high-risk warrant service.</p>
+                        
+                        <h4>K-9 Unit</h4>
+                        <p>Officer-canine teams specially trained for:</p>
+                        <ul>
+                            <li>Tracking suspects and missing persons</li>
+                            <li>Detecting narcotics, explosives, and other contraband</li>
+                            <li>Building searches and apprehension</li>
+                            <li>Community demonstrations and education</li>
+                        </ul>
+                        
+                        <h4>Other Specialized Units:</h4>
+                        <ul>
+                            <li>Special Victims Unit - Investigations involving vulnerable victims</li>
+                            <li>Traffic Enforcement Unit - Focusing on road safety</li>
+                            <li>Narcotics Task Force - Combating illegal drug distribution</li>
+                            <li>Crime Scene Investigation Unit - Evidence collection and analysis</li>
+                            <li>Crisis Intervention Team - Officers trained in mental health response</li>
+                            <li>Cyber Crimes Unit - Investigating technology-related crimes</li>
+                        </ul>
+                        
+                        <p>These specialized units work collaboratively with patrol officers and other agencies to provide comprehensive law enforcement services to our community.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <div class="accordion-title-container">
+                        <div class="accordion-icon">📋</div>
+                        <h3 class="accordion-title">Records & Reports</h3>
+                    </div>
+                    <div class="accordion-toggle"></div>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <p>Our Records Division maintains and provides access to various police reports and records that may be needed for insurance, legal, or personal purposes.</p>
+                        
+                        <h4>Available Reports:</h4>
+                        <ul>
+                            <li>Traffic Accident Reports</li>
+                            <li>Incident Reports</li>
+                            <li>Crime Reports</li>
+                            <li>Background Checks (for employment purposes)</li>
+                        </ul>
+                        
+                        <h4>How to Request Records:</h4>
+                        <ol>
+                            <li><strong>Online</strong>: Visit our <a href="#">secure portal</a> to submit requests electronically (fastest method)</li>
+                            <li><strong>In Person</strong>: Visit the Records Division at Police Headquarters (Monday-Friday, 8am-5pm)</li>
+                            <li><strong>By Mail</strong>: Send a written request with case number and your contact information</li>
+                        </ol>
+                        
+                        <h4>Required Information:</h4>
+                        <ul>
+                            <li>Case/Report Number (if known)</li>
+                            <li>Date and location of incident</li>
+                            <li>Names of involved parties</li>
+                            <li>Valid identification</li>
+                            <li>Payment of applicable fees</li>
+                        </ul>
+                        
+                        <p>Most records requests are processed within 3-5 business days. For urgent requests or questions, contact the Records Division at (555) 345-6789.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <div class="accordion-title-container">
+                        <div class="accordion-icon">🔒</div>
+                        <h3 class="accordion-title">Crime Prevention</h3>
+                    </div>
+                    <div class="accordion-toggle"></div>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <p>Our Crime Prevention Unit is dedicated to helping citizens protect themselves, their families, and their property through education and practical assistance.</p>
+                        
+                        <h4>Residential Security:</h4>
+                        <ul>
+                            <li>Free Home Security Assessments - Officers will visit your home and provide recommendations to improve security</li>
+                            <li>Operation Identification - Program to mark valuable property with identifiable numbers</li>
+                            <li>Vacation House Watch - Request extra patrol when you're away</li>
+                        </ul>
+                        
+                        <h4>Business Security:</h4>
+                        <ul>
+                            <li>Business Security Surveys - Comprehensive evaluation of business security</li>
+                            <li>CPTED (Crime Prevention Through Environmental Design) Consultations</li>
+                            <li>Robbery Prevention Training for employees</li>
+                        </ul>
+                        
+                        <h4>Personal Safety:</h4>
+                        <ul>
+                            <li>Self-Defense Classes - Basic techniques for personal protection</li>
+                            <li>Senior Safety Programs - Focused on the unique needs of older adults</li>
+                            <li>Internet Safety Presentations - For parents, students, and seniors</li>
+                        </ul>
+                        
+                        <p>To schedule a security assessment or workshop, please contact our Crime Prevention Unit at (555) 456-7890 or email <a href="#">prevention@metropolice.gov</a>.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <div class="accordion-title-container">
+                        <div class="accordion-icon">👮</div>
+                        <h3 class="accordion-title">Careers</h3>
+                    </div>
+                    <div class="accordion-toggle"></div>
+                </div>
+                <div class="accordion-content">
+                    <div class="accordion-body">
+                        <p>Join our team of dedicated professionals who serve and protect our community with integrity, respect, and excellence. We offer competitive salaries, excellent benefits, and numerous opportunities for advancement and specialization.</p>
+                        
+                        <h4>Current Openings:</h4>
+                        <ul>
+                            <li>Police Officer (Patrol Division)</li>
+                            <li>911 Dispatcher/Communications Officer</li>
+                            <li>Crime Scene Technician</li>
+                            <li>Records Specialist</li>
+                            <li>Administrative Support Staff</li>
+                        </ul>
+                        
+                        <h4>Benefits:</h4>
+                        <ul>
+                            <li>Competitive salary with step increases</li>
+                            <li>Comprehensive health, dental, and vision insurance</li>
+                            <li>Retirement pension plan</li>
+                            <li>Paid vacation, sick leave, and holidays</li>
+                            <li>Tuition reimbursement for continuing education</li>
+                            <li>Career advancement opportunities</li>
+                        </ul>
+                        
+                        <h4>Selection Process:</h4>
+                        <ol>
+                            <li>Online Application</li>
+                            <li>Written Examination</li>
+                            <li>Physical Abilities Test</li>
+                            <li>Oral Board Interview</li>
+                            <li>Background Investigation</li>
+                            <li>Psychological Evaluation</li>
+                            <li>Medical Examination</li>
+                            <li>Final Interview</li>
+                        </ol>
+                        
+                        <p>For more information about our hiring process or to apply for an open position, visit our <a href="#">Careers Portal</a> or contact our Recruitment Team at (555) 567-8901.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-bg-pattern"></div>
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <div class="logo-badge"></div>
+                        <div class="footer-logo-text">Metro Police</div>
+                    </div>
+                    <p class="footer-description">Serving our community with integrity, professionalism, and dedication to public safety. Our mission is to work in partnership with our community to protect life and property, solve problems, and enhance quality of life.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-icon">FB</a>
+                        <a href="#" class="social-icon">TW</a>
+                        <a href="#" class="social-icon">IG</a>
+                        <a href="#" class="social-icon">YT</a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link"><i class="icon">→</i> Emergency Services</a>
+                        <a href="#" class="footer-link"><i class="icon">→</i> Report a Crime</a>
+                        <a href="#" class="footer-link"><i class="icon">→</i> Pay Citations</a>
+                        <a href="#" class="footer-link"><i class="icon">→</i> Request Records</a>
+                        <a href="#" class="footer-link"><i class="icon">→</i> File a Complaint</a>
+                        <a href="#" class="footer-link"><i class="icon">→</i> Career Opportunities</a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3 class="footer-title">Contact Us</h3>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon">L</div>
+                        <div class="footer-contact-text">
+                            <h4>Headquarters</h4>
+                            <p>123 Main Street</p>
+                            <p>Metro City, ST 12345</p>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon">P</div>
+                        <div class="footer-contact-text">
+                            <h4>Phone</h4>
+                            <p>Emergency: 911</p>
+                            <p>Non-Emergency: (555) 123-4567</p>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon">E</div>
+                        <div class="footer-contact-text">
+                            <h4>Email</h4>
+                            <p>info@metropolice.gov</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3 class="footer-title">Newsletter</h3>
+                    <p class="footer-description">Stay informed about safety alerts, community events, and department updates by subscribing to our newsletter.</p>
+                    <form class="footer-form">
+                        <input type="email" placeholder="Your Email Address">
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    &copy; 2025 Metro Police Department. All Rights Reserved.
+                </div>
+                <div class="footer-links-bottom">
+                    <a href="#" class="footer-bottom-link">Privacy Policy</a>
+                    <a href="#" class="footer-bottom-link">Terms of Service</a>
+                    <a href="#" class="footer-bottom-link">Accessibility</a>
+                    <a href="#" class="footer-bottom-link">Site Map</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const headerTop = document.getElementById('header-top');
+            const headerMain = document.getElementById('header-main');
+            
+            if (window.scrollY > 50) {
+                headerTop.classList.add('scrolled');
+                headerMain.classList.add('scrolled');
+            } else {
+                headerTop.classList.remove('scrolled');
+                headerMain.classList.remove('scrolled');
+            }
+        });
+        
+        // Hero slider functionality
+        const slides = document.querySelectorAll('.slide');
+        const indicators = document.querySelectorAll('.slide-indicator');
+        const prevBtn = document.querySelector('.slide-arrow.prev');
+        const nextBtn = document.querySelector('.slide-arrow.next');
+        let currentSlide = 0;
+        let slideInterval;
+        
+        function showSlide(index) {
+            // Reset animations for indicators
+            indicators.forEach(indicator => {
+                indicator.classList.remove('active');
+                indicator.querySelector('::before') && (indicator.querySelector('::before').style.animation = 'none');
+            });
+            
+            // Hide all slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            // Show the selected slide
+            currentSlide = (index + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            indicators[currentSlide].classList.add('active');
+            
+            // Reset the auto slide interval
+            clearInterval(slideInterval);
+            startSlideInterval();
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+        
+        function startSlideInterval() {
+            slideInterval = setInterval(() => {
+                nextSlide();
+            }, 6000);
+        }
+        
+        // Initialize slider controls
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+        });
+        
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                showSlide(index);
+            });
+        });
+        
+        // Start auto slide
+        startSlideInterval();
+        
+        // Smooth scroll for the scroll down button
+        document.querySelector('.scroll-down').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('#stats-section').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+        
+        // Stats animation
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                let value = progress * (end - start) + start;
+                
+                if (Number.isInteger(end)) {
+                    element.textContent = Math.floor(value);
+                } else {
+                    element.textContent = value.toFixed(1);
+                }
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+        
+        // Accordion functionality
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const isActive = this.classList.contains('active');
+                
+                // Close all other accordions first
+                accordionHeaders.forEach(item => {
+                    if (item !== this) {
+                        item.classList.remove('active');
+                        item.nextElementSibling.style.maxHeight = null;
+                    }
+                });
+                
+                // Toggle current accordion
+                if (!isActive) {
+                    this.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                } else {
+                    this.classList.remove('active');
+                    content.style.maxHeight = null;
+                }
+            });
+        });
+        
+        // Intersection Observer for animations
+        const animateElements = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // If it's a stat number, animate the count
+                    if (entry.target.classList.contains('stat-number')) {
+                        const statValue = entry.target;
+                        const endValue = parseFloat(statValue.getAttribute('data-count'));
+                        animateValue(statValue, 0, endValue, 2000);
+                    }
+                    
+                    // If it's a progress bar, animate the width
+                    if (entry.target.classList.contains('stat-progress-bar')) {
+                        const bar = entry.target;
+                        const percent = parseFloat(bar.getAttribute('data-percent'));
+                        setTimeout(() => {
+                            bar.style.width = `${percent}%`;
+                        }, 300);
+                    }
+                    
+                    // Once animated, unobserve the element
+                    observer.unobserve(entry.target);
+                }
+            });
+        };
+        
+        const observer = new IntersectionObserver(animateElements, {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        });
+        
+        // Observe all elements that need animation
+        document.querySelectorAll('.stat-number, .stat-progress-bar').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
