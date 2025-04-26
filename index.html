@@ -385,9 +385,16 @@
             padding: 0.7rem 3rem;
         }
         
+        /* IMPROVED MAIN NAVIGATION */
+        .main-nav {
+            position: relative;
+        }
+        
         .main-nav ul {
             display: flex;
             list-style: none;
+            margin: 0;
+            padding: 0;
         }
         
         .main-nav ul li {
@@ -400,16 +407,19 @@
             text-decoration: none;
             font-weight: 500;
             padding: 0.5rem 0;
-            transition: var(--transition-fast);
+            display: block;
+            transition: color 0.3s ease;
             font-size: 0.95rem;
             white-space: nowrap;
+            position: relative;
         }
         
         .main-nav ul li a:hover {
             color: var(--secondary-color);
         }
         
-        .main-nav ul li a::after {
+        /* Underline hover effect */
+        .main-nav ul > li > a::after {
             content: '';
             position: absolute;
             bottom: -3px;
@@ -417,29 +427,29 @@
             width: 0;
             height: 2px;
             background-color: var(--secondary-color);
-            transition: var(--transition-fast);
+            transition: width 0.3s ease;
         }
         
-        .main-nav ul li a:hover::after {
+        .main-nav ul > li > a:hover::after,
+        .main-nav ul > li.active > a::after {
             width: 100%;
         }
         
-        .main-nav ul li.active a {
+        .main-nav ul li.active > a {
             color: var(--secondary-color);
             font-weight: 600;
         }
         
-        .main-nav ul li.active a::after {
-            width: 100%;
+        .main-nav ul li.active > a::after {
             background-color: var(--accent-color);
         }
         
-        /* Improved Dropdown Menu Styles */
+        /* FIXED DROPDOWN STYLES */
         .main-nav ul li.dropdown {
             position: relative;
         }
 
-        .dropdown-menu {
+        .main-nav .dropdown-menu {
             position: absolute;
             top: 100%;
             left: 0;
@@ -450,8 +460,9 @@
             opacity: 0;
             visibility: hidden;
             transform: translateY(10px);
+            pointer-events: none;
             transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
-            z-index: 100;
+            z-index: 1000;
             padding: 0.5rem 0;
             margin-top: 0.5rem;
         }
@@ -460,10 +471,12 @@
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
+            pointer-events: auto;
         }
 
         .dropdown-menu li {
             margin: 0 !important;
+            padding: 0;
             width: 100%;
         }
 
@@ -473,7 +486,7 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
             border-left: 3px solid transparent;
-            transition: var(--transition-fast);
+            transition: background-color 0.3s ease, color 0.3s ease, border-left-color 0.3s ease;
             white-space: nowrap;
         }
 
@@ -487,17 +500,24 @@
             border-left-color: var(--secondary-color);
         }
 
+        .has-dropdown {
+            padding-right: 1.2rem !important;
+            position: relative;
+        }
+
         .has-dropdown::after {
             content: '\e5cf';
             font-family: 'Material Icons';
             font-size: 1.2rem;
-            vertical-align: middle;
-            margin-left: 0.3rem;
-            transition: var(--transition-fast);
+            position: absolute;
+            right: -0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.3s ease;
         }
 
         .main-nav ul li.dropdown:hover .has-dropdown::after {
-            transform: rotate(180deg);
+            transform: translateY(-50%) rotate(180deg);
         }
         
         .search-bar {
@@ -2648,29 +2668,29 @@
                                     <div class="stat-value">6,000-7,000</div>
                                     <div class="stat-label">Sancțiuni anuale</div>
                                 </div>
-                                <div class="stat-item">
-                                    <div class="stat-value">0.3%</div>
-                                    <div class="stat-label">Procese verbale contestate</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value">90%+</div>
-                                    <div class="stat-label">Contestații respinse de instanță</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- IV. Structura organizatorică Section -->
-            <div class="accordion-item">
-                <div class="accordion-header">
-                    <div class="accordion-title-container">
-                        <div class="accordion-icon"><i class="material-icons">business</i></div>
-                        <h3 class="accordion-title">IV. Structura organizatorică</h3>
-                    </div>
-                    <div class="accordion-toggle"></div>
-                </div>
+<div class="stat-item">
+    <div class="stat-value">0.3%</div>
+    <div class="stat-label">Procese verbale contestate</div>
+</div>
+<div class="stat-item">
+    <div class="stat-value">90%+</div>
+    <div class="stat-label">Contestații respinse de instanță</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- IV. Structura organizatorică Section -->
+<div class="accordion-item">
+<div class="accordion-header">
+    <div class="accordion-title-container">
+        <div class="accordion-icon"><i class="material-icons">business</i></div>
+        <h3 class="accordion-title">IV. Structura organizatorică</h3>
+    </div>
+    <div class="accordion-toggle"></div>
+</div>
 <div class="accordion-content">
     <div class="accordion-body enhanced-content">
         <div class="data-highlight">
