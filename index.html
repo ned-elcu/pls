@@ -434,11 +434,11 @@
             background-color: var(--accent-color);
         }
         
-        /* Dropdown Menu Styles */
-        .main-nav ul li {
+        /* Improved Dropdown Menu Styles */
+        .main-nav ul li.dropdown {
             position: relative;
         }
-        
+
         .dropdown-menu {
             position: absolute;
             top: 100%;
@@ -450,23 +450,23 @@
             opacity: 0;
             visibility: hidden;
             transform: translateY(10px);
-            transition: var(--transition-fast);
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
             z-index: 100;
             padding: 0.5rem 0;
             margin-top: 0.5rem;
         }
-        
-        .main-nav ul li:hover .dropdown-menu {
+
+        .main-nav ul li.dropdown:hover .dropdown-menu {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
         }
-        
+
         .dropdown-menu li {
-            margin: 0;
+            margin: 0 !important;
             width: 100%;
         }
-        
+
         .dropdown-menu li a {
             display: block;
             padding: 0.7rem 1.5rem;
@@ -474,18 +474,19 @@
             font-size: 0.9rem;
             border-left: 3px solid transparent;
             transition: var(--transition-fast);
+            white-space: nowrap;
         }
-        
+
         .dropdown-menu li a::after {
             display: none;
         }
-        
+
         .dropdown-menu li a:hover {
             background-color: rgba(30, 136, 229, 0.05);
             color: var(--secondary-color);
             border-left-color: var(--secondary-color);
         }
-        
+
         .has-dropdown::after {
             content: '\e5cf';
             font-family: 'Material Icons';
@@ -494,8 +495,8 @@
             margin-left: 0.3rem;
             transition: var(--transition-fast);
         }
-        
-        .main-nav ul li:hover .has-dropdown::after {
+
+        .main-nav ul li.dropdown:hover .has-dropdown::after {
             transform: rotate(180deg);
         }
         
@@ -2303,7 +2304,7 @@
                 <ul>
                     <li class="active"><a href="#">Acasă</a></li>
                     <li><a href="#">Buletin informativ</a></li>
-                    <li>
+                    <li class="dropdown">
                         <a href="#" class="has-dropdown">Integritate instituțională</a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Strategia Națională Anticorupție</a></li>
@@ -2311,7 +2312,7 @@
                             <li><a href="#">Raport privind declararea cadourilor</a></li>
                         </ul>
                     </li>
-                    <li>
+                    <li class="dropdown">
                         <a href="#" class="has-dropdown">Informații de interes public</a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Raportare salarială</a></li>
@@ -2647,29 +2648,29 @@
                                     <div class="stat-value">6,000-7,000</div>
                                     <div class="stat-label">Sancțiuni anuale</div>
                                 </div>
-<div class="stat-item">
-    <div class="stat-value">0.3%</div>
-    <div class="stat-label">Procese verbale contestate</div>
-</div>
-<div class="stat-item">
-    <div class="stat-value">90%+</div>
-    <div class="stat-label">Contestații respinse de instanță</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- IV. Structura organizatorică Section -->
-<div class="accordion-item">
-<div class="accordion-header">
-    <div class="accordion-title-container">
-        <div class="accordion-icon"><i class="material-icons">business</i></div>
-        <h3 class="accordion-title">IV. Structura organizatorică</h3>
-    </div>
-    <div class="accordion-toggle"></div>
-</div>
+                                <div class="stat-item">
+                                    <div class="stat-value">0.3%</div>
+                                    <div class="stat-label">Procese verbale contestate</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">90%+</div>
+                                    <div class="stat-label">Contestații respinse de instanță</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- IV. Structura organizatorică Section -->
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <div class="accordion-title-container">
+                        <div class="accordion-icon"><i class="material-icons">business</i></div>
+                        <h3 class="accordion-title">IV. Structura organizatorică</h3>
+                    </div>
+                    <div class="accordion-toggle"></div>
+                </div>
 <div class="accordion-content">
     <div class="accordion-body enhanced-content">
         <div class="data-highlight">
