@@ -1174,6 +1174,539 @@
             text-decoration: underline;
         }
         
+        /* Enhanced Content Styles */
+        .enhanced-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        
+        .enhanced-content p {
+            margin-bottom: 1.2rem;
+        }
+        
+        /* Highlights */
+        .highlight {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .highlight-secondary {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .highlight-accent {
+            color: var(--accent-color);
+            font-weight: 600;
+            padding: 0 2px;
+            background-color: rgba(255, 202, 40, 0.1);
+            border-radius: 3px;
+        }
+        
+        .highlight-number {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        /* Subsection titles */
+        .subsection-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin: 1.8rem 0 1rem;
+            position: relative;
+            padding-left: 1.2rem;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .mini-title {
+            font-size: 1.15rem;
+            color: var(--text-primary);
+            margin: 1rem 0 0.8rem;
+        }
+        
+        /* Callout boxes */
+        .callout-box {
+            display: flex;
+            background-color: rgba(30, 136, 229, 0.05);
+            border-radius: var(--border-radius-medium);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .callout-box.secondary {
+            background-color: rgba(255, 202, 40, 0.05);
+            border-left-color: var(--accent-color);
+        }
+        
+        .callout-icon {
+            font-size: 1.8rem;
+            margin-right: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .callout-content h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+            font-size: 1.2rem;
+        }
+        
+        .callout-content p {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Feature lists */
+        .feature-list {
+            margin: 1rem 0 1.5rem;
+            list-style: none;
+        }
+        
+        .feature-list li {
+            margin-bottom: 0.7rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .bullet-highlight {
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        .accent-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        /* Domain grid */
+        .domain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .domain-item {
+            background-color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius-small);
+            box-shadow: var(--shadow-small);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .domain-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .domain-icon {
+            font-size: 1.5rem;
+            margin-right: 0.8rem;
+            color: var(--secondary-color);
+        }
+        
+        .domain-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        /* Legal box */
+        .legal-box {
+            display: flex;
+            background-color: rgba(26, 47, 95, 0.05);
+            border-radius: var(--border-radius-small);
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+            align-items: center;
+        }
+        
+        .legal-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .legal-content {
+            font-size: 0.95rem;
+        }
+        
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin: 2rem 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .divider::before {
+            margin-right: 1rem;
+        }
+        
+        .divider::after {
+            margin-left: 1rem;
+        }
+        
+        /* Achievements list */
+        .achievements-list {
+            margin: 1.5rem 0;
+        }
+        
+        .achievement-item {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 0.7rem;
+        }
+        
+        .check-icon {
+            color: var(--success-color);
+            margin-right: 0.8rem;
+            font-weight: bold;
+        }
+        
+        /* Stats highlight */
+        .stat-highlight {
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            padding: 1.5rem;
+            margin: 2rem 0 1rem;
+        }
+        
+        .stat-highlight h4 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 1.2rem;
+            font-size: 1.3rem;
+        }
+        
+        .stat-items {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            min-width: 150px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 0.3rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        /* Data highlight */
+        .data-highlight {
+            background-color: rgba(30, 136, 229, 0.05);
+            border-radius: var(--border-radius-small);
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+        }
+        
+        .data-row {
+            display: flex;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+        
+        .data-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .data-label {
+            font-weight: 600;
+            width: 160px;
+            color: var(--primary-color);
+        }
+        
+        .data-value {
+            flex: 1;
+        }
+        
+        /* Org structure */
+        .org-structure {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .org-item {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .org-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        
+        .org-list {
+            list-style: none;
+        }
+        
+        .org-list li {
+            margin-bottom: 0.6rem;
+            position: relative;
+            padding-left: 1.2rem;
+        }
+        
+        /* Infra highlight */
+        .infra-highlight {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .infra-item {
+            flex: 1;
+            min-width: 250px;
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-small);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .infra-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .infra-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        .infra-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+        }
+        
+        .infra-subtitle {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .infra-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+        
+        /* Tech grid */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tech-item {
+            display: flex;
+            background-color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius-small);
+            box-shadow: var(--shadow-small);
+            align-items: center;
+        }
+        
+        .tech-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        /* Vehicle container */
+        .vehicle-container {
+            margin: 1.5rem 0;
+        }
+        
+        .vehicle-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .vehicle-item {
+            display: flex;
+            background-color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius-small);
+            box-shadow: var(--shadow-small);
+            width: calc(50% - 0.5rem);
+            min-width: 250px;
+            align-items: center;
+        }
+        
+        .vehicle-icon {
+            font-size: 1.8rem;
+            margin-right: 1rem;
+        }
+        
+        .vehicle-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+        
+        .vehicle-details p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+        
+        /* Equipment list */
+        .equipment-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .equipment-item {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius-small);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .equipment-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .equipment-text {
+            font-size: 0.95rem;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            margin: 2rem 0;
+            padding-left: 2rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background-color: var(--secondary-light);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            border: 3px solid white;
+            box-shadow: var(--shadow-small);
+        }
+        
+        .timeline-date {
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-content h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+        }
+        
+        .timeline-list {
+            margin: 0.8rem 0 0 1.5rem;
+        }
+        
+        .timeline-list li {
+            margin-bottom: 0.4rem;
+        }
+        
+        /* Future projects */
+        .future-projects {
+            margin: 2rem 0 1rem;
+        }
+        
+        .project-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+            background-color: rgba(255, 202, 40, 0.05);
+            border-radius: var(--border-radius-medium);
+            padding: 1.2rem;
+        }
+        
+        .project-icon {
+            font-size: 2rem;
+            margin-right: 1.2rem;
+            color: var(--accent-color);
+        }
+        
+        .project-content h5 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+        }
+        
+        .project-content p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .inline-list {
+            margin-left: 1.5rem;
+        }
+        
+        .inline-list li {
+            margin-bottom: 0.3rem;
+        }
+        
         /* Footer */
         footer {
             background-color: var(--primary-color);
@@ -1429,6 +1962,19 @@
             .stat-card {
                 width: 45%;
             }
+            
+            .domain-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            
+            .vehicle-item {
+                width: 100%;
+            }
+            
+            .tech-grid, 
+            .equipment-list {
+                grid-template-columns: 1fr;
+            }
         }
         
         @media (max-width: 768px) {
@@ -1462,6 +2008,20 @@
             
             .stat-card {
                 width: 100%;
+            }
+            
+            .data-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .data-label {
+                width: 100%;
+                margin-bottom: 0.3rem;
+            }
+            
+            .infra-item {
+                min-width: 100%;
             }
         }
     </style>
@@ -1631,6 +2191,7 @@
         </div>
         
         <div class="accordion-container">
+            <!-- I. Viziunea Section -->
             <div class="accordion-item">
                 <div class="accordion-header">
                     <div class="accordion-title-container">
@@ -1640,14 +2201,30 @@
                     <div class="accordion-toggle"></div>
                 </div>
                 <div class="accordion-content">
-                    <div class="accordion-body">
-                        <p>Realizarea unui serviciu polițienesc modern bazat pe valori democratice şi aspiraţii moderne ale indivizilor, corelat cu performanța, coerența și responsabilitatea, cu scopul de a construi un mediu local sigur care să genereze încredere, securitate și protecție, atât pentru cetățeni, cât și pentru comunitate în spiritul valorilor și politicilor europene. Promovarea unui serviciu polițienesc, în beneficiul cetăţeanului, în condiții de transparență și apropiere față de comunitate, cu protejarea personalului propriu.</p>
+                    <div class="accordion-body enhanced-content">
+                        <p>Realizarea unui <span class="highlight">serviciu polițienesc modern</span> bazat pe <span class="highlight-secondary">valori democratice</span> şi aspiraţii moderne ale indivizilor, corelat cu <span class="highlight-accent">performanța, coerența și responsabilitatea</span>, cu scopul de a construi un <span class="highlight">mediu local sigur</span> care să genereze încredere, securitate și protecție, atât pentru cetățeni, cât și pentru comunitate în spiritul valorilor și politicilor europene.</p>
                         
-                        <p>Creearea și utilizarea unor produse informatice, cu posibilități de dezvoltare multiple, care să asigure implementarea, evidența și managementul integrat al activitaților desfășurate la nivelul instituției, dar și a unor aplicații dedicate cetățenilor în scopul rezolvării operative a cererilor, a sesizărilor şi a reclamaţiilor.</p>
+                        <div class="callout-box">
+                            <div class="callout-icon">🔍</div>
+                            <div class="callout-content">
+                                <h4>Principiile noastre fundamentale</h4>
+                                <p>Promovarea unui serviciu polițienesc, <span class="highlight-accent">în beneficiul cetăţeanului</span>, în condiții de transparență și apropiere față de comunitate, cu protejarea personalului propriu.</p>
+                            </div>
+                        </div>
+                        
+                        <h4 class="subsection-title">Inovație digitală</h4>
+                        <p>Creearea și utilizarea unor <span class="highlight">produse informatice avansate</span>, cu posibilități de dezvoltare multiple, care să asigure:</p>
+                        <ul class="feature-list">
+                            <li><span class="bullet-highlight">✓</span> Implementarea activităților desfășurate la nivelul instituției</li>
+                            <li><span class="bullet-highlight">✓</span> Evidența și managementul integrat al operațiunilor</li>
+                            <li><span class="bullet-highlight">✓</span> Aplicații dedicate cetățenilor pentru rezolvarea operativă a cererilor</li>
+                            <li><span class="bullet-highlight">✓</span> Sisteme eficiente pentru gestionarea sesizărilor şi reclamaţiilor</li>
+                        </ul>
                     </div>
                 </div>
             </div>
             
+            <!-- II. Misiunea Section -->
             <div class="accordion-item">
                 <div class="accordion-header">
                     <div class="accordion-title-container">
@@ -1657,12 +2234,48 @@
                     <div class="accordion-toggle"></div>
                 </div>
                 <div class="accordion-content">
-                    <div class="accordion-body">
-                        <p>Poliția Locală Slobozia este instituția specializată a unității administrativ-teritoriale care are misiunea de a concepe și pune în practică politici publice eficiente, astfel încât să asigure cele mai bune servicii în interesul comunităţii, cu privire la apărarea drepturilor şi libertăţilor fundamentale ale persoanei, a proprietăţii private şi publice, prevenirea şi descoperirea infracţiunilor, în domeniul ordinii şi liniştii publice, circulaţiei pe drumurile publice, disciplinei în construcţii şi a afişajului stradal, protecţiei mediului, activității comerciale, evidenței persoanelor, dar și a altor domenii stabilite prin lege.</p>
+                    <div class="accordion-body enhanced-content">
+                        <p>Poliția Locală Slobozia este <span class="highlight">instituția specializată</span> a unității administrativ-teritoriale care are misiunea de a <span class="highlight-accent">concepe și pune în practică politici publice eficiente</span>, astfel încât să asigure cele mai bune servicii în interesul comunităţii.</p>
+                        
+                        <div class="domain-grid">
+                            <div class="domain-item">
+                                <div class="domain-icon">🛡️</div>
+                                <div class="domain-text">Apărarea drepturilor şi libertăţilor fundamentale</div>
+                            </div>
+                            <div class="domain-item">
+                                <div class="domain-icon">🏢</div>
+                                <div class="domain-text">Protecția proprietăţii private şi publice</div>
+                            </div>
+                            <div class="domain-item">
+                                <div class="domain-icon">🚨</div>
+                                <div class="domain-text">Prevenirea şi descoperirea infracţiunilor</div>
+                            </div>
+                            <div class="domain-item">
+                                <div class="domain-icon">🔊</div>
+                                <div class="domain-text">Ordinea şi liniştea publică</div>
+                            </div>
+                            <div class="domain-item">
+                                <div class="domain-icon">🚗</div>
+                                <div class="domain-text">Circulaţia pe drumurile publice</div>
+                            </div>
+                            <div class="domain-item">
+                                <div class="domain-icon">🏗️</div>
+                                <div class="domain-text">Disciplina în construcţii</div>
+                            </div>
+                            <div class="domain-item">
+                                <div class="domain-icon">🌳</div>
+                                <div class="domain-text">Protecţia mediului</div>
+                            </div>
+                            <div class="domain-item">
+                                <div class="domain-icon">🛒</div>
+                                <div class="domain-text">Activitatea comercială</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
+            <!-- III. Scopul înființării Section -->
             <div class="accordion-item">
                 <div class="accordion-header">
                     <div class="accordion-title-container">
@@ -1672,22 +2285,72 @@
                     <div class="accordion-toggle"></div>
                 </div>
                 <div class="accordion-content">
-                    <div class="accordion-body">
-                        <p>Poliţia Locală Slobozia funcționează în baza Legii nr. 155/2010, republicată, precum și în baza HCL nr. 1/2011, ca serviciu public local, cu personalitate juridică, specializat în scopul apărării drepturilor şi libertăţilor fundamentale ale persoanei, a proprietăţii private şi publice, și acționează pentru prevenirea şi descoperirea infracţiunilor, în domeniul ordinii şi liniştii publice, circulaţiei pe drumurile publice, disciplinei în construcţii şi a afişajului stradal, protecţiei mediului, activității comerciale, evidenței persoanelor, dar și a altor domenii stabilite prin lege.</p>
+                    <div class="accordion-body enhanced-content">
+                        <div class="legal-box">
+                            <div class="legal-icon">⚖️</div>
+                            <div class="legal-content">
+                                <p>Poliţia Locală Slobozia funcționează în baza <span class="highlight-secondary">Legii nr. 155/2010</span>, republicată, precum și în baza <span class="highlight-secondary">HCL nr. 1/2011</span>, ca serviciu public local, cu personalitate juridică.</p>
+                            </div>
+                        </div>
                         
-                        <p>Având în vedere sarcinile ce decurg din actul normativ de înființare, Poliţia Locală Slobozia s-a axat pe adoptarea unor metode moderne de lucru în care atitudinea faţă de muncă, stilul de conducere şi strategia de organizare sunt orientate predominant către recunoaşterea preventivă şi proactivă a problemelor comunităţii, care provoacă disconfort şi nesiguranţă, precum şi a cauzelor care pot duce la infracționalitate şi la fapte antisociale, acționând în timp util pentru rezolvarea sau îndepărtarea acestora în strânsă legătură cu populaţia şi cu alte instituţii.</p>
+                        <h4 class="subsection-title">Abordare modernă</h4>
+                        <p>Poliţia Locală Slobozia s-a axat pe adoptarea unor <span class="highlight">metode moderne de lucru</span> în care:</p>
+                        <ul class="feature-list">
+                            <li><span class="accent-dot"></span> <strong>Atitudinea</strong> față de muncă</li>
+                            <li><span class="accent-dot"></span> <strong>Stilul</strong> de conducere</li>
+                            <li><span class="accent-dot"></span> <strong>Strategia</strong> de organizare</li>
+                        </ul>
+                        <p>Sunt orientate predominant către <span class="highlight-accent">recunoaşterea preventivă şi proactivă</span> a problemelor comunităţii, acționând în timp util pentru rezolvarea sau îndepărtarea acestora în strânsă legătură cu populaţia şi cu alte instituţii.</p>
                         
-                        <p>La această dată, munca polițiștilor locali din municipiul Slobozia este mult facilitată de eforturile intense depuse în anii anteriori, când am încercat să acoperim întreg teritoriul administrativ precum și toate problemele existente care făceau parte din sfera noastră de competențe: tulburarea liniștii publice, consum de alcool pe domeniul public, depozitarea necontrolată a deșeurilor, activități de comerț în zone publice etc. Astfel că la acest moment o parte dintre problemele enumerate și-au diminuat impactul în viața urbană, fiind rezolvate sau ținute sub control. Nu mai există comerț stradal, nu mai sunt probleme cu circulația rutieră, legate de oprire/staționarea neregulamentară a autovehiculelor în carosabil sau ocuparea prin parcarea acestora pe trotuare ori pe spații verzi, au dispărut vehiculele cu tracțiune animală din decorul urban, acestea circulând exclusiv pe arterele pe care au permisiunea. Fenomenul cerșetoriei a dispărut, cazurile izolate fiind imediat rezolvate, la fel cu situațiile de consum de alcool pe domeniul public.</p>
+                        <div class="divider"><span>Rezultate obținute</span></div>
                         
-                        <p>De asemenea, sistemul de colectare și depozitare a deșeurilor de orice fel este sub control, dispărând acele mari depozite necontrolate/neautorizate de deșeuri provenite din construcții, deșeuri animaliere sau menajere, de pe teritoriul municipiului.</p>
+                        <p>La această dată, munca polițiștilor locali din municipiul Slobozia este mult facilitată de <span class="highlight">eforturile intense depuse în anii anteriori</span>, când am acoperit întreg teritoriul administrativ precum și toate problemele existente din sfera noastră de competențe.</p>
                         
-                        <p>Anual sunt aplicate în medie 6.000-7.000 de sancțiuni, din care cca. 59% sunt pe probleme de circulație, cca. 30 % pe probleme de tulburare a liniștii și ordinii publice, 6% pe probleme de salubritate/protecția mediului și 5% pe probleme de distrugere, deteriorare a domeniului public.</p>
+                        <div class="achievements-list">
+                            <div class="achievement-item">
+                                <div class="check-icon">✓</div>
+                                <p>Nu mai există <span class="highlight-secondary">comerț stradal</span> neautorizat</p>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="check-icon">✓</div>
+                                <p>Rezolvarea problemelor de <span class="highlight-secondary">circulație rutieră</span> (opriri/staționări neregulamentare)</p>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="check-icon">✓</div>
+                                <p>Reglementarea circulației <span class="highlight-secondary">vehiculelor cu tracțiune animală</span></p>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="check-icon">✓</div>
+                                <p>Eliminarea <span class="highlight-secondary">fenomenului cerșetoriei</span></p>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="check-icon">✓</div>
+                                <p>Controlul <span class="highlight-secondary">consumului de alcool</span> pe domeniul public</p>
+                            </div>
+                        </div>
                         
-                        <p>Numărul de procese verbale contestate, din totalul celor întocmite anual, a scăzut continuu, ajungând la cca. 0,3%, dintre care peste 90% sunt respinse de către instanțele de judecată. Iar, ca un indicator al autorității câștigate în teren, se poate menționa faptul că, pe parcursul anilor, refuzul de legitimare a scăzut de la 9-10%, din sancțiunile aplicate la Legea 61/1991, la 0,05%.</p>
+                        <div class="stat-highlight">
+                            <h4>Performanță în cifre</h4>
+                            <div class="stat-items">
+                                <div class="stat-item">
+                                    <div class="stat-value">6,000-7,000</div>
+                                    <div class="stat-label">Sancțiuni anuale</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">0.3%</div>
+                                    <div class="stat-label">Procese verbale contestate</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">90%+</div>
+                                    <div class="stat-label">Contestații respinse de instanță</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
+            <!-- IV. Structura organizatorică Section -->
             <div class="accordion-item">
                 <div class="accordion-header">
                     <div class="accordion-title-container">
@@ -1697,22 +2360,56 @@
                     <div class="accordion-toggle"></div>
                 </div>
                 <div class="accordion-content">
-                    <div class="accordion-body">
-                        <p>Într-un municipiu cu cca. 52.000 locuitori, Poliția Locală Slobozia funcționează cu un număr de personal de 52 funcționari publici și un angajat cu contract de muncă, având în acest moment și trei posturi vacante. Pentru îndeplinirea în bune condiţii a atribuţiilor stabilite prin lege în toate domeniile de activitate, configurația internă a Poliției Locale Slobozia este redată prin structura organizatorică aprobată de Consiliul Local al Municipiului Slobozia la propunerea primarului în funcție de specificul activităților și a numărului de posturi prevăzut de actele normative în vigoare.</p>
+                    <div class="accordion-body enhanced-content">
+                        <div class="data-highlight">
+                            <div class="data-row">
+                                <div class="data-label">Total personal:</div>
+                                <div class="data-value">52 funcționari publici + 1 angajat cu contract de muncă</div>
+                            </div>
+                            <div class="data-row">
+                                <div class="data-label">Posturi vacante:</div>
+                                <div class="data-value">3</div>
+                            </div>
+                            <div class="data-row">
+                                <div class="data-label">Populație deservită:</div>
+                                <div class="data-value">cca. 52.000 locuitori</div>
+                            </div>
+                        </div>
                         
-                        <p>În acest sens, pentru o bună divizare a activităților, instituția funcționează cu două servicii, respectiv Serviciul Ordine Publică și Control, Serviciul Circulație Rutieră-Dispecerat și cu patru compartimente care asigură relațiile de autoritate funcțională:</p>
-                        <ul>
-                            <li>Sinteză, Evidență, Planificare</li>
-                            <li>Supraveghere video, Monitorizare trafic</li>
-                            <li>Financiar-Contabil, Resurse Umane, Salarizare, Achiziții publice</li>
-                            <li>Tehnic, Administrativ, Relații cu presa</li>
-                        </ul>
+                        <h4 class="subsection-title">Departamente principale</h4>
                         
-                        <p>Întregul personal a urmat, între anii 2012 și 2015, cursurile de formare inițială în instituțiile de învățământ ale Ministerului Afacerilor Interne, la Slatina, Câmpina sau ISOP București, după ce, în anii 2007-2008, au fost organizate la sediul instituției cursuri de formare cu ajutorul centrelor de formare profesională, la care am avut formatori cu mare experiență în domeniul polițienesc.</p>
+                        <div class="org-structure">
+                            <div class="org-item">
+                                <div class="org-title">Servicii</div>
+                                <ul class="org-list">
+                                    <li><span class="bullet-highlight">•</span> Serviciul <span class="highlight-secondary">Ordine Publică și Control</span></li>
+                                    <li><span class="bullet-highlight">•</span> Serviciul <span class="highlight-secondary">Circulație Rutieră-Dispecerat</span></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="org-item">
+                                <div class="org-title">Compartimente</div>
+                                <ul class="org-list">
+                                    <li><span class="bullet-highlight">•</span> <span class="highlight-secondary">Sinteză, Evidență, Planificare</span></li>
+                                    <li><span class="bullet-highlight">•</span> <span class="highlight-secondary">Supraveghere video, Monitorizare trafic</span></li>
+                                    <li><span class="bullet-highlight">•</span> <span class="highlight-secondary">Financiar-Contabil, Resurse Umane, Salarizare, Achiziții publice</span></li>
+                                    <li><span class="bullet-highlight">•</span> <span class="highlight-secondary">Tehnic, Administrativ, Relații cu presa</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="callout-box secondary">
+                            <div class="callout-icon">🎓</div>
+                            <div class="callout-content">
+                                <h4>Formare profesională continuă</h4>
+                                <p>Întregul personal a urmat, între anii 2012 și 2015, <span class="highlight">cursurile de formare inițială</span> în instituțiile de învățământ ale Ministerului Afacerilor Interne, la Slatina, Câmpina sau ISOP București.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
+            <!-- V. Infrastructură și dotări Section -->
             <div class="accordion-item">
                 <div class="accordion-header">
                     <div class="accordion-title-container">
@@ -1722,35 +2419,107 @@
                     <div class="accordion-toggle"></div>
                 </div>
                 <div class="accordion-content">
-                    <div class="accordion-body">
-                        <p>Printr-un program de investiții constant, susținut din bugetul local, Poliția Locala Slobozia a reușit să-și creeze și îmbunătățească permanent infrastructura care, în anul 2023, cuprinde:</p>
+                    <div class="accordion-body enhanced-content">
+                        <p>Printr-un <span class="highlight">program de investiții constant</span>, susținut din bugetul local, Poliția Locala Slobozia a reușit să-și creeze și îmbunătățească permanent infrastructura care, în anul 2023, cuprinde:</p>
                         
-                        <ul>
-                            <li>365 de camere de supraveghere video (7 camere la 1000 locuitori) amplasate în 99 de puncte de trafic rutier intens și pietonal dar, în special, în instituțiile de învățământ. 11 din cele 16 școli gimnaziale, licee și gradinițe au beneficiat încă de la început – anii 2007-2008 – (alături de serviciul de pază asigurat tot de Poliția Locală) de astfel de sisteme de supraveghere video. Ulterior, toate unitățile (pre)școlare au fost supuse unei supravegheri video tot prin inițiativa și acțiunea Poliției Locale Slobozia;</li>
-                            <li>sistem de identificare a numerelelor de înmatriculare a autovehiculelor – indiferent de țara unde acestea sunt înmatriculate – pentru 19 camere de supraveghere, instalate în toate cele 5 puncte de intrare/ieșire din municipiu;</li>
-                            <li>sistem informatic mobil pentru generarea Proceselor Verbale de Constatare a Contravenției, cu posibilitatea descărcării și sincronizării datelor cu serverul central;</li>
-                            <li>aplicație informatică de evidență a tuturor sancțiunilor contravenționale cu posibilitatea extragerii de rapoarte conform opțiunilor celor interesați (situații privind sancțiunile aplicate pe o anumită perioadă de timp, a sancțiunilor aplicate de către un polițist local, a sancțiunilor cu o anumită încadrare juridică, sau a sancțiunilor aplicate pentru un anumit contravenient, etc.);</li>
-                            <li>aplicație informatică de evidență a sesizărilor și reclamațiilor, cu posibilitatea identificării tuturor reclamațiilor transmise de către o anumită persoană, sau referitoare la o anumită problemă sau zonă, pe orice perioadă, pe orice zonă din cele 51 care au fost stabilite pe întreg teritoriul municipiului, etc.;</li>
-                            <li>aplicație informatică de evidență a persoanelor cu statut special (fără domiciliu, cu probleme psihice, cu risc de victimizare, etc.).</li>
-                        </ul>
+                        <div class="infra-highlight">
+                            <div class="infra-item">
+                                <div class="infra-icon">📹</div>
+                                <div class="infra-title"><span class="highlight-number">365</span> camere de supraveghere video</div>
+                                <div class="infra-subtitle">(7 camere la 1000 locuitori)</div>
+                                <p class="infra-desc">Amplasate în 99 de puncte de trafic rutier intens și pietonal, în special în instituțiile de învățământ (toate unitățile școlare sunt acoperite).</p>
+                            </div>
+                            
+                            <div class="infra-item">
+                                <div class="infra-icon">🚗</div>
+                                <div class="infra-title">Sistem de identificare a <span class="highlight-secondary">numerelor de înmatriculare</span></div>
+                                <div class="infra-subtitle">19 camere în 5 puncte strategice</div>
+                                <p class="infra-desc">Instalate în toate cele 5 puncte de intrare/ieșire din municipiu, funcționale pentru toate autovehiculele, indiferent de țara de înmatriculare.</p>
+                            </div>
+                            
+                            <div class="infra-item">
+                                <div class="infra-icon">📱</div>
+                                <div class="infra-title">Sistem informatic <span class="highlight-secondary">mobil</span> pentru contravenții</div>
+                                <p class="infra-desc">Cu posibilitatea generării Proceselor Verbale în teren și sincronizării datelor cu serverul central.</p>
+                            </div>
+                        </div>
                         
-                        <p>În categoria dotărilor tehnice includem:</p>
+                        <h4 class="subsection-title">Sisteme informatice avansate</h4>
+                        <div class="tech-grid">
+                            <div class="tech-item">
+                                <div class="tech-icon">📊</div>
+                                <p><span class="highlight-secondary">Aplicație de evidență a sancțiunilor</span> cu rapoarte personalizate pe perioade, polițiști, încadrări juridice sau contravenienți</p>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon">📝</div>
+                                <p><span class="highlight-secondary">Aplicație de evidență a sesizărilor</span> cu identificarea reclamațiilor pe persoane, probleme sau zone</p>
+                            </div>
+                            <div class="tech-item">
+                                <div class="tech-icon">👤</div>
+                                <p><span class="highlight-secondary">Aplicație de evidență a persoanelor</span> cu statut special (fără domiciliu, probleme psihice, risc de victimizare)</p>
+                            </div>
+                        </div>
                         
-                        <ul>
-                            <li>8 autoturisme de patrulare marca DACIA, inscripționate corespunzător, fără elemente care să genereze confuzii, cu instalații acustice și luminoase și cu afișarea de texte presetate, dotate cu camere de supraveghere video cu posibilitatea de transmitere în timp real a imaginilor pe un terminal fix din dispecerat sau pe unul mobil (tabletă, telefon). Două dintre acestea sunt dotate cu sisteme informatice de generare și editare la imprimantă, a proceselor verbale de constatare a contravenției, la locul constatării acesteia;</li>
-                            <li>2 microbuze de 8 locuri;</li>
-                            <li>2 scutere de patrulare pentru sectoriști;</li>
-                            <li>dispecerat cu două video-wall-uri și 4 monitoare de mare rezoluție și un sistem informatic la capacitatea necesară acoperirii tuturor ativităților instituției;</li>
-                            <li>stații radio-telefon cu GPS încorporat și aplicație de localizare în timp real a fiecărui polițist local în teren și posibilitatea de consultare a istoricului deplasării pe o anumită perioadă;</li>
-                            <li>tablete pentru informarea patrulelor în teren, care permit accesul în bazele de date proprii (contravenții, contravenienți, vehicule înregistrate, acte normative, etc.);</li>
-                            <li>două unități de calcul cu imprimante instalate în sala de ședințe pentru utilizarea de către polițiștii locali (redactarea de documente, stocarea de înregistrări audio-video. etc.);</li>
-                            <li>camere video portabile de mare sensibilitate pentru fiecare patrulă, cu perspectiva în acest an a dotării fiecărui polițist local aflat în exercitarea atribuțiilor de serviciu;</li>
-                            <li>pistoale.</li>
-                        </ul>
+                        <div class="divider"><span>Dotări tehnice</span></div>
+                        
+                        <div class="vehicle-container">
+                            <h5 class="mini-title">Flota auto</h5>
+                            <div class="vehicle-grid">
+                                <div class="vehicle-item">
+                                    <div class="vehicle-icon">🚓</div>
+                                    <div class="vehicle-details">
+                                        <div class="vehicle-title">8 autoturisme Dacia</div>
+                                        <p>Inscripționate, cu instalații acustice și luminoase, camere video și sisteme informatice</p>
+                                    </div>
+                                </div>
+                                <div class="vehicle-item">
+                                    <div class="vehicle-icon">🚐</div>
+                                    <div class="vehicle-details">
+                                        <div class="vehicle-title">2 microbuze</div>
+                                        <p>Capacitate 8 locuri</p>
+                                    </div>
+                                </div>
+                                <div class="vehicle-item">
+                                    <div class="vehicle-icon">🛵</div>
+                                    <div class="vehicle-details">
+                                        <div class="vehicle-title">2 scutere de patrulare</div>
+                                        <p>Pentru polițiștii sectoriști</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="equipment-list">
+                            <div class="equipment-item">
+                                <div class="equipment-icon">🖥️</div>
+                                <div class="equipment-text"><span class="highlight-accent">Dispecerat</span> cu video-wall-uri, monitoare de înaltă rezoluție și sistem informatic performant</div>
+                            </div>
+                            <div class="equipment-item">
+                                <div class="equipment-icon">📡</div>
+                                <div class="equipment-text"><span class="highlight-accent">Stații radio-telefon</span> cu GPS și aplicație de localizare în timp real a polițiștilor</div>
+                            </div>
+                            <div class="equipment-item">
+                                <div class="equipment-icon">📱</div>
+                                <div class="equipment-text"><span class="highlight-accent">Tablete</span> pentru accesul la bazele de date proprii din teren</div>
+                            </div>
+                            <div class="equipment-item">
+                                <div class="equipment-icon">💻</div>
+                                <div class="equipment-text"><span class="highlight-accent">Unități de calcul</span> cu imprimante în sala de ședințe</div>
+                            </div>
+                            <div class="equipment-item">
+                                <div class="equipment-icon">🎥</div>
+                                <div class="equipment-text"><span class="highlight-accent">Camere video portabile</span> de mare sensibilitate pentru fiecare patrulă</div>
+                            </div>
+                            <div class="equipment-item">
+                                <div class="equipment-icon">🔫</div>
+                                <div class="equipment-text"><span class="highlight-accent">Pistoale</span> pentru dotarea agenților</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
+            <!-- VI. Program de investiții Section -->
             <div class="accordion-item">
                 <div class="accordion-header">
                     <div class="accordion-title-container">
@@ -1760,20 +2529,79 @@
                     <div class="accordion-toggle"></div>
                 </div>
                 <div class="accordion-content">
-                    <div class="accordion-body">
-                        <p>Programele noastre au vizat îmbunătățirea infrastructurii de lucru evidențiate mai sus. Alături de aceasta am considerat că activitatea de pregătire a personalului și creșterea performanțelor acestuia trebuie să fie un factor prioritar.</p>
+                    <div class="accordion-body enhanced-content">
+                        <p>Programele noastre au vizat <span class="highlight">îmbunătățirea infrastructurii</span> de lucru și <span class="highlight-accent">creșterea performanțelor personalului</span> ca factor prioritar.</p>
                         
-                        <p>Astfel, într-o primă etapă, între 2009-2011, am realizat un sediu propriu, cu toate dotările (dispecerat, cameră de arme, încăpere pentru primirea/predarea individuală a armamentului și a celorlalte dotări, încăpere pentru primirea persoanelor invitate la sediu sau a cetățenilor care vin din proprie inițiativă, sală de pregătire fizică, vestiare individuale pentru fiecare polițist local, garaj).</p>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-date">2009-2011</div>
+                                <div class="timeline-content">
+                                    <h4>Sediu propriu</h4>
+                                    <p>Realizat cu toate dotările necesare:</p>
+                                    <ul class="timeline-list">
+                                        <li>Dispecerat performant</li>
+                                        <li>Cameră de arme securizată</li>
+                                        <li>Spații pentru interacțiunea cu cetățenii</li>
+                                        <li>Sală de pregătire fizică</li>
+                                        <li>Vestiare individuale</li>
+                                        <li>Garaj pentru autovehicule</li>
+                                    </ul>
+                                </div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">2012-2015</div>
+                                <div class="timeline-content">
+                                    <h4>Extindere și modernizare</h4>
+                                    <p>Corp nou de clădire conectat prin pasarelă suspendată cu clădirea existentă.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-date">2023</div>
+                                <div class="timeline-content">
+                                    <h4>Poligon de tragere</h4>
+                                    <p>Realizat pe terenul fostului poligon militar, transferat de MApN administrației locale:</p>
+                                    <ul class="timeline-list">
+                                        <li>Poligon închis, omologat</li>
+                                        <li>Utilizat și de structurile MAI din județ</li>
+                                        <li>În curs de automatizare până la finalul anului</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <p>Ulterior am realizat o extindere a acestuia cu un corp nou de clădire legat de cel existent printr-o pasarelă suspendată.</p>
-                        
-                        <p>Totodată, pe terenul fostului poligon militar din Slobozia, transferat de către MApN administrației publice locale și apoi dat în administrare Poliției Locale Slobozia, s-a omologat și pus în funcțiune un poligon închis de tragere cu armament ușor, utilizat la acest moment și de structurile MAI din județ. Până la final de an va fi realizată și operațiunea de automatizare a acestuia, urmând ca în perioada imediat următoare să informatizam întreg procesul de activitate în poligon.</p>
-                        
-                        <p>Mai mult decât atât, pentru terenul transferat, de cca. 3 ha., există un proiect pentru edificarea unui Centru de Instruire Multifuncțional, destinat pregătirii polițiștilor locali precum și a personalului ISU.</p>
-                        
-                        <p>În perspectiva apropiată urmărim realizarea de noi sisteme de supraveghere video la nivel de cartiere în zona Pieții Agroalimentare, zona MB-uri, cartier 500 precum și extinderea sistemului din cartierul Bora.</p>
-                        
-                        <p>Totodată, avem în plan realizarea unui ultim sistem de acest gen, cu opțiuni de citire și identificare a numerelor de înmatriculare, în punctul dintre cele două noi sensuri giratorii.</p>
+                        <div class="future-projects">
+                            <h4 class="subsection-title">Proiecte în perspectivă</h4>
+                            
+                            <div class="project-item">
+                                <div class="project-icon">🏫</div>
+                                <div class="project-content">
+                                    <h5>Centru de Instruire Multifuncțional</h5>
+                                    <p>Pe terenul de 3 ha transferat de la MApN, destinat pregătirii polițiștilor locali și a personalului ISU.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="project-item">
+                                <div class="project-icon">📹</div>
+                                <div class="project-content">
+                                    <h5>Extinderea sistemelor de supraveghere video</h5>
+                                    <p>Noi sisteme în:</p>
+                                    <ul class="inline-list">
+                                        <li>Zona Pieții Agroalimentare</li>
+                                        <li>Zona MB-uri</li>
+                                        <li>Cartier 500</li>
+                                        <li>Extindere cartier Bora</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="project-item">
+                                <div class="project-icon">🚗</div>
+                                <div class="project-content">
+                                    <h5>Sistem inteligent de trafic</h5>
+                                    <p>În punctul dintre cele două noi sensuri giratorii, cu opțiuni de citire și identificare a numerelor de înmatriculare.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
