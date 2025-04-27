@@ -33,6 +33,11 @@
             --border-radius-small: 4px;
             --border-radius-medium: 8px;
             --border-radius-large: 12px;
+            
+            /* New color variables for menu groups */
+            --menu-group-1: rgba(30, 136, 229, 0.03);
+            --menu-group-2: rgba(255, 202, 40, 0.03);
+            --menu-group-3: rgba(67, 160, 71, 0.03);
         }
         
         * {
@@ -385,6 +390,8 @@
             padding: 0.7rem 3rem;
         }
         
+        /* ENHANCED NAVIGATION STYLES */
+        
         .main-nav ul {
             display: flex;
             list-style: none;
@@ -400,13 +407,28 @@
             text-decoration: none;
             font-weight: 500;
             padding: 0.5rem 0;
-            transition: var(--transition-fast);
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
             font-size: 0.95rem;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        /* Icon in main menu */
+        .menu-icon {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
         }
         
         .main-nav ul li a:hover {
             color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .main-nav ul li a:hover .menu-icon {
+            transform: scale(1.1);
+            opacity: 1;
         }
         
         .main-nav ul li a::after {
@@ -417,7 +439,7 @@
             width: 0;
             height: 2px;
             background-color: var(--secondary-color);
-            transition: var(--transition-fast);
+            transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
         
         .main-nav ul li a:hover::after {
@@ -434,7 +456,7 @@
             background-color: var(--accent-color);
         }
         
-        /* Fixed Dropdown Menu Styles */
+        /* ENHANCED DROPDOWN STYLES */
         .main-nav ul li.has-dropdown {
             position: relative;
         }
@@ -448,32 +470,33 @@
         .main-nav ul li.has-dropdown > a .dropdown-icon {
             margin-left: 0.3rem;
             font-size: 1rem;
-            transition: var(--transition-fast);
+            transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
         }
         
         .main-nav ul li.has-dropdown:hover > a .dropdown-icon {
             transform: rotate(180deg);
         }
         
-        /* Critical dropdown styling for vertical display */
+        /* Enhanced dropdown styling */
         .dropdown-menu {
             position: absolute !important;
             top: 100% !important;
             left: 0 !important;
             background-color: white !important;
-            min-width: 250px !important;
+            min-width: 280px !important;
             display: block !important;
             flex-direction: column !important;
-            padding: 0.5rem 0 !important;
+            padding: 0.7rem 0 !important;
             margin: 0 !important;
             margin-top: 0.5rem !important;
-            border-radius: 0 0 4px 4px !important;
-            box-shadow: var(--shadow-medium) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
             z-index: 1000 !important;
             visibility: hidden !important;
             opacity: 0 !important;
-            transform: translateY(10px) !important;
-            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease !important;
+            transform: translateY(15px) !important;
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) !important;
+            overflow: hidden !important;
         }
         
         .main-nav ul li.has-dropdown:hover .dropdown-menu {
@@ -494,40 +517,89 @@
             border-bottom: 8px solid white;
         }
         
+        /* Group headers in dropdown */
+        .dropdown-group-header {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+            opacity: 0.7;
+        }
+        
+        /* Group styling in dropdown */
+        .dropdown-group-1 {
+            background-color: var(--menu-group-1);
+        }
+        
+        .dropdown-group-2 {
+            background-color: var(--menu-group-2);
+        }
+        
+        .dropdown-group-3 {
+            background-color: var(--menu-group-3);
+        }
+        
         .dropdown-menu li {
             display: block !important;
             width: 100% !important;
             float: none !important;
             margin: 0 !important;
             padding: 0 !important;
-            border-bottom: 1px solid rgba(0,0,0,0.05) !important;
         }
         
         .dropdown-menu li:last-child {
             border-bottom: none !important;
         }
         
+        /* Dropdown menu item styling */
         .dropdown-menu li a {
-            display: block !important;
+            display: flex !important;
+            align-items: center !important;
             width: 100% !important;
             padding: 0.7rem 1.5rem !important;
             color: var(--text-secondary) !important;
             text-decoration: none !important;
             font-size: 0.9rem !important;
             font-weight: 400 !important;
-            transition: all 0.2s ease !important;
+            transition: all 0.3s ease !important;
             border-left: 3px solid transparent !important;
+        }
+        
+        /* Icon in dropdown menu */
+        .dropdown-icon-item {
+            margin-right: 0.7rem !important;
+            font-size: 1.1rem !important;
+            color: var(--text-secondary) !important;
+            opacity: 0.7 !important;
+            transition: all 0.3s ease !important;
         }
         
         .dropdown-menu li a:hover {
             background-color: rgba(30, 136, 229, 0.05) !important;
             color: var(--secondary-color) !important;
             border-left: 3px solid var(--secondary-color) !important;
+            transform: translateX(3px) !important;
             padding-left: 1.7rem !important;
+        }
+        
+        .dropdown-menu li a:hover .dropdown-icon-item {
+            color: var(--secondary-color) !important;
+            opacity: 1 !important;
+            transform: scale(1.1) !important;
         }
         
         .dropdown-menu li a::after {
             display: none !important;
+        }
+        
+        /* Separator in dropdown */
+        .dropdown-separator {
+            height: 1px;
+            background-color: rgba(0,0,0,0.05);
+            margin: 0.5rem 0;
         }
         
         /* Search Bar styles */
@@ -969,7 +1041,7 @@
             }
             
             .main-nav ul li a {
-                display: block;
+                display: flex;
                 padding: 1rem 2rem;
                 border-bottom: 1px solid rgba(0,0,0,0.05);
             }
@@ -991,6 +1063,7 @@
                 transition: max-height 0.3s ease !important;
                 width: 100% !important;
                 margin-top: 0 !important;
+                border-radius: 0 !important;
             }
             
             .dropdown-menu::before {
@@ -998,7 +1071,7 @@
             }
             
             .main-nav ul li.has-dropdown.active .dropdown-menu {
-                max-height: 500px !important;
+                max-height: 1200px !important;
             }
             
             .main-nav ul li.has-dropdown > a .dropdown-icon {
@@ -1012,6 +1085,10 @@
             }
             
             .dropdown-menu li a {
+                padding-left: 3rem !important;
+            }
+            
+            .dropdown-group-header {
                 padding-left: 3rem !important;
             }
             
@@ -2222,74 +2299,92 @@
         <div class="header-main" id="header-main">
 <nav class="main-nav" id="main-nav">
     <ul>
-        <li class="active"><a href="#">Acasă</a></li>
+        <li class="active"><a href="#"><i class="material-icons menu-icon">home</i> Acasă</a></li>
         <li class="has-dropdown">
             <a href="#">
-                Despre Noi
+                <i class="material-icons menu-icon">info</i> Despre Noi
                 <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">Acte normative</a></li>
-                <li><a href="#">Atribuții</a></li>
-                <li><a href="#">Regulament</a></li>
-                <li><a href="#">Organigrama</a></li>
-                <li><a href="#">Poligonul de tragere</a></li>
-                <li><a href="#">Reportaje și înregistrări video</a></li>
+                <div class="dropdown-group-header">Informații generale</div>
+                <div class="dropdown-group-1">
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">gavel</i> Acte normative</a></li>
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">assignment</i> Atribuții</a></li>
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">description</i> Regulament</a></li>
+                </div>
+                <div class="dropdown-group-header">Structură și facilități</div>
+                <div class="dropdown-group-2">
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">account_tree</i> Organigrama</a></li>
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">track_changes</i> Poligonul de tragere</a></li>
+                </div>
+                <div class="dropdown-group-header">Media</div>
+                <div class="dropdown-group-3">
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">play_circle_filled</i> Reportaje și înregistrări video</a></li>
+                </div>
             </ul>
         </li>
-        <li><a href="#">Servicii</a></li>
+        <li><a href="#"><i class="material-icons menu-icon">room_service</i> Servicii</a></li>
         <li class="has-dropdown">
             <a href="#">
-                Petiții
+                <i class="material-icons menu-icon">feedback</i> Petiții
                 <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">Petiții</a></li>
-                <li><a href="#">Răspunsuri la sesizări, reclamații, anonime</a></li>
-            </ul>
-        </li>
-        <li class="has-dropdown">
-            <a href="#">
-                Contact
-                <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
-            </a>
-            <ul class="dropdown-menu">
-                <li><a href="#">Conducere</a></li>
-                <li><a href="#">Relații cu publicul</a></li>
-                <li><a href="#">Sediul operativ și administrativ</a></li>
-                <li><a href="#">Program de audiențe</a></li>
+                <li><a href="#"><i class="material-icons dropdown-icon-item">edit_note</i> Petiții</a></li>
+                <li><a href="#"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări, reclamații, anonime</a></li>
             </ul>
         </li>
         <li class="has-dropdown">
             <a href="#">
-                Integritate instituțională
+                <i class="material-icons menu-icon">phone</i> Contact
                 <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">Strategia Națională Anticorupție</a></li>
-                <li><a href="#">Cod etic</a></li>
-                <li><a href="#">Raport privind declararea cadourilor</a></li>
+                <li><a href="#"><i class="material-icons dropdown-icon-item">supervisor_account</i> Conducere</a></li>
+                <li><a href="#"><i class="material-icons dropdown-icon-item">people</i> Relații cu publicul</a></li>
+                <li><a href="#"><i class="material-icons dropdown-icon-item">location_on</i> Sediul operativ și administrativ</a></li>
+                <li><a href="#"><i class="material-icons dropdown-icon-item">event</i> Program de audiențe</a></li>
             </ul>
         </li>
         <li class="has-dropdown">
             <a href="#">
-                Informații de interes public
+                <i class="material-icons menu-icon">verified_user</i> Integritate instituțională
                 <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#">Raportare salarială</a></li>
-                <li><a href="#">Declarații interese</a></li>
-                <li><a href="#">Declarații avere</a></li>
-                <li><a href="#">Raport anual de aplicare a Legii nr. 544/2001</a></li>
-                <li><a href="#">Documente gestionate conform legii</a></li>
-                <li><a href="#">Program achiziții anuale</a></li>
-                <li><a href="#">Program formare profesională</a></li>
-                <li><a href="#">Raport privind declararea cadourilor</a></li>
-                <li><a href="#">Bilanțuri și bugete</a></li>
+                <li><a href="#"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
+                <li><a href="#"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
+                <li><a href="#"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
             </ul>
         </li>
-        <li><a href="#">GDPR</a></li>
-        <li><a href="#">Camere publice</a></li>
+        <li class="has-dropdown">
+            <a href="#">
+                <i class="material-icons menu-icon">public</i> Informații de interes public
+                <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+            </a>
+            <ul class="dropdown-menu">
+                <div class="dropdown-group-header">Financiare</div>
+                <div class="dropdown-group-1">
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
+                </div>
+                <div class="dropdown-group-header">Transparență</div>
+                <div class="dropdown-group-2">
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
+                </div>
+                <div class="dropdown-group-header">Dezvoltare</div>
+                <div class="dropdown-group-3">
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
+                    <li><a href="#"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
+                </div>
+            </ul>
+        </li>
+        <li><a href="#"><i class="material-icons menu-icon">security</i> GDPR</a></li>
+        <li><a href="#"><i class="material-icons menu-icon">videocam</i> Camere publice</a></li>
     </ul>
 </nav>
             <div class="search-bar">
@@ -2511,65 +2606,61 @@
                     <div class="accordion-body enhanced-content">
                         <div class="legal-box">
                             <div class="legal-icon"><i class="material-icons">gavel</i></div>
-                            <div class="legal-content">
-                                <p>Poliţia Locală Slobozia funcționează în baza <span class="highlight-secondary">Legii nr. 155/2010</span>, republicată, precum și în baza <span class="highlight-secondary">HCL nr. 1/2011</span>, ca serviciu public local, cu personalitate juridică.</p>
-                            </div>
-                        </div>
-                        
-                        <h4 class="subsection-title">Abordare modernă</h4>
-                        <p>Poliţia Locală Slobozia s-a axat pe adoptarea unor <span class="highlight">metode moderne de lucru</span> în care:</p>
-                        <ul class="feature-list">
-                            <li><span class="accent-dot"></span> <strong>Atitudinea</strong> față de muncă</li>
-                            <li><span class="accent-dot"></span> <strong>Stilul</strong> de conducere</li>
-                            <li><span class="accent-dot"></span> <strong>Strategia</strong> de organizare</li>
-                        </ul>
-                        <p>Sunt orientate predominant către <span class="highlight-accent">recunoaşterea preventivă şi proactivă</span> a problemelor comunităţii, acționând în timp util pentru rezolvarea sau îndepărtarea acestora în strânsă legătură cu populaţia şi cu alte instituţii.</p>
-                        
-                        <div class="divider"><span>Rezultate obținute</span></div>
-                        
-                        <p>La această dată, munca polițiștilor locali din municipiul Slobozia este mult facilitată de <span class="highlight">eforturile intense depuse în anii anteriori</span>, când am acoperit întreg teritoriul administrativ precum și toate problemele existente din sfera noastră de competențe.</p>
-                        
-                        <div class="achievements-list">
-                            <div class="achievement-item">
-                                <div class="check-icon"><i class="material-icons">done</i></div>
-                                <p>Nu mai există <span class="highlight-secondary">comerț stradal</span> neautorizat</p>
-                            </div>
-                            <div class="achievement-item">
-                                <div class="check-icon"><i class="material-icons">done</i></div>
-                                <p>Rezolvarea problemelor de <span class="highlight-secondary">circulație rutieră</span> (opriri/staționări neregulamentare)</p>
-                            </div>
-                            <div class="achievement-item">
-                                <div class="check-icon"><i class="material-icons">done</i></div>
-                                <p>Reglementarea circulației <span class="highlight-secondary">vehiculelor cu tracțiune animală</span></p>
-                            </div>
-                            <div class="achievement-item">
-                                <div class="check-icon"><i class="material-icons">done</i></div>
-                                <p>Eliminarea <span class="highlight-secondary">fenomenului cerșetoriei</span></p>
-                            </div>
-                            <div class="achievement-item">
-                                <div class="check-icon"><i class="material-icons">done</i></div>
-                                <p>Controlul <span class="highlight-secondary">consumului de alcool</span> pe domeniul public</p>
-                            </div>
-                        </div>
-                        
-                        <div class="stat-highlight">
-                            <h4>Performanță în cifre</h4>
-                            <div class="stat-items">
-                                <div class="stat-item">
-                                    <div class="stat-value">6,000-7,000</div>
-                                    <div class="stat-label">Sancțiuni anuale</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value">0.3%</div>
-                                    <div class="stat-label">Procese verbale contestate</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value">90%+</div>
-                                    <div class="stat-label">Contestații respinse de instanță</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<div class="legal-content">
+    <p>Poliţia Locală Slobozia funcționează în baza <span class="highlight-secondary">Legii nr. 155/2010</span>, republicată, precum și în baza <span class="highlight-secondary">HCL nr. 1/2011</span>, ca serviciu public local, cu personalitate juridică.</p>
+</div>
+
+<h4 class="subsection-title">Abordare modernă</h4>
+<p>Poliţia Locală Slobozia s-a axat pe adoptarea unor <span class="highlight">metode moderne de lucru</span> în care:</p>
+<ul class="feature-list">
+    <li><span class="accent-dot"></span> <strong>Atitudinea</strong> față de muncă</li>
+    <li><span class="accent-dot"></span> <strong>Stilul</strong> de conducere</li>
+    <li><span class="accent-dot"></span> <strong>Strategia</strong> de organizare</li>
+</ul>
+<p>Sunt orientate predominant către <span class="highlight-accent">recunoaşterea preventivă şi proactivă</span> a problemelor comunităţii, acționând în timp util pentru rezolvarea sau îndepărtarea acestora în strânsă legătură cu populaţia şi cu alte instituţii.</p>
+
+<div class="divider"><span>Rezultate obținute</span></div>
+
+<p>La această dată, munca polițiștilor locali din municipiul Slobozia este mult facilitată de <span class="highlight">eforturile intense depuse în anii anteriori</span>, când am acoperit întreg teritoriul administrativ precum și toate problemele existente din sfera noastră de competențe.</p>
+
+<div class="achievements-list">
+    <div class="achievement-item">
+        <div class="check-icon"><i class="material-icons">done</i></div>
+        <p>Nu mai există <span class="highlight-secondary">comerț stradal</span> neautorizat</p>
+    </div>
+    <div class="achievement-item">
+        <div class="check-icon"><i class="material-icons">done</i></div>
+        <p>Rezolvarea problemelor de <span class="highlight-secondary">circulație rutieră</span> (opriri/staționări neregulamentare)</p>
+    </div>
+    <div class="achievement-item">
+        <div class="check-icon"><i class="material-icons">done</i></div>
+        <p>Reglementarea circulației <span class="highlight-secondary">vehiculelor cu tracțiune animală</span></p>
+    </div>
+    <div class="achievement-item">
+        <div class="check-icon"><i class="material-icons">done</i></div>
+        <p>Eliminarea <span class="highlight-secondary">fenomenului cerșetoriei</span></p>
+    </div>
+    <div class="achievement-item">
+        <div class="check-icon"><i class="material-icons">done</i></div>
+        <p>Controlul <span class="highlight-secondary">consumului de alcool</span> pe domeniul public</p>
+    </div>
+</div>
+
+<div class="stat-highlight">
+    <h4>Performanță în cifre</h4>
+    <div class="stat-items">
+        <div class="stat-item">
+            <div class="stat-value">6,000-7,000</div>
+            <div class="stat-label">Sancțiuni anuale</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">0.3%</div>
+            <div class="stat-label">Procese verbale contestate</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">90%+</div>
+            <div class="stat-label">Contestații respinse de instanță</div>
+</div>
                 </div>
             </div>
             
@@ -2615,7 +2706,7 @@
                                 <ul class="org-list">
                                     <li><span class="bullet-highlight"><i class="material-icons">fiber_manual_record</i></span> <span class="highlight-secondary">Sinteză, Evidență, Planificare</span></li>
                                     <li><span class="bullet-highlight"><i class="material-icons">fiber_manual_record</i></span> <span class="highlight-secondary">Supraveghere video, Monitorizare trafic</span></li>
- <li><span class="bullet-highlight"><i class="material-icons">fiber_manual_record</i></span> <span class="highlight-secondary">Financiar-Contabil, Resurse Umane, Salarizare, Achiziții publice</span></li>
+                                    <li><span class="bullet-highlight"><i class="material-icons">fiber_manual_record</i></span> <span class="highlight-secondary">Financiar-Contabil, Resurse Umane, Salarizare, Achiziții publice</span></li>
                                     <li><span class="bullet-highlight"><i class="material-icons">fiber_manual_record</i></span> <span class="highlight-secondary">Tehnic, Administrativ, Relații cu presa</span></li>
                                 </ul>
                             </div>
@@ -2666,8 +2757,8 @@
                                 <p class="infra-desc">Cu posibilitatea generării Proceselor Verbale în teren și sincronizării datelor cu serverul central.</p>
                             </div>
                         </div>
-                        
-                        <h4 class="subsection-title">Sisteme informatice avansate</h4>
+
+            <h4 class="subsection-title">Sisteme informatice avansate</h4>
                         <div class="tech-grid">
                             <div class="tech-item">
                                 <div class="tech-icon"><i class="material-icons">insert_chart</i></div>
@@ -2965,7 +3056,7 @@
                 // Check if we're in mobile view
                 if (window.innerWidth <= 992) {
                     // Only apply to direct child a tag
-                    if (e.target === this.querySelector('a') || e.target === this.querySelector('a .dropdown-icon')) {
+                    if (e.target === this.querySelector('a') || e.target === this.querySelector('a .dropdown-icon') || e.target === this.querySelector('a .menu-icon')) {
                         e.preventDefault();
                         this.classList.toggle('active');
                     }
@@ -3000,7 +3091,6 @@
             // Reset animations for indicators
             indicators.forEach(indicator => {
                 indicator.classList.remove('active');
-                indicator.querySelector('::before') && (indicator.querySelector('::before').style.animation = 'none');
             });
             
             // Hide all slides
@@ -3131,5 +3221,6 @@
             observer.observe(el);
         });
     </script>
-</body>
-</html>
+    </body>
+    </html>
+                        
