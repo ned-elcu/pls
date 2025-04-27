@@ -113,6 +113,12 @@
             z-index: 0;
         }
         
+        .header-container::after {
+          content: "";
+          display: block;
+          height: var(--header-height);
+        }
+        
         .header-top.scrolled {
             padding: 0.5rem 3rem;
         }
