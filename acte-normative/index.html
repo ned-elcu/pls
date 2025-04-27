@@ -1,1 +1,2201 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acte Normative - Poliția Locală Slobozia</title>
+    <!-- Added Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+            
+            /* New color variables for menu groups */
+            --menu-group-1: rgba(30, 136, 229, 0.03);
+            --menu-group-2: rgba(255, 202, 40, 0.03);
+            --menu-group-3: rgba(67, 160, 71, 0.03);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Material Icons styling */
+        .material-icons {
+            vertical-align: middle;
+            line-height: 1;
+        }
 
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Styles */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+        }
+        
+        .header-top {
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 3rem;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-top::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/api/placeholder/1920/100') center/cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .header-top.scrolled {
+            padding: 0.5rem 3rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo-badge {
+            width: 50px;
+            height: 50px;
+            margin-right: 1rem;
+            transition: var(--transition-fast);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo h1 {
+            color: var(--text-light);
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin: 0;
+            line-height: 1;
+        }
+        
+        .logo-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .utility-menu {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .utility-item {
+            margin-left: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            padding: 0.3rem 0;
+            transition: var(--transition-fast);
+        }
+        
+        .utility-item:hover {
+            color: var(--accent-color);
+        }
+        
+        .utility-item.emergency {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--border-radius-small);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .utility-item.emergency::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            z-index: -1;
+        }
+        
+        .utility-item.emergency::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: var(--transition-fast);
+            z-index: -1;
+        }
+        
+        .utility-item.emergency:hover::after {
+            opacity: 1;
+            top: -100%;
+            left: -100%;
+        }
+        
+        .utility-item.emergency i {
+            margin-right: 0.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .accent-line {
+            height: 3px;
+            width: 100%;
+            background-color: var(--secondary-color);
+        }
+        
+        .header-main {
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 3rem;
+            box-shadow: var(--shadow-small);
+            transition: var(--transition-fast);
+        }
+        
+        .header-main.scrolled {
+            padding: 0.7rem 3rem;
+        }
+        
+        /* ENHANCED NAVIGATION STYLES */
+        
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        .main-nav ul li {
+            margin: 0 1rem;
+            position: relative;
+        }
+        
+        .main-nav ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0;
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        /* Icon in main menu */
+        .menu-icon {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .main-nav ul li a:hover {
+            color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .main-nav ul li a:hover .menu-icon {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        
+        .main-nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary-color);
+            transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .main-nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .main-nav ul li.active a {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .main-nav ul li.active a::after {
+            width: 100%;
+            background-color: var(--accent-color);
+        }
+        
+        /* ENHANCED DROPDOWN STYLES */
+        .main-nav ul li.has-dropdown {
+            position: relative;
+        }
+        
+        .main-nav ul li.has-dropdown > a {
+            display: flex;
+            align-items: center;
+            padding-right: 1.2rem;
+        }
+        
+        .main-nav ul li.has-dropdown > a .dropdown-icon {
+            margin-left: 0.3rem;
+            font-size: 1rem;
+            transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        
+        .main-nav ul li.has-dropdown:hover > a .dropdown-icon {
+            transform: rotate(180deg);
+        }
+        
+        /* Enhanced dropdown styling */
+        .dropdown-menu {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            background-color: white !important;
+            min-width: 280px !important;
+            display: block !important;
+            flex-direction: column !important;
+            padding: 0.7rem 0 !important;
+            margin: 0 !important;
+            margin-top: 0.5rem !important;
+            border-radius: 8px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+            z-index: 1000 !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            transform: translateY(15px) !important;
+            transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) !important;
+            overflow: hidden !important;
+        }
+        
+        .main-nav ul li.has-dropdown:hover .dropdown-menu {
+            visibility: visible !important;
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+        
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid white;
+        }
+        
+        /* Group headers in dropdown */
+        .dropdown-group-header {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+            opacity: 0.7;
+        }
+        
+        /* Group styling in dropdown */
+        .dropdown-group-1 {
+            background-color: var(--menu-group-1);
+        }
+        
+        .dropdown-group-2 {
+            background-color: var(--menu-group-2);
+        }
+        
+        .dropdown-group-3 {
+            background-color: var(--menu-group-3);
+        }
+        
+        .dropdown-menu li {
+            display: block !important;
+            width: 100% !important;
+            float: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .dropdown-menu li:last-child {
+            border-bottom: none !important;
+        }
+        
+        /* Dropdown menu item styling */
+        .dropdown-menu li a {
+            display: flex !important;
+            align-items: center !important;
+            width: 100% !important;
+            padding: 0.7rem 1.5rem !important;
+            color: var(--text-secondary) !important;
+            text-decoration: none !important;
+            font-size: 0.9rem !important;
+            font-weight: 400 !important;
+            transition: all 0.3s ease !important;
+            border-left: 3px solid transparent !important;
+        }
+        
+        /* Icon in dropdown menu */
+        .dropdown-icon-item {
+            margin-right: 0.7rem !important;
+            font-size: 1.1rem !important;
+            color: var(--text-secondary) !important;
+            opacity: 0.7 !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .dropdown-menu li a:hover {
+            background-color: rgba(30, 136, 229, 0.05) !important;
+            color: var(--secondary-color) !important;
+            border-left: 3px solid var(--secondary-color) !important;
+            transform: translateX(3px) !important;
+            padding-left: 1.7rem !important;
+        }
+        
+        .dropdown-menu li a:hover .dropdown-icon-item {
+            color: var(--secondary-color) !important;
+            opacity: 1 !important;
+            transform: scale(1.1) !important;
+        }
+        
+        .dropdown-menu li a::after {
+            display: none !important;
+        }
+        
+        /* Search Bar styles */
+        .search-bar {
+            position: relative;
+            width: 250px;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 30px;
+            outline: none;
+            transition: var(--transition-fast);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+        }
+        
+        .search-bar input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9e9e9e;
+            transition: var(--transition-fast);
+        }
+        
+        .search-bar input:focus + i {
+            color: var(--secondary-color);
+        }
+        
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .mobile-menu-toggle:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 8rem 3rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title-left {
+            max-width: 800px;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            opacity: 0.5;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 3rem;
+            background-color: white;
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Acts List Styling */
+        .acts-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .acts-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .acts-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+        
+        .acts-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .acts-list li {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .acts-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.75rem;
+            width: 8px;
+            height: 8px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+        }
+        
+        .acts-list li:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .acts-list a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .acts-list a:hover {
+            color: var(--secondary-color);
+            transform: translateX(5px);
+        }
+        
+        .acts-list a .link-icon {
+            opacity: 0;
+            margin-left: 0.5rem;
+            transition: var(--transition-fast);
+            color: var(--secondary-color);
+        }
+        
+        .acts-list a:hover .link-icon {
+            opacity: 1;
+            transform: translateX(3px);
+        }
+        
+        .highlight-text {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        /* Card Design for Categories */
+        .categories-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .category-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 2rem;
+            transition: var(--transition-medium);
+            border-top: 4px solid var(--secondary-color);
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition-medium);
+        }
+        
+        .category-card:hover .category-icon {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .category-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .category-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .category-link i {
+            margin-left: 0.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .category-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .category-link:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Related Resources */
+        .related-resources {
+            margin-top: 4rem;
+            padding: 3rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-large);
+        }
+        
+        .related-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .related-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-medium);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .resource-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+        }
+        
+        .resource-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            align-self: flex-start;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link i {
+            margin-left: 0.3rem;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .resource-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            margin-top: 4rem;
+        }
+        
+        .faq-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .faq-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            margin-bottom: 1rem;
+            border-radius: var(--border-radius-medium);
+            background-color: white;
+            box-shadow: var(--shadow-small);
+            overflow: hidden;
+            transition: var(--transition-medium);
+        }
+        
+        .faq-item:hover {
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-2px);
+        }
+        
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            background-color: white;
+            transition: var(--transition-fast);
+            border-left: 3px solid transparent;
+        }
+        
+        .faq-question:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .faq-question.active {
+            border-left-color: var(--secondary-color);
+            background-color: #f9f9f9;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .faq-toggle {
+            width: 24px;
+            height: 24px;
+            position: relative;
+            transition: var(--transition-fast);
+        }
+        
+        .faq-toggle::before,
+        .faq-toggle::after {
+            content: '';
+            position: absolute;
+            background-color: var(--secondary-color);
+            transition: var(--transition-fast);
+        }
+        
+        .faq-toggle::before {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .faq-toggle::after {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .faq-question.active .faq-toggle::before {
+            transform: translateX(-50%) scaleY(0);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            padding: 0 1.5rem;
+        }
+        
+        .faq-answer-content {
+            padding-bottom: 1.5rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        .faq-answer-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .faq-answer-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 5rem;
+            padding: 4rem 0;
+            background-color: var(--primary-color);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .cta-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .btn i {
+            margin-left: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5rem 3rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer-bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                url('/api/placeholder/1920/100');
+            background-size: cover;
+            opacity: 0.05;
+            z-index: 0;
+        }
+        
+        .footer-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .footer-top {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 4rem;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 2rem;
+            padding-right: 2rem;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-logo-badge {
+            width: 50px;
+            height: 50px;
+            margin-right: 1rem;
+        }
+        
+        .footer-logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .footer-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            font-size: 1.2rem;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+        
+        .footer-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            transition: var(--transition-fast);
+        }
+        
+        .footer-link i {
+            margin-right: 0.8rem;
+            color: var(--accent-color);
+            transition: var(--transition-fast);
+        }
+        
+        .footer-link:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .footer-link:hover i {
+            color: var(--accent-color);
+        }
+        
+        .footer-contact-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .footer-contact-icon {
+            margin-right: 1rem;
+            color: var(--accent-color);
+        }
+        
+        .footer-contact-text h4 {
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .footer-contact-text p {
+            line-height: 1.6;
+        }
+        
+        .footer-form {
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-form input {
+            width: 100%;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: var(--border-radius-medium);
+            color: white;
+            margin-bottom: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .footer-form input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .footer-form button {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .footer-form button:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-copyright {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .footer-links-bottom {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .footer-bottom-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .footer-bottom-link:hover {
+            color: var(--accent-color);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .header-top,
+            .header-main {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .main-nav {
+                position: fixed;
+                top: var(--header-height);
+                left: -100%;
+                width: 80%;
+                max-width: 320px;
+                height: calc(100vh - var(--header-height));
+                background-color: white;
+                box-shadow: var(--shadow-large);
+                transition: left 0.3s ease;
+                overflow-y: auto;
+                z-index: 1000;
+            }
+            
+            .main-nav.active {
+                left: 0;
+            }
+            
+            .main-nav ul {
+                flex-direction: column;
+                padding: 1rem 0;
+            }
+            
+            .main-nav ul li {
+                margin: 0;
+                width: 100%;
+            }
+            
+            .main-nav ul li a {
+                display: flex;
+                padding: 1rem 2rem;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+            }
+            
+            .main-nav ul li a::after {
+                display: none;
+            }
+            
+            .dropdown-menu {
+                position: static !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                transform: none !important;
+                background-color: #f8f9fa !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                max-height: 0 !important;
+                overflow: hidden !important;
+                transition: max-height 0.3s ease !important;
+                width: 100% !important;
+                margin-top: 0 !important;
+                border-radius: 0 !important;
+            }
+            
+            .dropdown-menu::before {
+                display: none !important;
+            }
+            
+            .main-nav ul li.has-dropdown.active .dropdown-menu {
+                max-height: 1200px !important;
+            }
+            
+            .main-nav ul li.has-dropdown > a .dropdown-icon {
+                margin-left: auto;
+            }
+            
+            .main-nav ul li.has-dropdown > a {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .dropdown-menu li a {
+                padding-left: 3rem !important;
+            }
+            
+            .dropdown-group-header {
+                padding-left: 3rem !important;
+            }
+            
+            .page-title-section {
+                padding: 8rem 2rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .content-section {
+                padding: 4rem 2rem;
+            }
+            
+            .acts-container {
+                padding: 2rem;
+            }
+            
+            .related-resources {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-top,
+            .header-main {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.1rem;
+            }
+            
+            .utility-item {
+                display: none;
+            }
+            
+            .utility-item.emergency {
+                display: flex;
+                margin-left: 0;
+            }
+            
+            .page-title-section {
+                padding: 7rem 1.5rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .acts-container {
+                padding: 1.5rem;
+            }
+            
+            .categories-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-container {
+                padding: 0 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header from Concept 3 - Modified for institutional look -->
+    <div class="header-container">
+        <div class="header-top" id="header-top">
+            <div class="logo">
+                <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS" class="logo-badge">
+                <div class="logo-text">
+                    <h1>POLIȚIA LOCALĂ SLOBOZIA</h1>
+                    <span class="logo-subtitle">Protejăm și Servim</span>
+                </div>
+            </div>
+            <div class="utility-menu">
+                <a href="#" class="utility-item">Oportunități de Carieră</a>
+                <a href="#" class="utility-item">Registre Publice</a>
+                <a href="#" class="utility-item">Depunere Sesizare</a>
+                <a href="#" class="utility-item emergency">
+                    <i class="material-icons">phone_in_talk</i> (0243) 955
+                </a>
+            </div>
+        </div>
+        <div class="accent-line"></div>
+        <div class="header-main" id="header-main">
+            <nav class="main-nav" id="main-nav">
+                <ul>
+                    <li><a href="#"><i class="material-icons menu-icon">home</i> Acasă</a></li>
+                    <li class="has-dropdown active">
+                        <a href="#">
+                            <i class="material-icons menu-icon">info</i> Despre Noi
+                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <div class="dropdown-group-header">Informații generale</div>
+                            <div class="dropdown-group-1">
+                                <li><a href="#" class="active"><i class="material-icons dropdown-icon-item">gavel</i> Acte normative</a></li>
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">assignment</i> Atribuții</a></li>
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">description</i> Regulament</a></li>
+                            </div>
+                            <div class="dropdown-group-header">Structură și facilități</div>
+                            <div class="dropdown-group-2">
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">account_tree</i> Organigrama</a></li>
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">track_changes</i> Poligonul de tragere</a></li>
+                            </div>
+                            <div class="dropdown-group-header">Media</div>
+                            <div class="dropdown-group-3">
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">play_circle_filled</i> Reportaje și înregistrări video</a></li>
+                            </div>
+                        </ul>
+                    </li>
+                    <li class="has-dropdown">
+                        <a href="#">
+                            <i class="material-icons menu-icon">feedback</i> Petiții
+                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">edit_note</i> Petiții</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări, reclamații, anonime</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-dropdown">
+                        <a href="#">
+                            <i class="material-icons menu-icon">phone</i> Contact
+                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">supervisor_account</i> Conducere</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">people</i> Relații cu publicul</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">location_on</i> Sediul operativ și administrativ</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">event</i> Program de audiențe</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-dropdown">
+                        <a href="#">
+                            <i class="material-icons menu-icon">verified_user</i> Integritate instituțională
+                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-dropdown">
+                        <a href="#">
+                            <i class="material-icons menu-icon">public</i> Informații de interes public
+                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <div class="dropdown-group-header">Financiare</div>
+                            <div class="dropdown-group-1">
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
+                            </div>
+                            <div class="dropdown-group-header">Transparență</div>
+                            <div class="dropdown-group-2">
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
+                            </div>
+                            <div class="dropdown-group-header">Dezvoltare</div>
+                            <div class="dropdown-group-3">
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
+                                <li><a href="#"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
+                            </div>
+                        </ul>
+                    </li>
+                    <li><a href="#"><i class="material-icons menu-icon">security</i> GDPR</a></li>
+                    <li><a href="#"><i class="material-icons menu-icon">videocam</i> Camere publice</a></li>
+                </ul>
+            </nav>
+            <div class="search-bar">
+                <input type="text" placeholder="Caută...">
+                <i class="material-icons">search</i>
+            </div>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="material-icons">menu</i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-title-left">
+                <div class="page-title-badge">Cadru normativ</div>
+                <h1 class="page-title">Acte Normative</h1>
+                <p class="page-description">Documentele legale care stau la baza funcționării și acțiunilor Poliției Locale Slobozia, stabilind atribuțiile, competențele și procedurile de lucru.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="#">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <a href="#">Despre Noi</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Acte Normative</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section with Acts List -->
+    <section class="content-section">
+        <div class="content-container">
+            <!-- Main Acts List -->
+            <div class="acts-container">
+                <h2 class="acts-heading">Acte normative de acţiune a instituţiei noastre</h2>
+                <ul class="acts-list">
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/158023" target="_blank" rel="noopener noreferrer">
+                            LEGEA poliției locale nr. 155 din 12 iulie 2010
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/124818" target="_blank" rel="noopener noreferrer">
+                            H.G. nr. 1332/2010 – privind aprobarea Regulamentului-cadru de organizare şi funcţionare a poliţiei locale
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=28627&amp;an=an&amp;id_fisier=12602" target="_blank" rel="noopener">
+                            H.C.L. nr.372/2023 – privind Regulamentul de organizare și funcționare a Poliției Locale Slobozia
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/41006" target="_blank" rel="noopener noreferrer">
+                            O.U.G. nr. 195/2002 – privind circulaţia pe drumurile publice
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/45134" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 333/2003 – privind paza obiectivelor, bunurilor, valorilor şi protecţia persoanelor
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/1532" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 60/1991 – privind organizarea şi desfăşurarea adunărilor publice
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/1534" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 61/1991 – pentru sancţionarea faptelor de încălcare a unor norme de convieţuire socială, a ordinii şi liniştii publice
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/37086" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 421/2002 – privind regimul juridic al vehiculelor fără stăpân sau abandonate pe terenuri aparţinând domeniului public sau privat al statului ori al unităţilor administrativ-teritoriale
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/11269" target="_blank" rel="noopener noreferrer">
+                            O.G. nr. 43/1997 – privind regimul drumurilor
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/24110" target="_blank" rel="noopener noreferrer">
+                            O.G. nr. 99/2000 – privind comercializarea produselor şi serviciilor de piaţă
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/50756" target="_blank" rel="noopener noreferrer">
+                            H.G. nr. 348/2004 – privind exercitarea comerţului cu produse şi servicii de piaţă în unele zone publice
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/4524" target="_blank" rel="noopener noreferrer">
+                            H.G. nr.128/1994 – privind unele măsuri pentru asigurarea condiţiilor de dezvoltare fizică şi morală a elevilor şi studenţilor
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/19615" target="_blank" rel="noopener noreferrer">
+                            H.G. nr. 843/1999 – privind încadrarea pe tipuri a unităţilor de alimentaţie publică neincluse în structurile de primire turistice
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/24730" target="_blank" rel="noopener noreferrer">
+                            H.G. nr. 947/2000 – privind modalitatea de indicare a preţurilor produselor oferite consumatorilor spre vânzare
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/78673" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 24/2007 – privind reglementarea şi administrarea spaţiilor verzi din intravilanul localităţilor
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/67634" target="_blank" rel="noopener noreferrer">
+                            O.U.G. nr. 195/2005 – privind protecţia mediului
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/63354" target="_blank" rel="noopener noreferrer">
+                            O.U.G. nr. 97/2005 – privind evidenţa, domiciliul, reşedinţa şi actele de identitate ale cetăţenilor români
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/77815" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 448/2006 – privind protectia si promovarea drepturilor persoanelor cu handicap
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/81267" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 92/2007 – Legea serviciilor de transport public local
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/136580" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 54/2012 – Lege privind desfăşurarea activităţilor de picnic
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/245846" target="_blank" rel="noopener noreferrer">
+                            O.U.G. nr. 92/2021 – privind regimul deșeurilor
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/35880" target="_blank" rel="noopener noreferrer">
+                            O.U.G. nr. 55/2002 – privind regimul de deţinere al câinilor periculoşi sau agresivi
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/37898" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 487/2002 – Legea sănătăţii mintale şi a protecţiei persoanelor cu tulburări psihice
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/41461" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 38/2003 – privind transportul în regim de taxi şi în regim de închiriere
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/162616" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 145/2014 – pentru stabilirea unor măsuri de reglementare a pieţei produselor din sectorul agricol
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/71304" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 101/2006 – a serviciului de salubrizare a localităţii, republicată
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://legislatie.just.ro/Public/DetaliiDocument/36778" target="_blank" rel="noopener noreferrer">
+                            Legea nr. 349/2002 – pentru prevenirea şi combaterea efectelor consumului produselor din tutun, modificată şi completată de Legea nr. 15/29.01.2016
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://legislatie.just.ro/Public/DetaliiDocument/275466" target="_blank" rel="noopener">
+                            Legea nr. 280/2023 – privind accesul cu prioritate pentru femei gravide, precum și pentru persoane însoțite de copii cu vârsta de până la 5 ani
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Local Decisions Section -->
+            <div class="acts-container">
+                <h2 class="acts-heading">Hotărâri ale Consiliului Local Slobozia</h2>
+                <ul class="acts-list">
+                    <li>
+                        <a href="http://sloboziail.ro/lexloc/hotarari/hcl2008/hcl0842008.pdf" target="_blank" rel="noopener noreferrer">
+                            H.C.L. nr. 84/2008 – privind adoptarea unor Regulamente şi Reglementări privind transportul în regim de taxi (art.32, alin1, pct. a – Modificare Anexa 2)
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://sloboziail.ro/lexloc/hotarari/hcl2007/hcl2572007.jpg" target="_blank" rel="noopener noreferrer">
+                            H.C.L. nr. 257/2007 – privind adoptarea Regulamentului pentru înregistrarea, evidenţa şi radierea vehiculelor din circulaţie de pe raza municipiului Slobozia care nu se supun înmatriculării (Art.23)
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://sloboziail.ro/lexloc/hotarari/hcl2008/hcl1112008.pdf" target="_blank" rel="noopener noreferrer">
+                            H.C.L. nr. 111/2008 – privind reglementarea unor obligaţii ale operatorilor economici care comercializează produse de la care rezultă deşeuri de ambalaje (Art.5.b)
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://sloboziail.ro/lexloc/hotarari/hcl2011/hcl0962011.html" target="_blank" rel="noopener noreferrer">
+                            H.C.L. nr. 96/2011 – privind aprobarea Regulamentului referitor la organizarea, autorizarea şi amplasarea mijloacelor de publicitate pe raza municipiului Slobozia
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=16787&amp;an=an&amp;id_fisier=2154" target="_blank" rel="noopener noreferrer">
+                            H.C.L. nr. 255/2017 – privind aprobarea Regulamentului de atribuire a locurilor de parcare de reşedinţă
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=16788&amp;an=an&amp;id_fisier=2155" target="_blank" rel="noopener noreferrer">
+                            H.C.L. nr. 256/2017 – Regulamentul pentru efectuarea transportului public local de persoane prin curse regulate în Municipiul Slobozia
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=23129&amp;an=an&amp;id_fisier=7055" target="_blank" rel="noopener">
+                            H.C.L. nr. 152/2021 – Regulament privind condițiile de desfășurare a activităților comerciale, promoționale și de agrement, cu eliberarea acordului de ocupare a domeniului public sau privat pe raza municipiului Slobozia
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=24446&amp;an=an&amp;id_fisier=8377" target="_blank" rel="noopener">
+                            H.C.L. nr. 73/2022 – Regulament de organizare și funcționare a cimitirelor umane din municipiul Slobozia
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=24447&amp;an=an&amp;id_fisier=8378" target="_blank" rel="noopener">
+                            H.C.L. nr. 74/2022 – Regulament privind stabilirea unor măsuri pentru gospodărirea municipiului Slobozia
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=24448&amp;an=an&amp;id_fisier=8379" target="_blank" rel="noopener">
+                            H.C.L. nr. 75/2022 – Regulament privind garajele tip Călărași amplasate pe domeniul public/privat al municipiului
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=25183&amp;an=an&amp;id_fisier=9122" target="_blank" rel="noopener">
+                            H.C.L. nr. 281/2022 – Regulament de autorizare și desfășurare a activităților de întreținere și reparare a autovehiculelor pe raza municipiului Slobozia
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=24923&amp;an=an&amp;id_fisier=8858" target="_blank" rel="noopener">
+                            H.C.L. nr. 176/2022 – privind aprobarea Regulamentului Serviciului de salubrizare al municipiului Slobozia
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Related Resources Section -->
+            <div class="related-resources">
+                <h3 class="related-heading">Resurse utile conexe</h3>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">assignment</i></div>
+                        <h4 class="resource-title">Atribuțiile Poliției Locale</h4>
+                        <p class="resource-description">Detalierea atribuțiilor și competențelor specifice ale Poliției Locale Slobozia în baza actelor normative în vigoare.</p>
+                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">description</i></div>
+                        <h4 class="resource-title">Regulament de organizare</h4>
+                        <p class="resource-description">Regulamentul intern de organizare și funcționare al Poliției Locale Slobozia, conform legislației în vigoare.</p>
+                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">content_paste</i></div>
+                        <h4 class="resource-title">Modele de documente</h4>
+                        <p class="resource-description">Formulare tip necesare pentru solicitări, petiții, sesizări sau alte interacțiuni cu Poliția Locală Slobozia.</p>
+                        <a href="#" class="resource-link">Descarcă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">policy</i></div>
+                        <h4 class="resource-title">Integritate instituțională</h4>
+                        <p class="resource-description">Codul etic, strategia anticorupție și alte documente privind integritatea instituțională.</p>
+                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="faq-section">
+                <h3 class="faq-heading">Întrebări frecvente despre legislația aplicabilă</h3>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <div class="question-text">Care este principala lege care reglementează activitatea Poliției Locale?</div>
+                            <div class="faq-toggle"></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Activitatea Poliției Locale este reglementată în principal de <span class="highlight-text">Legea nr. 155/2010</span> a poliției locale, republicată, care stabilește cadrul juridic general, principiile de organizare și funcționare, atribuțiile și competențele instituției.</p>
+                                <p>Această lege este completată de <span class="highlight-text">H.G. nr. 1332/2010</span> privind aprobarea Regulamentului-cadru de organizare și funcționare a poliției locale, care detaliază aspectele organizatorice și procedurale.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <div class="question-text">Ce acte normative reglementează sancționarea contravențională?</div>
+                            <div class="faq-toggle"></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>Procedura contravențională este reglementată prin <span class="highlight-text">O.G. nr. 2/2001</span> privind regimul juridic al contravențiilor, care stabilește procedurile de constatare, aplicare și executare a sancțiunilor contravenționale.</p>
+                                <p>Specific pentru încălcarea normelor de conviețuire socială, Poliția Locală aplică prevederile <span class="highlight-text">Legii nr. 61/1991</span> pentru sancționarea faptelor de încălcare a unor norme de conviețuire socială, a ordinii și liniștii publice.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <div class="question-text">Ce prevederi legale reglementează circulația pe drumurile publice?</div>
+                            <div class="faq-toggle"></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-content">
+                                <p>În domeniul circulației rutiere, Poliția Locală se ghidează după <span class="highlight-text">O.U.G. nr. 195/2002</span> privind circulația pe drumurile publice și <span class="highlight-text">H.G. nr. 1391/2006</span> pentru aprobarea Regulamentului de aplicare a acesteia.</p>
+                                <p>Competențele Poliției Locale în acest domeniu sunt limitate la anumite aspecte specificate în lege, precum opriri/staționări neregulamentare, accesul interzis, pietoni, masa maximă admisă, etc.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-bg"></div>
+                <div class="cta-container">
+                    <h2 class="cta-title">Ai nevoie de asistență juridică?</h2>
+                    <p class="cta-description">Dacă ai întrebări despre legislația aplicabilă, actele normative în vigoare sau procedurile legale, echipa noastră îți stă la dispoziție. Contactează-ne sau programează o audiență pentru consultanță.</p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
+                        <a href="#" class="btn btn-secondary">Program audiențe <i class="material-icons">event</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-bg-pattern"></div>
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS" class="footer-logo-badge">
+                        <div class="footer-logo-text">Poliția Locală Slobozia</div>
+                    </div>
+                    <p class="footer-description">Servim comunitatea noastră cu integritate, profesionalism și dedicare față de siguranța publică. Misiunea noastră este să lucrăm în parteneriat cu comunitatea noastră pentru a proteja viața și proprietatea, a rezolva probleme și a îmbunătăți calitatea vieții.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-icon"><i class="material-icons">facebook</i></a>
+                        <a href="#" class="social-icon"><i class="material-icons">alternate_email</i></a>
+                        <a href="#" class="social-icon"><i class="material-icons">photo_camera</i></a>
+                        <a href="#" class="social-icon"><i class="material-icons">play_circle_filled</i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3 class="footer-title">Link-uri Rapide</h3>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Servicii de Urgență</a>
+                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Raportează o Infracțiune</a>
+                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Plătește Amenzi</a>
+                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Solicită Înregistrări</a>
+                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Depune o Reclamație</a>
+                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Oportunități de Carieră</a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3 class="footer-title">Contactează-ne</h3>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon"><i class="material-icons">location_on</i></div>
+                        <div class="footer-contact-text">
+                            <h4>Sediul Central</h4>
+                            <p>Strada Răzoare nr. 3</p>
+                            <p>Slobozia, județul Ialomița</p>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon"><i class="material-icons">call</i></div>
+                        <div class="footer-contact-text">
+                            <h4>Dispecerat: (0243) 955</h4>
+                            <p></p>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <div class="footer-contact-icon"><i class="material-icons">email</i></div>
+                        <div class="footer-contact-text">
+                            <h4>Email</h4>
+                            <p>info@politialocala-slobozia.ro</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3 class="footer-title">Newsletter</h3>
+                    <p class="footer-description">Rămâi informat despre alertele de siguranță, evenimentele comunitare și actualizările departamentului abonându-te la newsletter-ul nostru.</p>
+                    <form class="footer-form">
+                        <input type="email" placeholder="Adresa ta de Email">
+                        <button type="submit">Abonează-te</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    &copy; 2025 Poliția Locală Slobozia. Toate drepturile rezervate.
+                </div>
+                <div class="footer-links-bottom">
+<a href="#" class="footer-bottom-link">Politica de Confidențialitate</a>
+                    <a href="#" class="footer-bottom-link">Termeni de Utilizare</a>
+                    <a href="#" class="footer-bottom-link">Accesibilitate</a>
+                    <a href="#" class="footer-bottom-link">Hartă Site</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const headerTop = document.getElementById('header-top');
+            const headerMain = document.getElementById('header-main');
+            
+            if (window.scrollY > 50) {
+                headerTop.classList.add('scrolled');
+                headerMain.classList.add('scrolled');
+            } else {
+                headerTop.classList.remove('scrolled');
+                headerMain.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mainNav = document.getElementById('main-nav');
+        
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', function() {
+                mainNav.classList.toggle('active');
+                const isExpanded = mainNav.classList.contains('active');
+                this.setAttribute('aria-expanded', isExpanded);
+                this.innerHTML = isExpanded ? 
+                    '<i class="material-icons">close</i>' : 
+                    '<i class="material-icons">menu</i>';
+            });
+        }
+        
+        // Mobile Dropdown Toggle
+        const dropdownItems = document.querySelectorAll('.main-nav .has-dropdown');
+        
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Check if we're in mobile view
+                if (window.innerWidth <= 992) {
+                    // Only apply to direct child a tag
+                    if (e.target === this.querySelector('a') || e.target === this.querySelector('a .dropdown-icon') || e.target === this.querySelector('a .menu-icon')) {
+                        e.preventDefault();
+                        this.classList.toggle('active');
+                    }
+                }
+            });
+        });
+        
+        // Ensure proper dropdown behavior on window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 992) {
+                dropdownItems.forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                mainNav.classList.remove('active');
+                if (mobileMenuToggle) {
+                    mobileMenuToggle.innerHTML = '<i class="material-icons">menu</i>';
+                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+        
+        // FAQ accordion functionality
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const isActive = this.classList.contains('active');
+                
+                // Close all other FAQs first
+                faqQuestions.forEach(item => {
+                    if (item !== this) {
+                        item.classList.remove('active');
+                        item.nextElementSibling.style.maxHeight = null;
+                    }
+                });
+                
+                // Toggle current FAQ
+                if (!isActive) {
+                    this.classList.add('active');
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                } else {
+                    this.classList.remove('active');
+                    answer.style.maxHeight = null;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
