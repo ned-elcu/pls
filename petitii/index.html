@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petiții - Poliția Locală Slobozia</title>
+    <!-- Added Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+            padding-top: var(--header-height); /* Add padding to prevent content overlap with fixed header */
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Material Icons styling */
+        .material-icons {
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Styles (for reference, loaded via components.js) */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+            top: 0;
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 3rem;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0;
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title-left {
+            max-width: 800px;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            align-items: center;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            opacity: 0.5;
+            font-size: 18px;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 3rem;
+            background-color: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Petition Container */
+        .petition-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .petition-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .petition-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        .petition-intro {
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        
+        .petition-intro p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-text {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        /* Methods Block */
+        .methods-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .method-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            transition: var(--transition-medium);
+            border-left: 4px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .method-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition-medium);
+        }
+        
+        .method-card:hover .method-icon {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .method-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .method-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        
+        .method-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: auto;
+            transition: var(--transition-fast);
+        }
+        
+        .method-link i {
+            margin-left: 0.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .method-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .method-link:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Requirements List */
+        .requirements-container {
+            margin: 2rem 0;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            padding: 1.5rem;
+        }
+        
+        .requirements-heading {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .requirements-heading i {
+            margin-right: 0.5rem;
+            color: var(--accent-color);
+        }
+        
+        .requirements-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .requirements-list li {
+            margin-bottom: 0.8rem;
+            padding-left: 2rem;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .requirements-list li::before {
+            content: '';
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            width: 8px;
+            height: 8px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+        }
+        
+        .warning-text {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(229, 57, 53, 0.1);
+            border-left: 4px solid var(--danger-color);
+            border-radius: var(--border-radius-small);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Contact Form */
+        .form-container {
+            margin-top: 3rem;
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+        }
+        
+        .form-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .form-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .contact-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .required::after {
+            content: '*';
+            color: var(--danger-color);
+            margin-left: 0.2rem;
+        }
+        
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--border-radius-small);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition-fast);
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .form-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+        
+        .form-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-medium);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .form-submit:hover {
+            background-color: var(--secondary-light);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .form-submit i {
+            margin-left: 0.5rem;
+        }
+        
+        .privacy-notice {
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .privacy-notice a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+        
+        .privacy-notice a:hover {
+            color: var(--secondary-light);
+            text-decoration: underline;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .page-title-section {
+                padding: 4rem 2rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .content-section {
+                padding: 4rem 2rem;
+            }
+            
+            .petition-container,
+            .form-container {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .petition-container,
+            .form-container {
+                padding: 1.5rem;
+            }
+            
+            .contact-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-title-left">
+                <div class="page-title-badge">Servicii cetățeni</div>
+                <h1 class="page-title">Petiții</h1>
+                <p class="page-description">Modalități prin care puteți adresa petiții către Poliția Locală Slobozia și informații despre procesul de soluționare a acestora.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="../">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <a href="#">Petiții</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Formular petiții</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="content-container">
+            <!-- Petition Info Container -->
+            <div class="petition-container">
+                <h2 class="petition-heading">Modalități de transmitere a petițiilor</h2>
+                
+                <div class="petition-intro">
+                    <p>Pentru a vă adresa instituției noastre cu o petiție, vă rugăm să folosiți una dintre modalitățile de mai jos. Indiferent de modalitatea aleasă, vă solicităm să includeți toate datele de identificare necesare pentru a putea procesa petiția dumneavoastră conform legislației în vigoare.</p>
+                </div>
+                
+                <!-- Methods for submitting petitions -->
+                <div class="methods-container">
+                    <div class="method-card">
+                        <div class="method-icon">
+                            <i class="material-icons">email</i>
+                        </div>
+                        <h3 class="method-title">Prin email</h3>
+                        <p class="method-description">Trimiteți un email la adresa oficială a Poliției Locale Slobozia. Această metodă este recomandată în special dacă doriți să atașați documente sau materiale suplimentare.</p>
+                        <a href="mailto:politia.locala@pcslobozia.ro" class="method-link">
+                            politia.locala@pcslobozia.ro <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <div class="method-card">
+                        <div class="method-icon">
+                            <i class="material-icons">description</i>
+                        </div>
+                        <h3 class="method-title">Formular Google</h3>
+                        <p class="method-description">Completați formularul online Google pentru a transmite mesaje scurte. Această metodă este rapidă și nu necesită configurarea clientului de email.</p>
+                        <a href="https://forms.gle/v5gpmXiC18eEfQmh9" target="_blank" rel="noopener noreferrer" class="method-link">
+                            Accesează formularul <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <div class="method-card">
+                        <div class="method-icon">
+                            <i class="material-icons">edit</i>
+                        </div>
+                        <h3 class="method-title">Formular direct</h3>
+                        <p class="method-description">Completați formularul disponibil mai jos pe această pagină. Este cel mai rapid mod de a transmite o petiție direct de pe site-ul nostru.</p>
+                        <a href="#form-section" class="method-link">
+                            Salt la formular <i class="material-icons">arrow_downward</i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Requirements section -->
+                <div class="requirements-container">
+                    <h3 class="requirements-heading">
+                        <i class="material-icons">info</i> Informații necesare
+                    </h3>
+                    <p>În toate situațiile vă solicităm completarea următoarelor câmpuri obligatorii:</p>
+                    <ul class="requirements-list">
+                        <li>Numele și prenumele</li>
+                        <li>Adresa completă</li>
+                        <li>CNP (Cod Numeric Personal)</li>
+                        <li>Număr de telefon și/sau adresă de email</li>
+                        <li>Textul petiției sau atașamentul</li>
+                    </ul>
+                    <p>Aceste date sunt <em>absolut necesare</em> în activitatea noastră și cerute <em>în mod expres</em> de legislația în vigoare.</p>
+                    
+                    <div class="warning-text">
+                        <strong>Atenție:</strong> Petițiile care nu îndeplinesc condițiile de mai sus sau care nu conțin date de identificare corecte nu vor fi luate în considerare.
+                    </div>
+                    
+                    <p style="margin-top: 1.5rem;">Cu titlu de excepție, am creat o <a href="../raspunsuri-la-sesizari-reclamatii-anonime/" style="color: var(--secondary-color); font-weight: 600; text-decoration: none;">pagină de comunicări</a>, din lipsă de adresant.</p>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div id="form-section" class="form-container">
+                <h2 class="form-heading">Formular pentru transmiterea petițiilor</h2>
+                
+                <form class="contact-form" action="#" method="POST">
+                    <div class="form-group">
+                        <label for="name" class="form-label required">Nume și prenume</label>
+                        <input type="text" id="name" name="name" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cnp" class="form-label required">CNP</label>
+                        <input type="text" id="cnp" name="cnp" class="form-input" required>
+                        <div class="form-info">Codul numeric personal format din 13 cifre</div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="address" class="form-label required">Adresa completă</label>
+                        <input type="text" id="address" name="address" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label required">Email</label>
+                        <input type="email" id="email" name="email" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone" class="form-label required">Telefon</label>
+                        <input type="tel" id="phone" name="phone" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="subject" class="form-label required">Subiect</label>
+                        <input type="text" id="subject" name="subject" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="message" class="form-label required">Conținutul petiției</label>
+                        <textarea id="message" name="message" class="form-textarea" required></textarea>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <button type="submit" class="form-submit">
+                            Trimite petiția <i class="material-icons">send</i>
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="privacy-notice">
+                    <p>Prin trimiterea acestui formular, sunteți de acord cu <a href="../gdpr/">Politica noastră de confidențialitate</a> și consimțiți la prelucrarea datelor personale în scopul soluționării petiției dumneavoastră, conform legislației în vigoare.</p>
+                    <p>Toate câmpurile marcate cu * sunt obligatorii.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="../components.js"></script>
+    
+    <!-- Form validation script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.contact-form');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const name = document.getElementById('name').value.trim();
+                const cnp = document.getElementById('cnp').value.trim();
+                const address = document.getElementById('address').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const subject = document.getElementById('subject').value.trim();
+                const message = document.getElementById('message').value.trim();
+                
+                // Basic validation
+                if (!name || !cnp || !address || !email || !phone || !subject || !message) {
+                    alert('Vă rugăm să completați toate câmpurile obligatorii.');
+                    return;
+                }
+                
+                // Validate CNP (should be 13 digits)
+                if (!/^\d{13}$/.test(cnp)) {
+                    alert('CNP-ul trebuie să conțină exact 13 cifre.');
+                    return;
+                }
+                
+                // Validate email
+                if (!/\S+@\S+\.\S+/.test(email)) {
+                    alert('Vă rugăm să introduceți o adresă de email validă.');
+                    return;
+                }
+                
+                // Submit form - in a real implementation, this would send data to a server
+                // For now, let's just simulate success
+                alert('Petiția dumneavoastră a fost trimisă cu succes! Vă mulțumim.');
+                form.reset();
+                
+                // In a real implementation, you would use AJAX to submit the form data
+                // Example:
+                // const formData = new FormData(form);
+                // fetch('/submit-petition', {
+                //     method: 'POST',
+                //     body: formData
+                // })
+                // .then(response => response.json())
+                // .then(data => {
+                //     if (data.success) {
+                //         alert('Petiția dumneavoastră a fost trimisă cu succes! Vă mulțumim.');
+                //         form.reset();
+                //     } else {
+                //         alert('A apărut o eroare la trimiterea petiției. Vă rugăm să încercați din nou.');
+                //     }
+                // })
+                // .catch(error => {
+                //     console.error('Error:', error);
+                //     alert('A apărut o eroare la trimiterea petiției. Vă rugăm să încercați din nou.');
+                // });
+            });
+        });
+    </script>
+</body>
+</html>
