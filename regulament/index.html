@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regulament - Poliția Locală Slobozia</title>
+    <!-- Added Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+            
+            /* Menu group colors */
+            --menu-group-1: rgba(30, 136, 229, 0.03);
+            --menu-group-2: rgba(255, 202, 40, 0.03);
+            --menu-group-3: rgba(67, 160, 71, 0.03);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+            padding-top: var(--header-height); /* Add padding to prevent content overlap with fixed header */
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Material Icons styling */
+        .material-icons {
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Styles (for reference, loaded via components.js) */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+            top: 0;
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 3rem;  /* Adjusted to prevent overlap */
+            position: relative;
+            overflow: hidden;
+            margin-top: 0; /* Removed top margin to prevent spacing issues */
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title-left {
+            max-width: 800px;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            opacity: 0.5;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 3rem;
+            background-color: white;
+            position: relative; /* Added position relative */
+            z-index: 1;        /* Added z-index to ensure proper stacking */
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Regulations Container Styling */
+        .regulations-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .regulations-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .regulations-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        /* Regulation cards */
+        .regulations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .regulation-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 2rem;
+            transition: var(--transition-medium);
+            border-left: 4px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .regulation-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .regulation-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition-medium);
+        }
+        
+        .regulation-card:hover .regulation-icon {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .regulation-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .regulation-date {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .regulation-type {
+            display: inline-block;
+            background-color: rgba(30, 136, 229, 0.1);
+            color: var(--secondary-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .regulation-type.roi {
+            background-color: rgba(30, 136, 229, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .regulation-type.rof {
+            background-color: rgba(67, 160, 71, 0.1);
+            color: var(--success-color);
+        }
+        
+        .regulation-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: auto;
+            transition: var(--transition-fast);
+        }
+        
+        .regulation-link i {
+            margin-left: 0.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .regulation-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .regulation-link:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Regulation intro section */
+        .regulation-intro {
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+        
+        .regulation-intro p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-text {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        /* Related Resources */
+        .related-resources {
+            margin-top: 4rem;
+            padding: 3rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-large);
+        }
+        
+        .related-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .related-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-medium);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .resource-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+        }
+        
+        .resource-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            align-self: flex-start;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link i {
+            margin-left: 0.3rem;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .resource-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 5rem;
+            padding: 4rem 0;
+            background-color: var(--primary-color);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .cta-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .btn i {
+            margin-left: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .page-title-section {
+                padding: 4rem 2rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .content-section {
+                padding: 4rem 2rem;
+            }
+            
+            .regulations-container {
+                padding: 2rem;
+            }
+            
+            .regulations-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .related-resources {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+                position: relative;
+                z-index: 2;
+                margin-top: 0;
+                background: white;
+            }
+            
+            .regulations-container {
+                padding: 1.5rem;
+            }
+            
+            .regulations-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-container {
+                padding: 0 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-title-left">
+                <div class="page-title-badge">Documente instituționale</div>
+                <h1 class="page-title">Regulament</h1>
+                <p class="page-description">Regulamentele de organizare și funcționare (ROF) și regulamentele interne (ROI) ale Poliției Locale Slobozia, care stabilesc normele și procedurile de funcționare.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="../">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <a href="#">Despre Noi</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Regulament</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section with Regulations -->
+    <section class="content-section">
+        <div class="content-container">
+            <!-- Main section intro -->
+            <div class="regulations-container">
+                <h2 class="regulations-heading">Regulamente de organizare și funcționare</h2>
+                
+                <div class="regulation-intro">
+                    <p>În această secțiune puteți consulta regulamentele de organizare și funcționare (ROF) precum și regulamentele de ordine interioară (ROI) ale Poliției Locale Slobozia. Aceste documente stabilesc <span class="highlight-text">structura organizatorică, atribuțiile</span> și <span class="highlight-text">responsabilitățile</span> personalului, precum și <span class="highlight-text">normele de conduită</span> și <span class="highlight-text">procedurile interne</span> pe care trebuie să le respecte în activitatea lor.</p>
+                </div>
+                
+                <div class="regulations-grid">
+                    <!-- ROI 31.08.2024 -->
+                    <div class="regulation-card">
+                        <div class="regulation-icon">
+                            <i class="material-icons">description</i>
+                        </div>
+                        <span class="regulation-type roi">ROI</span>
+                        <h3 class="regulation-title">Regulament de Ordine Interioară</h3>
+                        <p class="regulation-date">Actualizat la data de 31.08.2024</p>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/09/ROI-2024-actualizat-31.08.2024-progr.lucru_.pdf" target="_blank" rel="noopener" class="regulation-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <!-- ROI 27.05.2024 -->
+                    <div class="regulation-card">
+                        <div class="regulation-icon">
+                            <i class="material-icons">description</i>
+                        </div>
+                        <span class="regulation-type roi">ROI</span>
+                        <h3 class="regulation-title">Regulament de Ordine Interioară</h3>
+                        <p class="regulation-date">Actualizat la data de 27.05.2024</p>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/05/ROI-2023-corectat-27.05.2024.pdf" target="_blank" rel="noopener" class="regulation-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <!-- ROF HCL 372 2023 -->
+                    <div class="regulation-card">
+                        <div class="regulation-icon">
+                            <i class="material-icons">gavel</i>
+                        </div>
+                        <span class="regulation-type rof">ROF</span>
+                        <h3 class="regulation-title">Regulament de Organizare și Funcționare</h3>
+                        <p class="regulation-date">H.C.L. 372 / 19.12.2023</p>
+                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=28627&amp;an=an&amp;id_fisier=12602" target="_blank" rel="noopener" class="regulation-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <!-- ROF HCL 124 2018 -->
+                    <div class="regulation-card">
+                        <div class="regulation-icon">
+                            <i class="material-icons">gavel</i>
+                        </div>
+                        <span class="regulation-type rof">ROF</span>
+                        <h3 class="regulation-title">Regulament de Organizare și Funcționare</h3>
+                        <p class="regulation-date">H.C.L. 124 / 30.07.2018</p>
+                        <a href="http://pcslobozia.ro/wp-content/uploads/2019/05/ROF-actualizat.pdf" target="_blank" rel="noopener" class="regulation-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <!-- ROF 2017 -->
+                    <div class="regulation-card">
+                        <div class="regulation-icon">
+                            <i class="material-icons">gavel</i>
+                        </div>
+                        <span class="regulation-type rof">ROF</span>
+                        <h3 class="regulation-title">Regulament de Organizare și Funcționare</h3>
+                        <p class="regulation-date">2017</p>
+                        <a href="http://pcslobozia.ro/wp-content/uploads/2018/01/ROF-2017-Politia-Locala-Slobozia.pdf" target="_blank" rel="noopener" class="regulation-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <!-- ROI 2017 -->
+                    <div class="regulation-card">
+                        <div class="regulation-icon">
+                            <i class="material-icons">description</i>
+                        </div>
+                        <span class="regulation-type roi">ROI</span>
+                        <h3 class="regulation-title">Regulament de Ordine Interioară</h3>
+                        <p class="regulation-date">Nr. 2797 din 29.03.2017</p>
+                        <a href="http://pcslobozia.ro/wp-content/uploads/2018/01/ROI-final-Poitia-Locala-Slobozia.pdf" target="_blank" rel="noopener" class="regulation-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Resources Section -->
+            <div class="related-resources">
+                <h3 class="related-heading">Resurse utile conexe</h3>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">gavel</i></div>
+                        <h4 class="resource-title">Acte Normative</h4>
+                        <p class="resource-description">Documentele legale care stau la baza funcționării și acțiunilor Poliției Locale Slobozia, stabilind atribuțiile, competențele și procedurile de lucru.</p>
+                        <a href="../acte-normative/index.html" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">assignment</i></div>
+                        <h4 class="resource-title">Atribuții</h4>
+                        <p class="resource-description">Atribuțiile și competențele specifice ale Poliției Locale Slobozia în baza actelor normative în vigoare.</p>
+                        <a href="../atributii/index.html" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">account_tree</i></div>
+                        <h4 class="resource-title">Organigrama</h4>
+                        <p class="resource-description">Structura organizatorică a Poliției Locale Slobozia, prezentând departamentele și ierarhia funcțională.</p>
+                        <a href="../organigrama/index.html" class="resource-link">Vizualizează <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">format_quote</i></div>
+                        <h4 class="resource-title">Cod Etic</h4>
+                        <p class="resource-description">Normele de conduită profesională și valorile etice promovate în cadrul Poliției Locale Slobozia.</p>
+                        <a href="../cod-etic/index.html" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-bg"></div>
+                <div class="cta-container">
+                    <h2 class="cta-title">Ai nevoie de informații suplimentare?</h2>
+                    <p class="cta-description">Dacă ai întrebări despre regulamentele Poliției Locale Slobozia sau dorești să obții mai multe detalii, echipa noastră îți stă la dispoziție.</p>
+                    <div class="cta-buttons">
+                        <a href="../relatii-cu-publicul/index.html" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
+                        <a href="../program-de-audiente/index.html" class="btn btn-secondary">Program audiențe <i class="material-icons">event</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="../components.js"></script>
+</body>
+</html>
