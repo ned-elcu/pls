@@ -1018,19 +1018,17 @@ const HEADER_HTML = `
 <div class="header-container">
     <div class="header-top" id="header-top">
         <div class="logo">
-            <a href="/index.html">
-                <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS" class="logo-badge">
-                <div class="logo-text">
-                    <h1>POLIȚIA LOCALĂ SLOBOZIA</h1>
-                    <span class="logo-subtitle">Protejăm și Servim</span>
-                </div>
-            </a>
+            <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS" class="logo-badge">
+            <div class="logo-text">
+                <h1>POLIȚIA LOCALĂ SLOBOZIA</h1>
+                <span class="logo-subtitle">Protejăm și Servim</span>
+            </div>
         </div>
         <div class="utility-menu">
-            <a href="/cariere/index.html" class="utility-item">Oportunități de Carieră</a>
-            <a href="/transparenta/index.html" class="utility-item">Registre Publice</a>
-            <a href="/petitii/index.html" class="utility-item">Depunere Sesizare</a>
-            <a href="tel:0243955" class="utility-item emergency">
+            <a href="#" class="utility-item">Oportunități de Carieră</a>
+            <a href="#" class="utility-item">Registre Publice</a>
+            <a href="#" class="utility-item">Depunere Sesizare</a>
+            <a href="#" class="utility-item emergency">
                 <i class="material-icons">phone_in_talk</i> (0243) 955
             </a>
         </div>
@@ -1039,7 +1037,7 @@ const HEADER_HTML = `
     <div class="header-main" id="header-main">
         <nav class="main-nav" id="main-nav">
             <ul>
-                <li class="active"><a href="/index.html"><i class="material-icons menu-icon">home</i> Acasă</a></li>
+                <li class="active"><a href="#"><i class="material-icons menu-icon">home</i> Acasă</a></li>
                 <li class="has-dropdown">
                     <a href="#">
                         <i class="material-icons menu-icon">info</i> Despre Noi
@@ -1048,18 +1046,18 @@ const HEADER_HTML = `
                     <ul class="dropdown-menu">
                         <div class="dropdown-group-header">Informații generale</div>
                         <div class="dropdown-group-1">
-                            <li><a href="/acte-normative/index.html"><i class="material-icons dropdown-icon-item">gavel</i> Acte normative</a></li>
-                            <li><a href="/atributii/index.html"><i class="material-icons dropdown-icon-item">assignment</i> Atribuții</a></li>
-                            <li><a href="/regulament/index.html"><i class="material-icons dropdown-icon-item">description</i> Regulament</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">gavel</i> Acte normative</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">assignment</i> Atribuții</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">description</i> Regulament</a></li>
                         </div>
                         <div class="dropdown-group-header">Structură și facilități</div>
                         <div class="dropdown-group-2">
-                            <li><a href="/organigrama/index.html"><i class="material-icons dropdown-icon-item">account_tree</i> Organigrama</a></li>
-                            <li><a href="/poligon/index.html"><i class="material-icons dropdown-icon-item">track_changes</i> Poligonul de tragere</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">account_tree</i> Organigrama</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">track_changes</i> Poligonul de tragere</a></li>
                         </div>
                         <div class="dropdown-group-header">Media</div>
                         <div class="dropdown-group-3">
-                            <li><a href="/reportaj/index.html"><i class="material-icons dropdown-icon-item">play_circle_filled</i> Reportaje și înregistrări video</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">play_circle_filled</i> Reportaje și înregistrări video</a></li>
                         </div>
                     </ul>
                 </li>
@@ -1069,8 +1067,8 @@ const HEADER_HTML = `
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/petitii/index.html"><i class="material-icons dropdown-icon-item">edit_note</i> Petiții</a></li>
-                        <li><a href="/raspunsuri/index.html"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări, reclamații, anonime</a></li>
+                        <li><a href="#"><i class="material-icons dropdown-icon-item">edit_note</i> Petiții</a></li>
+                        <li><a href="#"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări, reclamații, anonime</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
@@ -1079,10 +1077,10 @@ const HEADER_HTML = `
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/conducere/index.html"><i class="material-icons dropdown-icon-item">supervisor_account</i> Conducere</a></li>
-                        <li><a href="/relatii-cu-publicul/index.html"><i class="material-icons dropdown-icon-item">people</i> Relații cu publicul</a></li>
-                        <li><a href="/sediu/index.html"><i class="material-icons dropdown-icon-item">location_on</i> Sediul operativ și administrativ</a></li>
-                        <li><a href="/sediu/index.html#program-audiente"><i class="material-icons dropdown-icon-item">event</i> Program de audiențe</a></li>
+                        <li><a href="#"><i class="material-icons dropdown-icon-item">supervisor_account</i> Conducere</a></li>
+                        <li><a href="#"><i class="material-icons dropdown-icon-item">people</i> Relații cu publicul</a></li>
+                        <li><a href="#"><i class="material-icons dropdown-icon-item">location_on</i> Sediul operativ și administrativ</a></li>
+                        <li><a href="#"><i class="material-icons dropdown-icon-item">event</i> Program de audiențe</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
@@ -1091,9 +1089,9 @@ const HEADER_HTML = `
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/integritate/strategia-nationala-anticoruptie.html"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
-                        <li><a href="/integritate/cod-etic.html"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
-                        <li><a href="/integritate/raport-cadouri.html"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
+                        <li><a href="#"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
+                        <li><a href="#"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
+                        <li><a href="#"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
@@ -1104,26 +1102,26 @@ const HEADER_HTML = `
                     <ul class="dropdown-menu">
                         <div class="dropdown-group-header">Financiare</div>
                         <div class="dropdown-group-1">
-                            <li><a href="/transparenta/raportare-salariala.html"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
-                            <li><a href="/transparenta/bilanturi-si-bugete.html"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
-                            <li><a href="/transparenta/program-achizitii-anuale.html"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
                         </div>
                         <div class="dropdown-group-header">Transparență</div>
                         <div class="dropdown-group-2">
-                            <li><a href="/transparenta/declaratii-interese.html"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
-                            <li><a href="/transparenta/declaratii-avere.html"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
-                            <li><a href="/transparenta/raport-544-2001.html"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
-                            <li><a href="/transparenta/documente-gestionate.html"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
                         </div>
                         <div class="dropdown-group-header">Dezvoltare</div>
                         <div class="dropdown-group-3">
-                            <li><a href="/transparenta/program-formare-profesionala.html"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
-                            <li><a href="/integritate/raport-cadouri.html"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
+                            <li><a href="#"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
                         </div>
                     </ul>
                 </li>
-                <li><a href="/gdpr/index.html"><i class="material-icons menu-icon">security</i> GDPR</a></li>
-                <li><a href="/camere/index.html"><i class="material-icons menu-icon">videocam</i> Camere publice</a></li>
+                <li><a href="#"><i class="material-icons menu-icon">security</i> GDPR</a></li>
+                <li><a href="#"><i class="material-icons menu-icon">videocam</i> Camere publice</a></li>
             </ul>
         </nav>
         <div class="search-bar">
@@ -1149,22 +1147,22 @@ const FOOTER_HTML = `
                 </div>
                 <p class="footer-description">Servim comunitatea noastră cu integritate, profesionalism și dedicare față de siguranța publică. Misiunea noastră este să lucrăm în parteneriat cu comunitatea noastră pentru a proteja viața și proprietatea, a rezolva probleme și a îmbunătăți calitatea vieții.</p>
                 <div class="footer-social">
-                    <a href="https://www.facebook.com/politialocalaslobozia" class="social-icon"><i class="material-icons">facebook</i></a>
-                    <a href="mailto:info@politialocala-slobozia.ro" class="social-icon"><i class="material-icons">alternate_email</i></a>
-                    <a href="/galerie/index.html" class="social-icon"><i class="material-icons">photo_camera</i></a>
-                    <a href="/reportaj/index.html" class="social-icon"><i class="material-icons">play_circle_filled</i></a>
+                    <a href="#" class="social-icon"><i class="material-icons">facebook</i></a>
+                    <a href="#" class="social-icon"><i class="material-icons">alternate_email</i></a>
+                    <a href="#" class="social-icon"><i class="material-icons">photo_camera</i></a>
+                    <a href="#" class="social-icon"><i class="material-icons">play_circle_filled</i></a>
                 </div>
             </div>
             
             <div class="footer-column">
                 <h3 class="footer-title">Link-uri Rapide</h3>
                 <div class="footer-links">
-                    <a href="tel:0243955" class="footer-link"><i class="material-icons">arrow_right</i> Servicii de Urgență</a>
-                    <a href="/petitii/index.html" class="footer-link"><i class="material-icons">arrow_right</i> Raportează o Infracțiune</a>
-                    <a href="/amenzi/index.html" class="footer-link"><i class="material-icons">arrow_right</i> Plătește Amenzi</a>
-                    <a href="/transparenta/solicitare-inregistrari.html" class="footer-link"><i class="material-icons">arrow_right</i> Solicită Înregistrări</a>
-                    <a href="/petitii/reclamatii.html" class="footer-link"><i class="material-icons">arrow_right</i> Depune o Reclamație</a>
-                    <a href="/cariere/index.html" class="footer-link"><i class="material-icons">arrow_right</i> Oportunități de Carieră</a>
+                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Servicii de Urgență</a>
+                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Raportează o Infracțiune</a>
+                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Plătește Amenzi</a>
+                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Solicită Înregistrări</a>
+                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Depune o Reclamație</a>
+                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Oportunități de Carieră</a>
                 </div>
             </div>
             
@@ -1209,10 +1207,10 @@ const FOOTER_HTML = `
                 &copy; 2025 Poliția Locală Slobozia. Toate drepturile rezervate.
             </div>
             <div class="footer-links-bottom">
-                <a href="/gdpr/politica-confidentialitate.html" class="footer-bottom-link">Politica de Confidențialitate</a>
-                <a href="/gdpr/termeni-utilizare.html" class="footer-bottom-link">Termeni de Utilizare</a>
-                <a href="/accesibilitate/index.html" class="footer-bottom-link">Accesibilitate</a>
-                <a href="/sitemap.html" class="footer-bottom-link">Hartă Site</a>
+                <a href="#" class="footer-bottom-link">Politica de Confidențialitate</a>
+                <a href="#" class="footer-bottom-link">Termeni de Utilizare</a>
+                <a href="#" class="footer-bottom-link">Accesibilitate</a>
+                <a href="#" class="footer-bottom-link">Hartă Site</a>
             </div>
         </div>
     </div>
