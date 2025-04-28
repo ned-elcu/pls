@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conducere - POLIȚIA LOCALĂ SLOBOZIA</title>
+    <!-- Added Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+            padding-top: var(--header-height);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        .material-icons {
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Styles (loaded via components.js) */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+            top: 0;
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 3rem;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0;
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title-left {
+            max-width: 800px;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            opacity: 0.5;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 3rem;
+            background-color: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Leadership Section */
+        .leadership-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .leadership-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .leadership-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        .leadership-intro {
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+
+        /* Leadership Cards */
+        .leadership-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .leadership-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            overflow: hidden;
+            transition: var(--transition-medium);
+            display: flex;
+            flex-direction: column;
+            border-top: 4px solid var(--secondary-color);
+        }
+        
+        .leadership-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .leadership-card-image {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .leadership-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-medium);
+        }
+        
+        .leadership-card:hover .leadership-card-image img {
+            transform: scale(1.05);
+        }
+        
+        .leadership-card-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .leadership-card-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+        
+        .leadership-card-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .leadership-card-position {
+            color: var(--secondary-color);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        
+        .leadership-card-contact {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .contact-item i {
+            margin-right: 0.8rem;
+            color: var(--secondary-color);
+        }
+        
+        .contact-item:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .contact-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .contact-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+        
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .contact-card {
+            padding: 2rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: var(--transition-medium);
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .contact-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: white;
+            box-shadow: var(--shadow-small);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+            font-size: 2rem;
+            transition: var(--transition-fast);
+        }
+        
+        .contact-card:hover .contact-icon {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .contact-type {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.8rem;
+        }
+        
+        .contact-value {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .contact-value a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .contact-value a:hover {
+            color: var(--secondary-light);
+            text-decoration: underline;
+        }
+
+        /* Related Sections */
+        .related-sections {
+            margin-top: 4rem;
+            padding: 3rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-large);
+        }
+        
+        .related-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .related-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .related-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-medium);
+        }
+        
+        .related-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .related-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .related-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+        }
+        
+        .related-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .related-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            align-self: flex-start;
+            transition: var(--transition-fast);
+        }
+        
+        .related-link i {
+            margin-left: 0.3rem;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .related-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .related-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 5rem;
+            padding: 4rem 0;
+            background-color: var(--primary-color);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .cta-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .btn i {
+            margin-left: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .page-title-section {
+                padding: 4rem 2rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .content-section {
+                padding: 4rem 2rem;
+            }
+            
+            .leadership-container, .contact-section {
+                padding: 2rem;
+            }
+            
+            .leadership-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .related-sections {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+                position: relative;
+                z-index: 2;
+                margin-top: 0;
+                background: white;
+            }
+            
+            .leadership-container, .contact-section {
+                padding: 1.5rem;
+            }
+            
+            .leadership-grid, .related-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-container {
+                padding: 0 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-title-left">
+                <div class="page-title-badge">Despre noi</div>
+                <h1 class="page-title">Conducere</h1>
+                <p class="page-description">Echipa de conducere a Poliției Locale Slobozia, responsabilă cu coordonarea activităților instituției și asigurarea serviciilor de ordine și siguranță publică.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="../">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <a href="#">Despre Noi</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Conducere</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="content-container">
+            <!-- Leadership Section -->
+            <div class="leadership-container">
+                <h2 class="leadership-heading">Echipa de conducere</h2>
+                
+                <div class="leadership-intro">
+                    <p>Poliția Locală Slobozia este condusă de profesioniști cu experiență în domeniul ordinii publice și administrației locale. Echipa de conducere coordonează activitățile instituției pentru asigurarea siguranței cetățenilor și respectarea normelor legale la nivelul municipiului Slobozia.</p>
+                </div>
+                
+                <div class="leadership-grid">
+                    <!-- Director executiv -->
+                    <div class="leadership-card">
+                        <div class="leadership-card-image">
+                            <img src="https://pcslobozia.ro/wp-content/uploads/2020/11/nedelcu-valentin-150x150.jpg" alt="VALENTIN NEDELCU">
+                        </div>
+                        <div class="leadership-card-content">
+                            <h3 class="leadership-card-title">VALENTIN NEDELCU</h3>
+                            <div class="leadership-card-position">DIRECTOR EXECUTIV</div>
+                            <div class="leadership-card-contact">
+                                <div class="contact-item">
+                                    <i class="material-icons">phone</i>
+                                    <span>0243 233 778</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="material-icons">email</i>
+                                    <span>politia.locala@pcslobozia.ro</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Șef serviciu ordine publică -->
+                    <div class="leadership-card">
+                        <div class="leadership-card-image">
+                            <img src="https://pcslobozia.ro/wp-content/uploads/2020/11/grapa-doinita-150x150.jpg" alt="DOINIȚA GRAPĂ">
+                        </div>
+                        <div class="leadership-card-content">
+                            <h3 class="leadership-card-title">DOINIȚA GRAPĂ</h3>
+                            <div class="leadership-card-position">ȘEF SERVICIU ORDINE PUBLICĂ</div>
+                            <div class="leadership-card-contact">
+                                <div class="contact-item">
+                                    <i class="material-icons">phone</i>
+                                    <span>0243 233 778</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="material-icons">email</i>
+                                    <span>politia.locala@pcslobozia.ro</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information Section -->
+            <div class="contact-section">
+                <h2 class="contact-heading">Informații de contact</h2>
+                
+                <div class="contact-info">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="material-icons">phone</i>
+                        </div>
+                        <h3 class="contact-type">Telefon</h3>
+                        <div class="contact-value">
+                            <p>0243 233 778</p>
+                            <p>0243 955 (Dispecerat)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="material-icons">email</i>
+                        </div>
+                        <h3 class="contact-type">Email</h3>
+                        <div class="contact-value">
+                            <a href="mailto:politia.locala@pcslobozia.ro">politia.locala@pcslobozia.ro</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="material-icons">location_on</i>
+                        </div>
+                        <h3 class="contact-type">Adresă</h3>
+                        <div class="contact-value">
+                            <p>Municipiul Slobozia</p>
+                            <p>Str. Răzoare, nr. 3, Ialomița</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Sections -->
+            <div class="related-sections">
+                <h3 class="related-heading">Informații conexe</h3>
+                <div class="related-grid">
+                    <div class="related-card">
+                        <div class="related-icon"><i class="material-icons">description</i></div>
+                        <h4 class="related-title">Regulament</h4>
+                        <p class="related-description">Regulamentele de organizare și funcționare (ROF) și regulamentele interne (ROI) ale Poliției Locale Slobozia.</p>
+                        <a href="../regulament/" class="related-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="related-card">
+                        <div class="related-icon"><i class="material-icons">account_tree</i></div>
+                        <h4 class="related-title">Organigrama</h4>
+                        <p class="related-description">Structura organizatorică și statele de funcții ale instituției, reflectând organizarea departamentală.</p>
+                        <a href="../organigrama/" class="related-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="related-card">
+                        <div class="related-icon"><i class="material-icons">assignment</i></div>
+                        <h4 class="related-title">Atribuții</h4>
+                        <p class="related-description">Atribuțiile și competențele specifice ale Poliției Locale Slobozia în baza actelor normative în vigoare.</p>
+                        <a href="../atributii/" class="related-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="related-card">
+                        <div class="related-icon"><i class="material-icons">schedule</i></div>
+                        <h4 class="related-title">Program de audiențe</h4>
+                        <p class="related-description">Programul de audiențe al conducerii Poliției Locale Slobozia și modalitatea de înscriere.</p>
+                        <a href="../program-de-audiente/" class="related-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-bg"></div>
+                <div class="cta-container">
+                    <h2 class="cta-title">Ai nevoie de asistență?</h2>
+                    <p class="cta-description">Dacă ai întrebări sau ai nevoie de informații suplimentare despre activitatea Poliției Locale Slobozia, echipa noastră îți stă la dispoziție.</p>
+                    <div class="cta-buttons">
+                        <a href="../relatii-cu-publicul/" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
+                        <a href="../program-de-audiente/" class="btn btn-secondary">Program audiențe <i class="material-icons">event</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="../components.js"></script>
+</body>
+</html>
