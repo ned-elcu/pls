@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sediul operativ și administrativ - POLIȚIA LOCALĂ SLOBOZIA</title>
+    <!-- Added Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+            padding-top: var(--header-height);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        .material-icons {
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Styles (loaded via components.js) */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+            top: 0;
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 3rem;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0;
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title-left {
+            max-width: 800px;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            opacity: 0.5;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 3rem;
+            background-color: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Headquarters Section */
+        .headquarters-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .headquarters-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .headquarters-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        .headquarters-intro {
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+        
+        .contact-info-block {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .location-info {
+            background-color: var(--background-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-medium);
+            border-left: 4px solid var(--primary-color);
+            box-shadow: var(--shadow-small);
+            transition: var(--transition-medium);
+        }
+        
+        .location-info:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .location-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .location-icon {
+            background-color: rgba(26, 47, 95, 0.1);
+            color: var(--primary-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .location-address {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-methods {
+            background-color: var(--background-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-medium);
+            border-left: 4px solid var(--secondary-color);
+            box-shadow: var(--shadow-small);
+            transition: var(--transition-medium);
+        }
+        
+        .contact-methods:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .contact-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .contact-icon {
+            background-color: rgba(30, 136, 229, 0.1);
+            color: var(--secondary-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .contact-item i {
+            color: var(--secondary-color);
+            width: 24px;
+            font-size: 1.2rem;
+            display: inline-flex;
+            justify-content: center;
+        }
+        
+        .contact-item a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .contact-item a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+        
+        .online-methods {
+            background-color: var(--background-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-medium);
+            border-left: 4px solid var(--accent-color);
+            box-shadow: var(--shadow-small);
+            transition: var(--transition-medium);
+        }
+        
+        .online-methods:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .online-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            color: var(--accent-dark);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .online-icon {
+            background-color: rgba(255, 202, 40, 0.1);
+            color: var(--accent-dark);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Departments Section */
+        .departments-section {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .departments-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .departments-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+        
+        .departments-intro {
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+        
+        .departments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .department-card {
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            transition: var(--transition-medium);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .department-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .department-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        
+        .department-info {
+            flex-grow: 1;
+        }
+        
+        .department-name {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+            line-height: 1.4;
+        }
+        
+        .department-extension {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Visual Section */
+        .visual-section {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .visual-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .visual-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+        
+        .visual-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .image-container {
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            height: 400px;
+        }
+        
+        .headquarters-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-medium);
+        }
+        
+        .image-container:hover .headquarters-image {
+            transform: scale(1.03);
+        }
+        
+        .map-container {
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            height: 450px;
+        }
+        
+        .headquarters-map {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 5rem;
+            padding: 4rem 0;
+            background-color: var(--primary-color);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .cta-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .btn i {
+            margin-left: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .page-title-section {
+                padding: 4rem 2rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .content-section {
+                padding: 4rem 2rem;
+            }
+            
+            .headquarters-container,
+            .departments-section,
+            .visual-section {
+                padding: 2rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .headquarters-container,
+            .departments-section,
+            .visual-section {
+                padding: 1.5rem;
+            }
+            
+            .departments-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .image-container,
+            .map-container {
+                height: 300px;
+            }
+            
+            .cta-container {
+                padding: 0 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-title-left">
+                <div class="page-title-badge">Contact</div>
+                <h1 class="page-title">Sediul operativ și administrativ</h1>
+                <p class="page-description">Informații despre sediul central al Poliției Locale Slobozia, adresa, numerele de telefon și datele de contact ale departamentelor.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="../">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <a href="#">Contact</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Sediul operativ și administrativ</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="content-container">
+            <!-- Headquarters Info Section -->
+            <div class="headquarters-container">
+                <h2 class="headquarters-heading">Informații despre sediul central</h2>
+                
+                <div class="headquarters-intro">
+                    <p>Sediul operativ și administrativ al Poliției Locale Slobozia este locul unde puteți contacta direct conducerea instituției și diferitele departamente de specialitate.</p>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="contact-info-block">
+                        <!-- Location Information -->
+                        <div class="location-info">
+                            <div class="location-title">
+                                <div class="location-icon">
+                                    <i class="material-icons">location_on</i>
+                                </div>
+                                <span>Adresă</span>
+                            </div>
+                            <div class="location-address">
+                                <p>SEDIUL POLIŢIEI LOCALE SLOBOZIA</p>
+                                <p>Slobozia, str. Răzoare, nr.3</p>
+                                <p>Județul Ialomița, România</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Information -->
+                        <div class="contact-methods">
+                            <div class="contact-title">
+                                <div class="contact-icon">
+                                    <i class="material-icons">phone</i>
+                                </div>
+                                <span>Telefon și Fax</span>
+                            </div>
+                            <div class="contact-list">
+                                <div class="contact-item">
+                                    <i class="material-icons">phone</i>
+                                    <span>0243 955</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="material-icons">smartphone</i>
+                                    <span>0752 095 704</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="material-icons">phone_in_talk</i>
+                                    <span>0243 233 771</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="material-icons">phone_in_talk</i>
+                                    <span>0243 233 778</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="material-icons">print</i>
+                                    <span>Fax: 0243 233 771, 0243 233 778</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Online Information -->
+                        <div class="online-methods">
+                            <div class="online-title">
+                                <div class="online-icon">
+                                    <i class="material-icons">language</i>
+                                </div>
+                                <span>Online</span>
+                            </div>
+                            <div class="contact-list">
+                                <div class="contact-item">
+                                    <i class="material-icons">public</i>
+                                    <a href="https://pcslobozia.ro" target="_blank">www.pcslobozia.ro</a>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="material-icons">email</i>
+                                    <a href="mailto:politia.locala@pcslobozia.ro">politia.locala@pcslobozia.ro</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Visual Content (Image and Map) -->
+                    <div class="visual-grid">
+                        <div class="image-container">
+                            <img src="https://pcslobozia.ro/wp-content/uploads/2020/11/PLS-16.jpg" alt="Sediul Poliției Locale Slobozia" class="headquarters-image">
+                        </div>
+                        <div class="map-container">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2842.778614643608!2d27.362583714963133!3d44.56063540129732!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b0519c25a77fd7%3A0x3e4bc3f23a7e390c!2zUG9sacibaWEgTG9jYWzEgw!5e0!3m2!1sro!2sro!4v1605448016913!5m2!1sro!2sro" class="headquarters-map" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Departments Section -->
+            <div class="departments-section">
+                <h2 class="departments-heading">Departamente și numere interne</h2>
+                
+                <div class="departments-intro">
+                    <p>Pentru a contacta direct un departament specific, puteți folosi numerele de telefon principale și apoi selecta interiorul corespunzător.</p>
+                </div>
+                
+                <div class="departments-grid">
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="material-icons">security</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Dispecerat</div>
+                            <div class="department-extension">Interior: 20</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="material-icons">manage_accounts</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Birou Director</div>
+                            <div class="department-extension">Interior: 23</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="material-icons">directions_car</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Serviciu Circulație Rutieră</div>
+                            <div class="department-extension">Interior: 21</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="material-icons">support_agent</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Birou Secretariat</div>
+                            <div class="department-extension">Interior: 26</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="material-icons">local_police</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Birou Ordine Publică</div>
+                            <div class="department-extension">Interior: 22</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="material-icons">assessment</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Birou Evidență - Sinteze</div>
+                            <div class="department-extension">Interior: 29</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="material-icons">account_balance</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Birou Contabilitate - Resurse Umane</div>
+                            <div class="department-extension">Interior: 25</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="material-icons">business</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Administrator</div>
+                            <div class="department-extension">Interior: 27</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-card">
+                        <div class="department-icon">
+                            <i class="material-icons">print</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Fax</div>
+                            <div class="department-extension">Interior: 24</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-bg"></div>
+                <div class="cta-container">
+                    <h2 class="cta-title">Aveți nevoie de asistență?</h2>
+                    <p class="cta-description">Pentru probleme de ordine publică, reclamații sau solicitări de informații, echipa Poliției Locale Slobozia vă stă la dispoziție prin mai multe canale de comunicare.</p>
+                    <div class="cta-buttons">
+                        <a href="../relatii-cu-publicul/" class="btn btn-primary">Program relații cu publicul <i class="material-icons">arrow_forward</i></a>
+                        <a href="../program-de-audiente/" class="btn btn-secondary">Programări audiențe <i class="material-icons">event</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="../components.js"></script>
+</body>
+</html>
