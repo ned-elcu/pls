@@ -309,35 +309,38 @@
         /* Interactive Organigram */
         .organigram-interactive {
             position: relative;
-            margin: 2rem 0;
+            margin: 2rem auto;
             overflow-x: auto;
-            min-height: 600px;
+            padding: 1rem;
         }
         
         .organigram-chart {
             width: 100%;
-            min-width: 800px;
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
+        /* Org Node Styling */
         .org-node {
-            position: absolute;
+            position: relative;
             background-color: white;
             border-radius: var(--border-radius-medium);
             box-shadow: var(--shadow-small);
             padding: 1rem;
-            min-width: 200px;
-            transition: var(--transition-medium);
-            border-left: 4px solid var(--secondary-color);
+            margin: 0.5rem;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s forwards;
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
         }
         
         .org-node:hover {
-            transform: translateY(-5px) !important;
+            transform: translateY(-5px);
             box-shadow: var(--shadow-medium);
             z-index: 10;
         }
@@ -347,11 +350,9 @@
             color: var(--primary-color);
             margin-bottom: 0.5rem;
             font-size: 1rem;
-            text-align: center;
         }
         
         .org-node-count {
-            text-align: center;
             background-color: rgba(30, 136, 229, 0.1);
             color: var(--secondary-color);
             border-radius: var(--border-radius-small);
@@ -362,103 +363,103 @@
             font-weight: 600;
         }
         
-        .org-node-content {
+        /* Row styling for organizational chart */
+        .org-row {
             display: flex;
+            width: 100%;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .org-row:not(:first-child)::before {
+            content: '';
+            position: absolute;
+            top: -2rem;
+            left: 50%;
+            height: 2rem;
+            width: 2px;
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        .org-row.level-2 {
+            justify-content: space-between;
+            width: 90%;
+        }
+        
+        .org-row.level-2::before {
+            left: 50%;
+        }
+        
+        .org-row.level-3-left {
+            width: 40%;
+            align-self: flex-start;
+            position: relative;
+        }
+        
+        .org-row.level-3-right {
+            width: 40%;
+            align-self: flex-end;
+            position: relative;
             flex-direction: column;
             align-items: center;
         }
         
-        /* Node colors and delay */
-        .org-node.director {
-            border-left-color: var(--secondary-color);
-            top: 0;
+        .org-row.level-3-left::before {
             left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            z-index: 5;
-            animation-delay: 0.1s;
+            height: 2rem;
         }
         
-        .org-node.adjunct {
-            border-left-color: var(--secondary-color);
-            top: 100px;
-            left: 25%;
-            transform: translateX(-50%) translateY(20px);
-            z-index: 4;
-            animation-delay: 0.3s;
+        .org-row.level-3-right::before {
+            left: 50%;
+            height: 2rem;
         }
         
-        .org-node.sinteza {
-            border-left-color: var(--accent-color);
-            top: 100px;
-            left: 75%;
-            transform: translateX(-50%) translateY(20px);
-            z-index: 4;
-            animation-delay: 0.4s;
+        .org-row.level-4 {
+            width: 100%;
+            justify-content: space-around;
         }
         
-        .org-node.supraveghere {
-            border-left-color: var(--accent-color);
-            top: 200px;
-            left: 75%;
-            transform: translateX(-50%) translateY(20px);
-            z-index: 4;
-            animation-delay: 0.5s;
+        .org-row.level-4::before {
+            left: 50%;
         }
         
-        .org-node.financiar {
-            border-left-color: var(--accent-color);
-            top: 300px;
-            left: 75%;
-            transform: translateX(-50%) translateY(20px);
-            z-index: 4;
-            animation-delay: 0.6s;
+        .org-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
         }
         
-        .org-node.tehnic {
-            border-left-color: var(--accent-color);
-            top: 400px;
-            left: 75%;
-            transform: translateX(-50%) translateY(20px);
-            z-index: 4;
-            animation-delay: 0.7s;
+        .org-column:not(:last-child) {
+            margin-right: 2rem;
         }
         
-        .org-node.ordine {
-            border-left-color: var(--success-color);
-            top: 200px;
-            left: 12%;
-            transform: translateX(-50%) translateY(20px);
-            z-index: 4;
-            animation-delay: 0.6s;
+        .org-column::before {
+            content: '';
+            position: absolute;
+            top: -2rem;
+            left: 50%;
+            height: 2rem;
+            width: 2px;
+            background-color: rgba(0,0,0,0.1);
         }
         
-        .org-node.circulatie {
-            border-left-color: var(--success-color);
-            top: 200px;
-            left: 38%;
-            transform: translateX(-50%) translateY(20px);
-            z-index: 4;
-            animation-delay: 0.7s;
+        /* Node color styling */
+        .org-node.blue-node {
+            border-left: 4px solid var(--secondary-color);
         }
         
-        .org-node.comp-circulatie {
-            border-left-color: #5380A7;
-            top: 340px;
-            left: 25%;
-            transform: translateX(-50%) translateY(20px);
-            z-index: 3;
-            animation-delay: 0.8s;
+        .org-node.green-node {
+            border-left: 4px solid var(--success-color);
         }
         
-        .org-node.comp-dispecerat {
-            border-left-color: #5380A7;
-            top: 340px;
-            left: 51%;
-            transform: translateX(-50%) translateY(20px);
-            z-index: 3;
-            animation-delay: 0.9s;
+        .org-node.yellow-node {
+            border-left: 4px solid var(--accent-color);
         }
         
+        /* Animation effects */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -470,86 +471,44 @@
             }
         }
         
-        /* Connector lines */
-        .connector {
-            position: absolute;
+        /* Horizontal connector styling */
+        .connector-horizontal {
+            height: 2px;
             background-color: rgba(0,0,0,0.1);
-            z-index: 1;
-            transform-origin: top left;
+            position: relative;
+            margin: 1rem 0;
+            width: 80%;
+            max-width: 800px;
             opacity: 0;
             animation: fadeIn 0.5s forwards;
-            animation-delay: 1s;
+            animation-delay: 0.5s;
         }
         
-        .connector.vertical {
-            width: 2px;
+        .connector-dots {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: relative;
+            margin-bottom: -10px;
         }
         
-        .connector.horizontal {
-            height: 2px;
+        .connector-dot {
+            width: 10px;
+            height: 10px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            position: relative;
         }
         
-        .connector.c1 {
-            top: 60px;
+        .connector-dot::before {
+            content: '';
+            position: absolute;
+            top: 10px;
             left: 50%;
-            height: 40px;
+            height: 1.5rem;
             width: 2px;
-        }
-        
-        .connector.c2 {
-            top: 100px;
-            left: 25%;
-            width: 50%;
-            height: 2px;
-        }
-        
-        .connector.c3 {
-            top: 160px;
-            left: 25%;
-            height: 40px;
-            width: 2px;
-        }
-        
-        .connector.c4 {
-            top: 180px;
-            left: 12%;
-            width: 26%;
-            height: 2px;
-        }
-        
-        .connector.c5 {
-            top: 260px;
-            left: 25%;
-            height: 80px;
-            width: 2px;
-        }
-        
-        .connector.c6 {
-            top: 320px;
-            left: 25%;
-            width: 26%;
-            height: 2px;
-        }
-        
-        .connector.c7 {
-            top: 160px;
-            left: 75%;
-            height: 40px;
-            width: 2px;
-        }
-        
-        .connector.c8 {
-            top: 260px;
-            left: 75%;
-            height: 40px;
-            width: 2px;
-        }
-        
-        .connector.c9 {
-            top: 360px;
-            left: 75%;
-            height: 40px;
-            width: 2px;
+            background-color: rgba(0,0,0,0.1);
+            transform: translateX(-50%);
         }
         
         @keyframes fadeIn {
@@ -978,94 +937,91 @@
                     <div class="tab-content active" id="interactive">
                         <div class="organigram-interactive">
                             <div class="organigram-chart">
-                                <!-- Director executiv -->
-                                <div class="org-node director">
-                                    <div class="org-node-content">
+                                <!-- Level 1: Director executiv -->
+                                <div class="org-row">
+                                    <div class="org-node blue-node">
                                         <h3 class="org-node-title">Director executiv</h3>
                                     </div>
                                 </div>
                                 
-                                <!-- Director executiv adjunct -->
-                                <div class="org-node adjunct">
-                                    <div class="org-node-content">
+                                <!-- Level 2: Left and Right branches -->
+                                <div class="org-row level-2">
+                                    <!-- Left side -->
+                                    <div class="org-node blue-node">
                                         <h3 class="org-node-title">Director executiv adjunct</h3>
                                     </div>
-                                </div>
-                                
-                                <!-- Compartiment Sinteză, Evidență, Planificare -->
-                                <div class="org-node sinteza">
-                                    <div class="org-node-content">
+                                    
+                                    <!-- Right side -->
+                                    <div class="org-node yellow-node">
                                         <h3 class="org-node-title">Compartiment Sinteză, Evidență, Planificare</h3>
                                         <span class="org-node-count">3</span>
                                     </div>
                                 </div>
                                 
-                                <!-- Compartiment Supraveghere Video, Monitorizare trafic -->
-                                <div class="org-node supraveghere">
-                                    <div class="org-node-content">
+                                <!-- Horizontal connector with dots -->
+                                <div class="connector-horizontal">
+                                    <div class="connector-dots">
+                                        <div class="connector-dot"></div>
+                                        <div class="connector-dot"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Level 3: Services and departments -->
+                                <div class="org-row level-3-left">
+                                    <!-- Left side services -->
+                                    <div class="org-column">
+                                        <div class="org-node green-node">
+                                            <h3 class="org-node-title">Serviciul Ordine Publică și Control</h3>
+                                            <span class="org-node-count">23 + 1</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="org-column">
+                                        <div class="org-node green-node">
+                                            <h3 class="org-node-title">Serviciul Circulație Rutieră și Dispecerat</h3>
+                                            <span class="org-node-count">14 + 1</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="org-row level-3-right">
+                                    <!-- Right side compartments -->
+                                    <div class="org-node yellow-node">
                                         <h3 class="org-node-title">Compartiment Supraveghere Video, Monitorizare trafic</h3>
                                         <span class="org-node-count">5</span>
                                     </div>
-                                </div>
-                                
-                                <!-- Compartiment Financiar-Contabil, Resurse Umane, Salarizare, Achiziții publice -->
-                                <div class="org-node financiar">
-                                    <div class="org-node-content">
+                                    
+                                    <div class="org-node yellow-node">
                                         <h3 class="org-node-title">Compartiment Financiar-Contabil, Resurse Umane, Salarizare, Achiziții publice</h3>
                                         <span class="org-node-count">2</span>
                                     </div>
-                                </div>
-                                
-                                <!-- Compartiment Tehnic, Administrativ, Relații cu presa -->
-                                <div class="org-node tehnic">
-                                    <div class="org-node-content">
+                                    
+                                    <div class="org-node yellow-node">
                                         <h3 class="org-node-title">Compartiment Tehnic, Administrativ, Relații cu presa</h3>
                                         <span class="org-node-count">2</span>
                                     </div>
                                 </div>
                                 
-                                <!-- Serviciul Ordine Publică și Control -->
-                                <div class="org-node ordine">
-                                    <div class="org-node-content">
-                                        <h3 class="org-node-title">Serviciul Ordine Publică și Control</h3>
-                                        <span class="org-node-count">23 + 1</span>
+                                <!-- Horizontal connector for sub-compartments -->
+                                <div class="connector-horizontal">
+                                    <div class="connector-dots">
+                                        <div class="connector-dot"></div>
+                                        <div class="connector-dot"></div>
                                     </div>
                                 </div>
                                 
-                                <!-- Serviciul Circulație Rutieră și Dispecerat -->
-                                <div class="org-node circulatie">
-                                    <div class="org-node-content">
-                                        <h3 class="org-node-title">Serviciul Circulație Rutieră și Dispecerat</h3>
-                                        <span class="org-node-count">14 + 1</span>
-                                    </div>
-                                </div>
-                                
-                                <!-- Compartiment Circulație Rutieră -->
-                                <div class="org-node comp-circulatie">
-                                    <div class="org-node-content">
+                                <!-- Level 4: Sub-compartments -->
+                                <div class="org-row level-4">
+                                    <div class="org-node blue-node">
                                         <h3 class="org-node-title">Compartiment Circulație Rutieră</h3>
                                         <span class="org-node-count">9</span>
                                     </div>
-                                </div>
-                                
-                                <!-- Compartiment Dispecerat -->
-                                <div class="org-node comp-dispecerat">
-                                    <div class="org-node-content">
+                                    
+                                    <div class="org-node blue-node">
                                         <h3 class="org-node-title">Compartiment Dispecerat</h3>
                                         <span class="org-node-count">5</span>
                                     </div>
                                 </div>
-                                
-                                <!-- Connector lines -->
-                                <div class="connector vertical c1"></div>
-                                <div class="connector horizontal c2"></div>
-                                <div class="connector vertical c3"></div>
-                                <div class="connector horizontal c4"></div>
-                                <div class="connector vertical c5"></div>
-                                <div class="connector horizontal c6"></div>
-                                <div class="connector vertical c7"></div>
-                                <div class="connector vertical c8"></div>
-                                <div class="connector vertical c9"></div>
                             </div>
                         </div>
                     </div>
@@ -1271,6 +1227,7 @@
     <!-- Footer Container - Will be populated by components.js -->
     <div id="footer-container"></div>
     
+    <!-- Include components.js to load header and footer -->
     <!-- Include components.js to load header and footer -->
     <script src="components.js"></script>
     
