@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documente Transparență - Poliția Locală Slobozia</title>
+    <!-- Added Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+            padding-top: var(--header-height);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Material Icons styling */
+        .material-icons {
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Container (will be loaded via components.js) */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+            top: 0;
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 3rem;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0; 
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title-left {
+            max-width: 800px;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            opacity: 0.5;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 3rem;
+            background-color: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Document Container Styling */
+        .document-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .document-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .document-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        .document-intro {
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+        
+        .document-intro p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-text {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        /* Main Tabs Container */
+        .main-tabs-container {
+            margin-bottom: 2rem;
+        }
+        
+        .main-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .main-tab {
+            padding: 1.2rem 1.8rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: none;
+            background: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+        }
+        
+        .main-tab:hover {
+            color: var(--secondary-color);
+        }
+        
+        .main-tab.active {
+            color: var(--secondary-color);
+            background-color: rgba(30, 136, 229, 0.1);
+        }
+        
+        .main-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        .main-tab i {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .main-tab-content {
+            display: none;
+        }
+        
+        .main-tab-content.active {
+            display: block;
+        }
+
+        /* Year Tabs */
+        .year-tabs-container {
+            margin: 2rem 0;
+        }
+        
+        .year-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .year-tab {
+            padding: 0.8rem 1.2rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            position: relative;
+            border: none;
+            background: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+        }
+        
+        .year-tab:hover {
+            color: var(--secondary-color);
+        }
+        
+        .year-tab.active {
+            color: var(--secondary-color);
+            background-color: rgba(30, 136, 229, 0.1);
+        }
+        
+        .year-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        .year-content {
+            display: none;
+        }
+        
+        .year-content.active {
+            display: block;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        /* Document Cards */
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .document-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            transition: var(--transition-medium);
+            border-left: 4px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .document-card-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .document-card-title i {
+            margin-right: 0.7rem;
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+        }
+        
+        .document-card-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        
+        .document-card-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: auto;
+            transition: var(--transition-fast);
+        }
+        
+        .document-card-link i {
+            margin-left: 0.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .document-card-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .document-card-link:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Archive Toggle */
+        .archive-toggle {
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .archive-toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 12px;
+            margin-right: 1rem;
+            transition: var(--transition-fast);
+        }
+        
+        .archive-toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transition: var(--transition-fast);
+        }
+        
+        .archive-toggle.active .archive-toggle-switch {
+            background-color: var(--secondary-color);
+        }
+        
+        .archive-toggle.active .archive-toggle-switch::after {
+            left: 26px;
+        }
+        
+        .archive-toggle-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+        }
+        
+        .archive-toggle.active .archive-toggle-text {
+            color: var(--secondary-color);
+        }
+        
+        .archived-documents {
+            display: none;
+        }
+        
+        .archived-documents.active {
+            display: block;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        /* Search Component */
+        .search-container {
+            margin: 2rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+        }
+        
+        .search-input input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--border-radius-medium);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            transition: var(--transition-fast);
+        }
+        
+        .search-input input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
+        }
+        
+        .search-input i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .filter-dropdown {
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .filter-dropdown select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--border-radius-medium);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            appearance: none;
+            background: white;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .filter-dropdown select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
+        }
+        
+        .filter-dropdown::after {
+            content: '\e5cf';
+            font-family: 'Material Icons';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+        
+        .search-button {
+            padding: 1rem 2rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-medium);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-button i {
+            margin-right: 0.5rem;
+        }
+        
+        .search-button:hover {
+            background-color: var(--secondary-light);
+            transform: translateY(-2px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .empty-state-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-medium);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .empty-state-button i {
+            margin-right: 0.5rem;
+        }
+        
+        .empty-state-button:hover {
+            background-color: var(--secondary-light);
+            transform: translateY(-2px);
+        }
+
+        /* Related Resources */
+        .related-resources {
+            margin-top: 4rem;
+            padding: 3rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-large);
+        }
+        
+        .related-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .related-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-medium);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .resource-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+        }
+        
+        .resource-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            align-self: flex-start;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link i {
+            margin-left: 0.3rem;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .resource-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 5rem;
+            padding: 4rem 0;
+            background-color: var(--primary-color);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .cta-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .btn i {
+            margin-left: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .page-title-section {
+                padding: 4rem 2rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .content-section {
+                padding: 4rem 2rem;
+            }
+            
+            .document-container {
+                padding: 2rem;
+            }
+            
+            .document-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .related-resources {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+                position: relative;
+                z-index: 2;
+                margin-top: 0;
+                background: white;
+            }
+            
+            .document-container {
+                padding: 1.5rem;
+            }
+            
+            .document-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-tab {
+                padding: 1rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .main-tab i {
+                margin-right: 0.3rem;
+                font-size: 1rem;
+            }
+            
+            .year-tab {
+                padding: 0.7rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .cta-container {
+                padding: 0 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 1.8rem;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-input, .filter-dropdown {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-title-left">
+                <div class="page-title-badge">Transparență instituțională</div>
+                <h1 class="page-title">Documente de Transparență</h1>
+                <p class="page-description">Acces la declarațiile de avere, declarațiile de interese și raportările salariale ale personalului Poliției Locale Slobozia, conform cerințelor legale de transparență.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="../">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <a href="#">Informații de interes public</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Documente de Transparență</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="content-container">
+            <!-- Main Document Container -->
+            <div class="document-container">
+                <h2 class="document-heading">Acces la Documente</h2>
+                
+                <div class="document-intro">
+                    <p>Poliția Locală Slobozia publică regulat documente pentru asigurarea transparenței instituționale, în conformitate cu <a href="#" class="highlight-text">Legea nr. 544/2001</a> privind liberul acces la informațiile de interes public și cu <a href="#" class="highlight-text">Legea nr. 176/2010</a> privind integritatea în exercitarea funcțiilor publice.</p>
+                    <p>Utilizați filtrele de mai jos pentru a accesa tipul de document dorit și anul de referință. Documentele sunt disponibile în format PDF, putând fi vizualizate și descărcate direct din browser.</p>
+                </div>
+                
+                <!-- Search Component -->
+                <div class="search-container">
+                    <div class="search-input">
+                        <i class="material-icons">search</i>
+                        <input type="text" placeholder="Caută după nume, funcție sau conținut...">
+                    </div>
+                    <div class="filter-dropdown">
+                        <select>
+                            <option value="" selected>Toate tipurile</option>
+                            <option value="avere">Declarații de avere</option>
+                            <option value="interese">Declarații de interese</option>
+                            <option value="salarizare">Raportare salarială</option>
+                        </select>
+                    </div>
+                    <button class="search-button">
+                        <i class="material-icons">filter_list</i>
+                        Filtrează
+                    </button>
+                </div>
+                
+                <!-- Main Tabs for Document Types -->
+                <div class="main-tabs-container">
+                    <div class="main-tabs">
+                        <button class="main-tab active" data-tab="declaratii-avere">
+                            <i class="material-icons">description</i> Declarații de avere
+                        </button>
+                        <button class="main-tab" data-tab="declaratii-interese">
+                            <i class="material-icons">business_center</i> Declarații de interese
+                        </button>
+                        <button class="main-tab" data-tab="raportare-salariala">
+                            <i class="material-icons">payments</i> Raportare salarială
+                        </button>
+                    </div>
+                    
+                    <!-- Tab Content - Declarații Avere -->
+                    <div class="main-tab-content active" id="declaratii-avere">
+                        <!-- Year Tabs -->
+                        <div class="year-tabs-container">
+                            <div class="year-tabs">
+                                <button class="year-tab active" data-year="2024">2024</button>
+                                <button class="year-tab" data-year="2023">2023</button>
+                                <button class="year-tab" data-year="2022">2022</button>
+                                <button class="year-tab" data-year="2021">2021</button>
+                                <button class="year-tab" data-year="2020">2020</button>
+                            </div>
+                            
+                            <!-- 2024 Content -->
+                            <div class="year-content active" id="avere-2024">
+                                <div class="document-grid">
+                                    <!-- Example document cards -->
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Popescu Ion
+                                        </h4>
+                                        <p class="document-card-date">Director executiv • Mai 2024</p>
+                                        <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                    
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Ionescu Maria
+                                        </h4>
+                                        <p class="document-card-date">Director executiv adjunct • Mai 2024</p>
+                                        <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                    
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Georgescu Alexandru
+                                        </h4>
+                                        <p class="document-card-date">Șef serviciu • Mai 2024</p>
+                                        <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                    
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Stanescu Elena
+                                        </h4>
+                                        <p class="document-card-date">Polițist local • Mai 2024</p>
+                                        <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <!-- Archive documents toggle -->
+                                <div class="archive-toggle" id="avere-2024-archive-toggle">
+                                    <div class="archive-toggle-switch"></div>
+                                    <span class="archive-toggle-text">Afișează toate documentele</span>
+                                </div>
+                                
+                                <!-- Archive documents section -->
+                                <div class="archived-documents" id="avere-2024-archive">
+                                    <div class="document-grid">
+                                        <!-- More document cards -->
+                                        <div class="document-card">
+                                            <h4 class="document-card-title">
+                                                <i class="material-icons">person</i>
+                                                Dumitrescu Andrei
+                                            </h4>
+                                            <p class="document-card-date">Polițist local • Mai 2024</p>
+                                            <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
+                                                Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                            </a>
+                                        </div>
+                                        
+                                        <div class="document-card">
+                                            <h4 class="document-card-title">
+                                                <i class="material-icons">person</i>
+                                                Vasilescu Mihai
+                                            </h4>
+                                            <p class="document-card-date">Polițist local • Mai 2024</p>
+                                            <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
+                                                Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 2023 Content -->
+                            <div class="year-content" id="avere-2023">
+                                <div class="document-grid">
+                                    <!-- Example document cards -->
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Popescu Ion
+                                        </h4>
+                                        <p class="document-card-date">Director executiv • Mai 2023</p>
+                                        <a href="https://drive.google.com/file/d/1a2gOiTZnwdjjVz45RTVG1bJnOn3CTRe-/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                    
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Ionescu Maria
+                                        </h4>
+                                        <p class="document-card-date">Director executiv adjunct • Mai 2023</p>
+                                        <a href="https://drive.google.com/file/d/1a2gOiTZnwdjjVz45RTVG1bJnOn3CTRe-/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <!-- Archive documents toggle -->
+                                <div class="archive-toggle" id="avere-2023-archive-toggle">
+                                    <div class="archive-toggle-switch"></div>
+                                    <span class="archive-toggle-text">Afișează toate documentele</span>
+                                </div>
+                                
+                                <!-- Archive documents section -->
+                                <div class="archived-documents" id="avere-2023-archive">
+                                    <div class="document-grid">
+                                        <!-- More document cards -->
+                                        <div class="document-card">
+                                            <h4 class="document-card-title">
+                                                <i class="material-icons">person</i>
+                                                Georgescu Alexandru
+                                            </h4>
+                                            <p class="document-card-date">Șef serviciu • Mai 2023</p>
+                                            <a href="https://drive.google.com/file/d/1a2gOiTZnwdjjVz45RTVG1bJnOn3CTRe-/view" target="_blank" rel="noopener" class="document-card-link">
+                                                Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 2022 Content -->
+                            <div class="year-content" id="avere-2022">
+                                <!-- Archive documents toggle - empty state example -->
+                                <div class="empty-state">
+                                    <i class="material-icons empty-state-icon">folder_open</i>
+                                    <p class="empty-state-text">Nu a fost găsit niciun document pentru criteriile selectate.</p>
+                                    <button class="empty-state-button">
+                                        <i class="material-icons">restart_alt</i>
+                                        Resetați filtrele
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 2021 Content -->
+                            <div class="year-content" id="avere-2021">
+                                <div class="document-grid">
+                                    <!-- Example document cards -->
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Popescu Ion
+                                        </h4>
+                                        <p class="document-card-date">Director executiv • Mai 2021</p>
+                                        <a href="https://drive.google.com/file/d/11ocx43jhhVwp9ztsHS1-NCmSQZuvgtym/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 2020 Content -->
+                            <div class="year-content" id="avere-2020">
+                                <div class="document-grid">
+                                    <!-- Example document cards -->
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Popescu Ion
+                                        </h4>
+                                        <p class="document-card-date">Director executiv • Mai 2020</p>
+                                        <a href="https://drive.google.com/file/d/1tJ7FWjQtoXFNwjFskpqdWYauvH3KFqzL/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Archive link -->
+                        <div style="text-align: center; margin-top: 2rem;">
+                            <a href="https://drive.google.com/drive/folders/0By4DJVQZbI9mTktOSTJLQXFVTFk?resourcekey=0-eQj5Ekmw5PZrDAUsw17BVg&usp=sharing" target="_blank" rel="noopener" class="document-card-link">
+                                Vezi arhiva completă (2009-2021) <i class="material-icons">archive</i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Content - Declarații Interese -->
+                    <div class="main-tab-content" id="declaratii-interese">
+                        <!-- Year Tabs -->
+                        <div class="year-tabs-container">
+                            <div class="year-tabs">
+                                <button class="year-tab active" data-year="2024">2024</button>
+                                <button class="year-tab" data-year="2023">2023</button>
+                                <button class="year-tab" data-year="2022">2022</button>
+                                <button class="year-tab" data-year="2021">2021</button>
+                                <button class="year-tab" data-year="2020">2020</button>
+                            </div>
+                            
+                            <!-- 2024 Content -->
+                            <div class="year-content active" id="interese-2024">
+                                <div class="document-grid">
+                                    <!-- Example document cards -->
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Popescu Ion
+                                        </h4>
+                                        <p class="document-card-date">Director executiv • Mai 2024</p>
+                                        <a href="https://drive.google.com/file/d/1sZcKhbTTC0Md5AMDInBDrFwih56zQEIz/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                    
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Ionescu Maria
+                                        </h4>
+                                        <p class="document-card-date">Director executiv adjunct • Mai 2024</p>
+                                        <a href="https://drive.google.com/file/d/1sZcKhbTTC0Md5AMDInBDrFwih56zQEIz/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 2023 Content -->
+                            <div class="year-content" id="interese-2023">
+                                <div class="document-grid">
+                                    <!-- Example document cards -->
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Popescu Ion
+                                        </h4>
+                                        <p class="document-card-date">Director executiv • Mai 2023</p>
+                                        <a href="https://drive.google.com/file/d/1Wq2jvPSfNF-YqUzfIbV0FP_6jWD_FmVh/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 2022 Content -->
+                            <div class="year-content" id="interese-2022">
+                                <div class="document-grid">
+                                    <!-- Example document cards -->
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Popescu Ion
+                                        </h4>
+                                        <p class="document-card-date">Director executiv • Mai 2022</p>
+                                        <a href="https://drive.google.com/file/d/1CeufDd3yUv0KP6oqsc1B6haSXUzDHuQC/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 2021 Content -->
+                            <div class="year-content" id="interese-2021">
+                                <div class="document-grid">
+                                    <!-- Example document cards -->
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Popescu Ion
+                                        </h4>
+                                        <p class="document-card-date">Director executiv • Mai 2021</p>
+                                        <a href="https://drive.google.com/file/d/1BVP0lqetlJ6SSr8wGqJnuIWny2Ezy1dv/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 2020 Content -->
+                            <div class="year-content" id="interese-2020">
+                                <div class="document-grid">
+                                    <!-- Example document cards -->
+                                    <div class="document-card">
+                                        <h4 class="document-card-title">
+                                            <i class="material-icons">person</i>
+                                            Popescu Ion
+                                        </h4>
+                                        <p class="document-card-date">Director executiv • Mai 2020</p>
+                                        <a href="https://drive.google.com/file/d/1hO3JVLs_voYtM6ocsnanLP9aM1-uIwNH/view" target="_blank" rel="noopener" class="document-card-link">
+                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Archive link -->
+                        <div style="text-align: center; margin-top: 2rem;">
+                            <a href="https://drive.google.com/drive/folders/0By4DJVQZbI9mX0VNT1dOWWJpR1U?resourcekey=0-Y0pW_hR6BeHkCwY6UbDQCA&usp=sharing" target="_blank" rel="noopener" class="document-card-link">
+                                Vezi arhiva completă (2009-2021) <i class="material-icons">archive</i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab Content - Raportare Salariala -->
+                    <div class="main-tab-content" id="raportare-salariala">
+                        <div class="document-grid">
+                            <!-- Example document cards -->
+                            <div class="document-card">
+                                <h4 class="document-card-title">
+                                    <i class="material-icons">payments</i>
+                                    Raport Salarial
+                                </h4>
+                                <p class="document-card-date">Martie 2025</p>
+                                <a href="https://pcslobozia.ro/wp-content/uploads/2025/03/Salarii-31.03.2025.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                </a>
+                            </div>
+                            
+                            <div class="document-card">
+                                <h4 class="document-card-title">
+                                    <i class="material-icons">payments</i>
+                                    Raport Salarial
+                                </h4>
+                                <p class="document-card-date">Septembrie 2024</p>
+                                <a href="https://pcslobozia.ro/wp-content/uploads/2024/09/Salarii-30.09.2024.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                </a>
+                            </div>
+                            
+                            <div class="document-card">
+                                <h4 class="document-card-title">
+                                    <i class="material-icons">payments</i>
+                                    Raport Salarial
+                                </h4>
+                                <p class="document-card-date">Martie 2024</p>
+                                <a href="https://pcslobozia.ro/wp-content/uploads/2024/03/Salarii-31.03.2024.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                </a>
+                            </div>
+                            
+                            <div class="document-card">
+                                <h4 class="document-card-title">
+                                    <i class="material-icons">payments</i>
+                                    Raport Salarial
+                                </h4>
+                                <p class="document-card-date">Septembrie 2023</p>
+                                <a href="https://pcslobozia.ro/wp-content/uploads/2023/09/salarii-la-data-de-30.09.2023-1-2.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Archive documents toggle -->
+                        <div class="archive-toggle" id="salarii-archive-toggle">
+                            <div class="archive-toggle-switch"></div>
+                            <span class="archive-toggle-text">Afișează toate documentele</span>
+                        </div>
+                        
+                        <!-- Archive documents section -->
+                        <div class="archived-documents" id="salarii-archive">
+                            <div class="document-grid">
+                                <!-- More document cards -->
+                                <div class="document-card">
+                                    <h4 class="document-card-title">
+                                        <i class="material-icons">payments</i>
+                                        Raport Salarial
+                                    </h4>
+                                    <p class="document-card-date">Martie 2023</p>
+                                    <a href="https://pcslobozia.ro/wp-content/uploads/2023/03/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2023.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                    </a>
+                                </div>
+                                
+                                <div class="document-card">
+                                    <h4 class="document-card-title">
+                                        <i class="material-icons">payments</i>
+                                        Raport Salarial
+                                    </h4>
+                                    <p class="document-card-date">Septembrie 2022</p>
+                                    <a href="https://pcslobozia.ro/wp-content/uploads/2022/09/salarii-Politia-Locala-Slobozia-la-data-de-30.09.2022.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                    </a>
+                                </div>
+                                
+                                <div class="document-card">
+                                    <h4 class="document-card-title">
+                                        <i class="material-icons">payments</i>
+                                        Raport Salarial
+                                    </h4>
+                                    <p class="document-card-date">Martie 2022</p>
+                                    <a href="https://pcslobozia.ro/wp-content/uploads/2022/03/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2022.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                    </a>
+                                </div>
+                                
+                                <div class="document-card">
+                                    <h4 class="document-card-title">
+                                        <i class="material-icons">payments</i>
+                                        Raport Salarial
+                                    </h4>
+                                    <p class="document-card-date">Septembrie 2021</p>
+                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/09/salarii-Politia-Locala-Slobozia-la-data-de-30.09.2021.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                    </a>
+                                </div>
+                                
+                                <div class="document-card">
+                                    <h4 class="document-card-title">
+                                        <i class="material-icons">payments</i>
+                                        Raport Salarial
+                                    </h4>
+                                    <p class="document-card-date">Iunie 2021</p>
+                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/06/stat-functii-2021-actualizat.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                    </a>
+                                </div>
+                                
+                                <div class="document-card">
+                                    <h4 class="document-card-title">
+                                        <i class="material-icons">payments</i>
+                                        Raport Salarial
+                                    </h4>
+                                    <p class="document-card-date">Martie 2021</p>
+                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/04/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2021.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                    </a>
+                                </div>
+                                
+                                <div class="document-card">
+                                    <h4 class="document-card-title">
+                                        <i class="material-icons">payments</i>
+                                        Raport Salarial
+                                    </h4>
+                                    <p class="document-card-date">Septembrie 2020</p>
+                                    <a href="https://pcslobozia.ro/wp-content/uploads/2020/09/salarii-Politia-Locala-Slobozia-la-data-de-30.09.2020.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                    </a>
+                                </div>
+                                
+                                <div class="document-card">
+                                    <h4 class="document-card-title">
+                                        <i class="material-icons">payments</i>
+                                        Raport Salarial
+                                    </h4>
+                                    <p class="document-card-date">Martie 2020</p>
+                                    <a href="https://pcslobozia.ro/wp-content/uploads/2020/03/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2020.pdf" target="_blank" rel="noopener" class="document-card-link">
+                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Resources Section -->
+            <div class="related-resources">
+                <h3 class="related-heading">Documente conexe</h3>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">important_devices</i></div>
+                        <h4 class="resource-title">Buletin informativ</h4>
+                        <p class="resource-description">Informații publice comunicat periodic de Poliția Locală Slobozia referitoare la activitatea instituției.</p>
+                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">gavel</i></div>
+                        <h4 class="resource-title">Legislație</h4>
+                        <p class="resource-description">Documente gestionate conform legii, inclusiv hotărâri, ordonanțe și alte acte normative.</p>
+                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">shopping_cart</i></div>
+                        <h4 class="resource-title">Program achiziții anuale</h4>
+                        <p class="resource-description">Planul anual de achiziții publice al Poliției Locale Slobozia.</p>
+                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">account_balance</i></div>
+                        <h4 class="resource-title">Bilanțuri și bugete</h4>
+                        <p class="resource-description">Documente financiare și contabile ale instituției, incluzând bilanțuri contabile și bugete anuale.</p>
+                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-bg"></div>
+                <div class="cta-container">
+                    <h2 class="cta-title">Ai nevoie de informații suplimentare?</h2>
+                    <p class="cta-description">Pentru solicitări de informații în baza Legii nr. 544/2001 privind liberul acces la informațiile de interes public, te invităm să contactezi Compartimentul de Relații cu Publicul.</p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
+                        <a href="#" class="btn btn-secondary">Formular cerere <i class="material-icons">download</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="../components.js"></script>
+    
+    <!-- Page Specific JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Main Tabs functionality
+            const mainTabs = document.querySelectorAll('.main-tab');
+            
+            mainTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Get the tab target
+                    const target = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs
+                    mainTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all tab content
+                    document.querySelectorAll('.main-tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Show target content
+                    document.getElementById(target).classList.add('active');
+                });
+            });
+            
+            // Year Tabs functionality for Avere
+            const yearTabsAvere = document.querySelectorAll('#declaratii-avere .year-tab');
+            
+            yearTabsAvere.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Get the year
+                    const year = this.getAttribute('data-year');
+                    
+                    // Remove active class from all tabs in this section
+                    yearTabsAvere.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all year content in this section
+                    document.querySelectorAll('#declaratii-avere .year-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Show target content
+                    document.getElementById(`avere-${year}`).classList.add('active');
+                });
+            });
+            
+            // Year Tabs functionality for Interese
+            const yearTabsInterese = document.querySelectorAll('#declaratii-interese .year-tab');
+            
+            yearTabsInterese.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Get the year
+                    const year = this.getAttribute('data-year');
+                    
+                    // Remove active class from all tabs in this section
+                    yearTabsInterese.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all year content in this section
+                    document.querySelectorAll('#declaratii-interese .year-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Show target content
+                    document.getElementById(`interese-${year}`).classList.add('active');
+                });
+            });
+            
+            // Archive toggle functionality
+            const archiveToggles = document.querySelectorAll('.archive-toggle');
+            
+            archiveToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    // Toggle active class
+                    this.classList.toggle('active');
+                    
+                    // Get the ID of this toggle
+                    const id = this.id;
+                    
+                    // Get the associated archive section
+                    let archiveId = id.replace('-toggle', '');
+                    const archiveSection = document.getElementById(archiveId);
+                    
+                    // Toggle active class on archive section
+                    if (archiveSection) {
+                        archiveSection.classList.toggle('active');
+                        
+                        // Update toggle text
+                        const toggleText = this.querySelector('.archive-toggle-text');
+                        if (this.classList.contains('active')) {
+                            toggleText.textContent = 'Ascunde documentele';
+                        } else {
+                            toggleText.textContent = 'Afișează toate documentele';
+                        }
+                    }
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.querySelector('.search-input input');
+            const searchButton = document.querySelector('.search-button');
+            const emptyStateButton = document.querySelector('.empty-state-button');
+            
+            if (searchButton) {
+                searchButton.addEventListener('click', function() {
+                    // Simple search - just for demonstration
+                    const searchTerm = searchInput.value.toLowerCase().trim();
+                    
+                    if (searchTerm) {
+                        alert(`Căutare pentru: "${searchTerm}"\nAceasta este o demonstrație. Într-o implementare reală, s-ar efectua căutarea în documente.`);
+                    }
+                });
+            }
+            
+            if (emptyStateButton) {
+                emptyStateButton.addEventListener('click', function() {
+                    // Reset filter - just for demonstration
+                    if (searchInput) {
+                        searchInput.value = '';
+                    }
+                    
+                    alert('Filtre resetate. Aceasta este o demonstrație.');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
