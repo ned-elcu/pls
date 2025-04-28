@@ -34,7 +34,7 @@
             --border-radius-medium: 8px;
             --border-radius-large: 12px;
             
-            /* New color variables for menu groups */
+            /* Menu group colors */
             --menu-group-1: rgba(30, 136, 229, 0.03);
             --menu-group-2: rgba(255, 202, 40, 0.03);
             --menu-group-3: rgba(67, 160, 71, 0.03);
@@ -51,6 +51,7 @@
             color: var(--text-primary);
             overflow-x: hidden;
             background-color: var(--background-light);
+            padding-top: var(--header-height); /* Add padding to prevent content overlap with fixed header */
         }
         
         h1, h2, h3, h4, h5, h6 {
@@ -88,6 +89,7 @@
             width: 100%;
             z-index: 1000;
             transition: var(--transition-fast);
+            top: 0;
         }
         
         .header-top {
@@ -116,7 +118,7 @@
         .header-container::after {
           content: "";
           display: block;
-          height: var(--header-height);
+          height: 0; /* Changed from var(--header-height) to prevent double spacing */
         }
         
         .header-top.scrolled {
@@ -525,10 +527,10 @@
             background-color: var(--primary-color);
             background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
             color: white;
-            padding: 8rem 3rem 4rem;
+            padding: 4rem 3rem;  /* Adjusted to prevent overlap */
             position: relative;
             overflow: hidden;
-            top: var(--header-height);
+            margin-top: 0; /* Removed top margin to prevent spacing issues */
         }
         
         .page-title-bg {
@@ -629,6 +631,8 @@
         .content-section {
             padding: 5rem 3rem;
             background-color: white;
+            position: relative; /* Added position relative */
+            z-index: 1;        /* Added z-index to ensure proper stacking */
         }
         
         .content-container {
@@ -1381,6 +1385,74 @@
             color: var(--accent-color);
         }
 
+        /* Intro Screen */
+        .intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .intro-content {
+            text-align: center;
+            color: white;
+        }
+
+        .intro-badge {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        .intro-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .intro-subtitle {
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .intro-loader {
+            width: 250px;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+        }
+
+        .intro-loader-bar {
+            height: 100%;
+            width: 0;
+            background-color: var(--accent-color);
+            animation: loading 4s forwards;
+        }
+
+        .intro-message {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        @keyframes loading {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
         /* Responsive Styles */
         @media (max-width: 992px) {
             .header-top,
@@ -1474,7 +1546,7 @@
             }
             
             .page-title-section {
-                padding: 8rem 2rem 3rem;
+                padding: 4rem 2rem 3rem;
             }
             
             .page-title {
@@ -1515,7 +1587,7 @@
             }
             
             .page-title-section {
-                padding: 7rem 1.5rem 3rem;
+                padding: 3rem 1.5rem;
             }
             
             .page-title {
@@ -1553,125 +1625,8 @@
     </style>
 </head>
 <body>
-    <!-- Header from Concept 3 - Modified for institutional look -->
-    <div class="header-container">
-        <div class="header-top" id="header-top">
-            <div class="logo">
-                <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS" class="logo-badge">
-                <div class="logo-text">
-                    <h1>POLIȚIA LOCALĂ SLOBOZIA</h1>
-                    <span class="logo-subtitle">Protejăm și Servim</span>
-                </div>
-            </div>
-            <div class="utility-menu">
-                <a href="#" class="utility-item">Oportunități de Carieră</a>
-                <a href="#" class="utility-item">Registre Publice</a>
-                <a href="#" class="utility-item">Depunere Sesizare</a>
-                <a href="#" class="utility-item emergency">
-                    <i class="material-icons">phone_in_talk</i> (0243) 955
-                </a>
-            </div>
-        </div>
-        <div class="accent-line"></div>
-        <div class="header-main" id="header-main">
-            <nav class="main-nav" id="main-nav">
-                <ul>
-                    <li><a href="#"><i class="material-icons menu-icon">home</i> Acasă</a></li>
-                    <li class="has-dropdown active">
-                        <a href="#">
-                            <i class="material-icons menu-icon">info</i> Despre Noi
-                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <div class="dropdown-group-header">Informații generale</div>
-                            <div class="dropdown-group-1">
-                                <li><a href="#" class="active"><i class="material-icons dropdown-icon-item">gavel</i> Acte normative</a></li>
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">assignment</i> Atribuții</a></li>
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">description</i> Regulament</a></li>
-                            </div>
-                            <div class="dropdown-group-header">Structură și facilități</div>
-                            <div class="dropdown-group-2">
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">account_tree</i> Organigrama</a></li>
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">track_changes</i> Poligonul de tragere</a></li>
-                            </div>
-                            <div class="dropdown-group-header">Media</div>
-                            <div class="dropdown-group-3">
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">play_circle_filled</i> Reportaje și înregistrări video</a></li>
-                            </div>
-                        </ul>
-                    </li>
-                    <li class="has-dropdown">
-                        <a href="#">
-                            <i class="material-icons menu-icon">feedback</i> Petiții
-                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">edit_note</i> Petiții</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări, reclamații, anonime</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-dropdown">
-                        <a href="#">
-                            <i class="material-icons menu-icon">phone</i> Contact
-                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">supervisor_account</i> Conducere</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">people</i> Relații cu publicul</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">location_on</i> Sediul operativ și administrativ</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">event</i> Program de audiențe</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-dropdown">
-                        <a href="#">
-                            <i class="material-icons menu-icon">verified_user</i> Integritate instituțională
-                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
-                        </ul>
-                    </li>
-                    <li class="has-dropdown">
-                        <a href="#">
-                            <i class="material-icons menu-icon">public</i> Informații de interes public
-                            <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <div class="dropdown-group-header">Financiare</div>
-                            <div class="dropdown-group-1">
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
-                            </div>
-                            <div class="dropdown-group-header">Transparență</div>
-                            <div class="dropdown-group-2">
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
-                            </div>
-                            <div class="dropdown-group-header">Dezvoltare</div>
-                            <div class="dropdown-group-3">
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
-                                <li><a href="#"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
-                            </div>
-                        </ul>
-                    </li>
-                    <li><a href="#"><i class="material-icons menu-icon">security</i> GDPR</a></li>
-                    <li><a href="#"><i class="material-icons menu-icon">videocam</i> Camere publice</a></li>
-                </ul>
-            </nav>
-            <div class="search-bar">
-                <input type="text" placeholder="Caută...">
-                <i class="material-icons">search</i>
-            </div>
-            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
-                <i class="material-icons">menu</i>
-            </button>
-        </div>
-    </div>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
 
     <!-- Page Title Section -->
     <section class="page-title-section">
@@ -1709,12 +1664,6 @@
                     <li>
                         <a href="http://legislatie.just.ro/Public/DetaliiDocument/124818" target="_blank" rel="noopener noreferrer">
                             H.G. nr. 1332/2010 – privind aprobarea Regulamentului-cadru de organizare şi funcţionare a poliţiei locale
-                            <i class="material-icons link-icon">open_in_new</i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=28627&amp;an=an&amp;id_fisier=12602" target="_blank" rel="noopener">
-                            H.C.L. nr.372/2023 – privind Regulamentul de organizare și funcționare a Poliției Locale Slobozia
                             <i class="material-icons link-icon">open_in_new</i>
                         </a>
                     </li>
@@ -1875,6 +1824,12 @@
             <div class="acts-container">
                 <h2 class="acts-heading">Hotărâri ale Consiliului Local Slobozia</h2>
                 <ul class="acts-list">
+                    <li>
+                        <a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=28627&amp;an=an&amp;id_fisier=12602" target="_blank" rel="noopener">
+                            H.C.L. nr.372/2023 – privind Regulamentul de organizare și funcționare a Poliției Locale Slobozia
+                            <i class="material-icons link-icon">open_in_new</i>
+                        </a>
+                    </li>
                     <li>
                         <a href="http://sloboziail.ro/lexloc/hotarari/hcl2008/hcl0842008.pdf" target="_blank" rel="noopener noreferrer">
                             H.C.L. nr. 84/2008 – privind adoptarea unor Regulamente şi Reglementări privind transportul în regim de taxi (art.32, alin1, pct. a – Modificare Anexa 2)
@@ -2039,172 +1994,39 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-bg-pattern"></div>
-        <div class="footer-content">
-            <div class="footer-top">
-                <div class="footer-column">
-                    <div class="footer-logo">
-                        <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS" class="footer-logo-badge">
-                        <div class="footer-logo-text">Poliția Locală Slobozia</div>
-                    </div>
-                    <p class="footer-description">Servim comunitatea noastră cu integritate, profesionalism și dedicare față de siguranța publică. Misiunea noastră este să lucrăm în parteneriat cu comunitatea noastră pentru a proteja viața și proprietatea, a rezolva probleme și a îmbunătăți calitatea vieții.</p>
-                    <div class="footer-social">
-                        <a href="#" class="social-icon"><i class="material-icons">facebook</i></a>
-                        <a href="#" class="social-icon"><i class="material-icons">alternate_email</i></a>
-                        <a href="#" class="social-icon"><i class="material-icons">photo_camera</i></a>
-                        <a href="#" class="social-icon"><i class="material-icons">play_circle_filled</i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-column">
-                    <h3 class="footer-title">Link-uri Rapide</h3>
-                    <div class="footer-links">
-                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Servicii de Urgență</a>
-                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Raportează o Infracțiune</a>
-                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Plătește Amenzi</a>
-                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Solicită Înregistrări</a>
-                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Depune o Reclamație</a>
-                        <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Oportunități de Carieră</a>
-                    </div>
-                </div>
-                
-                <div class="footer-column">
-                    <h3 class="footer-title">Contactează-ne</h3>
-                    <div class="footer-contact-item">
-                        <div class="footer-contact-icon"><i class="material-icons">location_on</i></div>
-                        <div class="footer-contact-text">
-                            <h4>Sediul Central</h4>
-                            <p>Strada Răzoare nr. 3</p>
-                            <p>Slobozia, județul Ialomița</p>
-                        </div>
-                    </div>
-                    <div class="footer-contact-item">
-                        <div class="footer-contact-icon"><i class="material-icons">call</i></div>
-                        <div class="footer-contact-text">
-                            <h4>Dispecerat: (0243) 955</h4>
-                            <p></p>
-                        </div>
-                    </div>
-                    <div class="footer-contact-item">
-                        <div class="footer-contact-icon"><i class="material-icons">email</i></div>
-                        <div class="footer-contact-text">
-                            <h4>Email</h4>
-                            <p>info@politialocala-slobozia.ro</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="footer-column">
-                    <h3 class="footer-title">Newsletter</h3>
-                    <p class="footer-description">Rămâi informat despre alertele de siguranță, evenimentele comunitare și actualizările departamentului abonându-te la newsletter-ul nostru.</p>
-                    <form class="footer-form">
-                        <input type="email" placeholder="Adresa ta de Email">
-                        <button type="submit">Abonează-te</button>
-                    </form>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="footer-copyright">
-                    &copy; 2025 Poliția Locală Slobozia. Toate drepturile rezervate.
-                </div>
-                <div class="footer-links-bottom">
-<a href="#" class="footer-bottom-link">Politica de Confidențialitate</a>
-                    <a href="#" class="footer-bottom-link">Termeni de Utilizare</a>
-                    <a href="#" class="footer-bottom-link">Accesibilitate</a>
-                    <a href="#" class="footer-bottom-link">Hartă Site</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="../components.js"></script>
     
     <script>
-        // Header scroll effect
-        window.addEventListener('scroll', function() {
-            const headerTop = document.getElementById('header-top');
-            const headerMain = document.getElementById('header-main');
-            
-            if (window.scrollY > 50) {
-                headerTop.classList.add('scrolled');
-                headerMain.classList.add('scrolled');
-            } else {
-                headerTop.classList.remove('scrolled');
-                headerMain.classList.remove('scrolled');
-            }
-        });
-        
-        // Mobile Menu Toggle
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        const mainNav = document.getElementById('main-nav');
-        
-        if (mobileMenuToggle) {
-            mobileMenuToggle.addEventListener('click', function() {
-                mainNav.classList.toggle('active');
-                const isExpanded = mainNav.classList.contains('active');
-                this.setAttribute('aria-expanded', isExpanded);
-                this.innerHTML = isExpanded ? 
-                    '<i class="material-icons">close</i>' : 
-                    '<i class="material-icons">menu</i>';
-            });
-        }
-        
-        // Mobile Dropdown Toggle
-        const dropdownItems = document.querySelectorAll('.main-nav .has-dropdown');
-        
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', function(e) {
-                // Check if we're in mobile view
-                if (window.innerWidth <= 992) {
-                    // Only apply to direct child a tag
-                    if (e.target === this.querySelector('a') || e.target === this.querySelector('a .dropdown-icon') || e.target === this.querySelector('a .menu-icon')) {
-                        e.preventDefault();
-                        this.classList.toggle('active');
-                    }
-                }
-            });
-        });
-        
-        // Ensure proper dropdown behavior on window resize
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 992) {
-                dropdownItems.forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                mainNav.classList.remove('active');
-                if (mobileMenuToggle) {
-                    mobileMenuToggle.innerHTML = '<i class="material-icons">menu</i>';
-                    mobileMenuToggle.setAttribute('aria-expanded', 'false');
-                }
-            }
-        });
-        
         // FAQ accordion functionality
-        const faqQuestions = document.querySelectorAll('.faq-question');
-        
-        faqQuestions.forEach(question => {
-            question.addEventListener('click', function() {
-                const answer = this.nextElementSibling;
-                const isActive = this.classList.contains('active');
-                
-                // Close all other FAQs first
-                faqQuestions.forEach(item => {
-                    if (item !== this) {
-                        item.classList.remove('active');
-                        item.nextElementSibling.style.maxHeight = null;
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    const isActive = this.classList.contains('active');
+                    
+                    // Close all other FAQs first
+                    faqQuestions.forEach(item => {
+                        if (item !== this) {
+                            item.classList.remove('active');
+                            item.nextElementSibling.style.maxHeight = null;
+                        }
+                    });
+                    
+                    // Toggle current FAQ
+                    if (!isActive) {
+                        this.classList.add('active');
+                        answer.style.maxHeight = answer.scrollHeight + 'px';
+                    } else {
+                        this.classList.remove('active');
+                        answer.style.maxHeight = null;
                     }
                 });
-                
-                // Toggle current FAQ
-                if (!isActive) {
-                    this.classList.add('active');
-                    answer.style.maxHeight = answer.scrollHeight + 'px';
-                } else {
-                    this.classList.remove('active');
-                    answer.style.maxHeight = null;
-                }
             });
         });
     </script>
