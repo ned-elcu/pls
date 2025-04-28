@@ -47,6 +47,7 @@
         }
         
         body {
+            padding-top: var(--header-height);
             font-family: 'Poppins', sans-serif;
             color: var(--text-primary);
             overflow-x: hidden;
@@ -113,11 +114,6 @@
             z-index: 0;
         }
         
-        .header-container::after {
-          content: "";
-          display: block;
-          height: var(--header-height);
-        }
         
         .header-top.scrolled {
             padding: 0.5rem 3rem;
@@ -527,6 +523,8 @@
             color: white;
             padding: 8rem 3rem 4rem;
             position: relative;
+            top: 0;
+            margin-top: 0;
             overflow: hidden;
             top: var(--header-height);
         }
