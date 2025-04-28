@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Răspunsuri la sesizări, reclamații, anonime - Poliția Locală Slobozia</title>
+    <!-- Added Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+            padding-top: var(--header-height); /* Add padding to prevent content overlap with fixed header */
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Material Icons styling */
+        .material-icons {
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Styles (for reference, loaded via components.js) */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+            top: 0;
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 3rem;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0;
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title-left {
+            max-width: 800px;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            align-items: center;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            opacity: 0.5;
+            font-size: 18px;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 3rem;
+            background-color: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Response Container */
+        .response-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .response-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .response-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        /* Intro Section */
+        .intro-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .intro-section p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+        
+        .legal-quote {
+            background-color: var(--background-light);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius-small);
+            font-style: italic;
+        }
+        
+        .legal-quote strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .info-message {
+            background-color: rgba(30, 136, 229, 0.1);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius-small);
+            line-height: 1.8;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+
+        /* Search and Filter */
+        .filter-container {
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .search-container {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--border-radius-medium);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition-fast);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .filter-select {
+            padding: 0.8rem 1rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--border-radius-medium);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            background-color: white;
+            min-width: 150px;
+            transition: var(--transition-fast);
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+        
+        .filter-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        /* Response List */
+        .responses-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .response-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            transition: var(--transition-medium);
+            border-left: 4px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .response-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .response-number {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .response-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .response-topic {
+            background-color: rgba(30, 136, 229, 0.1);
+            color: var(--secondary-color);
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--border-radius-small);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .response-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        
+        .response-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: auto;
+            transition: var(--transition-fast);
+        }
+        
+        .response-link i {
+            margin-left: 0.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .response-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .response-link:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+            gap: 0.5rem;
+        }
+        
+        .page-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-fast);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .page-link:hover {
+            background-color: var(--secondary-light);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .page-link.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .page-ellipsis {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            color: var(--text-secondary);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 5rem;
+            padding: 4rem 0;
+            background-color: var(--primary-color);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .cta-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .btn i {
+            margin-left: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* No results message */
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+        
+        .no-results-icon {
+            font-size: 3rem;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+        
+        .no-results-text {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .no-results-suggestion {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .page-title-section {
+                padding: 4rem 2rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .content-section {
+                padding: 4rem 2rem;
+            }
+            
+            .response-container {
+                padding: 2rem;
+            }
+            
+            .responses-list {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .response-container {
+                padding: 1.5rem;
+            }
+            
+            .responses-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-container {
+                max-width: none;
+            }
+            
+            .cta-container {
+                padding: 0 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-title-left">
+                <div class="page-title-badge">Comunicări publice</div>
+                <h1 class="page-title">Răspunsuri la sesizări, reclamații, anonime</h1>
+                <p class="page-description">În spiritul transparenței și pentru a veni în sprijinul cetățenilor, publicăm răspunsurile noastre la sesizările și reclamațiile care nu conțin datele de identificare ale expeditorului.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="../">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <a href="#">Petiții</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Răspunsuri la sesizări anonime</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="content-container">
+            <!-- Response Container -->
+            <div class="response-container">
+                <h2 class="response-heading">Informații despre sesizările anonime</h2>
+                
+                <div class="intro-section">
+                    <div class="legal-quote">
+                        <strong>ORDONANŢA nr.27 din 30 ianuarie 2002, privind reglementarea activităţii de soluţionare a petiţiilor, stipulează că:</strong>
+                        <p><strong>Art. 7</strong>. - <em>Petiţiile anonime sau cele în care nu sunt trecute datele de identificare a petiţionarului nu se iau în considerare şi vor fi clasate potrivit prezentei ordonanţe</em>.</p>
+                    </div>
+                    
+                    <div class="info-message">
+                        <p>Cu toate acestea, pentru a veni în sprijinul unei categorii de populație, bine intenționate, care sprijină demersurile noastre și dezvoltarea comunității, dar este încă timidă în respectarea legislației, în spiritul transparenței totale a instituției noastre, mai jos vom publica răspunsurile noastre la unele sesizări neidentificate, fără a face din aceasta o normă de lucru, întrucât ea a fost legiferată deja.</p>
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <!-- Search and Filter Section -->
+                <div class="filter-container">
+                    <div class="search-container">
+                        <i class="material-icons search-icon">search</i>
+                        <input type="text" id="search-input" class="search-input" placeholder="Caută după cuvinte cheie...">
+                    </div>
+                    
+                    <div>
+                        <span class="filter-label">Filtrează după an:</span>
+                        <select id="year-filter" class="filter-select">
+                            <option value="all">Toate</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Response List -->
+                <div class="responses-list" id="responses-list">
+                    <!-- 2025 responses -->
+                    <div class="response-card" data-year="2025" data-keywords="fumat lucky slots">
+                        <div class="response-number">Nr. 7989 din 25.04.2025</div>
+                        <div class="response-date">25 Aprilie 2025</div>
+                        <div class="response-topic">Fumat în spații închise</div>
+                        <div class="response-description">Răspuns la sesizare anonimă 5819/2025 referitoare la încălcarea Legii 349 din 2002 privind fumatul în sala de jocuri Lucky Slots.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2025/04/rasp.7989-sesizare-anonima-5819-incalcare-Legea-349-din-2002-.-fumat-in-sala-de-jocuri-Lucky-Slots.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <!-- 2024 responses -->
+                    <div class="response-card" data-year="2024" data-keywords="fumat sala jocuri">
+                        <div class="response-number">Nr. 10777 și 11468 din 29.10.2024</div>
+                        <div class="response-date">29 Octombrie 2024</div>
+                        <div class="response-topic">Fumat în spații închise</div>
+                        <div class="response-description">Răspuns la sesizări privind fumatul în sală de jocuri.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/10/rasp.sesiz_.anonime-10777-si-11468-referitor-fumat-in-sala-de-jocuri.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <div class="response-card" data-year="2024" data-keywords="consum alcool casa cultura aspersoare">
+                        <div class="response-number">Nr. 8740/8929 din 6.09.2024</div>
+                        <div class="response-date">6 Septembrie 2024</div>
+                        <div class="response-topic">Consum alcool / Amenajări urbane</div>
+                        <div class="response-description">Răspuns la sesizări referitoare la persoanele ce consumă alcool în spatele Casei de Cultură a Sindicatelor și aspersoare nefuncționale pe aleea din fața blocului Nl - bdul. Chimiei.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/09/rasp.sesizari-8740-si-8929-CityHealth-Consum-alcool-casa-de-cultura.-Aspersoare-nefunctionale.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <div class="response-card" data-year="2024" data-keywords="parcare autovehicul mv2">
+                        <div class="response-number">Nr. 7484 din 5.07.2024</div>
+                        <div class="response-date">5 Iulie 2024</div>
+                        <div class="response-topic">Parcare neregulamentară</div>
+                        <div class="response-description">Răspuns la sesizare privind parcarea unui autovehicul în zona blocului MV2.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/07/rasp.sesiz_.7484-cetatean-bl.-MV-2.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <div class="response-card" data-year="2024" data-keywords="amplasare bolarzi">
+                        <div class="response-number">Nr. 6005 din 29.05.2024</div>
+                        <div class="response-date">29 Mai 2024</div>
+                        <div class="response-topic">Amenajări urbane</div>
+                        <div class="response-description">Răspuns la sesizare privind amplasarea de bolarzi.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/05/rasp.sesizare-6005-Barbu-Aurelia.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <div class="response-card" data-year="2024" data-keywords="tulburare liniste piata agro">
+                        <div class="response-number">Nr. 3937 din 22.04.2024</div>
+                        <div class="response-date">22 Aprilie 2024</div>
+                        <div class="response-topic">Tulburarea liniștii publice</div>
+                        <div class="response-description">Răspuns la sesizare privind tulburarea liniștii publice în zona Pieței Agro.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/04/rasp.sesiz_.-3937-tulburarea-linistii-Piata-Agro.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <div class="response-card" data-year="2024" data-keywords="animale companie casa cultura">
+                        <div class="response-number">Nr. 2594 din 5.04.2024</div>
+                        <div class="response-date">5 Aprilie 2024</div>
+                        <div class="response-topic">Animale de companie</div>
+                        <div class="response-description">Răspuns la sesizare privind deținătorii de animale de companie din zona Casei de Cultură a Sindicatelor.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/04/rasp.sesiz_.-2594-si-2898.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <div class="response-card" data-year="2024" data-keywords="marcare ilegala loc parcare">
+                        <div class="response-number">Nr. 1703 din 04.03.2024</div>
+                        <div class="response-date">4 Martie 2024</div>
+                        <div class="response-topic">Parcare neregulamentară</div>
+                        <div class="response-description">Răspuns la sesizare privind marcarea ilegală a unui loc de parcare.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/03/rasp.sesiz_.1703-marcare-ilegala-loc-de-parcare.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <div class="response-card" data-year="2024" data-keywords="stationare razoare anl">
+                        <div class="response-number">Nr. 1025 din 29.01.2024</div>
+                        <div class="response-date">29 Ianuarie 2024</div>
+                        <div class="response-topic">Parcare neregulamentară</div>
+                        <div class="response-description">Răspuns la sesizare privind staționarea pe strada Răzoare, bloc ANL 2003.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/02/rasp.sesiz_.1025-stationare-str.Razoare-bl.ANL-2003.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <div class="response-card" data-year="2024" data-keywords="trecere pietoni matei basarab">
+                        <div class="response-number">Nr. 463 din 25.01.2024</div>
+                        <div class="response-date">25 Ianuarie 2024</div>
+                        <div class="response-topic">Siguranța rutieră</div>
+                        <div class="response-description">Răspuns la sesizare privind trecerea de pietoni amplasată pe strada Matei Basarab, nr. 72.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/01/rasp.sesiz_.-463-CityHealth-ref.trecere-pietoni-amplasata-pe-M.Basarab-nr.72.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <!-- 2023 responses (showing just a few as examples) -->
+                    <div class="response-card" data-year="2023" data-keywords="auto abandonat eminescu">
+                        <div class="response-number">Nr. 11425 din 16.10.2023</div>
+                        <div class="response-date">16 Octombrie 2023</div>
+                        <div class="response-topic">Vehicule abandonate</div>
+                        <div class="response-description">Răspuns la sesizare privind un autovehicul abandonat la blocul 25, strada Mihai Eminescu.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/10/rasp.sesiz_.11425-ref.auto-abandonat-bl.25.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <div class="response-card" data-year="2023" data-keywords="zgomot drujbe flex">
+                        <div class="response-number">Nr. 10679 din 7.09.2023</div>
+                        <div class="response-date">7 Septembrie 2023</div>
+                        <div class="response-topic">Tulburarea liniștii publice</div>
+                        <div class="response-description">Răspuns la sesizare privind locuitorii deranjați de zgomotul drujbelor și flexului.</div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/10/rasp.-sesiz.-10679-locuitori-deranjati-de-zgomotul-drujbelor-flexului.pdf" target="_blank" rel="noopener" class="response-link">
+                            Vizualizează document <i class="material-icons">open_in_new</i>
+                        </a>
+                    </div>
+                    
+                    <!-- Additional responses can be added here following the same pattern -->
+                </div>
+                
+                <!-- No Results Message (hidden by default) -->
+                <div class="no-results" id="no-results" style="display: none;">
+                    <i class="material-icons no-results-icon">search_off</i>
+                    <div class="no-results-text">Nu au fost găsite răspunsuri care să corespundă criteriilor dvs. de căutare</div>
+                    <div class="no-results-suggestion">Încercați să utilizați cuvinte cheie diferite sau resetați filtrele</div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination">
+                    <a href="#" class="page-link active">1</a>
+                    <a href="#" class="page-link">2</a>
+                    <a href="#" class="page-link">3</a>
+                    <span class="page-ellipsis">...</span>
+                    <a href="#" class="page-link">5</a>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-bg"></div>
+                <div class="cta-container">
+                    <h2 class="cta-title">Doriți să depuneți o petiție?</h2>
+                    <p class="cta-description">Vă invităm să consultați secțiunea dedicată pentru a afla cum puteți adresa o petiție către Poliția Locală Slobozia și care sunt informațiile necesare pentru procesarea acesteia.</p>
+                    <div class="cta-buttons">
+                        <a href="../petitii/" class="btn btn-primary">Depune o petiție <i class="material-icons">arrow_forward</i></a>
+                        <a href="../relatii-cu-publicul/" class="btn btn-secondary">Contactează-ne <i class="material-icons">mail</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="../components.js"></script>
+    
+    <!-- Search and Filter Functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            const yearFilter = document.getElementById('year-filter');
+            const responsesList = document.getElementById('responses-list');
+            const responseCards = document.querySelectorAll('.response-card');
+            const noResultsMessage = document.getElementById('no-results');
+            
+            // Function to filter responses
+            function filterResponses() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                const selectedYear = yearFilter.value;
+                let visibleCount = 0;
+                
+                responseCards.forEach(card => {
+                    const cardYear = card.getAttribute('data-year');
+                    const cardKeywords = card.getAttribute('data-keywords').toLowerCase();
+                    const cardText = card.textContent.toLowerCase();
+                    
+                    const matchesYear = selectedYear === 'all' || cardYear === selectedYear;
+                    const matchesSearch = searchTerm === '' || 
+                                          cardKeywords.includes(searchTerm) || 
+                                          cardText.includes(searchTerm);
+                    
+                    if (matchesYear && matchesSearch) {
+                        card.style.display = 'flex';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Show/hide no results message
+                if (visibleCount === 0) {
+                    noResultsMessage.style.display = 'block';
+                } else {
+                    noResultsMessage.style.display = 'none';
+                }
+            }
+            
+            // Event listeners
+            searchInput.addEventListener('input', filterResponses);
+            yearFilter.addEventListener('change', filterResponses);
+            
+            // Pagination functionality (simplified for demo)
+            const pageLinks = document.querySelectorAll('.page-link');
+            
+            pageLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    pageLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // In a real implementation, this would load the appropriate page of results
+                    // For demo purposes, we're just updating the UI
+                });
+            });
+        });
+    </script>
+</body>
+</html>
