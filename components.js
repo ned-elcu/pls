@@ -1006,7 +1006,7 @@ const HEADER_HTML = `
     <div class="intro-content">
         <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS" class="intro-badge">
         <h1 class="intro-title">POLIȚIA LOCALĂ SLOBOZIA</h1>
-        <p class="intro-subtitle">Servim cu Onoare • Protejăm cu Curaj</p>
+        <p class="intro-subtitle">Prin onoare servim • Prin curaj protejăm</p>
         <div class="intro-loader">
             <div class="intro-loader-bar"></div>
         </div>
