@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poligonul de tragere - Poliția Locală Slobozia</title>
+    <!-- Added Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+            padding-top: var(--header-height); /* Add padding to prevent content overlap with fixed header */
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Material Icons styling */
+        .material-icons {
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Styles (for reference, loaded via components.js) */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+            top: 0;
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 3rem;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0;
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title-left {
+            max-width: 800px;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            align-items: center;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            opacity: 0.5;
+            font-size: 18px;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 3rem;
+            background-color: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Image Slider */
+        .slider-section {
+            margin-bottom: 4rem;
+            position: relative;
+        }
+        
+        .slider-container {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .slider-slides {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .slide.active {
+            opacity: 1;
+        }
+        
+        .slide-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+            padding: 2rem;
+        }
+        
+        .slide-caption h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .slider-controls {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 10;
+        }
+        
+        .slider-control {
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .slider-control:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Accordion Styles */
+        .accordion-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .accordion-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .accordion-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+        
+        .accordion {
+            margin-top: 2rem;
+        }
+        
+        .accordion-item {
+            margin-bottom: 1rem;
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-small);
+            transition: var(--transition-medium);
+        }
+        
+        .accordion-item:hover {
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .accordion-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 1.5rem;
+            background-color: var(--background-light);
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            text-align: left;
+        }
+        
+        .accordion-trigger:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .accordion-trigger .material-icons {
+            transition: var(--transition-fast);
+        }
+        
+        .accordion-item.active .accordion-trigger .material-icons {
+            transform: rotate(180deg);
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background-color: white;
+        }
+        
+        .accordion-item.active .accordion-content {
+            max-height: 1000px;
+        }
+        
+        .accordion-body {
+            padding: 1.5rem;
+            line-height: 1.8;
+        }
+        
+        .accordion-body p {
+            margin-bottom: 1rem;
+        }
+        
+        .accordion-body a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-fast);
+        }
+        
+        .accordion-body a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        /* PDF Viewer */
+        .pdf-container {
+            margin: 2rem 0;
+            padding: 2rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+        }
+        
+        .pdf-viewer {
+            width: 100%;
+            height: 800px;
+            border: none;
+            border-radius: var(--border-radius-small);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Info Block */
+        .info-block {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-left: 4px solid var(--secondary-color);
+            border-radius: var(--border-radius-small);
+        }
+        
+        .info-block h4 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-block h4 .material-icons {
+            margin-right: 0.5rem;
+        }
+        
+        .info-block p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            margin-top: 4rem;
+            padding: 3rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-large);
+        }
+        
+        .gallery-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .gallery-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .gallery-item {
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-small);
+            transition: var(--transition-medium);
+            position: relative;
+            aspect-ratio: 16/9;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-medium);
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: var(--transition-medium);
+        }
+        
+        .gallery-item:hover .gallery-caption {
+            transform: translateY(0);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 5rem;
+            padding: 4rem 0;
+            background-color: var(--primary-color);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .cta-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .btn i {
+            margin-left: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .page-title-section {
+                padding: 4rem 2rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .content-section {
+                padding: 4rem 2rem;
+            }
+            
+            .accordion-container {
+                padding: 2rem;
+            }
+            
+            .slider-container {
+                height: 400px;
+            }
+            
+            .gallery-section {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .accordion-container {
+                padding: 1.5rem;
+            }
+            
+            .slider-container {
+                height: 300px;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+            
+            .cta-container {
+                padding: 0 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-title-left">
+                <div class="page-title-badge">Servicii publice</div>
+                <h1 class="page-title">Poligonul de tragere</h1>
+                <p class="page-description">Poligonul de tragere acoperit al Poliției Locale Slobozia, disponibil pentru pregătirea personalului propriu și oferit spre utilizare persoanelor fizice și juridice interesate.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="./">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <a href="#">Servicii</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Poligonul de tragere</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="content-container">
+            <!-- Image Slider Section -->
+            <section class="slider-section">
+                <div class="slider-container">
+                    <div class="slider-slides">
+                        <div class="slide active" style="background-image: url('https://pcslobozia.ro/wp-content/uploads/2021/11/fe39264c-3e0b-4791-bbb2-f1aecd315d67.jpeg');">
+                            <div class="slide-caption">
+                                <h3>Amplasament în teren</h3>
+                            </div>
+                        </div>
+                        <div class="slide" style="background-image: url('https://pcslobozia.ro/wp-content/uploads/2021/11/WhatsApp-Image-2021-11-04-at-13.20.16-1.jpeg');">
+                            <div class="slide-caption">
+                                <h3>Automatizare poligon</h3>
+                            </div>
+                        </div>
+                        <div class="slide" style="background-image: url('https://pcslobozia.ro/wp-content/uploads/2020/11/PLS-8-scaled.jpg');">
+                            <div class="slide-caption">
+                                <h3>Posturi de tragere în poligon</h3>
+                            </div>
+                        </div>
+                        <div class="slide" style="background-image: url('https://pcslobozia.ro/wp-content/uploads/2020/11/PLS-9-scaled.jpg');">
+                            <div class="slide-caption">
+                                <h3>Post de tragere în poligon</h3>
+                            </div>
+                        </div>
+                        <div class="slide" style="background-image: url('https://pcslobozia.ro/wp-content/uploads/2020/11/PLS-12-scaled.jpg');">
+                            <div class="slide-caption">
+                                <h3>Tragere în poligon</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slider-controls">
+                        <div class="slider-control prev">
+                            <i class="material-icons">chevron_left</i>
+                        </div>
+                        <div class="slider-control next">
+                            <i class="material-icons">chevron_right</i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Informații generale -->
+            <div class="accordion-container">
+                <h2 class="accordion-heading">Informații despre poligonul de tragere</h2>
+                
+                <div class="info-block">
+                    <h4><i class="material-icons">location_on</i> Locație</h4>
+                    <p>Poligonul de tragere acoperit este situat în Municipiul Slobozia, strada Poligonului nr. 2A, proprietatea publică a Municipiului Slobozia.</p>
+                </div>
+                
+                <div class="info-block">
+                    <h4><i class="material-icons">payments</i> Plata tarifelor</h4>
+                    <p>Tarifele de utilizare a poligonului se achită în contul Poliției Locale Slobozia:</p>
+                    <p><strong>RO27TREZ39121G335000XXXX</strong>, deschis la Trezoreria Slobozia.</p>
+                </div>
+                
+                <!-- Accordion for Legislation -->
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <button class="accordion-trigger">
+                            <span>Legislație</span>
+                            <i class="material-icons">expand_more</i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <p><a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=29059&amp;an=an&amp;id_fisier=13036" target="_blank" rel="noopener">HCL 113 / 25.04.2024</a></p>
+                                <p><strong>Art. 1</strong> – Se aprobă modificarea art. 3 al HCL nr. 88/22.03.2024 şi va avea următorul cuprins "<strong>Poliţia Locală Slobozia va asigura încasarea tarifului menţionat la art. 1.</strong>"</p>
+                                
+                                <p><a href="http://89.165.171.131:8087/Fileo.aspx?id_registratura=1&amp;registru=HOT&amp;nr=29034&amp;an=an&amp;id_fisier=13011">HCL 88 / 28.03.2024</a></p>
+                                <p><strong>Tarifele de utilizare a poligonului de tragere acoperit</strong> situat în Municipiul Slobozia, strada Poligonului nr. 2A, proprietatea publică a Municipiului Slobozia, de către persoanele fizice şi persoanele juridice, conform anexei, parte integrantă a prezentei hotărâri.</p>
+                                
+                                <p><a href="https://legislatie.just.ro/Public/DetaliiDocument/132994" target="_blank" rel="noopener noreferrer">Legea nr.295/2004 privind regimul armelor și munițiilor</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <button class="accordion-trigger">
+                            <span>Tarife</span>
+                            <i class="material-icons">expand_more</i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <div class="pdf-container">
+                                    <iframe class="pdf-viewer" src="https://pcslobozia.ro/wp-content/uploads/2024/07/Tarife-tragere.pdf"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Section -->
+            <div class="gallery-section">
+                <h3 class="gallery-heading">Galerie foto</h3>
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="https://pcslobozia.ro/wp-content/uploads/2021/11/fe39264c-3e0b-4791-bbb2-f1aecd315d67.jpeg" alt="Amplasament în teren">
+                        <div class="gallery-caption">Amplasament în teren</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://pcslobozia.ro/wp-content/uploads/2021/11/WhatsApp-Image-2021-11-04-at-13.20.16-1.jpeg" alt="Automatizare poligon">
+                        <div class="gallery-caption">Automatizare poligon</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://pcslobozia.ro/wp-content/uploads/2020/11/PLS-8-scaled.jpg" alt="Posturi de tragere în poligon">
+                        <div class="gallery-caption">Posturi de tragere în poligon</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://pcslobozia.ro/wp-content/uploads/2020/11/PLS-9-scaled.jpg" alt="Post de tragere în poligon">
+                        <div class="gallery-caption">Post de tragere în poligon</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://pcslobozia.ro/wp-content/uploads/2020/11/PLS-12-scaled.jpg" alt="Tragere în poligon">
+                        <div class="gallery-caption">Tragere în poligon</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-bg"></div>
+                <div class="cta-container">
+                    <h2 class="cta-title">Doriți să utilizați poligonul de tragere?</h2>
+                    <p class="cta-description">Pentru mai multe informații despre programul de funcționare, disponibilitate și rezervări, vă invităm să ne contactați.</p>
+                    <div class="cta-buttons">
+                        <a href="./relatii-cu-publicul/index.html" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
+                        <a href="tel:+40243235353" class="btn btn-secondary">Apelează acum <i class="material-icons">phone</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="./components.js"></script>
+    
+    <!-- Script for Image Slider -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Image Slider functionality
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.querySelector('.slider-control.prev');
+            const nextBtn = document.querySelector('.slider-control.next');
+            let currentSlide = 0;
+            
+            function showSlide(index) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                slides[index].classList.add('active');
+                currentSlide = index;
+            }
+            
+            function nextSlide() {
+                let next = currentSlide + 1;
+                if (next >= slides.length) next = 0;
+                showSlide(next);
+            }
+            
+            function prevSlide() {
+                let prev = currentSlide - 1;
+                if (prev < 0) prev = slides.length - 1;
+                showSlide(prev);
+            }
+            
+            // Auto slide every 5 seconds
+            let slideInterval = setInterval(nextSlide, 5000);
+            
+            // Reset interval when manually changing slides
+            function resetInterval() {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, 5000);
+            }
+            
+            nextBtn.addEventListener('click', () => {
+                nextSlide();
+                resetInterval();
+            });
+            
+            prevBtn.addEventListener('click', () => {
+                prevSlide();
+                resetInterval();
+            });
+            
+            // Accordion functionality
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            
+            accordionItems.forEach(item => {
+                const trigger = item.querySelector('.accordion-trigger');
+                
+                trigger.addEventListener('click', () => {
+                    // Toggle current item
+                    item.classList.toggle('active');
+                    
+                    // Close other items
+                    accordionItems.forEach(otherItem => {
+                        if (otherItem !== item && otherItem.classList.contains('active')) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
