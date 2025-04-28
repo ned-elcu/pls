@@ -327,33 +327,82 @@
             position: relative;
         }
         
-        /* Organigram node styles */
-        .org-box {
+        /* New styles for collapsible tree */
+        .collapsible-tree {
+            padding: 1rem 0;
+            margin: 0 auto;
+            max-width: 1100px;
+        }
+        
+        .tree-node {
+            margin: 10px 0;
+            list-style: none;
+            position: relative;
+        }
+        
+        .tree-content {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
             background-color: white;
-            border-radius: var(--border-radius-small);
+            border-radius: var(--border-radius-medium);
             box-shadow: var(--shadow-small);
-            padding: 1.2rem;
-            margin: 0.5rem;
-            text-align: center;
             position: relative;
             transition: var(--transition-medium);
+            cursor: pointer;
+            z-index: 2;
         }
         
-        .org-box:hover {
-            transform: translateY(-5px);
+        .tree-content:hover {
+            transform: translateY(-3px);
             box-shadow: var(--shadow-medium);
-            z-index: 5;
         }
         
-        .org-box-title {
-            font-weight: 600;
+        .tree-icon {
+            margin-right: 15px;
+            font-size: 24px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .tree-icon.primary {
             color: var(--primary-color);
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
+            background-color: rgba(26, 47, 95, 0.1);
         }
         
-        .org-box-count {
+        .tree-icon.secondary {
+            color: var(--secondary-color);
+            background-color: rgba(30, 136, 229, 0.1);
+        }
+        
+        .tree-icon.success {
+            color: var(--success-color);
+            background-color: rgba(67, 160, 71, 0.1);
+        }
+        
+        .tree-icon.accent {
+            color: var(--accent-color);
+            background-color: rgba(255, 202, 40, 0.1);
+        }
+        
+        .tree-text {
+            flex-grow: 1;
+        }
+        
+        .tree-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+        
+        .tree-count {
             display: inline-block;
             background-color: rgba(30, 136, 229, 0.1);
             color: var(--secondary-color);
@@ -361,147 +410,112 @@
             padding: 0.2rem 0.6rem;
             font-size: 0.8rem;
             font-weight: 600;
+            margin-left: 10px;
         }
         
-        /* Node border colors */
-        .org-box.blue {
+        .tree-toggle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+        
+        .tree-node.expanded > .tree-content .tree-toggle {
+            background-color: var(--secondary-light);
+            color: white;
+            transform: rotate(180deg);
+        }
+        
+        .tree-children {
+            padding-left: 40px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            position: relative;
+        }
+        
+        .tree-node.expanded > .tree-children {
+            max-height: 2000px;
+        }
+        
+        /* Vertical lines connecting nodes */
+        .tree-children::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 19px;
+            height: 100%;
+            width: 2px;
+            background-color: rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        
+        /* Horizontal lines to each child */
+        .tree-node .tree-children .tree-node::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: -22px;
+            width: 25px;
+            height: 2px;
+            background-color: rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        
+        /* Box border colors */
+        .tree-content.blue {
             border-left: 4px solid var(--secondary-color);
         }
         
-        .org-box.green {
-            border-left: 4px solid var(--success-color);
-        }
-        
-        .org-box.yellow {
+        .tree-content.yellow {
             border-left: 4px solid var(--accent-color);
         }
         
-        /* Orgchart grid layout */
-        .org-row {
-            display: flex;
-            justify-content: center;
-            position: relative;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
+        .tree-content.green {
+            border-left: 4px solid var(--success-color);
         }
         
-        /* Specific row styling */
-        .org-row.level-1 {
-            margin-bottom: 3rem;
+        /* Zoom effect on click */
+        .tree-content.active {
+            background-color: rgba(30, 136, 229, 0.05);
         }
         
-        .org-row.level-1 .org-box {
-            width: 300px;
-        }
-        
-        .org-row.level-1::after {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 2rem;
-            background-color: rgba(0,0,0,0.1);
-            bottom: -2rem;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        
-        .org-row.level-2 {
-            justify-content: space-between;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-        
-        .org-row.level-2 .org-box {
-            width: 45%;
-            max-width: 350px;
-        }
-        
-        .org-row.level-2::before {
-            content: '';
-            position: absolute;
-            width: 80%;
-            height: 2px;
-            background-color: rgba(0,0,0,0.1);
-            top: -1rem;
-            left: 10%;
-        }
-        
-        .org-row.level-2::after {
-            content: '';
-            position: absolute;
-            width: 80%;
-            height: 2px;
-            background-color: rgba(0,0,0,0.1);
-            bottom: -1rem;
-            left: 10%;
-        }
-        
-        .org-row.level-3 {
-            justify-content: space-between;
-            margin-bottom: 3rem;
-        }
-        
-        .org-col {
-            display: flex;
-            flex-direction: column;
-            width: 45%;
-        }
-        
-        .org-col .org-box {
-            margin-bottom: 1rem;
-            width: 100%;
-        }
-        
-        .org-row.level-3 .org-col.left::before {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 1rem;
-            background-color: rgba(0,0,0,0.1);
-            top: -1rem;
-            left: 22.5%;
-        }
-        
-        .org-row.level-3 .org-col.right::before {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 1rem;
-            background-color: rgba(0,0,0,0.1);
-            top: -1rem;
-            left: 77.5%;
-        }
-        
-        .org-row.level-4 {
-            width: 60%;
-            margin: 0 auto;
-            justify-content: space-between;
-        }
-        
-        .org-row.level-4::before {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 1rem;
-            background-color: rgba(0,0,0,0.1);
-            top: -1rem;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        
-        .org-row.level-4 .org-box {
-            width: 45%;
-            max-width: 300px;
-        }
-        
-        .org-row.level-4::after {
-            content: '';
-            position: absolute;
-            width: 80%;
-            height: 2px;
-            background-color: rgba(0,0,0,0.1);
-            top: -1rem;
-            left: 10%;
+        /* Responsive adjustments for tree */
+        @media (max-width: 768px) {
+            .tree-content {
+                padding: 12px 15px;
+            }
+            
+            .tree-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 18px;
+                margin-right: 10px;
+            }
+            
+            .tree-children {
+                padding-left: 25px;
+            }
+            
+            .tree-children::before {
+                left: 12px;
+            }
+            
+            .tree-node .tree-children .tree-node::before {
+                left: -12px;
+                width: 15px;
+            }
+            
+            .tree-title {
+                font-size: 0.9rem;
+            }
         }
 
         /* Document list */
@@ -915,25 +929,6 @@
             .related-resources {
                 padding: 2rem;
             }
-            
-            .org-row.level-2 .org-box,
-            .org-row.level-4 .org-box {
-                width: 100%;
-                max-width: none;
-                margin-bottom: 1rem;
-            }
-            
-            .org-row.level-2,
-            .org-row.level-3,
-            .org-row.level-4 {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .org-col {
-                width: 100%;
-                margin-bottom: 1rem;
-            }
         }
         
         @media (max-width: 768px) {
@@ -1035,69 +1030,146 @@
                     <div class="tab-content active" id="interactive">
                         <div class="organigram-view">
                             <div class="organigram-chart">
-                                <!-- Level 1: Director executiv -->
-                                <div class="org-row level-1">
-                                    <div class="org-box blue">
-                                        <div class="org-box-title">Director executiv</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Level 2: Director executiv adjunct and Compartiment Sinteză -->
-                                <div class="org-row level-2">
-                                    <div class="org-box blue">
-                                        <div class="org-box-title">Director executiv adjunct</div>
-                                    </div>
-                                    
-                                    <div class="org-box yellow">
-                                        <div class="org-box-title">Compartiment Sinteză, Evidență, Planificare</div>
-                                        <div class="org-box-count">3</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Level 3: Services and other compartments -->
-                                <div class="org-row level-3">
-                                    <!-- Left column - Services -->
-                                    <div class="org-col left">
-                                        <div class="org-box green">
-                                            <div class="org-box-title">Serviciul Ordine Publică și Control</div>
-                                            <div class="org-box-count">23 + 1</div>
+                                <!-- New Collapsible Tree Structure -->
+                                <div class="collapsible-tree">
+                                    <!-- Director executiv -->
+                                    <div class="tree-node">
+                                        <div class="tree-content blue">
+                                            <div class="tree-icon primary">
+                                                <i class="material-icons">account_circle</i>
+                                            </div>
+                                            <div class="tree-text">
+                                                <div class="tree-title">Director executiv</div>
+                                            </div>
+                                            <div class="tree-toggle">
+                                                <i class="material-icons">keyboard_arrow_down</i>
+                                            </div>
                                         </div>
-                                        
-                                        <div class="org-box green">
-                                            <div class="org-box-title">Serviciul Circulație Rutieră și Dispecerat</div>
-                                            <div class="org-box-count">14 + 1</div>
+                                        <div class="tree-children">
+                                            <!-- Director executiv adjunct -->
+                                            <div class="tree-node">
+                                                <div class="tree-content blue">
+                                                    <div class="tree-icon secondary">
+                                                        <i class="material-icons">person</i>
+                                                    </div>
+                                                    <div class="tree-text">
+                                                        <div class="tree-title">Director executiv adjunct</div>
+                                                    </div>
+                                                    <div class="tree-toggle">
+                                                        <i class="material-icons">keyboard_arrow_down</i>
+                                                    </div>
+                                                </div>
+                                                <div class="tree-children">
+                                                    <!-- Serviciul Ordine Publică și Control -->
+                                                    <div class="tree-node">
+                                                        <div class="tree-content green">
+                                                            <div class="tree-icon success">
+                                                                <i class="material-icons">security</i>
+                                                            </div>
+                                                            <div class="tree-text">
+                                                                <div class="tree-title">Serviciul Ordine Publică și Control</div>
+                                                                <div class="tree-count">23 + 1</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Serviciul Circulație Rutieră și Dispecerat -->
+                                                    <div class="tree-node">
+                                                        <div class="tree-content green">
+                                                            <div class="tree-icon success">
+                                                                <i class="material-icons">directions_car</i>
+                                                            </div>
+                                                            <div class="tree-text">
+                                                                <div class="tree-title">Serviciul Circulație Rutieră și Dispecerat</div>
+                                                                <div class="tree-count">14 + 1</div>
+                                                            </div>
+                                                            <div class="tree-toggle">
+                                                                <i class="material-icons">keyboard_arrow_down</i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tree-children">
+                                                            <!-- Compartiment Circulație Rutieră -->
+                                                            <div class="tree-node">
+                                                                <div class="tree-content blue">
+                                                                    <div class="tree-icon secondary">
+                                                                        <i class="material-icons">traffic</i>
+                                                                    </div>
+                                                                    <div class="tree-text">
+                                                                        <div class="tree-title">Compartiment Circulație Rutieră</div>
+                                                                        <div class="tree-count">9</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Compartiment Dispecerat -->
+                                                            <div class="tree-node">
+                                                                <div class="tree-content blue">
+                                                                    <div class="tree-icon secondary">
+                                                                        <i class="material-icons">settings_phone</i>
+                                                                    </div>
+                                                                    <div class="tree-text">
+                                                                        <div class="tree-title">Compartiment Dispecerat</div>
+                                                                        <div class="tree-count">5</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Compartiment Sinteză, Evidență, Planificare -->
+                                            <div class="tree-node">
+                                                <div class="tree-content yellow">
+                                                    <div class="tree-icon accent">
+                                                        <i class="material-icons">assessment</i>
+                                                    </div>
+                                                    <div class="tree-text">
+                                                        <div class="tree-title">Compartiment Sinteză, Evidență, Planificare</div>
+                                                        <div class="tree-count">3</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Compartiment Supraveghere Video, Monitorizare trafic -->
+                                            <div class="tree-node">
+                                                <div class="tree-content yellow">
+                                                    <div class="tree-icon accent">
+                                                        <i class="material-icons">videocam</i>
+                                                    </div>
+                                                    <div class="tree-text">
+                                                        <div class="tree-title">Compartiment Supraveghere Video, Monitorizare trafic</div>
+                                                        <div class="tree-count">5</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Compartiment Financiar-Contabil, Resurse Umane -->
+                                            <div class="tree-node">
+                                                <div class="tree-content yellow">
+                                                    <div class="tree-icon accent">
+                                                        <i class="material-icons">account_balance</i>
+                                                    </div>
+                                                    <div class="tree-text">
+                                                        <div class="tree-title">Compartiment Financiar-Contabil, Resurse Umane, Salarizare, Achiziții publice</div>
+                                                        <div class="tree-count">2</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Compartiment Tehnic, Administrativ, Relații cu presa -->
+                                            <div class="tree-node">
+                                                <div class="tree-content yellow">
+                                                    <div class="tree-icon accent">
+                                                        <i class="material-icons">build</i>
+                                                    </div>
+                                                    <div class="tree-text">
+                                                        <div class="tree-title">Compartiment Tehnic, Administrativ, Relații cu presa</div>
+                                                        <div class="tree-count">2</div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    
-                                    <!-- Right column - Compartments -->
-                                    <div class="org-col right">
-                                        <div class="org-box yellow">
-                                            <div class="org-box-title">Compartiment Supraveghere Video, Monitorizare trafic</div>
-                                            <div class="org-box-count">5</div>
-                                        </div>
-                                        
-                                        <div class="org-box yellow">
-                                            <div class="org-box-title">Compartiment Financiar-Contabil, Resurse Umane, Salarizare, Achiziții publice</div>
-                                            <div class="org-box-count">2</div>
-                                        </div>
-                                        
-                                        <div class="org-box yellow">
-                                            <div class="org-box-title">Compartiment Tehnic, Administrativ, Relații cu presa</div>
-                                            <div class="org-box-count">2</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Level 4: Sub-compartments -->
-                                <div class="org-row level-4">
-                                    <div class="org-box blue">
-                                        <div class="org-box-title">Compartiment Circulație Rutieră</div>
-                                        <div class="org-box-count">9</div>
-                                    </div>
-                                    
-                                    <div class="org-box blue">
-                                        <div class="org-box-title">Compartiment Dispecerat</div>
-                                        <div class="org-box-count">5</div>
                                     </div>
                                 </div>
                             </div>
@@ -1363,6 +1435,47 @@
                     toggleText.textContent = 'Afișează documente arhivate';
                 }
             });
+            
+            // Collapsible tree functionality
+            function initCollapsibleTree() {
+                // Get all tree nodes with children
+                const treeNodes = document.querySelectorAll('.tree-node');
+                
+                treeNodes.forEach(node => {
+                    const toggle = node.querySelector('.tree-toggle');
+                    const content = node.querySelector('.tree-content');
+                    
+                    // Skip nodes without toggle buttons
+                    if (!toggle) return;
+                    
+                    // Add click event to toggle button
+                    toggle.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        node.classList.toggle('expanded');
+                    });
+                    
+                    // Add click event to content area
+                    content.addEventListener('click', function() {
+                        // Add active class for visual feedback
+                        document.querySelectorAll('.tree-content').forEach(c => c.classList.remove('active'));
+                        content.classList.add('active');
+                        
+                        // Toggle expand only if it has children
+                        if (toggle) {
+                            node.classList.toggle('expanded');
+                        }
+                    });
+                });
+                
+                // Expand first level by default
+                const rootNode = document.querySelector('.tree-node');
+                if (rootNode) {
+                    rootNode.classList.add('expanded');
+                }
+            }
+            
+            // Initialize collapsible tree on page load
+            initCollapsibleTree();
         });
     </script>
 </body>
