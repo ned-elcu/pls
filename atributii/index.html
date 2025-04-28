@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atribuții - Poliția Locală Slobozia</title>
+    <!-- Added Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+            
+            /* Menu group colors */
+            --menu-group-1: rgba(30, 136, 229, 0.03);
+            --menu-group-2: rgba(255, 202, 40, 0.03);
+            --menu-group-3: rgba(67, 160, 71, 0.03);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+            padding-top: var(--header-height); /* Add padding to prevent content overlap with fixed header */
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Material Icons styling */
+        .material-icons {
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Styles (for reference, loaded via components.js) */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+            top: 0;
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 3rem;  /* Adjusted to prevent overlap */
+            position: relative;
+            overflow: hidden;
+            margin-top: 0; /* Removed top margin to prevent spacing issues */
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title-left {
+            max-width: 800px;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            opacity: 0.5;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 3rem;
+            background-color: white;
+            position: relative; /* Added position relative */
+            z-index: 1;        /* Added z-index to ensure proper stacking */
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Attributions Container Styling */
+        .attributions-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .attributions-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .attributions-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        /* Domain section styling */
+        .domain-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .domain-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .domain-title {
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .domain-title .material-icons {
+            margin-right: 0.8rem;
+            color: var(--secondary-color);
+            font-size: 1.6rem;
+        }
+        
+        .attributes-list {
+            list-style: none;
+            margin: 0 0 1rem 0;
+            padding: 0;
+        }
+        
+        .attributes-list li {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed rgba(0,0,0,0.05);
+            position: relative;
+            padding-left: 2rem;
+            line-height: 1.6;
+        }
+        
+        .attributes-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.75rem;
+            width: 8px;
+            height: 8px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+        }
+        
+        .attributes-list li:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        /* Extra styling elements */
+        .highlight-text {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .attribution-note {
+            background-color: rgba(30, 136, 229, 0.05);
+            border-radius: var(--border-radius-medium);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--secondary-color);
+            position: relative;
+        }
+        
+        .attribution-note::before {
+            content: '\201C';
+            font-family: Georgia, serif;
+            font-size: 4rem;
+            color: rgba(30, 136, 229, 0.1);
+            position: absolute;
+            left: 1rem;
+            top: -0.5rem;
+        }
+
+        .attribution-note p {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 0.8rem;
+        }
+
+        .attribution-note p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Related Resources */
+        .related-resources {
+            margin-top: 4rem;
+            padding: 3rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-large);
+        }
+        
+        .related-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .related-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-medium);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .resource-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+        }
+        
+        .resource-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            align-self: flex-start;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link i {
+            margin-left: 0.3rem;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .resource-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 5rem;
+            padding: 4rem 0;
+            background-color: var(--primary-color);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .cta-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .btn i {
+            margin-left: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .page-title-section {
+                padding: 4rem 2rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .content-section {
+                padding: 4rem 2rem;
+            }
+            
+            .attributions-container {
+                padding: 2rem;
+            }
+            
+            .related-resources {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+                position: relative;
+                z-index: 2;
+                margin-top: 0;
+                background: white;
+            }
+            
+            .attributions-container {
+                padding: 1.5rem;
+            }
+            
+            .domain-title {
+                font-size: 1.2rem;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-container {
+                padding: 0 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-title-left">
+                <div class="page-title-badge">Competențe instituționale</div>
+                <h1 class="page-title">Atribuții</h1>
+                <p class="page-description">Atribuțiile legale ale Poliției Locale Slobozia, conform Legii nr. 155/2010 și a Regulamentului-cadru de organizare și funcționare.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="#">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <a href="#">Despre Noi</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Atribuții</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section with Attributions -->
+    <section class="content-section">
+        <div class="content-container">
+            <!-- Main section intro -->
+            <div class="attributions-container">
+                <h2 class="attributions-heading">Atribuţiile Poliţiei Locale</h2>
+                
+                <!-- Domeniul ordinii și liniștii publice -->
+                <div class="domain-section">
+                    <h3 class="domain-title">
+                        <i class="material-icons">security</i>
+                        În domeniul ordinii şi liniştii publice, precum şi al pazei bunurilor
+                    </h3>
+                    <ul class="attributes-list">
+                        <li>Menţine ordinea şi liniştea publică în zonele şi locurile stabilite prin planul de ordine şi siguranţă publică al unităţii/subdiviziunii administrativ-teritoriale, aprobat în condiţiile legii;</li>
+                        <li>Menţine ordinea publică în imediata apropiere a unităţilor de învăţământ publice, a unităţilor sanitare publice, în parcările auto aflate pe domeniul public sau privat al unităţii/subdiviziunii administrativ-teritoriale, în zonele comerciale şi de agrement, în parcuri, pieţe, cimitire, precum şi în alte asemenea locuri publice aflate în proprietatea şi/sau în administrarea unităţilor/subdiviziunilor administrativ-teritoriale sau a altor instituţii/servicii publice de interes local, stabilite prin planul de ordine şi siguranţă publică;</li>
+                        <li>Participă, împreună cu autorităţile competente prevăzute de lege, potrivit competenţelor, la activităţi de salvare şi evacuare a persoanelor şi bunurilor periclitate de calamităţi naturale ori catastrofe, precum şi de limitare şi înlăturare a urmărilor provocate de astfel de evenimente;</li>
+                        <li>Acţionează pentru identificarea cerşetorilor, a copiilor lipsiţi de supravegherea şi ocrotirea părinţilor sau a reprezentanţilor legali, a persoanelor fără adăpost şi procedează la încredinţarea acestora serviciului public de asistenţă socială în vederea soluţionării problemelor acestora, în condiţiile legii;</li>
+                        <li>Constată contravenţii şi aplică sancţiuni, potrivit competenţei, pentru nerespectarea legislaţiei privind regimul de deţinere a câinilor periculoşi sau agresivi, a celei privind programul de gestionare a câinilor fără stăpân şi a celei privind protecţia animalelor şi sesizează serviciile specializate pentru gestionarea câinilor fără stăpân despre existenţa acestor câini şi acordă sprijin personalului specializat în capturarea şi transportul acestora la adăpost;</li>
+                        <li>Asigură protecţia personalului din aparatul de specialitate al primarului/primarului general, din instituţiile sau serviciile publice de interes local la efectuarea unor controale ori acţiuni specifice;</li>
+                        <li>Participă, împreună cu alte autorităţi competente, la asigurarea ordinii şi liniştii publice cu ocazia mitingurilor, marşurilor, demonstraţiilor, procesiunilor, acţiunilor de pichetare, acţiunilor comerciale promoţionale, manifestărilor cultural-artistice, sportive, religioase sau comemorative, după caz, precum şi a altor asemenea activităţi care se desfăşoară în spaţiul public şi care implică aglomerări de persoane;</li>
+                        <li>Asigură paza bunurilor şi obiectivelor aflate în proprietatea unităţii/subdiviziunii administrativ-teritoriale şi/sau în administrarea autorităţilor administraţiei publice locale sau a altor servicii/instituţii publice de interes local, stabilite de consiliul local/Consiliul General al Municipiului Bucureşti;</li>
+                        <li>Constată contravenţii şi aplică sancţiuni pentru nerespectarea normelor legale privind convieţuirea socială stabilite prin legi sau acte administrative ale autorităţilor administraţiei publice centrale şi locale, pentru faptele constatate în raza teritorială de competenţă;</li>
+                        <li>Execută, în condiţiile legii, mandatele de aducere emise de organele de urmărire penală şi instanţele de judecată care arondează unitatea/subdiviziunea administrativ-teritorială, pentru persoanele care locuiesc pe raza de competenţă;</li>
+                        <li>Participă, alături de Poliţia Română, Jandarmeria Română şi celelalte forţe ce compun sistemul integrat de ordine şi siguranţă publică, pentru prevenirea şi combaterea infracţionalităţii stradale;</li>
+                        <li>Cooperează cu centrele militare zonale în vederea înmânării ordinelor de chemare la mobilizare şi/sau de clarificare a situaţiei militare a rezerviştilor din Ministerul Apărării Naţionale;</li>
+                        <li>Asigură măsuri de protecţie a executorilor judecătoreşti cu ocazia executărilor silite;</li>
+                        <li>Acordă, pe teritoriul unităţilor/subdiviziunilor administrativ-teritoriale, sprijin imediat structurilor competente cu atribuţii în domeniul menţinerii, asigurării şi restabilirii ordinii publice.</li>
+                    </ul>
+                </div>
+
+                <!-- Domeniul circulației pe drumurile publice -->
+                <div class="domain-section">
+                    <h3 class="domain-title">
+                        <i class="material-icons">directions_car</i>
+                        În domeniul circulaţiei pe drumurile publice
+                    </h3>
+                    <ul class="attributes-list">
+                        <li>Asigură fluenţa circulaţiei pe drumurile publice din raza teritorială de competenţă, având dreptul de a efectua semnale regulamentare de oprire a conducătorilor de autovehicul exclusiv pentru îndeplinirea atribuţiilor conferite de prezenta lege în domeniul circulaţiei pe drumurile publice;</li>
+                        <li>Verifică integritatea mijloacelor de semnalizare rutieră şi sesizează nereguli constatate privind funcţionarea semafoarelor, starea indicatoarelor şi a marcajelor rutiere şi acordă asistenţă în zonele unde se aplică marcaje rutiere;</li>
+                        <li>Participă la acţiuni comune cu administratorul drumului pentru înlăturarea efectelor fenomenelor naturale, cum sunt: ninsoare abundentă, viscol, vânt puternic, ploaie torenţială, grindină, polei şi alte asemenea fenomene, pe drumurile publice;</li>
+                        <li>Participă, împreună cu unităţile/structurile teritoriale ale Poliţiei Române, la asigurarea măsurilor de circulaţie ocazionate de adunări publice, mitinguri, marşuri, demonstraţii, procesiuni, acţiuni de pichetare, acţiuni comerciale promoţionale, manifestări cultural-artistice, sportive, religioase sau comemorative, după caz, precum şi de alte activităţi care se desfăşoară pe drumul public şi implică aglomerări de persoane;</li>
+                        <li>Sprijină unităţile/structurile teritoriale ale Poliţiei Române în asigurarea măsurilor de circulaţie în cazul transporturilor speciale şi al celor agabaritice pe raza teritorială de competenţă;</li>
+                        <li>Acordă sprijin unităţilor/structurilor teritoriale ale Poliţiei Române în luarea măsurilor pentru asigurarea fluenţei şi siguranţei traficului;</li>
+                        <li>Asigură, în cazul accidentelor soldate cu victime, paza locului acestor accidente şi ia primele măsuri ce se impun pentru conservarea urmelor, identificarea martorilor şi a făptuitorilor şi, dacă se impune, transportul victimelor la cea mai apropiată unitate sanitară;</li>
+                        <li>Constată contravenţii şi aplică sancţiuni pentru încălcarea normelor legale privind oprirea, staţionarea, parcarea autovehiculelor şi accesul interzis, având dreptul de a dispune măsuri de ridicare a autovehiculelor staţionate neregulamentar;</li>
+                        <li>Constată contravenţii şi aplică sancţiuni pentru încălcarea normelor legale privind masa maximă admisă şi accesul pe anumite sectoare de drum, având dreptul de a efectua semnale de oprire a conducătorilor acestor vehicule;</li>
+                        <li>Constată contravenţii şi aplică sancţiuni pentru încălcarea normelor rutiere de către pietoni, biciclişti, conducători de mopede şi vehicule cu tracţiune animală;</li>
+                        <li>Constată contravenţii şi aplică sancţiuni pentru nerespectarea prevederilor legale referitoare la circulaţia în zona pietonală, în zona rezidenţială, în parcuri şi zone de agrement, precum şi pe locurile de parcare adaptate, rezervate şi semnalizate prin semnul internaţional pentru persoanele cu handicap;</li>
+                        <li>Aplică prevederile legale privind regimul juridic al vehiculelor fără stăpân sau abandonate pe terenuri aparţinând domeniului public sau privat al statului ori al unităţilor/subdiviziunilor administrativ-teritoriale;</li>
+                        <li>Cooperează cu unităţile/structurile teritoriale ale Poliţiei Române pentru identificarea deţinătorului/utilizatorului autovehiculului ridicat ca urmare a staţionării neregulamentare sau al autovehiculelor abandonate pe domeniul public.</li>
+                    </ul>
+                </div>
+
+                <!-- Domeniul disciplinei în construcții -->
+                <div class="domain-section">
+                    <h3 class="domain-title">
+                        <i class="material-icons">construction</i>
+                        În domeniul disciplinei în construcţii şi al afişajului stradal
+                    </h3>
+                    <ul class="attributes-list">
+                        <li>Efectuează controale pentru identificarea lucrărilor de construcţii executate fără autorizaţie de construire sau desfiinţare, după caz, inclusiv a construcţiilor cu caracter provizoriu;</li>
+                        <li>Efectuează controale pentru identificarea persoanelor care nu respectă autorizaţia de executare a lucrărilor de reparaţii ale părţii carosabile şi pietonale;</li>
+                        <li>Verifică respectarea normelor legale privind afişajul publicitar, afişajul electoral şi orice altă formă de afişaj/reclamă, inclusiv cele referitoare la amplasarea firmei la locul de desfăşurare a activităţii economice;</li>
+                        <li>Participă la acţiunile de demolare/dezmembrare/dinamitare a construcţiilor efectuate fără autorizaţie pe domeniul public sau privat al unităţii/subdiviziunii administrativ-teritoriale ori pe spaţii aflate în administrarea autorităţilor administraţiei publice locale sau a altor instituţii/servicii publice de interes local, prin asigurarea protecţiei perimetrului şi a libertăţii de acţiune a personalului care participă la aceste operaţiuni specifice;</li>
+                        <li>Constată, după caz, conform atribuţiilor stabilite prin lege, contravenţiile privind disciplina în domeniul autorizării executării lucrărilor în construcţii şi înaintează procesele-verbale de constatare a contravenţiilor, în vederea aplicării sancţiunii, şefului compartimentului de specialitate care coordonează activitatea de amenajare a teritoriului şi de urbanism sau, după caz, preşedintelui consiliului judeţean, primarului unităţii administrativ-teritoriale ori al sectorului municipiului Bucureşti în a cărui rază de competenţă s-a săvârşit contravenţia sau persoanei împuternicite de aceştia.</li>
+                    </ul>
+                </div>
+
+                <!-- Domeniul protecției mediului -->
+                <div class="domain-section">
+                    <h3 class="domain-title">
+                        <i class="material-icons">park</i>
+                        În domeniul protecţiei mediului
+                    </h3>
+                    <ul class="attributes-list">
+                        <li>Controlează respectarea prevederilor legale privind condiţiile de ridicare, transport şi depozitare a deşeurilor menajere şi industriale;</li>
+                        <li>Sesizează autorităţilor şi instituţiilor publice competente cazurile de nerespectare a normelor legale privind nivelul de poluare, inclusiv fonică;</li>
+                        <li>Participă la acţiunile de combatere a zoonozelor deosebit de grave şi a epizootiilor;</li>
+                        <li>Identifică bunurile abandonate pe domeniul public sau privat al unităţii/subdiviziunii administrativ-teritoriale sau pe spaţii aflate în administrarea autorităţilor administraţiei publice locale ori a altor instituţii/servicii publice de interes local şi aplică procedurile legale pentru ridicarea acestora;</li>
+                        <li>Verifică igienizarea surselor de apă, a malurilor, a albiilor sau cuvetelor acestora;</li>
+                        <li>Verifică asigurarea salubrizării străzilor, a căilor de acces, a zonelor verzi, a rigolelor, îndepărtarea zăpezii şi a gheţii de pe căile de acces, dezinsecţia şi deratizarea imobilelor;</li>
+                        <li>Verifică existenţa contractelor de salubrizare încheiate de către persoane fizice sau juridice, potrivit legii;</li>
+                        <li>Verifică ridicarea deşeurilor menajere de operatorii de servicii de salubrizare, în conformitate cu graficele stabilite;</li>
+                        <li>Verifică şi soluţionează, potrivit competenţelor specifice ale autorităţilor administraţiei publice locale, sesizările cetăţenilor privind nerespectarea normelor legale de protecţie a mediului şi a surselor de apă, precum şi a celor de gospodărire a localităţilor;</li>
+                        <li>Constată contravenţii şi aplică sancţiuni pentru încălcarea normelor legale specifice realizării atribuţiilor prevăzute la lit. a) – i), stabilite în sarcina autorităţilor administraţiei publice locale.</li>
+                    </ul>
+                </div>
+
+                <!-- Domeniul activității comerciale -->
+                <div class="domain-section">
+                    <h3 class="domain-title">
+                        <i class="material-icons">store</i>
+                        În domeniul activităţii comerciale
+                    </h3>
+                    <ul class="attributes-list">
+                        <li>Acţionează pentru respectarea normelor legale privind desfăşurarea comerţului stradal şi a activităţilor comerciale, respectiv a condiţiilor şi a locurilor stabilite de autorităţile administraţiei publice locale;</li>
+                        <li>Verifică legalitatea activităţilor de comercializare a produselor desfăşurate de operatori economici, persoane fizice şi juridice autorizate şi producători particulari în pieţele agroalimentare, târguri şi oboare, precum şi respectarea prevederilor legale de către administratorii pieţelor agroalimentare;</li>
+                        <li>Verifică existenţa la locul de desfăşurare a activităţii comerciale a autorizaţiilor, a aprobărilor, a documentelor de provenienţă a mărfii, a buletinelor de verificare metrologică pentru cântare, a avizelor şi a altor documente stabilite prin legi sau acte administrative ale autorităţilor administraţiei publice centrale şi locale;</li>
+                        <li>Verifică respectarea normelor legale privind comercializarea obiectelor cu caracter religios;</li>
+                        <li>Verifică respectarea normelor legale privind amplasarea materialelor publicitare şi a locurilor de comercializare a produselor din tutun şi a băuturilor alcoolice;</li>
+                        <li>Verifică respectarea prevederilor legale privind orarul de aprovizionare şi funcţionare al operatorilor economici;</li>
+                        <li>Identifică mărfurile şi produsele abandonate pe domeniul public sau privat al unităţii administrativ-teritoriale şi pe raza sectoarelor municipiului Bucureşti sau pe spaţii aflate în administrarea autorităţilor administraţiei publice locale ori a altor servicii/instituţii de interes local şi aplică procedurile legale de ridicare a acestora;</li>
+                        <li>Verifică respectarea regulilor şi normelor de comerţ şi prestări de servicii stabilite prin acte normative în competenţa autorităţilor administraţiei publice locale;</li>
+                        <li>Cooperează şi acordă sprijin autorităţilor de control sanitar, de mediu şi de protecţie a consumatorilor în exercitarea atribuţiilor de serviciu specifice domeniului de activitate al acestora;</li>
+                        <li>Verifică respectarea obligaţiilor ce revin operatorilor economici cu privire la afişarea preţurilor, a produselor comercializate şi a serviciilor şi sesizează autorităţile competente în cazul în care identifică nereguli;</li>
+                        <li>Verifică şi soluţionează, în condiţiile legii, petiţiile primite în legătură cu actele şi faptele de comerţ desfăşurate în locuri publice cu încălcarea normelor legale;</li>
+                        <li>Constată contravenţii şi aplică sancţiuni pentru încălcarea normelor legale specifice realizării atribuţiilor prevăzute la lit. a) – j), stabilite în sarcina autorităţilor administraţiei publice locale.</li>
+                    </ul>
+                </div>
+
+                <!-- Domeniul evidenței persoanelor -->
+                <div class="domain-section">
+                    <h3 class="domain-title">
+                        <i class="material-icons">person</i>
+                        În domeniul evidenţei persoanelor
+                    </h3>
+                    <ul class="attributes-list">
+                        <li>Înmânează cărţile de alegător persoanelor la împlinirea vârstei de 18 ani;</li>
+                        <li>Cooperează cu alte autorităţi competente în vederea verificării, la cererea acestora, a unor date cu caracter personal, dacă solicitarea este justificată prin necesitatea îndeplinirii unei atribuţii prevăzute de lege, cu respectarea reglementărilor legale privind prelucrarea datelor cu caracter personal şi libera circulaţie a acestor date;</li>
+                        <li>Constată contravenţii şi aplică sancţiuni pentru nerespectarea normelor legale privind domiciliul, reşedinţa şi actele de identitate ale cetăţenilor români, inclusiv asupra obligaţiilor pe care le au persoanele prevăzute la art. 37 alin. (2) din Ordonanţa de urgenţă a Guvernului nr. 97/2005 privind evidenţa, domiciliul, reşedinţa şi actele de identitate ale cetăţenilor români, aprobată cu modificări şi completări prin Legea nr. 290/2005, cu modificările şi completările ulterioare;</li>
+                        <li>Cooperează cu serviciile publice comunitare de evidenţă a persoanelor pentru punerea în legalitate a persoanelor cu acte de identitate expirate şi a minorilor cu vârstă peste 14 ani, care nu au acte de identitate.</li>
+                    </ul>
+                </div>
+
+                <!-- Atribuții suplimentare -->
+                <div class="domain-section">
+                    <h3 class="domain-title">
+                        <i class="material-icons">gavel</i>
+                        Atribuții suplimentare
+                    </h3>
+                    
+                    <div class="attribution-note">
+                        <p>În cazul infracţiunilor flagrante, personalul poliţiei locale imobilizează făptuitorul, ia măsuri pentru conservarea locului faptei, identifică martorii oculari, sesizează imediat organele competente şi predă făptuitorul, pe bază de proces-verbal, în vederea continuării cercetărilor.</p>
+                    </div>
+                    
+                    <div class="attribution-note">
+                        <p>În cazul executării în comun cu unităţile/structurile Poliţiei Române sau cu cele ale Jandarmeriei Române a unor misiuni în domeniul menţinerii sau asigurării ordinii publice ori pentru dirijarea circulaţiei rutiere, efectivele poliţiei locale acţionează sub coordonarea directă a Poliţiei Române sau a Jandarmeriei Române, după caz.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Resources Section -->
+            <div class="related-resources">
+                <h3 class="related-heading">Resurse utile conexe</h3>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">gavel</i></div>
+                        <h4 class="resource-title">Acte Normative</h4>
+                        <p class="resource-description">Documentele legale care stau la baza funcționării și acțiunilor Poliției Locale Slobozia, stabilind atribuțiile, competențele și procedurile de lucru.</p>
+                        <a href="acte-normative/index.html" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">description</i></div>
+                        <h4 class="resource-title">Regulament de organizare</h4>
+                        <p class="resource-description">Regulamentul intern de organizare și funcționare al Poliției Locale Slobozia, conform legislației în vigoare.</p>
+                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">account_tree</i></div>
+                        <h4 class="resource-title">Organigrama</h4>
+                        <p class="resource-description">Structura organizatorică a Poliției Locale Slobozia, prezentând departamentele și ierarhia funcțională.</p>
+                        <a href="#" class="resource-link">Vizualizează <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">feedback</i></div>
+                        <h4 class="resource-title">Depunere Sesizare</h4>
+                        <p class="resource-description">Formular electronic pentru sesizarea neregulilor sau solicitarea intervenției Poliției Locale Slobozia.</p>
+                        <a href="#" class="resource-link">Completează formular <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-bg"></div>
+                <div class="cta-container">
+                    <h2 class="cta-title">Ai nevoie de asistență?</h2>
+                    <p class="cta-description">Dacă ai întrebări despre atribuțiile Poliției Locale Slobozia sau dorești să raportezi o situație care necesită intervenția noastră, echipa noastră îți stă la dispoziție.</p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
+                        <a href="#" class="btn btn-secondary">Dispecerat: (0243) 955 <i class="material-icons">phone</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="components.js"></script>
+</body>
+</html>
