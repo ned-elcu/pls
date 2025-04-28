@@ -4,214 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Organigrama - Poliția Locală Slobozia</title>
-    <!-- Added Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
-        
-        :root {
-            --primary-color: #1a2f5f;
-            --primary-dark: #0f1a36;
-            --secondary-color: #1e88e5;
-            --secondary-light: #4dabf5;
-            --accent-color: #ffca28;
-            --accent-dark: #f5a623;
-            --success-color: #43a047;
-            --danger-color: #e53935;
-            --text-primary: #212121;
-            --text-secondary: #424242;
-            --text-light: #f5f5f5;
-            --background-light: #f8f9fa;
-            --background-dark: #121a2b;
-            --header-height: 140px;
-            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
-            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
-            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
-            --border-radius-small: 4px;
-            --border-radius-medium: 8px;
-            --border-radius-large: 12px;
-            
-            /* Menu group colors */
-            --menu-group-1: rgba(30, 136, 229, 0.03);
-            --menu-group-2: rgba(255, 202, 40, 0.03);
-            --menu-group-3: rgba(67, 160, 71, 0.03);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-primary);
-            overflow-x: hidden;
-            background-color: var(--background-light);
-            padding-top: var(--header-height); /* Add padding to prevent content overlap with fixed header */
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-        }
-        
-        /* Material Icons styling */
-        .material-icons {
-            vertical-align: middle;
-            line-height: 1;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--secondary-color);
-            border-radius: 5px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--secondary-light);
-        }
-
-        /* Page Title Section */
-        .page-title-section {
-            background-color: var(--primary-color);
-            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
-            color: white;
-            padding: 4rem 3rem;  /* Adjusted to prevent overlap */
-            position: relative;
-            overflow: hidden;
-            margin-top: 0; /* Removed top margin to prevent spacing issues */
-        }
-        
-        .page-title-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('/api/placeholder/1920/300');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.1;
-            z-index: 0;
-        }
-        
-        .page-title-content {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .page-title-left {
-            max-width: 800px;
-        }
-        
-        .page-title-badge {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--accent-color);
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            margin-bottom: 1rem;
-        }
-        
-        .page-title {
-            font-size: 2.8rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .page-title::after {
-            content: '';
-            position: absolute;
-            bottom: -0.5rem;
-            left: 0;
-            width: 80px;
-            height: 5px;
-            background-color: var(--accent-color);
-            border-radius: 3px;
-        }
-        
-        .page-description {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.9);
-            max-width: 700px;
-        }
-        
-        .breadcrumbs {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-        
-        .breadcrumbs a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .breadcrumbs a:hover {
-            color: var(--accent-color);
-        }
-        
-        .breadcrumbs .separator {
-            opacity: 0.5;
-        }
-        
-        .breadcrumbs .current {
-            color: var(--accent-color);
-            font-weight: 500;
-        }
-
-        /* Content Section */
-        .content-section {
-            padding: 5rem 3rem;
-            background-color: white;
-            position: relative; /* Added position relative */
-            z-index: 1;        /* Added z-index to ensure proper stacking */
-        }
-        
-        .content-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Organigram Styling */
+        /* Page specific styles */
         .organigram-container {
             background-color: white;
-            border-radius: var(--border-radius-large);
-            box-shadow: var(--shadow-medium);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             padding: 3rem;
             margin-bottom: 3rem;
         }
         
         .organigram-heading {
-            color: var(--primary-color);
+            color: #1a2f5f;
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
@@ -227,7 +32,7 @@
             left: 0;
             width: 100px;
             height: 3px;
-            background-color: var(--secondary-color);
+            background-color: #1e88e5;
             border-radius: 1.5px;
         }
 
@@ -241,7 +46,7 @@
         }
         
         .highlight-text {
-            color: var(--secondary-color);
+            color: #1e88e5;
             font-weight: 600;
         }
 
@@ -253,8 +58,8 @@
         .tabs {
             display: flex;
             flex-wrap: wrap;
-            background-color: var(--background-light);
-            border-radius: var(--border-radius-medium);
+            background-color: #f8f9fa;
+            border-radius: 8px;
             overflow: hidden;
             margin-bottom: 2rem;
         }
@@ -263,8 +68,8 @@
             padding: 1rem 1.5rem;
             cursor: pointer;
             font-weight: 600;
-            color: var(--text-secondary);
-            transition: var(--transition-fast);
+            color: #424242;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
             display: flex;
             align-items: center;
@@ -275,11 +80,11 @@
         }
         
         .tab:hover {
-            color: var(--secondary-color);
+            color: #1e88e5;
         }
         
         .tab.active {
-            color: var(--secondary-color);
+            color: #1e88e5;
             background-color: rgba(30, 136, 229, 0.1);
         }
         
@@ -290,7 +95,7 @@
             left: 0;
             width: 100%;
             height: 3px;
-            background-color: var(--secondary-color);
+            background-color: #1e88e5;
         }
         
         .tab i {
@@ -306,62 +111,44 @@
             display: block;
         }
 
-        /* Interactive Organigram */
+        /* Organization chart styles */
         .organigram-interactive {
             position: relative;
             margin: 2rem auto;
             overflow-x: auto;
-            padding: 2rem 0;
         }
         
-        .organigram-wrapper {
+        /* New organigram styling - exact match to reference */
+        .org-chart {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             position: relative;
         }
         
-        /* Main organigram styles */
-        .org-chart {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        /* Node styling */
+        /* Box styling */
         .org-box {
-            padding: 1.5rem;
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
             text-align: center;
-            margin: 1rem;
+            width: 100%;
+            max-width: 350px;
             min-width: 250px;
-            max-width: 300px;
-            position: relative;
+            margin: 0.5rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
         }
         
         .org-box:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-        }
-        
-        .org-box.blue {
-            border-left: 5px solid var(--secondary-color);
-        }
-        
-        .org-box.green {
-            border-left: 5px solid var(--success-color);
-        }
-        
-        .org-box.yellow {
-            border-left: 5px solid var(--accent-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
         
         .org-title {
             font-weight: 600;
-            color: var(--primary-color);
+            color: #1a2f5f;
             font-size: 1rem;
             margin-bottom: 0.5rem;
         }
@@ -369,7 +156,7 @@
         .org-count {
             display: inline-block;
             background-color: rgba(30, 136, 229, 0.1);
-            color: var(--secondary-color);
+            color: #1e88e5;
             border-radius: 20px;
             padding: 0.2rem 0.8rem;
             font-size: 0.9rem;
@@ -377,457 +164,401 @@
             margin-top: 0.5rem;
         }
         
-        /* First level */
-        .org-level-1 {
+        /* Blue border */
+        .org-box.blue {
+            border-left: 5px solid #1e88e5;
+        }
+        
+        /* Green border */
+        .org-box.green {
+            border-left: 5px solid #43a047;
+        }
+        
+        /* Yellow border */
+        .org-box.yellow {
+            border-left: 5px solid #ffca28;
+        }
+        
+        /* Level 1 - Director executiv */
+        .level-1 {
             display: flex;
             justify-content: center;
-        }
-        
-        /* Second level */
-        .org-level-2 {
-            display: flex;
-            justify-content: space-between;
-            width: 90%;
-            margin-top: 3rem;
+            margin-bottom: 2.5rem;
             position: relative;
         }
         
-        .org-level-2::before {
+        .level-1::after {
             content: '';
             position: absolute;
-            top: -3rem;
+            bottom: -2.5rem;
             left: 50%;
             width: 2px;
-            height: 3rem;
+            height: 2.5rem;
             background-color: rgba(0,0,0,0.1);
         }
         
-        /* Third level structure */
-        .org-level-3 {
+        /* Level 2 - Two columns */
+        .level-2 {
             display: flex;
             justify-content: space-between;
-            width: 100%;
-            margin-top: 3rem;
             position: relative;
+            margin-bottom: 2.5rem;
         }
         
-        /* Left and right columns in third level */
-        .org-col-left {
-            display: flex;
-            flex-direction: column;
-            width: 45%;
-            position: relative;
-        }
-        
-        .org-col-right {
-            display: flex;
-            flex-direction: column;
-            width: 45%;
-            position: relative;
-        }
-        
-        /* Connector lines for organizational chart */
-        .org-connector {
+        /* Horizontal line for level 2 */
+        .level-2::after {
+            content: '';
             position: absolute;
+            bottom: -1.25rem;
+            left: 10%;
+            width: 80%;
+            height: 2px;
             background-color: rgba(0,0,0,0.1);
         }
         
-        /* Horizontal line connecting level 2 */
-        .connector-h-level2 {
-            top: 6.5rem;
-            left: 5%;
-            width: 90%;
-            height: 2px;
-        }
-        
-        /* Vertical lines from level 2 to level 3 */
-        .connector-v-left {
-            top: 6.5rem;
+        /* Vertical lines from horizontal line to level 3 */
+        .vertical-line-left {
+            position: absolute;
+            bottom: -2.5rem;
             left: 25%;
             width: 2px;
-            height: 3rem;
-        }
-        
-        .connector-v-right {
-            top: 6.5rem;
-            left: 75%;
-            width: 2px;
-            height: 3rem;
-        }
-        
-        /* Bottom connector for level 3 left to level 4 */
-        .connector-h-level3 {
-            top: 19rem;
-            left: 5%;
-            width: 90%;
-            height: 2px;
-        }
-        
-        /* Level 4 structure */
-        .org-level-4 {
-            display: flex;
-            justify-content: space-between;
-            width: 50%;
-            margin-top: 3rem;
-            position: relative;
-        }
-        
-        .org-level-4::before {
-            content: '';
-            position: absolute;
-            top: -3rem;
-            left: 50%;
-            width: 2px;
-            height: 3rem;
+            height: 1.25rem;
             background-color: rgba(0,0,0,0.1);
         }
         
-        /* Mobile adjustments */
+        .vertical-line-right {
+            position: absolute;
+            bottom: -2.5rem;
+            left: 75%;
+            width: 2px;
+            height: 1.25rem;
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        /* Level 3 - Two columns */
+        .level-3 {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+        
+        /* Column containers for level 3 */
+        .level-3-left {
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .level-3-right {
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Horizontal line for level 4 */
+        .horizontal-line-level4 {
+            position: absolute;
+            bottom: -1.25rem;
+            left: 25%;
+            width: 45%;
+            height: 2px;
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        /* Vertical line from level 3 to level 4 */
+        .vertical-line-level4 {
+            position: absolute;
+            bottom: -2.5rem;
+            left: 50%;
+            width: 2px;
+            height: 1.25rem;
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        /* Level 4 - Two columns */
+        .level-4 {
+            display: flex;
+            justify-content: space-around;
+            width: 45%;
+            margin: 0 auto;
+        }
+        
+        /* Document styling */
+        .document-list {
+            margin-top: 3rem;
+        }
+        
+        .document-heading {
+            color: #1a2f5f;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+        
+        .document-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #ffca28;
+            border-radius: 1.5px;
+        }
+        
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .document-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-left: 4px solid #1e88e5;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .document-card-title {
+            font-size: 1.1rem;
+            color: #1a2f5f;
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .document-card-title i {
+            margin-right: 0.7rem;
+            color: #1e88e5;
+            font-size: 1.3rem;
+        }
+        
+        .document-card-date {
+            color: #424242;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        
+        .document-card-link {
+            display: inline-flex;
+            align-items: center;
+            color: #1e88e5;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: auto;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .document-card-link i {
+            margin-left: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .document-card-link:hover {
+            color: #1a2f5f;
+        }
+        
+        .document-card-link:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Legacy documents toggle */
+        .legacy-toggle {
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .legacy-toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 12px;
+            margin-right: 1rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .legacy-toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .legacy-toggle.active .legacy-toggle-switch {
+            background-color: #1e88e5;
+        }
+        
+        .legacy-toggle.active .legacy-toggle-switch::after {
+            left: 26px;
+        }
+        
+        .legacy-toggle-text {
+            font-size: 0.9rem;
+            color: #424242;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .legacy-toggle.active .legacy-toggle-text {
+            color: #1e88e5;
+        }
+        
+        .legacy-documents {
+            display: none;
+        }
+        
+        .legacy-documents.active {
+            display: block;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        /* Related Resources */
+        .related-resources {
+            margin-top: 4rem;
+            padding: 3rem;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        .related-heading {
+            color: #1a2f5f;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .related-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #ffca28;
+            border-radius: 1.5px;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .resource-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e88e5;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-title {
+            font-size: 1.1rem;
+            color: #1a2f5f;
+            margin-bottom: 0.7rem;
+        }
+        
+        .resource-description {
+            color: #424242;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            color: #1e88e5;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            align-self: flex-start;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .resource-link i {
+            margin-left: 0.3rem;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .resource-link:hover {
+            color: #1a2f5f;
+        }
+        
+        .resource-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* Responsive adjustments */
         @media (max-width: 992px) {
-            .org-level-2, .org-level-3, .org-level-4 {
+            .level-2, .level-3, .level-4 {
                 flex-direction: column;
                 align-items: center;
+            }
+            
+            .level-3-left, .level-3-right {
                 width: 100%;
             }
             
-            .org-col-left, .org-col-right {
-                width: 100%;
-                align-items: center;
+            .vertical-line-left, .vertical-line-right, 
+            .horizontal-line-level4, .vertical-line-level4 {
+                display: none;
             }
             
             .org-box {
-                width: 90%;
-                max-width: none;
-            }
-            
-            .connector-h-level2, .connector-h-level3 {
-                display: none;
-            }
-            
-            .connector-v-left, .connector-v-right {
-                left: 50%;
-            }
-        }
-
-        /* Document list */
-        .document-list {
-            margin-top: 3rem;
-        }
-        
-        .document-heading {
-            color: var(--primary-color);
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            position: relative;
-            display: inline-block;
-            padding-bottom: 0.5rem;
-        }
-        
-        .document-heading::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: var(--accent-color);
-            border-radius: 1.5px;
-        }
-        
-        .document-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .document-card {
-            background-color: white;
-            border-radius: var(--border-radius-medium);
-            box-shadow: var(--shadow-small);
-            padding: 1.5rem;
-            transition: var(--transition-medium);
-            border-left: 4px solid var(--secondary-color);
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .document-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        .document-card-title {
-            font-size: 1.1rem;
-            color: var(--primary-color);
-            margin-bottom: 0.7rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-        }
-        
-        .document-card-title i {
-            margin-right: 0.7rem;
-            color: var(--secondary-color);
-            font-size: 1.3rem;
-        }
-        
-        .document-card-date {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
-            padding-left: 2rem;
-        }
-        
-        .document-card-link {
-            display: inline-flex;
-            align-items: center;
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-top: auto;
-            transition: var(--transition-fast);
-        }
-        
-        .document-card-link i {
-            margin-left: 0.5rem;
-            transition: var(--transition-fast);
-        }
-        
-        .document-card-link:hover {
-            color: var(--primary-color);
-        }
-        
-        .document-card-link:hover i {
-            transform: translateX(5px);
-        }
-
-        /* Legacy documents toggle */
-        .legacy-toggle {
-            margin: 1.5rem 0;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-        }
-        
-        .legacy-toggle-switch {
-            position: relative;
-            width: 48px;
-            height: 24px;
-            background-color: rgba(0,0,0,0.1);
-            border-radius: 12px;
-            margin-right: 1rem;
-            transition: var(--transition-fast);
-        }
-        
-        .legacy-toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            border-radius: 50%;
-            transition: var(--transition-fast);
-        }
-        
-        .legacy-toggle.active .legacy-toggle-switch {
-            background-color: var(--secondary-color);
-        }
-        
-        .legacy-toggle.active .legacy-toggle-switch::after {
-            left: 26px;
-        }
-        
-        .legacy-toggle-text {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            transition: var(--transition-fast);
-        }
-        
-        .legacy-toggle.active .legacy-toggle-text {
-            color: var(--secondary-color);
-        }
-        
-        .legacy-documents {
-            display: none;
-        }
-        
-        .legacy-documents.active {
-            display: block;
-            animation: fadeIn 0.5s forwards;
-        }
-
-        /* Related Resources */
-        .related-resources {
-            margin-top: 4rem;
-            padding: 3rem;
-            background-color: var(--background-light);
-            border-radius: var(--border-radius-large);
-        }
-        
-        .related-heading {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            text-align: center;
-            position: relative;
-        }
-        
-        .related-heading::after {
-            content: '';
-            position: absolute;
-            bottom: -0.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background-color: var(--accent-color);
-            border-radius: 1.5px;
-        }
-        
-        .resources-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-        
-        .resource-card {
-            background-color: white;
-            border-radius: var(--border-radius-medium);
-            box-shadow: var(--shadow-small);
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            transition: var(--transition-medium);
-        }
-        
-        .resource-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        .resource-icon {
-            width: 50px;
-            height: 50px;
-            background-color: rgba(30, 136, 229, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--secondary-color);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .resource-title {
-            font-size: 1.1rem;
-            color: var(--primary-color);
-            margin-bottom: 0.7rem;
-        }
-        
-        .resource-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            flex-grow: 1;
-        }
-        
-        .resource-link {
-            display: inline-flex;
-            align-items: center;
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            align-self: flex-start;
-            transition: var(--transition-fast);
-        }
-        
-        .resource-link i {
-            margin-left: 0.3rem;
-            font-size: 0.9rem;
-            transition: var(--transition-fast);
-        }
-        
-        .resource-link:hover {
-            color: var(--primary-color);
-        }
-        
-        .resource-link:hover i {
-            transform: translateX(3px);
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 992px) {
-            .page-title-section {
-                padding: 4rem 2rem 3rem;
-            }
-            
-            .page-title {
-                font-size: 2.2rem;
-            }
-            
-            .content-section {
-                padding: 4rem 2rem;
-            }
-            
-            .organigram-container {
-                padding: 2rem;
-            }
-            
-            .document-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-            
-            .related-resources {
-                padding: 2rem;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .page-title-section {
-                padding: 3rem 1.5rem;
-            }
-            
-            .page-title {
-                font-size: 1.8rem;
-            }
-            
-            .content-section {
-                padding: 3rem 1.5rem;
-                position: relative;
-                z-index: 2;
-                margin-top: 0;
-                background: white;
-            }
-            
-            .organigram-container {
-                padding: 1.5rem;
-            }
-            
-            .document-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .resources-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .tab {
-                padding: 0.8rem 1rem;
-                font-size: 0.85rem;
-            }
-            
-            .tab i {
-                margin-right: 0.3rem;
-                font-size: 1rem;
+                margin: 1rem auto;
             }
         }
 
@@ -844,36 +575,15 @@
 <body>
     <!-- Header Container - Will be populated by components.js -->
     <div id="header-container"></div>
-
-    <!-- Page Title Section -->
-    <section class="page-title-section">
-        <div class="page-title-bg"></div>
-        <div class="page-title-content">
-            <div class="page-title-left">
-                <div class="page-title-badge">Structură organizațională</div>
-                <h1 class="page-title">Organigrama</h1>
-                <p class="page-description">Structura organizatorică și statele de funcții ale Poliției Locale Slobozia, care reflectă organizarea instituțională și responsabilitățile departamentale.</p>
-                
-                <div class="breadcrumbs">
-                    <a href="/">Acasă</a>
-                    <span class="separator"><i class="material-icons">chevron_right</i></span>
-                    <a href="#">Despre Noi</a>
-                    <span class="separator"><i class="material-icons">chevron_right</i></span>
-                    <span class="current">Organigrama</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Content Section with Organigram -->
-    <section class="content-section">
+    
+    <main class="content-section">
         <div class="content-container">
             <!-- Main section intro -->
             <div class="organigram-container">
                 <h2 class="organigram-heading">Structura organizatorică</h2>
                 
                 <div class="organigram-intro">
-                    <p>Poliția Locală Slobozia își desfășoară activitatea prin intermediul unei structuri organizatorice moderne și eficiente. Organigrama actuală, aprobată prin <span class="highlight-text">Hotărârea Consiliului Local nr. 282 din 26.10.2023</span>, oferă o imagine detaliată asupra departamentelor, serviciilor și compartimentelor care compun instituția noastră.</p>
+                    <p>Poliția Locală Slobozia își desfășoară activitatea prin intermediul unei structuri organizatorice moderne și eficiente. Organigrama actuală, aprobată prin <a href="#" class="highlight-text">Hotărârea Consiliului Local nr. 282 din 26.10.2023</a>, oferă o imagine detaliată asupra departamentelor, serviciilor și compartimentelor care compun instituția noastră.</p>
                 </div>
                 
                 <!-- Tabs for different views -->
@@ -890,81 +600,77 @@
                     <!-- Interactive Organigram Tab -->
                     <div class="tab-content active" id="interactive">
                         <div class="organigram-interactive">
-                            <div class="organigram-wrapper">
-                                <div class="org-chart">
-                                    <!-- Level 1: Director executiv -->
-                                    <div class="org-level-1">
-                                        <div class="org-box blue">
-                                            <div class="org-title">Director executiv</div>
-                                        </div>
+                            <!-- Level 1: Director executiv -->
+                            <div class="level-1">
+                                <div class="org-box blue">
+                                    <div class="org-title">Director executiv</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Level 2: Director adjunct and Compartiment Sinteză -->
+                            <div class="level-2">
+                                <div class="org-box blue">
+                                    <div class="org-title">Director executiv adjunct</div>
+                                </div>
+                                
+                                <div class="org-box yellow">
+                                    <div class="org-title">Compartiment Sinteză, Evidență, Planificare</div>
+                                    <div class="org-count">3</div>
+                                </div>
+                                
+                                <!-- Connector lines for level 2 to level 3 -->
+                                <div class="vertical-line-left"></div>
+                                <div class="vertical-line-right"></div>
+                            </div>
+                            
+                            <!-- Level 3: Services and other compartments -->
+                            <div class="level-3">
+                                <!-- Left column - Services -->
+                                <div class="level-3-left">
+                                    <div class="org-box green" style="margin-bottom: 1.5rem;">
+                                        <div class="org-title">Serviciul Ordine Publică și Control</div>
+                                        <div class="org-count">23 + 1</div>
                                     </div>
                                     
-                                    <!-- Level 2: Director executiv adjunct and Compartiment Sinteză -->
-                                    <div class="org-level-2">
-                                        <div class="org-box blue">
-                                            <div class="org-title">Director executiv adjunct</div>
-                                        </div>
-                                        
-                                        <div class="org-box yellow">
-                                            <div class="org-title">Compartiment Sinteză, Evidență, Planificare</div>
-                                            <div class="org-count">3</div>
-                                        </div>
+                                    <div class="org-box green">
+                                        <div class="org-title">Serviciul Circulație Rutieră și Dispecerat</div>
+                                        <div class="org-count">14 + 1</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Right column - Compartments -->
+                                <div class="level-3-right">
+                                    <div class="org-box yellow" style="margin-bottom: 1.5rem;">
+                                        <div class="org-title">Compartiment Supraveghere Video, Monitorizare trafic</div>
+                                        <div class="org-count">5</div>
                                     </div>
                                     
-                                    <!-- Connector between level 2 and 3 -->
-                                    <div class="org-connector connector-h-level2"></div>
-                                    <div class="org-connector connector-v-left"></div>
-                                    <div class="org-connector connector-v-right"></div>
-                                    
-                                    <!-- Level 3: Services and Compartments -->
-                                    <div class="org-level-3">
-                                        <!-- Left Column - Services -->
-                                        <div class="org-col-left">
-                                            <div class="org-box green">
-                                                <div class="org-title">Serviciul Ordine Publică și Control</div>
-                                                <div class="org-count">23 + 1</div>
-                                            </div>
-                                            
-                                            <div class="org-box green" style="margin-top: 1.5rem;">
-                                                <div class="org-title">Serviciul Circulație Rutieră și Dispecerat</div>
-                                                <div class="org-count">14 + 1</div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Right Column - Compartments -->
-                                        <div class="org-col-right">
-                                            <div class="org-box yellow">
-                                                <div class="org-title">Compartiment Supraveghere Video, Monitorizare trafic</div>
-                                                <div class="org-count">5</div>
-                                            </div>
-                                            
-                                            <div class="org-box yellow" style="margin-top: 1.5rem;">
-                                                <div class="org-title">Compartiment Financiar-Contabil, Resurse Umane, Salarizare, Achiziții publice</div>
-                                                <div class="org-count">2</div>
-                                            </div>
-                                            
-                                            <div class="org-box yellow" style="margin-top: 1.5rem;">
-                                                <div class="org-title">Compartiment Tehnic, Administrativ, Relații cu presa</div>
-                                                <div class="org-count">2</div>
-                                            </div>
-                                        </div>
+                                    <div class="org-box yellow" style="margin-bottom: 1.5rem;">
+                                        <div class="org-title">Compartiment Financiar-Contabil, Resurse Umane, Salarizare, Achiziții publice</div>
+                                        <div class="org-count">2</div>
                                     </div>
                                     
-                                    <!-- Connector between level 3 and 4 -->
-                                    <div class="org-connector connector-h-level3"></div>
-                                    
-                                    <!-- Level 4: Sub-compartments -->
-                                    <div class="org-level-4">
-                                        <div class="org-box blue">
-                                            <div class="org-title">Compartiment Circulație Rutieră</div>
-                                            <div class="org-count">9</div>
-                                        </div>
-                                        
-                                        <div class="org-box blue">
-                                            <div class="org-title">Compartiment Dispecerat</div>
-                                            <div class="org-count">5</div>
-                                        </div>
+                                    <div class="org-box yellow">
+                                        <div class="org-title">Compartiment Tehnic, Administrativ, Relații cu presa</div>
+                                        <div class="org-count">2</div>
                                     </div>
+                                </div>
+                                
+                                <!-- Connector from left services to level 4 -->
+                                <div class="horizontal-line-level4"></div>
+                                <div class="vertical-line-level4"></div>
+                            </div>
+                            
+                            <!-- Level 4: Sub-compartments -->
+                            <div class="level-4">
+                                <div class="org-box blue">
+                                    <div class="org-title">Compartiment Circulație Rutieră</div>
+                                    <div class="org-count">9</div>
+                                </div>
+                                
+                                <div class="org-box blue">
+                                    <div class="org-title">Compartiment Dispecerat</div>
+                                    <div class="org-count">5</div>
                                 </div>
                             </div>
                         </div>
@@ -1092,42 +798,6 @@
                                             Vizualizează document <i class="material-icons">open_in_new</i>
                                         </a>
                                     </div>
-                                    
-                                    <!-- June 2023 - Stat -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Stat funcții
-                                        </h4>
-                                        <p class="document-card-date">Iunie 2023</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/06/STAT-FUNCTII-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează document <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- May 2023 -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Stat funcții
-                                        </h4>
-                                        <p class="document-card-date">Mai 2023</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/05/stat-functii-mai-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează document <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- April 2023 -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Stat funcții
-                                        </h4>
-                                        <p class="document-card-date">Aprilie 2023</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/04/stat-functii-aprilie-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează document <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1166,15 +836,15 @@
                 </div>
             </div>
         </div>
-    </section>
-
+    </main>
+    
     <!-- Footer Container - Will be populated by components.js -->
     <div id="footer-container"></div>
     
     <!-- Include components.js to load header and footer -->
     <script src="components.js"></script>
     
-    <!-- Page Specific JavaScript -->
+    <!-- Page-specific scripts -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Tab functionality
@@ -1215,1302 +885,6 @@
                 } else {
                     toggleText.textContent = 'Afișează documente arhivate';
                 }
-            });
-        });
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organigrama - Poliția Locală Slobozia</title>
-    <!-- Added Google Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
-        
-        :root {
-            --primary-color: #1a2f5f;
-            --primary-dark: #0f1a36;
-            --secondary-color: #1e88e5;
-            --secondary-light: #4dabf5;
-            --accent-color: #ffca28;
-            --accent-dark: #f5a623;
-            --success-color: #43a047;
-            --danger-color: #e53935;
-            --text-primary: #212121;
-            --text-secondary: #424242;
-            --text-light: #f5f5f5;
-            --background-light: #f8f9fa;
-            --background-dark: #121a2b;
-            --header-height: 140px;
-            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
-            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
-            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
-            --border-radius-small: 4px;
-            --border-radius-medium: 8px;
-            --border-radius-large: 12px;
-            
-            /* Menu group colors */
-            --menu-group-1: rgba(30, 136, 229, 0.03);
-            --menu-group-2: rgba(255, 202, 40, 0.03);
-            --menu-group-3: rgba(67, 160, 71, 0.03);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-primary);
-            overflow-x: hidden;
-            background-color: var(--background-light);
-            padding-top: var(--header-height); /* Add padding to prevent content overlap with fixed header */
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-        }
-        
-        /* Material Icons styling */
-        .material-icons {
-            vertical-align: middle;
-            line-height: 1;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--secondary-color);
-            border-radius: 5px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--secondary-light);
-        }
-
-        /* Page Title Section */
-        .page-title-section {
-            background-color: var(--primary-color);
-            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
-            color: white;
-            padding: 4rem 3rem;  /* Adjusted to prevent overlap */
-            position: relative;
-            overflow: hidden;
-            margin-top: 0; /* Removed top margin to prevent spacing issues */
-        }
-        
-        .page-title-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('/api/placeholder/1920/300');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.1;
-            z-index: 0;
-        }
-        
-        .page-title-content {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .page-title-left {
-            max-width: 800px;
-        }
-        
-        .page-title-badge {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--accent-color);
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            margin-bottom: 1rem;
-        }
-        
-        .page-title {
-            font-size: 2.8rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .page-title::after {
-            content: '';
-            position: absolute;
-            bottom: -0.5rem;
-            left: 0;
-            width: 80px;
-            height: 5px;
-            background-color: var(--accent-color);
-            border-radius: 3px;
-        }
-        
-        .page-description {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.9);
-            max-width: 700px;
-        }
-        
-        .breadcrumbs {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-        
-        .breadcrumbs a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .breadcrumbs a:hover {
-            color: var(--accent-color);
-        }
-        
-        .breadcrumbs .separator {
-            opacity: 0.5;
-        }
-        
-        .breadcrumbs .current {
-            color: var(--accent-color);
-            font-weight: 500;
-        }
-
-        /* Content Section */
-        .content-section {
-            padding: 5rem 3rem;
-            background-color: white;
-            position: relative; /* Added position relative */
-            z-index: 1;        /* Added z-index to ensure proper stacking */
-        }
-        
-        .content-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Organigram Styling */
-        .organigram-container {
-            background-color: white;
-            border-radius: var(--border-radius-large);
-            box-shadow: var(--shadow-medium);
-            padding: 3rem;
-            margin-bottom: 3rem;
-        }
-        
-        .organigram-heading {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            position: relative;
-        }
-        
-        .organigram-heading::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100px;
-            height: 3px;
-            background-color: var(--secondary-color);
-            border-radius: 1.5px;
-        }
-
-        .organigram-intro {
-            margin-bottom: 2.5rem;
-            line-height: 1.8;
-        }
-        
-        .organigram-intro p {
-            margin-bottom: 1rem;
-        }
-        
-        .highlight-text {
-            color: var(--secondary-color);
-            font-weight: 600;
-        }
-
-        /* Tabs Container */
-        .tabs-container {
-            margin-bottom: 2rem;
-        }
-        
-        .tabs {
-            display: flex;
-            flex-wrap: wrap;
-            background-color: var(--background-light);
-            border-radius: var(--border-radius-medium);
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-        
-        .tab {
-            padding: 1rem 1.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--text-secondary);
-            transition: var(--transition-fast);
-            position: relative;
-            display: flex;
-            align-items: center;
-            border: none;
-            background: none;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
-        }
-        
-        .tab:hover {
-            color: var(--secondary-color);
-        }
-        
-        .tab.active {
-            color: var(--secondary-color);
-            background-color: rgba(30, 136, 229, 0.1);
-        }
-        
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: var(--secondary-color);
-        }
-        
-        .tab i {
-            margin-right: 0.5rem;
-            font-size: 1.2rem;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Interactive Organigram */
-        .organigram-interactive {
-            position: relative;
-            margin: 2rem auto;
-            overflow-x: auto;
-            padding: 1rem;
-        }
-        
-        .organigram-chart {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        /* Org Node Styling */
-        .org-node {
-            position: relative;
-            background-color: white;
-            border-radius: var(--border-radius-medium);
-            box-shadow: var(--shadow-small);
-            padding: 1rem;
-            margin: 0.5rem;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.5s forwards;
-            text-align: center;
-            width: 100%;
-            max-width: 300px;
-        }
-        
-        .org-node:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
-            z-index: 10;
-        }
-        
-        .org-node-title {
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-        
-        .org-node-count {
-            background-color: rgba(30, 136, 229, 0.1);
-            color: var(--secondary-color);
-            border-radius: var(--border-radius-small);
-            padding: 0.2rem 0.5rem;
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-top: 0.5rem;
-            font-weight: 600;
-        }
-        
-        /* Row styling for organizational chart */
-        .org-row {
-            display: flex;
-            width: 100%;
-            justify-content: center;
-            position: relative;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .org-row:not(:first-child)::before {
-            content: '';
-            position: absolute;
-            top: -2rem;
-            left: 50%;
-            height: 2rem;
-            width: 2px;
-            background-color: rgba(0,0,0,0.1);
-        }
-        
-        .org-row.level-2 {
-            justify-content: space-between;
-            width: 90%;
-        }
-        
-        .org-row.level-2::before {
-            left: 50%;
-        }
-        
-        .org-row.level-3-left {
-            width: 40%;
-            align-self: flex-start;
-            position: relative;
-        }
-        
-        .org-row.level-3-right {
-            width: 40%;
-            align-self: flex-end;
-            position: relative;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .org-row.level-3-left::before {
-            left: 50%;
-            height: 2rem;
-        }
-        
-        .org-row.level-3-right::before {
-            left: 50%;
-            height: 2rem;
-        }
-        
-        .org-row.level-4 {
-            width: 100%;
-            justify-content: space-around;
-        }
-        
-        .org-row.level-4::before {
-            left: 50%;
-        }
-        
-        .org-column {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-        
-        .org-column:not(:last-child) {
-            margin-right: 2rem;
-        }
-        
-        .org-column::before {
-            content: '';
-            position: absolute;
-            top: -2rem;
-            left: 50%;
-            height: 2rem;
-            width: 2px;
-            background-color: rgba(0,0,0,0.1);
-        }
-        
-        /* Node color styling */
-        .org-node.blue-node {
-            border-left: 4px solid var(--secondary-color);
-        }
-        
-        .org-node.green-node {
-            border-left: 4px solid var(--success-color);
-        }
-        
-        .org-node.yellow-node {
-            border-left: 4px solid var(--accent-color);
-        }
-        
-        /* Animation effects */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Horizontal connector styling */
-        .connector-horizontal {
-            height: 2px;
-            background-color: rgba(0,0,0,0.1);
-            position: relative;
-            margin: 1rem 0;
-            width: 80%;
-            max-width: 800px;
-            opacity: 0;
-            animation: fadeIn 0.5s forwards;
-            animation-delay: 0.5s;
-        }
-        
-        .connector-dots {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            position: relative;
-            margin-bottom: -10px;
-        }
-        
-        .connector-dot {
-            width: 10px;
-            height: 10px;
-            background-color: rgba(0,0,0,0.1);
-            border-radius: 50%;
-            position: relative;
-        }
-        
-        .connector-dot::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            height: 1.5rem;
-            width: 2px;
-            background-color: rgba(0,0,0,0.1);
-            transform: translateX(-50%);
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* Document list */
-        .document-list {
-            margin-top: 3rem;
-        }
-        
-        .document-heading {
-            color: var(--primary-color);
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            position: relative;
-            display: inline-block;
-            padding-bottom: 0.5rem;
-        }
-        
-        .document-heading::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: var(--accent-color);
-            border-radius: 1.5px;
-        }
-        
-        .document-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .document-card {
-            background-color: white;
-            border-radius: var(--border-radius-medium);
-            box-shadow: var(--shadow-small);
-            padding: 1.5rem;
-            transition: var(--transition-medium);
-            border-left: 4px solid var(--secondary-color);
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .document-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        .document-card-title {
-            font-size: 1.1rem;
-            color: var(--primary-color);
-            margin-bottom: 0.7rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-        }
-        
-        .document-card-title i {
-            margin-right: 0.7rem;
-            color: var(--secondary-color);
-            font-size: 1.3rem;
-        }
-        
-        .document-card-date {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
-            padding-left: 2rem;
-        }
-        
-        .document-card-link {
-            display: inline-flex;
-            align-items: center;
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-top: auto;
-            transition: var(--transition-fast);
-        }
-        
-        .document-card-link i {
-            margin-left: 0.5rem;
-            transition: var(--transition-fast);
-        }
-        
-        .document-card-link:hover {
-            color: var(--primary-color);
-        }
-        
-        .document-card-link:hover i {
-            transform: translateX(5px);
-        }
-
-        /* Legacy documents toggle */
-        .legacy-toggle {
-            margin: 1.5rem 0;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-        }
-        
-        .legacy-toggle-switch {
-            position: relative;
-            width: 48px;
-            height: 24px;
-            background-color: rgba(0,0,0,0.1);
-            border-radius: 12px;
-            margin-right: 1rem;
-            transition: var(--transition-fast);
-        }
-        
-        .legacy-toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            border-radius: 50%;
-            transition: var(--transition-fast);
-        }
-        
-        .legacy-toggle.active .legacy-toggle-switch {
-            background-color: var(--secondary-color);
-        }
-        
-        .legacy-toggle.active .legacy-toggle-switch::after {
-            left: 26px;
-        }
-        
-        .legacy-toggle-text {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            transition: var(--transition-fast);
-        }
-        
-        .legacy-toggle.active .legacy-toggle-text {
-            color: var(--secondary-color);
-        }
-        
-        .legacy-documents {
-            display: none;
-        }
-        
-        .legacy-documents.active {
-            display: block;
-            animation: fadeIn 0.5s forwards;
-        }
-
-        /* Related Resources */
-        .related-resources {
-            margin-top: 4rem;
-            padding: 3rem;
-            background-color: var(--background-light);
-            border-radius: var(--border-radius-large);
-        }
-        
-        .related-heading {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            text-align: center;
-            position: relative;
-        }
-        
-        .related-heading::after {
-            content: '';
-            position: absolute;
-            bottom: -0.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background-color: var(--accent-color);
-            border-radius: 1.5px;
-        }
-        
-        .resources-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-        
-        .resource-card {
-            background-color: white;
-            border-radius: var(--border-radius-medium);
-            box-shadow: var(--shadow-small);
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            transition: var(--transition-medium);
-        }
-        
-        .resource-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        .resource-icon {
-            width: 50px;
-            height: 50px;
-            background-color: rgba(30, 136, 229, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--secondary-color);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .resource-title {
-            font-size: 1.1rem;
-            color: var(--primary-color);
-            margin-bottom: 0.7rem;
-        }
-        
-        .resource-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            flex-grow: 1;
-        }
-        
-        .resource-link {
-            display: inline-flex;
-            align-items: center;
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            align-self: flex-start;
-            transition: var(--transition-fast);
-        }
-        
-        .resource-link i {
-            margin-left: 0.3rem;
-            font-size: 0.9rem;
-            transition: var(--transition-fast);
-        }
-        
-        .resource-link:hover {
-            color: var(--primary-color);
-        }
-        
-        .resource-link:hover i {
-            transform: translateX(3px);
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 992px) {
-            .page-title-section {
-                padding: 4rem 2rem 3rem;
-            }
-            
-            .page-title {
-                font-size: 2.2rem;
-            }
-            
-            .content-section {
-                padding: 4rem 2rem;
-            }
-            
-            .organigram-container {
-                padding: 2rem;
-            }
-            
-            .document-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-            
-            .related-resources {
-                padding: 2rem;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .page-title-section {
-                padding: 3rem 1.5rem;
-            }
-            
-            .page-title {
-                font-size: 1.8rem;
-            }
-            
-            .content-section {
-                padding: 3rem 1.5rem;
-                position: relative;
-                z-index: 2;
-                margin-top: 0;
-                background: white;
-            }
-            
-            .organigram-container {
-                padding: 1.5rem;
-            }
-            
-            .document-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .resources-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .tab {
-                padding: 0.8rem 1rem;
-                font-size: 0.85rem;
-            }
-            
-            .tab i {
-                margin-right: 0.3rem;
-                font-size: 1rem;
-            }
-        }
-
-        /* Print Styles */
-        @media print {
-            .header-container, .footer-container, .tabs-container, .related-resources {
-                display: none;
-            }
-            
-            body {
-                padding-top: 0;
-            }
-            
-            .page-title-section {
-                padding: 1rem;
-                color: var(--primary-color);
-                background: none;
-            }
-            
-            .page-title, .page-description {
-                color: var(--text-primary);
-            }
-            
-            .breadcrumbs {
-                display: none;
-            }
-            
-            .content-section {
-                padding: 1rem;
-            }
-            
-            .organigram-container {
-                box-shadow: none;
-                padding: 0;
-            }
-            
-            .organigram-chart {
-                page-break-inside: avoid;
-            }
-            
-            .document-card {
-                page-break-inside: avoid;
-                box-shadow: none;
-                border: 1px solid rgba(0,0,0,0.1);
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header Container - Will be populated by components.js -->
-    <div id="header-container"></div>
-
-    <!-- Page Title Section -->
-    <section class="page-title-section">
-        <div class="page-title-bg"></div>
-        <div class="page-title-content">
-            <div class="page-title-left">
-                <div class="page-title-badge">Structură organizațională</div>
-                <h1 class="page-title">Organigrama</h1>
-                <p class="page-description">Structura organizatorică și statele de funcții ale Poliției Locale Slobozia, care reflectă organizarea instituțională și responsabilitățile departamentale.</p>
-                
-                <div class="breadcrumbs">
-                    <a href="/">Acasă</a>
-                    <span class="separator"><i class="material-icons">chevron_right</i></span>
-                    <a href="#">Despre Noi</a>
-                    <span class="separator"><i class="material-icons">chevron_right</i></span>
-                    <span class="current">Organigrama</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Content Section with Organigram -->
-    <section class="content-section">
-        <div class="content-container">
-            <!-- Main section intro -->
-            <div class="organigram-container">
-                <h2 class="organigram-heading">Structura organizatorică</h2>
-                
-                <div class="organigram-intro">
-                    <p>Poliția Locală Slobozia își desfășoară activitatea prin intermediul unei structuri organizatorice moderne și eficiente. Organigrama actuală, aprobată prin <span class="highlight-text">Hotărârea Consiliului Local nr. 282 din 26.10.2023</span>, oferă o imagine detaliată asupra departamentelor, serviciilor și compartimentelor care compun instituția noastră.</p>
-                </div>
-                
-                <!-- Tabs for different views -->
-                <div class="tabs-container">
-                    <div class="tabs">
-                        <button class="tab active" data-tab="interactive">
-                            <i class="material-icons">account_tree</i> Vizualizare interactivă
-                        </button>
-                        <button class="tab" data-tab="documents">
-                            <i class="material-icons">description</i> Documente
-                        </button>
-                    </div>
-                    
-                    <!-- Interactive Organigram Tab -->
-                    <div class="tab-content active" id="interactive">
-                        <div class="organigram-interactive">
-                            <div class="organigram-chart">
-                                <!-- Level 1: Director executiv -->
-                                <div class="org-row">
-                                    <div class="org-node blue-node">
-                                        <h3 class="org-node-title">Director executiv</h3>
-                                    </div>
-                                </div>
-                                
-                                <!-- Level 2: Left and Right branches -->
-                                <div class="org-row level-2">
-                                    <!-- Left side -->
-                                    <div class="org-node blue-node">
-                                        <h3 class="org-node-title">Director executiv adjunct</h3>
-                                    </div>
-                                    
-                                    <!-- Right side -->
-                                    <div class="org-node yellow-node">
-                                        <h3 class="org-node-title">Compartiment Sinteză, Evidență, Planificare</h3>
-                                        <span class="org-node-count">3</span>
-                                    </div>
-                                </div>
-                                
-                                <!-- Horizontal connector with dots -->
-                                <div class="connector-horizontal">
-                                    <div class="connector-dots">
-                                        <div class="connector-dot"></div>
-                                        <div class="connector-dot"></div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Level 3: Services and departments -->
-                                <div class="org-row level-3-left">
-                                    <!-- Left side services -->
-                                    <div class="org-column">
-                                        <div class="org-node green-node">
-                                            <h3 class="org-node-title">Serviciul Ordine Publică și Control</h3>
-                                            <span class="org-node-count">23 + 1</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="org-column">
-                                        <div class="org-node green-node">
-                                            <h3 class="org-node-title">Serviciul Circulație Rutieră și Dispecerat</h3>
-                                            <span class="org-node-count">14 + 1</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="org-row level-3-right">
-                                    <!-- Right side compartments -->
-                                    <div class="org-node yellow-node">
-                                        <h3 class="org-node-title">Compartiment Supraveghere Video, Monitorizare trafic</h3>
-                                        <span class="org-node-count">5</span>
-                                    </div>
-                                    
-                                    <div class="org-node yellow-node">
-                                        <h3 class="org-node-title">Compartiment Financiar-Contabil, Resurse Umane, Salarizare, Achiziții publice</h3>
-                                        <span class="org-node-count">2</span>
-                                    </div>
-                                    
-                                    <div class="org-node yellow-node">
-                                        <h3 class="org-node-title">Compartiment Tehnic, Administrativ, Relații cu presa</h3>
-                                        <span class="org-node-count">2</span>
-                                    </div>
-                                </div>
-                                
-                                <!-- Horizontal connector for sub-compartments -->
-                                <div class="connector-horizontal">
-                                    <div class="connector-dots">
-                                        <div class="connector-dot"></div>
-                                        <div class="connector-dot"></div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Level 4: Sub-compartments -->
-                                <div class="org-row level-4">
-                                    <div class="org-node blue-node">
-                                        <h3 class="org-node-title">Compartiment Circulație Rutieră</h3>
-                                        <span class="org-node-count">9</span>
-                                    </div>
-                                    
-                                    <div class="org-node blue-node">
-                                        <h3 class="org-node-title">Compartiment Dispecerat</h3>
-                                        <span class="org-node-count">5</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Documents Tab -->
-                    <div class="tab-content" id="documents">
-                        <div class="document-list">
-                            <h3 class="document-heading">Documente recente</h3>
-                            <div class="document-grid">
-                                <!-- December 2024 -->
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">description</i>
-                                        Stat funcții
-                                    </h4>
-                                    <p class="document-card-date">Decembrie 2024</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/12/stat-functii-decembrie-2024.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează document <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <!-- November 2024 -->
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">description</i>
-                                        Stat funcții
-                                    </h4>
-                                    <p class="document-card-date">Noiembrie 2024</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/11/stat-functii-noiembrie-2024.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează document <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <!-- April 2024 -->
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">description</i>
-                                        Stat funcții
-                                    </h4>
-                                    <p class="document-card-date">Aprilie 2024</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/09/stat-functii-aprilie-2024.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează document <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <!-- December 2023 -->
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">description</i>
-                                        Stat funcții
-                                    </h4>
-                                    <p class="document-card-date">Decembrie 2023</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/02/stat-functii-decembrie-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează document <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <!-- November 2023 - Stat -->
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">description</i>
-                                        Stat funcții
-                                    </h4>
-                                    <p class="document-card-date">Noiembrie 2023</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2023/11/stat-functii-nov-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează document <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <!-- November 2023 - Organigram -->
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">account_tree</i>
-                                        Organigrama
-                                    </h4>
-                                    <p class="document-card-date">Noiembrie 2023</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2023/11/Organigrama-nov-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează document <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                            </div>
-                            
-                            <!-- Legacy Document Toggle -->
-                            <div class="legacy-toggle" id="legacy-toggle">
-                                <div class="legacy-toggle-switch"></div>
-                                <span class="legacy-toggle-text">Afișează documente arhivate</span>
-                            </div>
-                            
-                            <!-- Legacy Documents Section -->
-                            <div class="legacy-documents" id="legacy-documents">
-                                <div class="document-grid">
-                                    <!-- September 2023 -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">account_tree</i>
-                                            Organigrama
-                                        </h4>
-                                        <p class="document-card-date">Septembrie 2023</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/10/stat-functii-septembrie-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează document <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- June 2023 - Organigram -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">account_tree</i>
-                                            Organigrama
-                                        </h4>
-                                        <p class="document-card-date">Iunie 2023</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/06/organigrama.png" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează document <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- June 2023 - Stat updated -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Stat funcții (actualizat)
-                                        </h4>
-                                        <p class="document-card-date">Iunie 2023</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/06/stat-functii-iunie-actualizat-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează document <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- June 2023 - Stat -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Stat funcții
-                                        </h4>
-                                        <p class="document-card-date">Iunie 2023</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/06/STAT-FUNCTII-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează document <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- May 2023 -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Stat funcții
-                                        </h4>
-                                        <p class="document-card-date">Mai 2023</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/05/stat-functii-mai-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează document <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- April 2023 -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Stat funcții
-                                        </h4>
-                                        <p class="document-card-date">Aprilie 2023</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/04/stat-functii-aprilie-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează document <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Related Resources Section -->
-            <div class="related-resources">
-                <h3 class="related-heading">Documente conexe</h3>
-                <div class="resources-grid">
-                    <div class="resource-card">
-                        <div class="resource-icon"><i class="material-icons">description</i></div>
-                        <h4 class="resource-title">Regulament</h4>
-                        <p class="resource-description">Regulamentele de organizare și funcționare (ROF) și regulamentele interne (ROI) ale Poliției Locale Slobozia.</p>
-                        <a href="regulament/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
-                    </div>
-                    <div class="resource-card">
-                        <div class="resource-icon"><i class="material-icons">gavel</i></div>
-                        <h4 class="resource-title">Acte Normative</h4>
-                        <p class="resource-description">Documentele legale care stau la baza funcționării și acțiunilor Poliției Locale Slobozia.</p>
-                        <a href="acte-normative/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
-                    </div>
-                    <div class="resource-card">
-                        <div class="resource-icon"><i class="material-icons">assignment</i></div>
-                        <h4 class="resource-title">Atribuții</h4>
-                        <p class="resource-description">Atribuțiile și competențele specifice ale Poliției Locale Slobozia în baza actelor normative în vigoare.</p>
-                        <a href="atributii/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
-                    </div>
-                    <div class="resource-card">
-                        <div class="resource-icon"><i class="material-icons">format_quote</i></div>
-                        <h4 class="resource-title">Cod Etic</h4>
-                        <p class="resource-description">Normele de conduită profesională și valorile etice promovate în cadrul Poliției Locale Slobozia.</p>
-                        <a href="cod-etic/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer Container - Will be populated by components.js -->
-    <div id="footer-container"></div>
-    
-    <!-- Include components.js to load header and footer -->
-    <!-- Include components.js to load header and footer -->
-    <script src="components.js"></script>
-    
-    <!-- Page Specific JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Tab functionality
-            const tabs = document.querySelectorAll('.tab');
-            
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Get the tab target
-                    const target = this.getAttribute('data-tab');
-                    
-                    // Remove active class from all tabs
-                    tabs.forEach(t => t.classList.remove('active'));
-                    
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-                    
-                    // Hide all tab content
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    // Show target content
-                    document.getElementById(target).classList.add('active');
-                });
-            });
-            
-            // Legacy documents toggle
-            const legacyToggle = document.getElementById('legacy-toggle');
-            const legacyDocuments = document.getElementById('legacy-documents');
-            
-            legacyToggle.addEventListener('click', function() {
-                this.classList.toggle('active');
-                legacyDocuments.classList.toggle('active');
-                
-                const toggleText = this.querySelector('.legacy-toggle-text');
-                if (this.classList.contains('active')) {
-                    toggleText.textContent = 'Ascunde documente arhivate';
-                } else {
-                    toggleText.textContent = 'Afișează documente arhivate';
-                }
-            });
-            
-            // Optional: Animate the organigram nodes on scroll using IntersectionObserver
-            const animateOnScroll = new IntersectionObserver(
-                (entries, observer) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.style.opacity = 1;
-                            entry.target.style.transform = 'translateY(0)';
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                },
-                { threshold: 0.1 }
-            );
-            
-            document.querySelectorAll('.org-node').forEach(node => {
-                animateOnScroll.observe(node);
             });
         });
     </script>
