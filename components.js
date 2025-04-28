@@ -1,4 +1,8 @@
-<!-- HEADER COMPONENT START -->
+// COMPONENTS.JS - Combined Header/Footer components with installation code
+// Simply include this file in your HTML pages to automatically load the header and footer
+
+// HTML Components as JavaScript strings
+const HEADER_HTML = `
 <div class="intro-screen" id="intro-screen">
     <div class="intro-content">
         <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS" class="intro-badge">
@@ -130,9 +134,9 @@
         </button>
     </div>
 </div>
-<!-- HEADER COMPONENT END -->
+`;
 
-<!-- FOOTER COMPONENT START -->
+const FOOTER_HTML = `
 <footer>
     <div class="footer-bg-pattern"></div>
     <div class="footer-content">
@@ -212,4 +216,128 @@
         </div>
     </div>
 </footer>
-<!-- FOOTER COMPONENT END -->
+`;
+
+// Auto-install the components when the document is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Load header and footer
+    const headerContainer = document.getElementById('header-container');
+    const footerContainer = document.getElementById('footer-container');
+    
+    // Insert components if containers exist
+    if (headerContainer) headerContainer.innerHTML = HEADER_HTML;
+    if (footerContainer) footerContainer.innerHTML = FOOTER_HTML;
+    
+    // Initialize components
+    initializeComponents();
+});
+
+// Initialize all component functionality
+function initializeComponents() {
+    // Initialize intro screen
+    initIntroScreen();
+    
+    // Initialize header effects
+    initHeaderEffects();
+    
+    // Initialize mobile menu
+    initMobileMenu();
+    
+    // Initialize dropdown menu
+    initDropdownMenu();
+}
+
+// Intro Screen Animation and Removal
+function initIntroScreen() {
+    const introScreen = document.getElementById('intro-screen');
+    if (introScreen) {
+        setTimeout(function() {
+            introScreen.style.opacity = '0';
+            setTimeout(function() {
+                introScreen.style.display = 'none';
+            }, 500);
+        }, 4000);
+    }
+}
+
+// Header scroll effect
+function initHeaderEffects() {
+    const headerTop = document.getElementById('header-top');
+    const headerMain = document.getElementById('header-main');
+    
+    if (headerTop && headerMain) {
+        // Apply initial state based on current scroll position
+        if (window.scrollY > 50) {
+            headerTop.classList.add('scrolled');
+            headerMain.classList.add('scrolled');
+        }
+        
+        // Add scroll event listener
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                headerTop.classList.add('scrolled');
+                headerMain.classList.add('scrolled');
+            } else {
+                headerTop.classList.remove('scrolled');
+                headerMain.classList.remove('scrolled');
+            }
+        });
+    }
+}
+
+// Mobile Menu Toggle
+function initMobileMenu() {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+    
+    if (mobileMenuToggle && mainNav) {
+        mobileMenuToggle.addEventListener('click', function() {
+            mainNav.classList.toggle('active');
+            const isExpanded = mainNav.classList.contains('active');
+            this.setAttribute('aria-expanded', isExpanded);
+            this.innerHTML = isExpanded ? 
+                '<i class="material-icons">close</i>' : 
+                '<i class="material-icons">menu</i>';
+        });
+    }
+}
+
+// Dropdown Menu functionality
+function initDropdownMenu() {
+    const dropdownItems = document.querySelectorAll('.main-nav .has-dropdown');
+    
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            // Check if we're in mobile view
+            if (window.innerWidth <= 992) {
+                // Only apply to direct child a tag
+                if (e.target === this.querySelector('a') || 
+                    e.target === this.querySelector('a .dropdown-icon') || 
+                    e.target === this.querySelector('a .menu-icon')) {
+                    e.preventDefault();
+                    this.classList.toggle('active');
+                }
+            }
+        });
+    });
+    
+    // Ensure proper dropdown behavior on window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 992) {
+            dropdownItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const mainNav = document.getElementById('main-nav');
+            if (mainNav) {
+                mainNav.classList.remove('active');
+            }
+            
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            if (mobileMenuToggle) {
+                mobileMenuToggle.innerHTML = '<i class="material-icons">menu</i>';
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            }
+        }
+    });
+}
