@@ -1223,7 +1223,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!document.querySelector('link[rel="icon"]')) {
         const faviconLink = document.createElement('link');
         faviconLink.rel = "icon";
-        faviconLink.href = "https://images4.imagebam.com/bc/7c/41/ME11KBBB_o.png";
+        faviconLink.href = "https://images4.imagebam.com/7d/dc/f5/ME11KAXQ_o.png";
         faviconLink.type = "image/png";
         document.head.appendChild(faviconLink);
     }
@@ -1269,6 +1269,9 @@ function initializeComponents() {
     
     // Initialize dropdown menu
     initDropdownMenu();
+    
+    // Initialize search functionality
+    initSearchBar();
 }
 
 // Intro Screen Animation and Removal
@@ -1280,7 +1283,7 @@ function initIntroScreen() {
             setTimeout(function() {
                 introScreen.style.display = 'none';
             }, 500);
-        }, 2000);
+        }, 3000);
     }
 }
 
@@ -1364,4 +1367,62 @@ function initDropdownMenu() {
             }
         }
     });
+}
+
+// Initialize search functionality
+function initSearchBar() {
+    const searchInput = document.querySelector('.search-bar input');
+    const searchForm = document.createElement('form');
+    
+    if (searchInput) {
+        // Wrap the input in a form for proper submission
+        searchInput.parentNode.insertBefore(searchForm, searchInput);
+        searchForm.appendChild(searchInput);
+        searchForm.setAttribute('action', '/pls/cautare');
+        searchForm.setAttribute('method', 'get');
+        
+        // Add name attribute to the input
+        searchInput.setAttribute('name', 'q');
+
+        // Add event listener for the form submission
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            
+            if (query) {
+                // If we have a query, perform the search
+                performSearch(query);
+            }
+        });
+        
+        // Also add event listener for the icon click
+        const searchIcon = searchForm.parentNode.querySelector('.search-bar i');
+        if (searchIcon) {
+            searchIcon.style.cursor = 'pointer';
+            searchIcon.addEventListener('click', function() {
+                searchForm.dispatchEvent(new Event('submit'));
+            });
+        }
+    }
+}
+
+// Function to handle the search
+function performSearch(query) {
+    // Get the base URL for the search
+    const baseUrl = `/pls/cautare`;
+    
+    // Construct the search URL with the query parameter
+    const searchUrl = `${baseUrl}?q=${encodeURIComponent(query)}`;
+    
+    // Check if we're in development/local environment without a search page
+    const isLocalDev = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1';
+    
+    if (isLocalDev) {
+        // For local development, show an alert with the search query
+        alert(`Căutare pentru: "${query}"\n\nÎn mediul de producție, această căutare va duce la: ${searchUrl}`);
+    } else {
+        // In production, redirect to the search results page
+        window.location.href = searchUrl;
+    }
 }
