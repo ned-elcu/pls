@@ -1091,7 +1091,7 @@ const HEADER_HTML = `
                     <ul class="dropdown-menu">
                         <li><a href="/pls/integritate/sna"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
                         <li><a href="/pls/integritate/cod-etic"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
-                        <li><a href="/pls/integritate/cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
+                        <li><a href="/pls/transparenta/cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
@@ -1102,15 +1102,15 @@ const HEADER_HTML = `
                     <ul class="dropdown-menu">
                         <div class="dropdown-group-header">Financiare</div>
                         <div class="dropdown-group-1">
-                            <li><a href="/pls/transparenta/salarii"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
-                            <li><a href="/pls/transparenta/buget"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
-                            <li><a href="/pls/transparenta/achizitii"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
+                            <li><a href="/pls/transparenta/financiara/#raportare-salariala"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
+                            <li><a href="/pls/transparenta/financiara/#bilanturi-bugete"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
+                            <li><a href="/pls/transparenta/financiara/#program-achizitii"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
                         </div>
                         <div class="dropdown-group-header">Transparență</div>
                         <div class="dropdown-group-2">
-                            <li><a href="/pls/transparenta/index.html#declaratii-interese"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
-                            <li><a href="/pls/transparenta/index.html#declaratii-avere"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
-                            <li><a href="/pls/transparenta/index.html#rapoarte-544"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
+                            <li><a href="/pls/transparenta/#declaratii-interese"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
+                            <li><a href="/pls/transparenta/#declaratii-avere"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
+                            <li><a href="/pls/transparenta/#rapoarte-544"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
                             <li><a href="/pls/transparenta/documente"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
                         </div>
                         <div class="dropdown-group-header">Dezvoltare</div>
