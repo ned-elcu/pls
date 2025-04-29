@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program formare profesională - Poliția Locală Slobozia</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 80px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            background-color: var(--background-light);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        a:hover {
+            color: var(--secondary-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Page Title */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+            color: white;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            opacity: 0.5;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 3rem 0 5rem;
+            background-color: white;
+        }
+        
+        .document-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            margin-bottom: 3rem;
+        }
+        
+        .section-heading {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        .section-intro {
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        /* Document Cards */
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .document-card {
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            transition: var(--transition-medium);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .document-card-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .document-card-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+        
+        .document-card-icon i {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+        }
+        
+        .document-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+        }
+        
+        .document-card-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .document-card-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .document-card-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.7rem 1.2rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: var(--border-radius-medium);
+            font-weight: 500;
+            margin-top: auto;
+            transition: var(--transition-fast);
+            align-self: flex-start;
+        }
+        
+        .document-card-button i {
+            margin-left: 0.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .document-card-button:hover {
+            background-color: var(--secondary-light);
+            color: white;
+        }
+        
+        .document-card-button:hover i {
+            transform: translateX(3px);
+        }
+        
+        /* Features Section */
+        .features-section {
+            background-color: var(--background-light);
+            padding: 4rem 0;
+            margin-top: 3rem;
+        }
+        
+        .features-heading {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .features-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+        
+        .features-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .features-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            transition: var(--transition-medium);
+            text-align: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .feature-icon i {
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+        
+        .feature-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .document-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-title-section {
+                padding: 3rem 0 2rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .document-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            background-color: var(--primary-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+        }
+        
+        .timeline-item {
+            padding: 1.5rem 2.5rem;
+            position: relative;
+            width: 50%;
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            margin-bottom: 2rem;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        
+        .timeline-item-left {
+            left: 0;
+        }
+        
+        .timeline-item-left::after {
+            right: -10px;
+        }
+        
+        .timeline-item-right {
+            left: 50%;
+        }
+        
+        .timeline-item-right::after {
+            left: -10px;
+        }
+        
+        .timeline-date {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-title {
+            margin-bottom: 0.8rem;
+        }
+        
+        .timeline-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 1.5rem;
+            }
+            
+            .timeline-item::after {
+                left: 21px;
+            }
+            
+            .timeline-item-left, .timeline-item-right {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="container">
+            <div class="page-title-content">
+                <div class="page-title-badge">Informații de interes public</div>
+                <h1 class="page-title">Program formare profesională</h1>
+                <p class="page-description">Documentele privind planurile anuale de formare profesională a personalului Poliției Locale Slobozia, conform standardelor de pregătire și dezvoltare a competențelor profesionale.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="/">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <a href="/informatii-publice">Informații de interes public</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Program formare profesională</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="content-section">
+        <div class="container">
+            <div class="document-container">
+                <h2 class="section-heading">Planuri de formare profesională</h2>
+                
+                <div class="section-intro">
+                    <p>Perfecționarea pregătirii profesionale a personalului Poliției Locale Slobozia se realizează pe baza planurilor anuale de pregătire aprobate de conducerea instituției, în conformitate cu prevederile legale în vigoare. Această pregătire vizează actualizarea și aprofundarea cunoștințelor privind legislația specifică, procedurile de intervenție și modalitățile de acțiune în diferite situații.</p>
+                    <p>Documentele de mai jos prezintă planurile de formare profesională pentru personalul Poliției Locale Slobozia, reflectând angajamentul instituției noastre pentru dezvoltarea continuă a competențelor și abilităților necesare îndeplinirii cu profesionalism a atribuțiilor de serviciu.</p>
+                </div>
+                
+                <div class="document-grid">
+                    <div class="document-card">
+                        <div class="document-card-header">
+                            <div class="document-card-icon">
+                                <i class="material-icons">school</i>
+                            </div>
+                            <h3 class="document-card-title">Plan pregătire profesională 2024</h3>
+                        </div>
+                        <div class="document-card-body">
+                            <p class="document-card-description">
+                                Planul de formare profesională a personalului Poliției Locale Slobozia pentru anul 2024, cuprinzând tematica de pregătire, programul activităților și responsabilii.
+                            </p>
+                            <a href="https://pcslobozia.ro/wp-content/uploads/2024/04/Plan-pregatire-profesionala-Politia-Locala-Slobozia-2024.pdf" target="_blank" class="document-card-button">
+                                Descarcă documentul <i class="material-icons">file_download</i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="document-card">
+                        <div class="document-card-header">
+                            <div class="document-card-icon">
+                                <i class="material-icons">school</i>
+                            </div>
+                            <h3 class="document-card-title">Plan formare profesională 2018</h3>
+                        </div>
+                        <div class="document-card-body">
+                            <p class="document-card-description">
+                                Planul de formare profesională pentru anul 2018, structurat pe module tematice și perioade de desfășurare.
+                            </p>
+                            <a href="http://pcslobozia.ro/wp-content/uploads/2016/11/plan-formare-profesionala-2018.pdf" target="_blank" class="document-card-button">
+                                Descarcă documentul <i class="material-icons">file_download</i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="document-card">
+                        <div class="document-card-header">
+                            <div class="document-card-icon">
+                                <i class="material-icons">school</i>
+                            </div>
+                            <h3 class="document-card-title">Plan formare profesională 2017</h3>
+                        </div>
+                        <div class="document-card-body">
+                            <p class="document-card-description">
+                                Planul anual de formare profesională aferent anului 2017, cu detalierea programului de pregătire.
+                            </p>
+                            <a href="http://pcslobozia.ro/wp-content/uploads/2016/11/plan-formare-profesionala-2017.pdf" target="_blank" class="document-card-button">
+                                Descarcă documentul <i class="material-icons">file_download</i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="document-card">
+                        <div class="document-card-header">
+                            <div class="document-card-icon">
+                                <i class="material-icons">school</i>
+                            </div>
+                            <h3 class="document-card-title">Plan pregătire profesională 2016</h3>
+                        </div>
+                        <div class="document-card-body">
+                            <p class="document-card-description">
+                                Planul anual de pregătire profesională pentru personalul Poliției Locale Slobozia în anul 2016.
+                            </p>
+                            <a href="http://pcslobozia.ro/wp-content/uploads/2016/11/PLANUL-ANUAL-DE-PREGATIRE-PROFESIONALA-.pdf" target="_blank" class="document-card-button">
+                                Descarcă documentul <i class="material-icons">file_download</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Features Section -->
+            <div class="features-section">
+                <div class="features-heading">
+                    <h2 class="features-title">Importanța formării profesionale</h2>
+                    <p class="features-description">Formarea profesională continuă reprezintă un element esențial pentru asigurarea calității serviciilor oferite de Poliția Locală Slobozia</p>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="material-icons">gavel</i>
+                        </div>
+                        <h3 class="feature-title">Cunoașterea legislației</h3>
+                        <p class="feature-description">Actualizarea permanentă a cunoștințelor privind legislația specifică activității Poliției Locale</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="material-icons">security</i>
+                        </div>
+                        <h3 class="feature-title">Proceduri de intervenție</h3>
+                        <p class="feature-description">Perfecționarea tehnicilor și modalităților de acțiune în situații specifice</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="material-icons">people</i>
+                        </div>
+                        <h3 class="feature-title">Comunicare eficientă</h3>
+                        <p class="feature-description">Dezvoltarea abilităților de comunicare și relații cu publicul</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="material-icons">fitness_center</i>
+                        </div>
+                        <h3 class="feature-title">Pregătire fizică</h3>
+                        <p class="feature-description">Menținerea și îmbunătățirea condiției fizice pentru îndeplinirea atribuțiilor</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timeline Section -->
+            <div class="timeline">
+                <div class="timeline-item timeline-item-left">
+                    <div class="timeline-date">Trimestrul I</div>
+                    <h3 class="timeline-title">Pregătire juridică</h3>
+                    <p class="timeline-description">Actualizarea cunoștințelor privind cadrul legal, modificări legislative și proceduri aplicabile în activitatea Poliției Locale.</p>
+                </div>
+                
+                <div class="timeline-item timeline-item-right">
+                    <div class="timeline-date">Trimestrul II</div>
+                    <h3 class="timeline-title">Tactici de intervenție</h3>
+                    <p class="timeline-description">Exerciții practice și simulări pentru perfecționarea tacticilor de intervenție în diverse situații operaționale.</p>
+                </div>
+                
+                <div class="timeline-item timeline-item-left">
+                    <div class="timeline-date">Trimestrul III</div>
+                    <h3 class="timeline-title">Comunicare și relații publice</h3>
+                    <p class="timeline-description">Tehnici de comunicare eficientă, gestionarea situațiilor conflictuale și relațiile cu cetățenii.</p>
+                </div>
+                
+                <div class="timeline-item timeline-item-right">
+                    <div class="timeline-date">Trimestrul IV</div>
+                    <h3 class="timeline-title">Evaluare și certificare</h3>
+                    <p class="timeline-description">Evaluarea cunoștințelor acumulate și a competențelor dezvoltate pe parcursul anului de pregătire.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="../components.js"></script>
+</body>
+</html>
