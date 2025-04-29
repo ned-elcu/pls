@@ -1089,9 +1089,9 @@ const HEADER_HTML = `
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/pls/integritate/sna"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
-                        <li><a href="/pls/integritate/cod-etic"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
-                        <li><a href="/pls/transparenta/cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
+                        <li><a href="/pls/integritate/#strategie-anticoruptie"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
+                        <li><a href="/pls/integritate/#cod-etic"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
+                        <li><a href="/pls/integritate/#declarare-cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
