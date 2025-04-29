@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raport privind declararea cadourilor - POLIȚIA LOCALĂ SLOBOZIA</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 80px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            background-color: var(--background-light);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        a:hover {
+            color: var(--secondary-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background-color: white;
+            box-shadow: var(--shadow-small);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: var(--header-height);
+        }
+
+        .logo {
+            height: 60px;
+        }
+
+        .logo img {
+            height: 100%;
+        }
+
+        /* Page Title */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+            background-image: url('/api/placeholder/1200/400');
+            background-blend-mode: overlay;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+            color: white;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            opacity: 0.5;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 3rem 0 5rem;
+        }
+        
+        .document-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            padding: 2rem;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 3rem;
+        }
+        
+        .section-heading {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        .section-intro {
+            margin-bottom: 2rem;
+        }
+
+        /* Document Lists */
+        .document-list {
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0;
+        }
+
+        .document-item {
+            margin-bottom: 1rem;
+            padding: 1.2rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .document-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-small);
+        }
+
+        .document-icon {
+            margin-right: 1rem;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+        }
+
+        .document-details {
+            flex: 1;
+        }
+
+        .document-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .document-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .document-link {
+            margin-left: 1rem;
+            display: flex;
+            align-items: center;
+            color: var(--secondary-color);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+
+        .document-link i {
+            margin-left: 0.5rem;
+            transition: var(--transition-fast);
+        }
+
+        .document-link:hover {
+            color: var(--primary-color);
+        }
+
+        .document-link:hover i {
+            transform: translateX(3px);
+        }
+
+        .info-card {
+            background-color: rgba(30, 136, 229, 0.05);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-medium);
+            margin-bottom: 2rem;
+        }
+
+        .info-card-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .info-card-title i {
+            margin-right: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .info-card-content {
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-column {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-contact {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer-contact i {
+            color: var(--accent-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Utilities */
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .page-title {
+                font-size: 2.2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .document-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .document-icon {
+                margin-bottom: 0.5rem;
+            }
+            
+            .document-link {
+                margin-left: 0;
+                margin-top: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .navbar {
+                flex-direction: column;
+                height: auto;
+                padding: 1rem 0;
+            }
+            
+            .page-title-section {
+                padding: 3rem 0 2rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="container">
+            <div class="page-title-content">
+                <div class="page-title-badge">Integritate instituțională</div>
+                <h1 class="page-title">Raport privind declararea cadourilor</h1>
+                <p class="page-description">În conformitate cu prevederile legale, publicăm rapoartele anuale privind declararea cadourilor primite în exercitarea funcțiilor.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="https://pcslobozia.ro/">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <a href="#">Integritate instituțională</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Raport privind declararea cadourilor</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="content-section">
+        <div class="container">
+            <div class="document-container">
+                <div class="info-card">
+                    <h3 class="info-card-title">
+                        <i class="material-icons">info</i>
+                        Obligații legale
+                    </h3>
+                    <div class="info-card-content">
+                        <p>Conform prevederilor Legii nr. 251/2004 privind unele măsuri referitoare la bunurile primite cu titlu gratuit cu prilejul unor acțiuni de protocol în exercitarea mandatului sau a funcției, persoanele care au calitatea de demnitar public sau funcționar public sunt obligate să declare cadourile primite în exercitarea funcției.</p>
+                    </div>
+                </div>
+
+                <h2 class="section-heading">Rapoarte anuale</h2>
+                <div class="section-intro">
+                    <p>Rapoartele privind declararea cadourilor sunt publicate anual, în conformitate cu legislația în vigoare.</p>
+                </div>
+                
+                <ul class="document-list">
+                    <li class="document-item">
+                        <i class="material-icons document-icon">description</i>
+                        <div class="document-details">
+                            <h4 class="document-title">Raport privind declararea cadourilor în anul 2024</h4>
+                            <p class="document-date">Ianuarie 2025</p>
+                        </div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2025/01/raport-23-din-09.01.2025-cadouri-an-2024-legea-251.pdf" target="_blank" class="document-link">
+                            Vizualizează <i class="material-icons">open_in_new</i>
+                        </a>
+                    </li>
+                    
+                    <li class="document-item">
+                        <i class="material-icons document-icon">description</i>
+                        <div class="document-details">
+                            <h4 class="document-title">Raport privind declararea cadourilor în anul 2023</h4>
+                            <p class="document-date">Ianuarie 2024</p>
+                        </div>
+                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/01/raport-declarare-cadouri-an-2023-L.-251.pdf" target="_blank" class="document-link">
+                            Vizualizează <i class="material-icons">open_in_new</i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+
+    <!-- Include components.js to load header and footer -->
+    <script src="../../components.js"></script>
+    
+    <!-- JavaScript for animations -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation for page elements
+            const fadeElements = document.querySelectorAll('.page-title-content, .document-container');
+            fadeElements.forEach(element => {
+                element.style.opacity = 0;
+                element.style.animation = 'fadeIn 0.8s forwards';
+                element.style.animationDelay = '0.2s';
+            });
+        });
+    </script>
+</body>
+</html>
