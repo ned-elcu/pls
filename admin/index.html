@@ -1,0 +1,2983 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images4.imagebam.com; connect-src 'self' https://api.politia-locala-slobozia.ro wss://chat.politia-locala-slobozia.ro;">
+    <title>Dashboard Admin - Poliția Locală Slobozia</title>
+    
+    <!-- Import fonts and icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Import libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #1A2F5F;
+            --primary-light: rgba(26, 47, 95, 0.1);
+            --primary-dark: #14274d;
+            --secondary-color: #1E88E5;
+            --secondary-light: rgba(30, 136, 229, 0.2);
+            --secondary-dark: #1976d2;
+            --accent-color: #FFCA28;
+            --accent-light: rgba(255, 202, 40, 0.2);
+            --accent-dark: #FFC107;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-light: #999999;
+            --background-light: #F5F7FA;
+            --background-dark: #172B4D;
+            --background-sidebar: #1c365e;
+            --success-color: #4CAF50;
+            --success-light: rgba(76, 175, 80, 0.1);
+            --warning-color: #FF9800;
+            --warning-light: rgba(255, 152, 0, 0.1);
+            --danger-color: #F44336;
+            --danger-light: rgba(244, 67, 54, 0.1);
+            --info-color: #00BCD4;
+            --info-light: rgba(0, 188, 212, 0.1);
+            --border-radius-small: 6px;
+            --border-radius-medium: 10px;
+            --border-radius-large: 15px;
+            --shadow-small: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --shadow-large: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --transition-fast: all 0.3s ease;
+            --transition-medium: all 0.5s ease;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            background-color: var(--background-light);
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            transition: var(--transition-fast);
+        }
+        
+        a:hover {
+            color: var(--secondary-dark);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--background-sidebar);
+            height: 100vh;
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            transition: var(--transition-fast);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-logo {
+            width: 45px;
+            height: 45px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+        
+        .sidebar-logo img {
+            width: 35px;
+            height: 35px;
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        .sidebar-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .sidebar-toggle {
+            position: absolute;
+            top: 1.5rem;
+            right: 1rem;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .sidebar-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .sidebar-toggle i {
+            font-size: 1.2rem;
+        }
+        
+        .sidebar-user {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .user-status {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--success-color);
+            margin-right: 0.5rem;
+        }
+        
+        .sidebar-nav {
+            padding: 1.5rem 0;
+        }
+        
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .nav-section-title {
+            padding: 0 1.5rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+        }
+        
+        .nav-list {
+            list-style: none;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            transition: var(--transition-fast);
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--accent-color);
+        }
+        
+        .nav-icon {
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+        }
+        
+        .nav-text {
+            flex: 1;
+        }
+        
+        .nav-badge {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.1rem 0.5rem;
+            border-radius: 10px;
+            margin-left: 0.5rem;
+        }
+        
+        .nav-arrow {
+            margin-left: 0.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .nav-item.expanded .nav-arrow {
+            transform: rotate(90deg);
+        }
+        
+        .nav-subnav {
+            list-style: none;
+            background-color: rgba(0, 0, 0, 0.1);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .nav-item.expanded .nav-subnav {
+            max-height: 500px;
+        }
+        
+        .subnav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.7rem 1.5rem 0.7rem 3.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            transition: var(--transition-fast);
+            font-size: 0.9rem;
+        }
+        
+        .subnav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .subnav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .sidebar-footer-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: var(--transition-fast);
+        }
+        
+        .sidebar-footer-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition-fast);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        
+        /* Header */
+        .header {
+            height: var(--header-height);
+            background-color: white;
+            box-shadow: var(--shadow-small);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-right: 1.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .header-toggle:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .header-search {
+            position: relative;
+        }
+        
+        .search-input {
+            width: 300px;
+            padding: 0.7rem 1rem 0.7rem 2.8rem;
+            border: none;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--secondary-light);
+            background-color: white;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            pointer-events: none;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-item {
+            margin-left: 1.5rem;
+            position: relative;
+        }
+        
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--background-light);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            position: relative;
+        }
+        
+        .header-btn:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .header-badge {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: var(--danger-color);
+            color: white;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+        
+        .dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-medium);
+            width: 300px;
+            z-index: 100;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .dropdown-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .dropdown-badge {
+            background-color: var(--danger-color);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.1rem 0.5rem;
+            border-radius: 10px;
+        }
+        
+        .dropdown-body {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        
+        .dropdown-item {
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition-fast);
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--background-light);
+        }
+        
+        .dropdown-item.unread {
+            background-color: var(--secondary-light);
+        }
+        
+        .dropdown-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .dropdown-icon.primary {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .dropdown-icon.secondary {
+            background-color: var(--secondary-light);
+            color: var(--secondary-color);
+        }
+        
+        .dropdown-icon.success {
+            background-color: var(--success-light);
+            color: var(--success-color);
+        }
+        
+        .dropdown-icon.warning {
+            background-color: var(--warning-light);
+            color: var(--warning-color);
+        }
+        
+        .dropdown-icon.danger {
+            background-color: var(--danger-light);
+            color: var(--danger-color);
+        }
+        
+        .dropdown-icon.info {
+            background-color: var(--info-light);
+            color: var(--info-color);
+        }
+        
+        .dropdown-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .dropdown-text {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .dropdown-subtext {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .dropdown-time {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+        
+        .dropdown-footer {
+            padding: 1rem 1.5rem;
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .dropdown-link {
+            color: var(--secondary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .dropdown-link:hover {
+            color: var(--secondary-dark);
+        }
+        
+        /* Page Content */
+        .page-content {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+        }
+        
+        /* Dashboard Widgets */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon.primary {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .stat-icon.secondary {
+            background-color: var(--secondary-light);
+            color: var(--secondary-color);
+        }
+        
+        .stat-icon.success {
+            background-color: var(--success-light);
+            color: var(--success-color);
+        }
+        
+        .stat-icon.warning {
+            background-color: var(--warning-light);
+            color: var(--warning-color);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .stat-change {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+        
+        .stat-change.negative {
+            color: var(--danger-color);
+        }
+        
+        .stat-change i {
+            margin-right: 0.3rem;
+            font-size: 1rem;
+        }
+        
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            height: 100%;
+        }
+        
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .chart-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chart-action {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--background-light);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .chart-action:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        
+        /* Tabs */
+        .tabs {
+            margin-bottom: 1.5rem;
+        }
+        
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab-item {
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .tab-item:hover {
+            color: var(--primary-color);
+        }
+        
+        .tab-item.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        
+        .data-table th, 
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .data-table th {
+            background-color: var(--background-light);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .data-table tr:hover {
+            background-color: var(--background-light);
+        }
+        
+        .table-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .table-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .table-status.active {
+            background-color: var(--success-light);
+            color: var(--success-color);
+        }
+        
+        .table-status.pending {
+            background-color: var(--warning-light);
+            color: var(--warning-color);
+        }
+        
+        .table-status.closed {
+            background-color: var(--danger-light);
+            color: var(--danger-color);
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .table-action {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--background-light);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .table-action:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            overflow: hidden;
+            transition: var(--transition-fast);
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .info-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .info-card-title {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .info-card-body {
+            padding: 1.5rem;
+        }
+        
+        .info-card-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Chat Interface for Admin */
+        .chat-container {
+            display: flex;
+            height: calc(100vh - var(--header-height) - 4rem);
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-small);
+        }
+        
+        .chat-sidebar {
+            width: 300px;
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-sidebar-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-sidebar-title {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        
+        .chat-filter-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--background-light);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .chat-filter-btn:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .chat-search {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-search-input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.8rem;
+            border: none;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .chat-search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--secondary-light);
+            background-color: white;
+        }
+        
+        .chat-search-wrapper {
+            position: relative;
+        }
+        
+        .chat-search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            pointer-events: none;
+        }
+        
+        .chat-contacts {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .chat-contact {
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .chat-contact:hover {
+            background-color: var(--background-light);
+        }
+        
+        .chat-contact.active {
+            background-color: var(--primary-light);
+        }
+        
+        .chat-contact-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--secondary-light);
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 1rem;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .chat-contact-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--success-color);
+            border: 2px solid white;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+        
+        .chat-contact-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .chat-contact-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .chat-contact-message {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .chat-contact-meta {
+            text-align: right;
+            margin-left: 0.5rem;
+        }
+        
+        .chat-contact-time {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-bottom: 0.3rem;
+        }
+        
+        .chat-contact-badge {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: var(--danger-color);
+            color: white;
+            font-size: 0.7rem;
+            text-align: center;
+            line-height: 18px;
+        }
+        
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-user {
+            display: flex;
+            align-items: center;
+        }
+        
+        .chat-user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--secondary-light);
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 1rem;
+            position: relative;
+        }
+        
+        .chat-user-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--success-color);
+            border: 2px solid white;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+        
+        .chat-user-info {
+            flex: 1;
+        }
+        
+        .chat-user-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        
+        .chat-user-typing {
+            font-size: 0.8rem;
+            color: var(--secondary-color);
+        }
+        
+        .chat-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+        
+        .chat-action {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--background-light);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .chat-action:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            background-color: var(--background-light);
+        }
+        
+        .message {
+            margin-bottom: 1.5rem;
+            max-width: 70%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message-incoming {
+            align-self: flex-start;
+        }
+        
+        .message-outgoing {
+            align-self: flex-end;
+        }
+        
+        .message-content {
+            padding: 1rem;
+            border-radius: 1rem;
+            position: relative;
+            overflow-wrap: break-word;
+        }
+        
+        .message-incoming .message-content {
+            background-color: white;
+            border-bottom-left-radius: 0;
+        }
+        
+        .message-outgoing .message-content {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            border-bottom-right-radius: 0;
+        }
+        
+        .message-meta {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+        
+        .message-incoming .message-meta {
+            justify-content: flex-start;
+        }
+        
+        .message-outgoing .message-meta {
+            justify-content: flex-end;
+        }
+        
+        .message-time {
+            margin-right: 0.5rem;
+        }
+        
+        .message-status i {
+            font-size: 1rem;
+            margin-left: 0.2rem;
+        }
+        
+        .chat-footer {
+            padding: 1rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-input-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            padding: 0.5rem;
+        }
+        
+        .chat-input-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: transparent;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .chat-input-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--primary-color);
+        }
+        
+        .chat-input {
+            flex: 1;
+            border: none;
+            background-color: transparent;
+            padding: 0.7rem;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+        }
+        
+        .chat-send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            margin-left: 0.5rem;
+        }
+        
+        .chat-send-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* User Info Sidebar */
+        .user-info-sidebar {
+            width: 300px;
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .user-info-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .user-info-title {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        
+        .user-info-close {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--background-light);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .user-info-close:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .user-info-content {
+            padding: 1.5rem;
+        }
+        
+        .user-info-profile {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .user-info-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--secondary-light);
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 2.5rem;
+            margin: 0 auto 1rem;
+        }
+        
+        .user-info-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .user-info-status {
+            display: inline-flex;
+            align-items: center;
+            color: var(--success-color);
+            font-size: 0.9rem;
+        }
+        
+        .user-info-status i {
+            margin-right: 0.3rem;
+            font-size: 0.8rem;
+        }
+        
+        .user-info-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .user-info-section-title {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info-section-title i {
+            margin-right: 0.5rem;
+        }
+        
+        .user-info-row {
+            margin-bottom: 0.8rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-info-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.3rem;
+        }
+        
+        .user-info-value {
+            font-weight: 500;
+        }
+        
+        .user-info-files {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        
+        .user-info-file {
+            width: calc(50% - 0.4rem);
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-small);
+            padding: 0.8rem;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .user-info-file:hover {
+            background-color: var(--primary-light);
+        }
+        
+        .user-info-file-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--secondary-light);
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.8rem;
+            flex-shrink: 0;
+        }
+        
+        .user-info-file-details {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .user-info-file-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 0.2rem;
+        }
+        
+        .user-info-file-size {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+        
+        .user-info-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        
+        .user-info-action {
+            flex: 1;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-small);
+            padding: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            color: var(--text-secondary);
+        }
+        
+        .user-info-action:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .user-info-action i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chat-sidebar,
+            .user-info-sidebar {
+                width: 250px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .user-info-sidebar {
+                display: none;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .search-input {
+                width: 200px;
+            }
+            
+            .chat-sidebar {
+                width: 100%;
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                background-color: white;
+                z-index: 10;
+                transform: translateX(-100%);
+                transition: var(--transition-fast);
+            }
+            
+            .chat-sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .header {
+                padding: 0 1rem;
+            }
+            
+            .page-content {
+                padding: 1rem;
+            }
+            
+            .search-input {
+                display: none;
+            }
+            
+            .header-search-mobile {
+                display: block;
+            }
+            
+            .header-item {
+                margin-left: 1rem;
+            }
+        }
+        
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-large);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-backdrop.show .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .modal-close {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--background-light);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .modal-close:hover {
+            background-color: var(--danger-light);
+            color: var(--danger-color);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: var(--border-radius-medium);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #43a047;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #d32f2f;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #f57c00;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .btn-light {
+            background-color: var(--background-light);
+            color: var(--text-primary);
+        }
+        
+        .btn-light:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .btn-link {
+            background-color: transparent;
+            color: var(--secondary-color);
+            padding: 0.5rem;
+        }
+        
+        .btn-link:hover {
+            color: var(--secondary-dark);
+            background-color: transparent;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: var(--border-radius-small);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-family: inherit;
+            font-size: 0.9rem;
+            background-color: var(--background-light);
+            transition: var(--transition-fast);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px var(--secondary-light);
+            background-color: white;
+        }
+        
+        /* Utility Classes */
+        .d-flex {
+            display: flex;
+        }
+        
+        .align-center {
+            align-items: center;
+        }
+        
+        .justify-between {
+            justify-content: space-between;
+        }
+        
+        .justify-center {
+            justify-content: center;
+        }
+        
+        .flex-column {
+            flex-direction: column;
+        }
+        
+        .gap-1 {
+            gap: 0.5rem;
+        }
+        
+        .gap-2 {
+            gap: 1rem;
+        }
+        
+        .gap-3 {
+            gap: 1.5rem;
+        }
+        
+        .mb-1 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+        
+        .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mb-4 {
+            margin-bottom: 2rem;
+        }
+        
+        .mt-1 {
+            margin-top: 0.5rem;
+        }
+        
+        .mt-2 {
+            margin-top: 1rem;
+        }
+        
+        .mt-3 {
+            margin-top: 1.5rem;
+        }
+        
+        .mt-4 {
+            margin-top: 2rem;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .text-primary {
+            color: var(--primary-color);
+        }
+        
+        .text-secondary {
+            color: var(--secondary-color);
+        }
+        
+        .text-success {
+            color: var(--success-color);
+        }
+        
+        .text-danger {
+            color: var(--danger-color);
+        }
+        
+        .text-warning {
+            color: var(--warning-color);
+        }
+        
+        .bg-light {
+            background-color: var(--background-light);
+        }
+        
+        .bg-white {
+            background-color: white;
+        }
+        
+        .rounded {
+            border-radius: var(--border-radius-medium);
+        }
+        
+        .shadow {
+            box-shadow: var(--shadow-small);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Logo">
+            </div>
+            <div>
+                <h1 class="sidebar-title">Poliția Locală</h1>
+                <div class="sidebar-subtitle">Dashboard Administrator</div>
+            </div>
+            <div class="sidebar-toggle" id="sidebar-toggle">
+                <i class="material-icons">menu</i>
+            </div>
+        </div>
+        
+        <div class="sidebar-user">
+            <div class="user-avatar">AM</div>
+            <div class="user-info">
+                <div class="user-name">Agent Maria</div>
+                <div class="user-role">Administrator Sistem</div>
+                <div class="user-status">
+                    <div class="status-indicator"></div>
+                    Online
+                </div>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <h2 class="nav-section-title">Navigare</h2>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#dashboard" class="nav-link active">
+                            <div class="nav-icon"><i class="material-icons">dashboard</i></div>
+                            <div class="nav-text">Dashboard</div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#chat" class="nav-link">
+                            <div class="nav-icon"><i class="material-icons">chat</i></div>
+                            <div class="nav-text">Chat-uri Active</div>
+                            <div class="nav-badge">5</div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <div class="nav-icon"><i class="material-icons">history</i></div>
+                            <div class="nav-text">Istoric Chat-uri</div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <div class="nav-icon"><i class="material-icons">people</i></div>
+                            <div class="nav-text">Utilizatori</div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h2 class="nav-section-title">Management</h2>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" id="nav-agents">
+                            <div class="nav-icon"><i class="material-icons">security</i></div>
+                            <div class="nav-text">Agenți de Poliție</div>
+                            <i class="material-icons nav-arrow">keyboard_arrow_right</i>
+                        </a>
+                        <ul class="nav-subnav">
+                            <li>
+                                <a href="#" class="subnav-link">Toți Agenții</a>
+                            </li>
+                            <li>
+                                <a href="#" class="subnav-link">Adaugă Agent</a>
+                            </li>
+                            <li>
+                                <a href="#" class="subnav-link">Programări Agenți</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" id="nav-reports">
+                            <div class="nav-icon"><i class="material-icons">assignment</i></div>
+                            <div class="nav-text">Rapoarte și Incidente</div>
+                            <i class="material-icons nav-arrow">keyboard_arrow_right</i>
+                        </a>
+                        <ul class="nav-subnav">
+                            <li>
+                                <a href="#" class="subnav-link">Toate Incidentele</a>
+                            </li>
+                            <li>
+                                <a href="#" class="subnav-link">Rapoarte Zilnice</a>
+                            </li>
+                            <li>
+                                <a href="#" class="subnav-link">Statistici</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <div class="nav-icon"><i class="material-icons">local_police</i></div>
+                            <div class="nav-text">Patrule</div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <div class="nav-icon"><i class="material-icons">map</i></div>
+                            <div class="nav-text">Hartă Incidente</div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h2 class="nav-section-title">Sistem</h2>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <div class="nav-icon"><i class="material-icons">settings</i></div>
+                            <div class="nav-text">Setări</div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <div class="nav-icon"><i class="material-icons">key</i></div>
+                            <div class="nav-text">API Rocket.Chat</div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <div class="nav-icon"><i class="material-icons">backup</i></div>
+                            <div class="nav-text">Backup Sistem</div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <div class="nav-icon"><i class="material-icons">help_outline</i></div>
+                            <div class="nav-text">Ajutor și Suport</div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-footer-btn" title="Setări">
+                <i class="material-icons">settings</i>
+            </a>
+            <a href="#" class="sidebar-footer-btn" title="Profil">
+                <i class="material-icons">account_circle</i>
+            </a>
+            <a href="#" class="sidebar-footer-btn" title="Notificări">
+                <i class="material-icons">notifications</i>
+            </a>
+            <a href="#" class="sidebar-footer-btn" title="Deconectare">
+                <i class="material-icons">logout</i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="header-toggle" id="header-toggle">
+                    <i class="material-icons">menu</i>
+                </div>
+                <div class="header-search">
+                    <i class="material-icons search-icon">search</i>
+                    <input type="text" class="search-input" placeholder="Caută chat-uri, utilizatori, incidente...">
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-item">
+                    <div class="header-btn" id="notifications-btn">
+                        <i class="material-icons">notifications</i>
+                        <div class="header-badge">3</div>
+                    </div>
+                    
+                    <div class="dropdown" id="notifications-dropdown">
+                        <div class="dropdown-header">
+                            <div class="dropdown-title">Notificări</div>
+                            <div class="dropdown-badge">3 Noi</div>
+                        </div>
+                        <div class="dropdown-body">
+                            <div class="dropdown-item unread">
+                                <div class="dropdown-icon warning">
+                                    <i class="material-icons">warning</i>
+                                </div>
+                                <div class="dropdown-content">
+                                    <div class="dropdown-text">Activitate suspectă raportată pe str. Mălinului</div>
+                                    <div class="dropdown-subtext">
+                                        <i class="material-icons" style="font-size: 0.8rem; margin-right: 0.3rem;">schedule</i>
+                                        Acum 5 minute
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-item unread">
+                                <div class="dropdown-icon primary">
+                                    <i class="material-icons">message</i>
+                                </div>
+                                <div class="dropdown-content">
+                                    <div class="dropdown-text">2 chat-uri noi în așteptare</div>
+                                    <div class="dropdown-subtext">
+                                        <i class="material-icons" style="font-size: 0.8rem; margin-right: 0.3rem;">schedule</i>
+                                        Acum 10 minute
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-item unread">
+                                <div class="dropdown-icon success">
+                                    <i class="material-icons">assignment_turned_in</i>
+                                </div>
+                                <div class="dropdown-content">
+                                    <div class="dropdown-text">Incidentul #2305 a fost rezolvat cu succes</div>
+                                    <div class="dropdown-subtext">
+                                        <i class="material-icons" style="font-size: 0.8rem; margin-right: 0.3rem;">schedule</i>
+                                        Acum 30 minute
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-item">
+                                <div class="dropdown-icon info">
+                                    <i class="material-icons">sync</i>
+                                </div>
+                                <div class="dropdown-content">
+                                    <div class="dropdown-text">Sistem actualizat la versiunea 2.4.0</div>
+                                    <div class="dropdown-subtext">
+                                        <i class="material-icons" style="font-size: 0.8rem; margin-right: 0.3rem;">schedule</i>
+                                        Ieri, 22:45
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-item">
+                                <div class="dropdown-icon secondary">
+                                    <i class="material-icons">person_add</i>
+                                </div>
+                                <div class="dropdown-content">
+                                    <div class="dropdown-text">Agent nou adăugat: Adrian Popescu</div>
+                                    <div class="dropdown-subtext">
+                                        <i class="material-icons" style="font-size: 0.8rem; margin-right: 0.3rem;">schedule</i>
+                                        27 Aprilie, 10:15
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dropdown-footer">
+                            <a href="#" class="dropdown-link">Vezi toate notificările</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="header-item">
+                    <div class="header-btn" id="messages-btn">
+                        <i class="material-icons">email</i>
+                        <div class="header-badge">2</div>
+                    </div>
+                    
+                    <div class="dropdown" id="messages-dropdown">
+                        <div class="dropdown-header">
+                            <div class="dropdown-title">Mesaje</div>
+                            <div class="dropdown-badge">2 Noi</div>
+                        </div>
+                        <div class="dropdown-body">
+                            <div class="dropdown-item unread">
+                                <div class="dropdown-icon primary">
+                                    <i class="material-icons">person</i>
+                                </div>
+                                <div class="dropdown-content">
+                                    <div class="dropdown-text">Agent Ionescu: Raport finalizat</div>
+                                    <div class="dropdown-subtext">Am încheiat raportul pentru zona centrală și...</div>
+                                </div>
+                                <div class="dropdown-time">09:45</div>
+                            </div>
+                            <div class="dropdown-item unread">
+                                <div class="dropdown-icon primary">
+                                    <i class="material-icons">person</i>
+                                </div>
+                                <div class="dropdown-content">
+                                    <div class="dropdown-text">Agent Popescu: Solicitare aprobare</div>
+                                    <div class="dropdown-subtext">Vă rog să aprobați cererea de intervenție pentru...</div>
+                                </div>
+                                <div class="dropdown-time">09:30</div>
+                            </div>
+                            <div class="dropdown-item">
+                                <div class="dropdown-icon primary">
+                                    <i class="material-icons">person</i>
+                                </div>
+                                <div class="dropdown-content">
+                                    <div class="dropdown-text">Dispecerat: Actualizare program</div>
+                                    <div class="dropdown-subtext">Vă informăm că programul pentru săptămâna viitoare...</div>
+                                </div>
+                                <div class="dropdown-time">Ieri</div>
+                            </div>
+                        </div>
+                        <div class="dropdown-footer">
+                            <a href="#" class="dropdown-link">Vezi toate mesajele</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="header-item">
+                    <div class="header-btn">
+                        <i class="material-icons">account_circle</i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content - Dashboard -->
+        <div class="page-content" id="dashboard-content">
+            <div class="page-header">
+                <h2 class="page-title">Dashboard</h2>
+                <p class="page-subtitle">Monitorizare în timp real a sistemului de chat și a incidentelor</p>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon primary">
+                        <i class="material-icons">forum</i>
+                    </div>
+                    <div class="stat-value">32</div>
+                    <div class="stat-label">Conversații Totale Astăzi</div>
+                    <div class="stat-change positive">
+                        <i class="material-icons">arrow_upward</i> 12% față de ieri
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon secondary">
+                        <i class="material-icons">chat</i>
+                    </div>
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Conversații Active</div>
+                    <div class="stat-change">
+                        2 în așteptare
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon success">
+                        <i class="material-icons">assignment_turned_in</i>
+                    </div>
+                    <div class="stat-value">27</div>
+                    <div class="stat-label">Cazuri Rezolvate</div>
+                    <div class="stat-change positive">
+                        <i class="material-icons">arrow_upward</i> 8% față de ieri
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon warning">
+                        <i class="material-icons">schedule</i>
+                    </div>
+                    <div class="stat-value">1:24</div>
+                    <div class="stat-label">Timp Mediu Răspuns</div>
+                    <div class="stat-change positive">
+                        <i class="material-icons">arrow_downward</i> 15% față de medie
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Distribuția Conversațiilor pe Categorii</h3>
+                        <div class="chart-actions">
+                            <div class="chart-action" title="Descarcă Raport">
+                                <i class="material-icons">download</i>
+                            </div>
+                            <div class="chart-action" title="Filtrează Date">
+                                <i class="material-icons">filter_list</i>
+                            </div>
+                            <div class="chart-action" title="Reîmprospătează">
+                                <i class="material-icons">refresh</i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="conversationsChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Activitate Orară</h3>
+                        <div class="chart-actions">
+                            <div class="chart-action" title="Descarcă Raport">
+                                <i class="material-icons">download</i>
+                            </div>
+                            <div class="chart-action" title="Reîmprospătează">
+                                <i class="material-icons">refresh</i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="hourlyActivityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Conversations -->
+            <div class="mb-4">
+                <div class="d-flex justify-between align-center mb-3">
+                    <h3>Conversații Recente</h3>
+                    <a href="#" class="btn btn-secondary">
+                        <i class="material-icons">visibility</i> Vezi Toate
+                    </a>
+                </div>
+                
+                <div class="bg-white rounded shadow">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Utilizator</th>
+                                <th>Subiect</th>
+                                <th>Agent</th>
+                                <th>Timp începere</th>
+                                <th>Durată</th>
+                                <th>Status</th>
+                                <th>Acțiuni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-center">
+                                        <div class="table-avatar">IP</div>
+                                        <div style="margin-left: 1rem;">
+                                            <div style="font-weight: 600;">Ioan Popescu</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-secondary);">ioan.p@gmail.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Activitate suspectă</td>
+                                <td>Agent Ionescu</td>
+                                <td>29 Apr, 10:05</td>
+                                <td>12:24</td>
+                                <td><span class="table-status active">Activ</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <div class="table-action" title="Vezi Detalii">
+                                            <i class="material-icons">visibility</i>
+                                        </div>
+                                        <div class="table-action" title="Preluare">
+                                            <i class="material-icons">call_merge</i>
+                                        </div>
+                                        <div class="table-action" title="Închide">
+                                            <i class="material-icons">close</i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-center">
+                                        <div class="table-avatar">AD</div>
+                                        <div style="margin-left: 1rem;">
+                                            <div style="font-weight: 600;">Andrei Dumitrescu</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-secondary);">andrei.d@yahoo.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Ordinea publică</td>
+                                <td>Agent Popescu</td>
+                                <td>29 Apr, 10:10</td>
+                                <td>05:32</td>
+                                <td><span class="table-status active">Activ</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <div class="table-action" title="Vezi Detalii">
+                                            <i class="material-icons">visibility</i>
+                                        </div>
+                                        <div class="table-action" title="Preluare">
+                                            <i class="material-icons">call_merge</i>
+                                        </div>
+                                        <div class="table-action" title="Închide">
+                                            <i class="material-icons">close</i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-center">
+                                        <div class="table-avatar">AN</div>
+                                        <div style="margin-left: 1rem;">
+                                            <div style="font-weight: 600;">Anonim</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Nespecificat</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Probleme de trafic</td>
+                                <td>Nealocat</td>
+                                <td>29 Apr, 09:55</td>
+                                <td>-</td>
+                                <td><span class="table-status pending">În așteptare</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <div class="table-action" title="Vezi Detalii">
+                                            <i class="material-icons">visibility</i>
+                                        </div>
+                                        <div class="table-action" title="Preluare">
+                                            <i class="material-icons">call_merge</i>
+                                        </div>
+                                        <div class="table-action" title="Închide">
+                                            <i class="material-icons">close</i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-center">
+                                        <div class="table-avatar">MI</div>
+                                        <div style="margin-left: 1rem;">
+                                            <div style="font-weight: 600;">Maria Ionescu</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-secondary);">maria.i@gmail.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Întrebare generală</td>
+                                <td>Agent Georgescu</td>
+                                <td>29 Apr, 09:47</td>
+                                <td>14:03</td>
+                                <td><span class="table-status closed">Închis</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <div class="table-action" title="Vezi Detalii">
+                                            <i class="material-icons">visibility</i>
+                                        </div>
+                                        <div class="table-action" title="Redeschide">
+                                            <i class="material-icons">replay</i>
+                                        </div>
+                                        <div class="table-action" title="Arhivează">
+                                            <i class="material-icons">archive</i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-center">
+                                        <div class="table-avatar">VP</div>
+                                        <div style="margin-left: 1rem;">
+                                            <div style="font-weight: 600;">Vasile Popa</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-secondary);">vasile.p@outlook.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Probleme referitoare la mediu</td>
+                                <td>Agent Stanciu</td>
+                                <td>29 Apr, 09:30</td>
+                                <td>22:15</td>
+                                <td><span class="table-status closed">Închis</span></td>
+                                <td>
+                                    <div class="table-actions">
+                                        <div class="table-action" title="Vezi Detalii">
+                                            <i class="material-icons">visibility</i>
+                                        </div>
+                                        <div class="table-action" title="Redeschide">
+                                            <i class="material-icons">replay</i>
+                                        </div>
+                                        <div class="table-action" title="Arhivează">
+                                            <i class="material-icons">archive</i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Cards Grid -->
+            <div class="cards-grid">
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <h3 class="info-card-title">Agenți Online</h3>
+                        <div class="chart-action" title="Reîmprospătează">
+                            <i class="material-icons">refresh</i>
+                        </div>
+                    </div>
+                    <div class="info-card-body">
+                        <div class="d-flex align-center mb-2">
+                            <div class="table-avatar" style="background-color: var(--success-light); color: var(--success-color);">AI</div>
+                            <div style="margin-left: 1rem;">
+                                <div style="font-weight: 600;">Agent Ionescu</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Online - 3 chat-uri active</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-center mb-2">
+                            <div class="table-avatar" style="background-color: var(--success-light); color: var(--success-color);">AP</div>
+                            <div style="margin-left: 1rem;">
+                                <div style="font-weight: 600;">Agent Popescu</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Online - 1 chat activ</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-center mb-2">
+                            <div class="table-avatar" style="background-color: var(--success-light); color: var(--success-color);">AG</div>
+                            <div style="margin-left: 1rem;">
+                                <div style="font-weight: 600;">Agent Georgescu</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Online - 0 chat-uri active</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-center mb-2">
+                            <div class="table-avatar" style="background-color: var(--secondary-light); color: var(--secondary-color);">AS</div>
+                            <div style="margin-left: 1rem;">
+                                <div style="font-weight: 600;">Agent Stanciu</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">În pauză - 15 minute rămase</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-center">
+                            <div class="table-avatar" style="background-color: var(--danger-light); color: var(--danger-color);">AD</div>
+                            <div style="margin-left: 1rem;">
+                                <div style="font-weight: 600;">Agent Dumitru</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Offline - Ultimul activ: 35 min</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card-footer">
+                        <a href="#" class="btn btn-light">Administrare Agenți</a>
+                        <a href="#" class="btn btn-primary">
+                            <i class="material-icons">add</i> Adaugă
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <h3 class="info-card-title">Chat-uri în Așteptare</h3>
+                        <div class="chart-action" title="Reîmprospătează">
+                            <i class="material-icons">refresh</i>
+                        </div>
+                    </div>
+                    <div class="info-card-body">
+                        <div class="d-flex align-center justify-between mb-2" style="padding: 0.8rem; background-color: var(--warning-light); border-radius: var(--border-radius-small);">
+                            <div class="d-flex align-center">
+                                <div class="table-avatar">AN</div>
+                                <div style="margin-left: 1rem;">
+                                    <div style="font-weight: 600;">Anonim</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary);">Probleme de trafic • 29 Apr, 09:55</div>
+                                </div>
+                            </div>
+                            <div class="table-action" title="Preluare" style="background-color: white;">
+                                <i class="material-icons">call_merge</i>
+                            </div>
+                        </div>
+                        <div class="d-flex align-center justify-between" style="padding: 0.8rem; background-color: var(--warning-light); border-radius: var(--border-radius-small);">
+                            <div class="d-flex align-center">
+                                <div class="table-avatar">AN</div>
+                                <div style="margin-left: 1rem;">
+                                    <div style="font-weight: 600;">Anonim</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-secondary);">Activitate suspectă • 29 Apr, 10:14</div>
+                                </div>
+                            </div>
+                            <div class="table-action" title="Preluare" style="background-color: white;">
+                                <i class="material-icons">call_merge</i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card-footer">
+                        <a href="#" class="btn btn-light">Distribuie Automat</a>
+                        <a href="#" class="btn btn-primary">Preluare Toate</a>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <h3 class="info-card-title">Performanță Sistem</h3>
+                        <div class="chart-action" title="Reîmprospătează">
+                            <i class="material-icons">refresh</i>
+                        </div>
+                    </div>
+                    <div class="info-card-body">
+           <!-- Performance System Card Content -->
+<div class="mb-3">
+    <div class="d-flex justify-between mb-1">
+        <div style="font-weight: 500;">Utilizare CPU</div>
+        <div>24%</div>
+    </div>
+    <div style="height: 8px; background-color: var(--background-light); border-radius: 4px; overflow: hidden;">
+        <div style="height: 100%; width: 24%; background-color: var(--success-color);"></div>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="d-flex justify-between mb-1">
+        <div style="font-weight: 500;">Utilizare RAM</div>
+        <div>42%</div>
+    </div>
+    <div style="height: 8px; background-color: var(--background-light); border-radius: 4px; overflow: hidden;">
+        <div style="height: 100%; width: 42%; background-color: var(--secondary-color);"></div>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="d-flex justify-between mb-1">
+        <div style="font-weight: 500;">Stocare</div>
+        <div>67%</div>
+    </div>
+    <div style="height: 8px; background-color: var(--background-light); border-radius: 4px; overflow: hidden;">
+        <div style="height: 100%; width: 67%; background-color: var(--warning-color);"></div>
+    </div>
+</div>
+
+<div class="mb-2">
+    <div class="d-flex justify-between mb-1">
+        <div style="font-weight: 500;">Bază de date</div>
+        <div>35%</div>
+    </div>
+    <div style="height: 8px; background-color: var(--background-light); border-radius: 4px; overflow: hidden;">
+        <div style="height: 100%; width: 35%; background-color: var(--secondary-color);"></div>
+    </div>
+</div>
+
+<div class="text-secondary" style="font-size: 0.9rem;">
+    <i class="material-icons" style="font-size: 1rem; vertical-align: middle; margin-right: 0.3rem;">check_circle</i>
+    Toate sistemele funcționează normal
+</div>
+
+<!-- Card Footer -->
+<div class="info-card-footer">
+    <a href="#" class="btn btn-light">Monitorizare Completă</a>
+    <a href="#" class="btn btn-primary">Diagnosticare</a>
+</div>
+
+<!-- Additional System Status Card -->
+<div class="info-card">
+    <div class="info-card-header">
+        <h3 class="info-card-title">Status Servicii</h3>
+        <div class="chart-action" title="Reîmprospătează">
+            <i class="material-icons">refresh</i>
+        </div>
+    </div>
+    <div class="info-card-body">
+        <div class="d-flex align-center justify-between mb-2">
+            <div class="d-flex align-center">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: var(--success-color); margin-right: 0.8rem;"></div>
+                <div>Rocket.Chat Server</div>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--text-secondary);">Operațional</div>
+        </div>
+        
+        <div class="d-flex align-center justify-between mb-2">
+            <div class="d-flex align-center">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: var(--success-color); margin-right: 0.8rem;"></div>
+                <div>API Gateway</div>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--text-secondary);">Operațional</div>
+        </div>
+        
+        <div class="d-flex align-center justify-between mb-2">
+            <div class="d-flex align-center">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: var(--success-color); margin-right: 0.8rem;"></div>
+                <div>PostgreSQL Database</div>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--text-secondary);">Operațional</div>
+        </div>
+        
+        <div class="d-flex align-center justify-between mb-2">
+            <div class="d-flex align-center">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: var(--warning-color); margin-right: 0.8rem;"></div>
+                <div>RabbitMQ</div>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--warning-color);">Degradare ușoară</div>
+        </div>
+        
+        <div class="d-flex align-center justify-between">
+            <div class="d-flex align-center">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background-color: var(--success-color); margin-right: 0.8rem;"></div>
+                <div>MinIO Storage</div>
+            </div>
+            <div style="font-size: 0.9rem; color: var(--text-secondary);">Operațional</div>
+        </div>
+    </div>
+    <div class="info-card-footer">
+        <a href="#" class="btn btn-light">Status Complet</a>
+        <a href="#" class="btn btn-primary">Resetare Servicii</a>
+    </div>
+</div>
+
+<!-- Security Card -->
+<div class="info-card">
+    <div class="info-card-header">
+        <h3 class="info-card-title">Securitate</h3>
+        <div class="chart-action" title="Reîmprospătează">
+            <i class="material-icons">refresh</i>
+        </div>
+    </div>
+    <div class="info-card-body">
+        <div class="mb-3">
+            <div class="d-flex align-center" style="padding: 0.8rem; background-color: var(--danger-light); border-radius: var(--border-radius-small);">
+                <i class="material-icons" style="margin-right: 0.8rem; color: var(--danger-color);">warning</i>
+                <div>
+                    <div style="font-weight: 600; color: var(--danger-color);">3 tentative de autentificare eșuate</div>
+                    <div style="font-size: 0.8rem;">IP: 192.168.1.105 • Acum 15 minute</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="font-weight: 600; margin-bottom: 0.8rem;">Ultima autentificare</div>
+        
+        <div class="d-flex align-center mb-2">
+            <div class="table-avatar" style="background-color: var(--primary-light); color: var(--primary-color);">AM</div>
+            <div style="margin-left: 1rem;">
+                <div style="font-weight: 500;">Agent Maria (Tu)</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">29 Apr, 08:30 • IP: 192.168.1.24</div>
+            </div>
+        </div>
+        
+        <div class="d-flex align-center">
+            <div class="table-avatar" style="background-color: var(--primary-light); color: var(--primary-color);">AI</div>
+            <div style="margin-left: 1rem;">
+                <div style="font-weight: 500;">Agent Ionescu</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">29 Apr, 08:15 • IP: 192.168.1.35</div>
+            </div>
+        </div>
+    </div>
+    <div class="info-card-footer">
+        <a href="#" class="btn btn-light">Jurnale de Securitate</a>
+        <a href="#" class="btn btn-primary">Blocare IP</a>
+    </div>
+</div>
+
+<!-- JavaScript for Dashboard Functionality -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Charts
+        const conversationsCtx = document.getElementById('conversationsChart').getContext('2d');
+        const conversationsChart = new Chart(conversationsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Activitate suspectă', 'Probleme de circulație', 'Probleme de ordine publică', 'Probleme de mediu', 'Întrebări generale', 'Altele'],
+                datasets: [{
+                    data: [12, 8, 6, 4, 7, 3],
+                    backgroundColor: [
+                        'rgba(244, 67, 54, 0.7)',
+                        'rgba(30, 136, 229, 0.7)',
+                        'rgba(255, 193, 7, 0.7)',
+                        'rgba(76, 175, 80, 0.7)',
+                        'rgba(156, 39, 176, 0.7)',
+                        'rgba(158, 158, 158, 0.7)'
+                    ],
+                    borderColor: 'white',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 15,
+                            padding: 15
+                        }
+                    }
+                }
+            }
+        });
+        
+        const hourlyCtx = document.getElementById('hourlyActivityChart').getContext('2d');
+        const hourlyChart = new Chart(hourlyCtx, {
+            type: 'line',
+            data: {
+                labels: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00'],
+                datasets: [{
+                    label: 'Chat-uri noi',
+                    data: [3, 7, 12, 8, 5, 9, 4],
+                    borderColor: 'rgba(30, 136, 229, 0.8)',
+                    backgroundColor: 'rgba(30, 136, 229, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Sidebar Toggle Logic
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const headerToggle = document.getElementById('header-toggle');
+        
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        }
+        
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', toggleSidebar);
+        }
+        
+        if (headerToggle) {
+            headerToggle.addEventListener('click', toggleSidebar);
+        }
+        
+        // Dropdowns
+        const notificationsBtn = document.getElementById('notifications-btn');
+        const notificationsDropdown = document.getElementById('notifications-dropdown');
+        const messagesBtn = document.getElementById('messages-btn');
+        const messagesDropdown = document.getElementById('messages-dropdown');
+        
+        if (notificationsBtn && notificationsDropdown) {
+            notificationsBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                notificationsDropdown.classList.toggle('show');
+                if (messagesDropdown.classList.contains('show')) {
+                    messagesDropdown.classList.remove('show');
+                }
+            });
+        }
+        
+        if (messagesBtn && messagesDropdown) {
+            messagesBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                messagesDropdown.classList.toggle('show');
+                if (notificationsDropdown.classList.contains('show')) {
+                    notificationsDropdown.classList.remove('show');
+                }
+            });
+        }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function() {
+            if (notificationsDropdown.classList.contains('show')) {
+                notificationsDropdown.classList.remove('show');
+            }
+            if (messagesDropdown.classList.contains('show')) {
+                messagesDropdown.classList.remove('show');
+            }
+        });
+        
+        // Submenu Toggles
+        const navAgents = document.getElementById('nav-agents');
+        const navReports = document.getElementById('nav-reports');
+        
+        if (navAgents) {
+            navAgents.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.closest('.nav-item').classList.toggle('expanded');
+            });
+        }
+        
+        if (navReports) {
+            navReports.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.closest('.nav-item').classList.toggle('expanded');
+            });
+        }
+        
+        // Secure Session Timeout
+        let inactivityTime = 0;
+        const inactivityLimit = 15 * 60; // 15 minutes in seconds
+        
+        function resetInactivityTimer() {
+            inactivityTime = 0;
+        }
+        
+        function checkInactivity() {
+            inactivityTime++;
+            if (inactivityTime >= inactivityLimit) {
+                // Log out user after inactivity period
+                window.location.href = '/logout?reason=timeout';
+            }
+        }
+        
+        // Reset timer on user activity
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keypress', resetInactivityTimer);
+        document.addEventListener('click', resetInactivityTimer);
+        document.addEventListener('scroll', resetInactivityTimer);
+        
+        // Check inactivity every second
+        setInterval(checkInactivity, 1000);
+        
+        // Security: Prevent opening in iframe to avoid clickjacking
+        if (window.top !== window.self) {
+            window.top.location.href = window.self.location.href;
+        }
+    });
+</script>
