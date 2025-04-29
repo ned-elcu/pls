@@ -1280,7 +1280,7 @@ function initIntroScreen() {
             setTimeout(function() {
                 introScreen.style.display = 'none';
             }, 500);
-        }, 3000);
+        }, 2000);
     }
 }
 
