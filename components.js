@@ -1150,7 +1150,7 @@ const HEADER_HTML = `
                     </ul>
                 </li>
                 <li class="has-dropdown">
-                    <a href="/pls/contact">
+                    <a href="/pls/relatii-cu-publicul">
                         <i class="material-icons menu-icon">phone</i> Contact
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
