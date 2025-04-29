@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rezultate Căutare - Poliția Locală Slobozia</title>
     
-    <!-- Load dependencies in the correct order -->
-    <script src="../search.js"></script>
-    <script src="../components.js"></script>
-    
     <!-- Ensure Material Icons are loaded -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -114,6 +110,7 @@
             font-size: 2.2rem;
             font-weight: 800;
             margin-bottom: 0;
+            color: white;
         }
         
         /* Search container */
@@ -805,8 +802,17 @@
     </style>
 </head>
 <body>
-    <!-- Header container - will be populated by components.js -->
-    <div id="header-container"></div>
+    <!-- Basic header placeholder -->
+    <header style="position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background-color: white; box-shadow: var(--shadow-small); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+        <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-weight: bold; font-size: 1.2rem; color: var(--primary-color);">Poliția Locală Slobozia</div>
+            <nav>
+                <a href="#" style="margin-left: 1rem; color: var(--text-secondary);">Acasă</a>
+                <a href="#" style="margin-left: 1rem; color: var(--text-secondary);">Despre</a>
+                <a href="#" style="margin-left: 1rem; color: var(--text-secondary);">Contact</a>
+            </nav>
+        </div>
+    </header>
     
     <!-- Page Title -->
     <div class="page-title-container">
@@ -894,51 +900,259 @@
         </div>
     </main>
     
-    <!-- Footer container - will be populated by components.js -->
-    <div id="footer-container"></div>
-    
-    <!-- Search Results JavaScript -->
+    <!-- Basic footer placeholder -->
+    <footer style="background-color: var(--primary-color); color: white; padding: 2rem 0; margin-top: 2rem;">
+        <div class="container">
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between;">
+                <div>
+                    <h3>Poliția Locală Slobozia</h3>
+                    <p>Adresa: Str. Exemplu nr. 123<br>
+                    Telefon: 0123 456 789<br>
+                    Email: contact@exemplu.ro</p>
+                </div>
+                <div>
+                    <h3>Link-uri utile</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><a href="#" style="color: white; opacity: 0.8;">Acasă</a></li>
+                        <li><a href="#" style="color: white; opacity: 0.8;">Despre noi</a></li>
+                        <li><a href="#" style="color: white; opacity: 0.8;">Contact</a></li>
+                        <li><a href="#" style="color: white; opacity: 0.8;">Documente</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="margin-top: 2rem; text-align: center; opacity: 0.6;">
+                &copy; 2025 Poliția Locală Slobozia. Toate drepturile rezervate.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Self-contained search functionality -->
     <script>
-        // Initialize SiteSearch after DOM is loaded
+        // Create basic search data
+        const searchIndex = {
+            "home": {
+                url: "/",
+                title: "Poliția Locală Slobozia - Pagina principală",
+                content: "Pagina principală a Poliției Locale Slobozia. Informații despre serviciile oferite, noutăți și evenimente recente.",
+                keywords: ["politia locala", "slobozia", "siguranta publica", "ordine publica"],
+                type: "page"
+            },
+            "despre-noi": {
+                url: "/despre-noi",
+                title: "Despre Noi - Poliția Locală Slobozia",
+                content: "Informații generale despre Poliția Locală Slobozia, istoric, misiune, viziune și valori. Structura organizatorică și principalele atribuții.",
+                keywords: ["despre", "misiune", "viziune", "valori", "structura", "organizare", "istoric"],
+                type: "page"
+            },
+            "contact": {
+                url: "/contact",
+                title: "Contact - Poliția Locală Slobozia",
+                content: "Date de contact ale Poliției Locale Slobozia. Adresă, numere de telefon, email, program de funcționare și harta locației.",
+                keywords: ["contact", "adresa", "telefon", "email", "program", "harta"],
+                type: "page"
+            },
+            "petitii": {
+                url: "/petitii",
+                title: "Petiții - Poliția Locală Slobozia",
+                content: "Informații despre depunerea și procesarea petițiilor, reclamațiilor și sesizărilor. Formular online pentru depunerea petițiilor.",
+                keywords: ["petitii", "reclamatii", "sesizari", "formular", "plangeri"],
+                type: "page"
+            },
+            "gdpr": {
+                url: "/gdpr",
+                title: "GDPR - Poliția Locală Slobozia",
+                content: "Informații despre conformitatea cu Regulamentul General privind Protecția Datelor (GDPR). Politica de confidențialitate și prelucrare a datelor cu caracter personal.",
+                keywords: ["gdpr", "protectia datelor", "confidentialitate", "date personale", "regulament"],
+                type: "page"
+            },
+            "cariere": {
+                url: "/cariere",
+                title: "Cariere - Poliția Locală Slobozia",
+                content: "Oportunități de carieră în cadrul Poliției Locale Slobozia. Posturi vacante, condiții de participare la concursuri și etapele procesului de recrutare.",
+                keywords: ["cariere", "job", "angajare", "recrutare", "concurs", "posturi vacante"],
+                type: "page"
+            },
+            "legea-155-2010": {
+                url: "/documente/legea-155-2010",
+                title: "Legea nr. 155/2010 a poliției locale",
+                content: "Legea nr. 155/2010 a poliției locale, republicată, cu modificările și completările ulterioare. Cadrul legal de organizare și funcționare a poliției locale.",
+                keywords: ["legea 155", "legea 155/2010", "politia locala", "lege", "legislatie", "documente"],
+                type: "document"
+            },
+            "og-43-1997": {
+                url: "/documente/og-43-1997",
+                title: "O.G. nr. 43/1997 privind regimul drumurilor",
+                content: "Ordonanța Guvernului nr. 43/1997 privind regimul drumurilor, republicată, cu modificările și completările ulterioare. Document legislativ important pentru activitatea poliției locale.",
+                keywords: ["og 43", "og 43/1997", "ordonanta", "regimul drumurilor", "legislatie", "documente"],
+                type: "document"
+            }
+        };
+
+        // Simple search implementation
+        const search = async (query, options = {}) => {
+            console.log(`Performing search for: "${query}"`);
+            
+            const defaults = {
+                page: 1,
+                perPage: 10,
+                filters: {},
+                sortBy: 'relevance'
+            };
+            
+            const searchOptions = {...defaults, ...options};
+            const results = [];
+            const normalizedQuery = query.toLowerCase();
+            
+            // Search through index
+            for (const key in searchIndex) {
+                const item = searchIndex[key];
+                let score = 0;
+                
+                // Apply filters if any
+                let passesFilters = true;
+                for (const [filter, value] of Object.entries(searchOptions.filters)) {
+                    if (item[filter] !== value) {
+                        passesFilters = false;
+                        break;
+                    }
+                }
+                
+                if (!passesFilters) continue;
+                
+                // Simple relevance scoring
+                if (item.title.toLowerCase().includes(normalizedQuery)) {
+                    score += 10;
+                }
+                
+                if (item.content.toLowerCase().includes(normalizedQuery)) {
+                    score += 5;
+                }
+                
+                if (item.keywords) {
+                    item.keywords.forEach(keyword => {
+                        if (keyword.toLowerCase().includes(normalizedQuery)) {
+                            score += 3;
+                        }
+                    });
+                }
+                
+                if (score > 0) {
+                    results.push({
+                        ...item,
+                        score: score,
+                        excerpt: generateExcerpt(item.content, normalizedQuery)
+                    });
+                }
+            }
+            
+            // Sort results
+            if (searchOptions.sortBy === 'date') {
+                // No dates in our simple index, fallback to relevance
+                results.sort((a, b) => b.score - a.score);
+            } else if (searchOptions.sortBy === 'title') {
+                results.sort((a, b) => a.title.localeCompare(b.title));
+            } else {
+                // Default sort by relevance
+                results.sort((a, b) => b.score - a.score);
+            }
+            
+            // Calculate pagination
+            const totalResults = results.length;
+            const totalPages = Math.ceil(totalResults / searchOptions.perPage);
+            const startIndex = (searchOptions.page - 1) * searchOptions.perPage;
+            const endIndex = Math.min(startIndex + searchOptions.perPage, totalResults);
+            const paginatedResults = results.slice(startIndex, endIndex);
+            
+            // Create facets
+            const facets = {
+                type: {}
+            };
+            
+            results.forEach(item => {
+                facets.type[item.type] = (facets.type[item.type] || 0) + 1;
+            });
+            
+            // Determine direct match
+            const directMatch = results.length > 0 && results[0].score > 15 ? 
+                results[0] : null;
+            
+            console.log(`Found ${totalResults} results`);
+            
+            return {
+                query: query,
+                totalResults: totalResults,
+                currentPage: searchOptions.page,
+                totalPages: totalPages,
+                perPage: searchOptions.perPage,
+                results: paginatedResults,
+                directMatch: directMatch,
+                facets: facets,
+                relatedSearches: getRelatedSearches(),
+                suggestions: getSearchSuggestions(query)
+            };
+        };
+        
+        // Generate excerpt from content
+        function generateExcerpt(text, query, maxLength = 160) {
+            if (!text) return '';
+            
+            const index = text.toLowerCase().indexOf(query.toLowerCase());
+            if (index === -1) return text.substring(0, maxLength) + '...';
+            
+            const start = Math.max(0, index - 60);
+            const end = Math.min(text.length, index + query.length + 60);
+            
+            let excerpt = text.substring(start, end);
+            if (start > 0) excerpt = '...' + excerpt;
+            if (end < text.length) excerpt = excerpt + '...';
+            
+            return excerpt;
+        }
+        
+        // Get search suggestions
+        function getSearchSuggestions(query) {
+            if (!query || query.length < 2) return [];
+            
+            const suggestions = [
+                "poliția locală",
+                "petiții online",
+                "contact poliția locală",
+                "program audiențe",
+                "reclamații"
+            ];
+            
+            return suggestions.filter(s => 
+                s.toLowerCase().includes(query.toLowerCase())
+            );
+        }
+        
+        // Get related searches
+        function getRelatedSearches() {
+            return [
+                "poliția locală program",
+                "reclamații poliția locală",
+                "contact poliția locală"
+            ];
+        }
+        
+        // Highlight search terms in text
+        function highlightSearchTerms(text, query) {
+            if (!text || !query) return text;
+            
+            // Simple term highlighting
+            return text.replace(
+                new RegExp(query, 'gi'),
+                match => `<span class="search-highlight">${match}</span>`
+            );
+        }
+        
+        // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
-            initSearchModule();
+            console.log("DOM loaded - initializing search interface");
+            initSearch();
         });
         
-        // Wait for SiteSearch module to be available
-        function initSearchModule() {
-            if (window.siteSearch) {
-                initSearch();
-            } else {
-                const maxAttempts = 20;
-                let attempts = 0;
-                
-                const checkInterval = setInterval(function() {
-                    attempts++;
-                    if (window.siteSearch) {
-                        clearInterval(checkInterval);
-                        initSearch();
-                    } else if (attempts >= maxAttempts) {
-                        clearInterval(checkInterval);
-                        console.warn('SiteSearch not initialized after multiple attempts');
-                        showErrorMessage();
-                    }
-                }, 200);
-            }
-        }
-        
-        // Show error message if search module fails to load
-        function showErrorMessage() {
-            document.getElementById('search-summary').innerHTML = 'Modulul de căutare nu este disponibil momentan.';
-            document.getElementById('result-list').innerHTML = `
-                <div class="no-results">
-                    <div class="no-results-icon"><i class="material-icons">error</i></div>
-                    <h3>Eroare de încărcare</h3>
-                    <p>Nu am putut încărca modulul de căutare. Vă rugăm să încercați din nou mai târziu.</p>
-                </div>
-            `;
-        }
-        
-        // Initialize search functionality
+        // Main initialization function
         function initSearch() {
             // Get URL parameters
             const urlParams = new URLSearchParams(window.location.search);
@@ -979,7 +1193,7 @@
                 const query = this.value.trim();
                 if (query.length >= 2) {
                     // Get suggestions
-                    const suggestions = window.siteSearch.getSearchSuggestions(query);
+                    const suggestions = getSearchSuggestions(query);
                     displaySearchSuggestions(suggestions);
                 } else {
                     // Clear suggestions
@@ -1028,6 +1242,102 @@
                 performSearch(searchQuery, page, sortBy, filters);
             } else {
                 showEmptyState();
+            }
+        }
+        
+        // Display search suggestions
+        function displaySearchSuggestions(suggestions) {
+            const suggestionsContainer = document.getElementById('search-suggestions');
+            
+            if (!suggestions || suggestions.length === 0) {
+                suggestionsContainer.innerHTML = '';
+                return;
+            }
+            
+            let suggestionsHTML = '<ul>';
+            suggestions.forEach(suggestion => {
+                suggestionsHTML += `
+                    <li><a href="#" onclick="quickSearch('${suggestion}'); return false;">${suggestion}</a></li>
+                `;
+            });
+            suggestionsHTML += '</ul>';
+            
+            suggestionsContainer.innerHTML = suggestionsHTML;
+        }
+        
+        // Show empty state
+        function showEmptyState() {
+            document.getElementById('search-summary').innerHTML = 'Introduceți termenii de căutare pentru a găsi informații pe site.';
+            document.getElementById('direct-match-container').innerHTML = '';
+            document.getElementById('result-list').innerHTML = `
+                <div class="no-results">
+                    <div class="no-results-icon"><i class="material-icons">search</i></div>
+                    <h3>Nicio căutare efectuată</h3>
+                    <p>Introduceți cuvinte cheie în câmpul de căutare pentru a găsi informațiile de care aveți nevoie.</p>
+                    <div class="suggestion-list">
+                        <a href="#" class="suggestion-item" onclick="quickSearch('gdpr'); return false;">GDPR</a>
+                        <a href="#" class="suggestion-item" onclick="quickSearch('petitii'); return false;">Petiții</a>
+                        <a href="#" class="suggestion-item" onclick="quickSearch('contact'); return false;">Contact</a>
+                        <a href="#" class="suggestion-item" onclick="quickSearch('cariere'); return false;">Cariere</a>
+                    </div>
+                </div>
+            `;
+            document.getElementById('search-pagination').innerHTML = '';
+        }
+        
+        // Perform search
+        async function performSearch(query, page = 1, sortBy = 'relevance', filters = {}) {
+            // Show loading state
+            document.getElementById('result-list').innerHTML = `
+                <div class="search-loading">
+                    <div class="search-loading-spinner"></div>
+                    <p>Se încarcă rezultatele căutării...</p>
+                </div>
+            `;
+            
+            try {
+                console.log("Executing search...");
+                const searchResult = await search(query, {
+                    page: page,
+                    perPage: 10,
+                    sortBy: sortBy,
+                    filters: filters
+                });
+                
+                // Update search summary
+                document.getElementById('search-summary').innerHTML = `
+                    S-au găsit <strong>${searchResult.totalResults}</strong> rezultate pentru 
+                    <span class="search-term">"${query}"</span>
+                `;
+                
+                // Handle direct match
+                if (searchResult.directMatch) {
+                    showDirectMatch(searchResult.directMatch);
+                } else {
+                    document.getElementById('direct-match-container').innerHTML = '';
+                }
+                
+                // Update filter counts
+                updateFilterCounts(searchResult);
+                
+                // Show results or no results state
+                if (searchResult.totalResults > 0) {
+                    displaySearchResults(searchResult, query);
+                    displayPagination(searchResult.totalPages, page);
+                    displayRelatedSearches(searchResult);
+                } else {
+                    showNoResultsState(query, searchResult);
+                }
+            } catch (error) {
+                console.error("Error performing search:", error);
+                document.getElementById('result-list').innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon"><i class="material-icons">error</i></div>
+                        <h3>Eroare de căutare</h3>
+                        <p>A apărut o eroare în timpul căutării. Vă rugăm să încercați din nou mai târziu.</p>
+                    </div>
+                `;
+                document.getElementById('search-pagination').innerHTML = '';
             }
         }
         
@@ -1097,108 +1407,15 @@
             });
         }
         
-        // Display search suggestions dropdown
-        function displaySearchSuggestions(suggestions) {
-            const suggestionsContainer = document.getElementById('search-suggestions');
+        // Update filter counts
+        function updateFilterCounts(searchResult) {
+            document.getElementById('count-all').textContent = searchResult.totalResults;
             
-            if (!suggestions || suggestions.length === 0) {
-                suggestionsContainer.innerHTML = '';
-                return;
-            }
-            
-            let suggestionsHTML = '<ul>';
-            suggestions.forEach(suggestion => {
-                suggestionsHTML += `
-                    <li><a href="#" onclick="quickSearch('${suggestion}'); return false;">${suggestion}</a></li>
-                `;
-            });
-            suggestionsHTML += '</ul>';
-            
-            suggestionsContainer.innerHTML = suggestionsHTML;
-        }
-        
-        // Show empty state when no search is performed
-        function showEmptyState() {
-            document.getElementById('search-summary').innerHTML = 'Introduceți termenii de căutare pentru a găsi informații pe site.';
-            document.getElementById('direct-match-container').innerHTML = '';
-            document.getElementById('result-list').innerHTML = `
-                <div class="no-results">
-                    <div class="no-results-icon"><i class="material-icons">search</i></div>
-                    <h3>Nicio căutare efectuată</h3>
-                    <p>Introduceți cuvinte cheie în câmpul de căutare pentru a găsi informațiile de care aveți nevoie.</p>
-                    <div class="suggestion-list">
-                        <a href="#" class="suggestion-item" onclick="quickSearch('gdpr'); return false;">GDPR</a>
-                        <a href="#" class="suggestion-item" onclick="quickSearch('petitii'); return false;">Petiții</a>
-                        <a href="#" class="suggestion-item" onclick="quickSearch('contact'); return false;">Contact</a>
-                        <a href="#" class="suggestion-item" onclick="quickSearch('cariere'); return false;">Cariere</a>
-                    </div>
-                </div>
-            `;
-            document.getElementById('search-pagination').innerHTML = '';
-        }
-        
-        // Perform search
-        async function performSearch(query, page = 1, sortBy = 'relevance', filters = {}) {
-            // Show loading state
-            document.getElementById('result-list').innerHTML = `
-                <div class="search-loading">
-                    <div class="search-loading-spinner"></div>
-                    <p>Se încarcă rezultatele căutării...</p>
-                </div>
-            `;
-            
-            // Ensure search module is available
-            if (!window.siteSearch) {
-                showErrorMessage();
-                return;
-            }
-            
-            try {
-                // Set search options
-                const searchOptions = {
-                    page: page,
-                    perPage: 10,
-                    sortBy: sortBy,
-                    filters: filters
-                };
-                
-                // Get search results
-                const searchResult = await window.siteSearch.search(query, searchOptions);
-                
-                // Update search summary
-                document.getElementById('search-summary').innerHTML = `
-                    S-au găsit <strong>${searchResult.totalResults}</strong> rezultate pentru 
-                    <span class="search-term">"${query}"</span>
-                `;
-                
-                // Handle direct match
-                if (searchResult.directMatch) {
-                    showDirectMatch(searchResult.directMatch);
-                } else {
-                    document.getElementById('direct-match-container').innerHTML = '';
-                }
-                
-                // Update filter counts
-                updateFilterCounts(searchResult);
-                
-                // Show results or no results state
-                if (searchResult.totalResults > 0) {
-                    displaySearchResults(searchResult, query);
-                    displayPagination(searchResult.totalPages, page);
-                    displayRelatedSearches(searchResult);
-                } else {
-                    showNoResultsState(query, searchResult);
-                }
-            } catch (error) {
-                console.error('Error performing search:', error);
-                document.getElementById('result-list').innerHTML = `
-                    <div class="no-results">
-                        <div class="no-results-icon"><i class="material-icons">error</i></div>
-                        <h3>Eroare de căutare</h3>
-                        <p>A apărut o eroare în timpul căutării. Vă rugăm să încercați din nou mai târziu.</p>
-                    </div>
-                `;
-                document.getElementById('search-pagination').innerHTML = '';
+            // Update type filter counts
+            const facets = searchResult.facets || {};
+            if (facets.type) {
+                document.getElementById('count-page').textContent = facets.type.page || 0;
+                document.getElementById('count-document').textContent = facets.type.document || 0;
             }
         }
         
@@ -1221,18 +1438,6 @@
             `;
         }
         
-        // Update filter counts
-        function updateFilterCounts(searchResult) {
-            document.getElementById('count-all').textContent = searchResult.totalResults;
-            
-            // Update type filter counts
-            const facets = searchResult.facets || {};
-            if (facets.type) {
-                document.getElementById('count-page').textContent = facets.type.page || 0;
-                document.getElementById('count-document').textContent = facets.type.document || 0;
-            }
-        }
-        
         // Display search results
         function displaySearchResults(searchResult, query) {
             let resultsHTML = '';
@@ -1242,12 +1447,10 @@
                 const icon = result.type === 'document' ? 'description' : 'insert_drive_file';
                 
                 // Extract section from URL
-                const section = result.url.split('/')[2] || 'general';
+                const section = result.url.split('/')[1] || 'general';
                 
                 // Highlight excerpt
-                const highlightedExcerpt = result.excerpt ? 
-                    window.siteSearch.highlightSearchTerms(result.excerpt, query) : 
-                    window.siteSearch.highlightSearchTerms(result.content?.substring(0, 200) + '...' || 'Conținut indisponibil', query);
+                const highlightedExcerpt = highlightSearchTerms(result.excerpt || '', query);
                 
                 resultsHTML += `
                     <div class="result-card" data-type="${result.type}" data-section="${section}">
@@ -1259,7 +1462,7 @@
                             <a href="${result.url}" class="result-url" title="${result.url}">${result.url}</a>
                         </div>
                         <h3 class="result-title">
-                            <a href="${result.url}">${window.siteSearch.highlightSearchTerms(result.title, query)}</a>
+                            <a href="${result.url}">${highlightSearchTerms(result.title, query)}</a>
                         </h3>
                         <div class="result-excerpt">
                             ${highlightedExcerpt}
@@ -1352,7 +1555,7 @@
                 existingRelated.remove();
             }
             
-            // Add related searches after the results
+            // Add related searches after pagination
             document.querySelector('.search-pagination').after(relatedContainer);
         }
         
