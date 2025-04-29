@@ -1271,7 +1271,7 @@ function initIntroScreen() {
             setTimeout(function() {
                 introScreen.style.display = 'none';
             }, 500);
-        }, 4000);
+        }, 3000);
     }
 }
 
