@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rezultate Căutare - Poliția Locală Slobozia</title>
     
+    <!-- Load components.js first to ensure header and footer load correctly -->
+    <script src="../components.js"></script>
+    
     <!-- Ensure Material Icons are loaded -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -28,7 +31,7 @@
             --shadow-large: 0 8px 30px rgba(0, 0, 0, 0.15);
             --transition-fast: all 0.2s ease;
             --transition-medium: all 0.3s ease;
-            --header-height: 80px;
+            --header-height: 140px;
         }
         
         /* Base styles */
@@ -46,6 +49,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            padding-top: var(--header-height); /* For fixed header */
         }
         
         h1, h2, h3, h4, h5, h6 {
@@ -76,7 +80,6 @@
             background-color: var(--primary-color);
             padding: 2.5rem 0;
             position: relative;
-            margin-top: var(--header-height);
             color: white;
             overflow: hidden;
         }
@@ -802,17 +805,8 @@
     </style>
 </head>
 <body>
-    <!-- Basic header placeholder -->
-    <header style="position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background-color: white; box-shadow: var(--shadow-small); z-index: 1000; display: flex; align-items: center; justify-content: center;">
-        <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="font-weight: bold; font-size: 1.2rem; color: var(--primary-color);">Poliția Locală Slobozia</div>
-            <nav>
-                <a href="#" style="margin-left: 1rem; color: var(--text-secondary);">Acasă</a>
-                <a href="#" style="margin-left: 1rem; color: var(--text-secondary);">Despre</a>
-                <a href="#" style="margin-left: 1rem; color: var(--text-secondary);">Contact</a>
-            </nav>
-        </div>
-    </header>
+    <!-- Header container - will be populated by components.js -->
+    <div id="header-container"></div>
     
     <!-- Page Title -->
     <div class="page-title-container">
@@ -900,31 +894,8 @@
         </div>
     </main>
     
-    <!-- Basic footer placeholder -->
-    <footer style="background-color: var(--primary-color); color: white; padding: 2rem 0; margin-top: 2rem;">
-        <div class="container">
-            <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-between;">
-                <div>
-                    <h3>Poliția Locală Slobozia</h3>
-                    <p>Adresa: Str. Exemplu nr. 123<br>
-                    Telefon: 0123 456 789<br>
-                    Email: contact@exemplu.ro</p>
-                </div>
-                <div>
-                    <h3>Link-uri utile</h3>
-                    <ul style="list-style: none; padding: 0;">
-                        <li><a href="#" style="color: white; opacity: 0.8;">Acasă</a></li>
-                        <li><a href="#" style="color: white; opacity: 0.8;">Despre noi</a></li>
-                        <li><a href="#" style="color: white; opacity: 0.8;">Contact</a></li>
-                        <li><a href="#" style="color: white; opacity: 0.8;">Documente</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div style="margin-top: 2rem; text-align: center; opacity: 0.6;">
-                &copy; 2025 Poliția Locală Slobozia. Toate drepturile rezervate.
-            </div>
-        </div>
-    </footer>
+    <!-- Footer container - will be populated by components.js -->
+    <div id="footer-container"></div>
 
     <!-- Self-contained search functionality -->
     <script>
