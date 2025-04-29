@@ -29,7 +29,7 @@ const SiteSearch = (function() {
     maxResults: 100,
     defaultPerPage: 10,
     highlightClass: 'search-highlight',
-    searchEndpoint: '/api/search', // For future backend integration
+    searchEndpoint: '/api/cautare', // For future backend integration
     useServerSearch: false,        // Set to true when backend is ready
     trackAnalytics: true,
     stopWords: ['si', 'in', 'la', 'de', 'pe', 'cu', 'pentru', 'din', 'sau', 'este', 'sunt'],
@@ -1141,7 +1141,7 @@ function displaySearchResults(results) {
         <h3>Căutări similare:</h3>
         <ul>
           ${results.relatedSearches.map(term => 
-            `<li><a href="/pls/search?q=${encodeURIComponent(term)}">${term}</a></li>`
+            `<li><a href="/pls/cautare?q=${encodeURIComponent(term)}">${term}</a></li>`
           ).join('')}
         </ul>
       </div>
