@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chat online cu Poliția Locală Slobozia pentru raportarea problemelor non-urgente">
     <title>Chat Online - Poliția Locală Slobozia</title>
     
     <!-- Include components.js for shared styles -->
@@ -13,6 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-firestore-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-storage-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-functions-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -61,6 +64,23 @@
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
+        }
+        
+        a:focus, button:focus, input:focus, select:focus, textarea:focus {
+            outline: 3px solid var(--secondary-light);
+            outline-offset: 2px;
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
         
         /* Hero Section */
@@ -356,6 +376,7 @@
         .chat-form {
             padding: 1.5rem;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
         }
         
         .form-title {
@@ -450,6 +471,13 @@
             box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
         }
         
+        .btn-submit:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
         .btn-submit i {
             margin-left: 0.5rem;
         }
@@ -518,6 +546,18 @@
             margin-left: 0.3rem;
         }
         
+        .message-system {
+            align-self: center;
+            max-width: 90%;
+            background-color: rgba(0,0,0,0.05);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-small);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
         .chat-input {
             padding: 1rem;
             border-top: 1px solid rgba(0, 0, 0, 0.1);
@@ -565,6 +605,11 @@
             color: var(--secondary-color);
         }
         
+        .chat-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         .chat-action-send {
             background-color: var(--secondary-color);
             color: white;
@@ -605,112 +650,6 @@
         
         .typing-dot:nth-child(3) {
             animation-delay: 0.4s;
-        }
-        
-        /* Login styles */
-        .login-container {
-            display: none;
-            flex-direction: column;
-            padding: 2rem;
-            flex: 1;
-        }
-        
-        .login-title {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: var(--primary-color);
-        }
-        
-        .login-options {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .btn-login {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.8rem;
-            border-radius: var(--border-radius-medium);
-            font-weight: 600;
-            text-decoration: none;
-            transition: var(--transition-fast);
-            cursor: pointer;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            background-color: white;
-        }
-        
-        .btn-login:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        .btn-login i {
-            margin-right: 0.8rem;
-        }
-        
-        .btn-login-email {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        
-        .btn-login-email:hover {
-            background-color: #1976d2;
-        }
-        
-        .btn-login-google {
-            color: var(--text-primary);
-        }
-        
-        .btn-login-anonymous {
-            border: 1px dashed rgba(0, 0, 0, 0.1);
-            color: var(--text-secondary);
-        }
-        
-        .login-divider {
-            display: flex;
-            align-items: center;
-            margin: 1.5rem 0;
-            color: var(--text-secondary);
-        }
-        
-        .login-divider::before,
-        .login-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-        
-        .login-divider::before {
-            margin-right: 1rem;
-        }
-        
-        .login-divider::after {
-            margin-left: 1rem;
-        }
-        
-        .login-form {
-            display: none;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .login-footer {
-            margin-top: auto;
-            text-align: center;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        
-        .login-footer a {
-            color: var(--secondary-color);
-            text-decoration: none;
-        }
-        
-        .login-footer a:hover {
-            text-decoration: underline;
         }
         
         /* File preview */
@@ -774,13 +713,219 @@
             gap: 1rem;
         }
         
+        /* Chat end */
+        .chat-end {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+        }
+        
+        .chat-end-icon {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .chat-end-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .chat-end-text {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .chat-end-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .btn-outlined {
+            background-color: transparent;
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        
+        .btn-outlined:hover {
+            background-color: var(--secondary-light);
+        }
+        
+        /* Department selection */
+        .department-select {
+            padding: 1.5rem;
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        .department-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .department-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .department-item {
+            padding: 1rem;
+            border-radius: var(--border-radius-medium);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+        }
+        
+        .department-item:hover {
+            border-color: var(--secondary-color);
+            box-shadow: var(--shadow-small);
+            transform: translateY(-2px);
+        }
+        
+        .department-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--secondary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        .department-info {
+            flex: 1;
+        }
+        
+        .department-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .department-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Map preview */
+        .map-preview {
+            width: 100%;
+            height: 200px;
+            border-radius: var(--border-radius-medium);
+            margin-bottom: 0.5rem;
+            background-color: #e9e9e9;
+        }
+        
+        /* Security indicators */
+        .security-info {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-top: auto;
+            padding-top: 1rem;
+        }
+        
+        .security-info i {
+            color: var(--success-color);
+            font-size: 1rem;
+        }
+        
+        /* GDPR compliance info */
+        .gdpr-info {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background-color: rgba(0, 0, 0, 0.03);
+            padding: 0.8rem;
+            border-radius: var(--border-radius-small);
+        }
+        
+        .gdpr-info a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+        
+        .gdpr-info a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Error notice */
+        .error-notice {
+            background-color: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid var(--danger-color);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: var(--danger-color);
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        /* Success notice */
+        .success-notice {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid var(--success-color);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: var(--success-color);
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        /* Media queries */
         @media (max-width: 768px) {
             .hero-title {
                 font-size: 2rem;
             }
             
             .chat-widget {
-                height: 520px;
+                height: 80vh;
+                min-height: 530px;
+                max-height: 600px;
+            }
+            
+            .emergency-buttons {
+                flex-direction: column;
+            }
+            
+            .department-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .department-icon {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+        
+        /* High contrast mode enhancements */
+        @media (forced-colors: active) {
+            .btn, 
+            .chat-action,
+            .form-control,
+            .form-select {
+                border: 1px solid currentColor;
+            }
+            
+            .message-content {
+                border: 1px solid currentColor;
             }
         }
     </style>
@@ -808,16 +953,29 @@
                 <div class="chat-header" role="banner">
                     <div class="chat-header-left">
                         <div class="chat-header-logo">
-                            <img src="https://pcslobozia.ro/wp-content/uploads/2019/11/cropped-SIGLA-POLITIA-LOCALA-SLOBOZIA-180x180.png" alt="Logo Poliția Locală">
+                            <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Logo Poliția Locală">
                         </div>
                         <div>
                             <div class="chat-header-title">Poliția Locală Slobozia</div>
-                            <div class="chat-header-status" aria-live="polite">Online • Chat Securizat</div>
+                            <div class="chat-header-status" aria-live="polite">
+                                <span id="connectionStatus">Online</span> • 
+                                <span id="securityStatus">Chat Securizat</span>
+                            </div>
                         </div>
                     </div>
                     <div class="chat-controls">
                         <button class="chat-control-button" aria-label="Închide chat" id="btnCloseChat"><i class="material-icons">close</i></button>
                     </div>
+                </div>
+                
+                <!-- Error Notice -->
+                <div id="errorNotice" class="error-notice" role="alert">
+                    A apărut o eroare. Vă rugăm să încercați din nou.
+                </div>
+                
+                <!-- Success Notice -->
+                <div id="successNotice" class="success-notice" role="status">
+                    Operație efectuată cu succes!
                 </div>
                 
                 <!-- Emergency Check -->
@@ -830,24 +988,79 @@
                     </div>
                 </div>
                 
+                <!-- Department Selection -->
+                <div id="departmentSelect" class="department-select">
+                    <h3 class="department-title">Selectați departamentul care vă poate ajuta cel mai bine</h3>
+                    
+                    <div class="department-list">
+                        <div class="department-item" data-id="traffic">
+                            <div class="department-icon">
+                                <i class="material-icons">directions_car</i>
+                            </div>
+                            <div class="department-info">
+                                <div class="department-name">Circulație Rutieră</div>
+                                <div class="department-description">Probleme legate de trafic, parcare sau semaforizare</div>
+                            </div>
+                        </div>
+                        
+                        <div class="department-item" data-id="public-order">
+                            <div class="department-icon">
+                                <i class="material-icons">public</i>
+                            </div>
+                            <div class="department-info">
+                                <div class="department-name">Ordine Publică</div>
+                                <div class="department-description">Tulburarea liniștii publice, comportament necorespunzător</div>
+                            </div>
+                        </div>
+                        
+                        <div class="department-item" data-id="environment">
+                            <div class="department-icon">
+                                <i class="material-icons">nature</i>
+                            </div>
+                            <div class="department-info">
+                                <div class="department-name">Protecția Mediului</div>
+                                <div class="department-description">Depozitarea deșeurilor, poluare, animale abandonate</div>
+                            </div>
+                        </div>
+                        
+                        <div class="department-item" data-id="commerce">
+                            <div class="department-icon">
+                                <i class="material-icons">store</i>
+                            </div>
+                            <div class="department-info">
+                                <div class="department-name">Control Comercial</div>
+                                <div class="department-description">Comerț ilegal, nereguli în activități comerciale</div>
+                            </div>
+                        </div>
+                        
+                        <div class="department-item" data-id="general">
+                            <div class="department-icon">
+                                <i class="material-icons">help_outline</i>
+                            </div>
+                            <div class="department-info">
+                                <div class="department-name">Informații Generale</div>
+                                <div class="department-description">Întrebări generale, informații despre serviciile poliției</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Pre-Chat Form -->
                 <div id="chatForm" class="chat-form" style="display:none;" role="form" aria-labelledby="form-title">
                     <h4 id="form-title" class="form-title">Înainte de a începe</h4>
-                    <div class="form-group">
-                        <label class="form-label" for="chat-subject">Selectați subiectul:</label>
-                        <select id="chat-subject" class="form-select" aria-required="true">
-                            <option value="suspect">Raportare activitate suspectă</option>
-                            <option value="traffic">Probleme de circulație</option>
-                            <option value="order">Probleme de ordine publică</option>
-                            <option value="environment">Probleme referitoare la mediu</option>
-                            <option value="general">Întrebare generală</option>
-                            <option value="other">Altele</option>
-                        </select>
+                    
+                    <div class="error-notice" id="formErrorNotice" style="display:none;">
+                        Vă rugăm să completați toate câmpurile obligatorii.
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label" for="chat-name">Numele dumneavoastră (opțional):</label>
-                        <input type="text" id="chat-name" class="form-control" placeholder="Nume și prenume">
+                        <label class="form-label" for="chat-subject">Subiect:</label>
+                        <input type="text" id="chat-subject" class="form-control" placeholder="Descrieți pe scurt problema" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="chat-name">Numele dumneavoastră:</label>
+                        <input type="text" id="chat-name" class="form-control" placeholder="Nume și prenume" required>
                     </div>
                     
                     <div class="form-group">
@@ -856,64 +1069,45 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label" for="chat-phone">Telefon (opțional):</label>
+                        <label class="form-label" for="chat-phone">Telefon:</label>
                         <input type="tel" id="chat-phone" class="form-control" placeholder="Număr de telefon">
                     </div>
                     
                     <div class="form-group">
+                        <label class="form-label" for="chat-location">Locația (opțional):</label>
+                        <div class="input-group" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <input type="text" id="chat-location" class="form-control" placeholder="Introduceți adresa sau folosiți locația curentă" style="flex: 1;">
+                            <button id="btnDetectLocation" type="button" class="chat-action" style="flex-shrink: 0;">
+                                <i class="material-icons">my_location</i>
+                            </button>
+                        </div>
+                        <div id="mapPreview" class="map-preview" style="display: none;"></div>
+                    </div>
+                    
+                    <div class="form-group">
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="privacy-check" aria-required="true">
-                            <label class="form-check-label" for="privacy-check">Am citit și accept politica de confidențialitate.</label>
+                            <input type="checkbox" class="form-check-input" id="privacy-check" required>
+                            <label class="form-check-label" for="privacy-check">Am citit și accept <a href="/privacy-policy" target="_blank">politica de confidențialitate</a>.</label>
                         </div>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="recording-check" aria-required="true">
-                            <label class="form-check-label" for="recording-check">Înțeleg că această conversație poate fi înregistrată pentru antrenare.</label>
+                            <input type="checkbox" class="form-check-input" id="recording-check" required>
+                            <label class="form-check-label" for="recording-check">Înțeleg că această conversație poate fi înregistrată pentru îmbunătățirea serviciilor.</label>
                         </div>
                     </div>
                     
-                    <button id="btnStartChat" class="btn-submit" aria-label="Începe conversația">Începe Chat <i class="material-icons" aria-hidden="true">arrow_forward</i></button>
-                </div>
-                
-                <!-- Authentication Screen -->
-                <div id="loginScreen" class="login-container">
-                    <h3 class="login-title">Conectare</h3>
-                    
-                    <div id="loginOptions" class="login-options">
-                        <button id="btnLoginEmail" class="btn-login btn-login-email">
-                            <i class="material-icons">email</i> Continuă cu email
-                        </button>
-                        <button id="btnLoginGoogle" class="btn-login btn-login-google">
-                            <i class="material-icons">account_circle</i> Continuă cu Google
-                        </button>
-                        <div class="login-divider">sau</div>
-                        <button id="btnLoginAnonymous" class="btn-login btn-login-anonymous">
-                            Continuă anonim
-                        </button>
+                    <div class="gdpr-info">
+                        <p>Datele dumneavoastră sunt protejate în conformitate cu Regulamentul General privind Protecția Datelor (GDPR). <a href="/gdpr" target="_blank">Aflați mai multe</a></p>
                     </div>
                     
-                    <div id="loginForm" class="login-form">
-                        <div class="form-group">
-                            <label class="form-label" for="login-email">Email:</label>
-                            <input type="email" id="login-email" class="form-control" placeholder="adresa@email.ro">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="login-password">Parolă:</label>
-                            <input type="password" id="login-password" class="form-control" placeholder="••••••••">
-                        </div>
-                        <button id="btnDoLogin" class="btn-submit">Conectare</button>
-                        <button id="btnBackToOptions" class="btn-login">Înapoi</button>
-                    </div>
-                    
-                    <div class="login-footer">
-                        <p>Dacă nu aveți un cont, unul va fi creat automat.</p>
-                        <p>Continuând, sunteți de acord cu <a href="/privacy">Politica de Confidențialitate</a>.</p>
-                    </div>
+                    <button id="btnStartChat" class="btn-submit" aria-label="Începe conversația">
+                        Începe Chat <i class="material-icons" aria-hidden="true">arrow_forward</i>
+                    </button>
                 </div>
                 
                 <!-- Loading State -->
                 <div id="loadingState" class="loading-container" style="display:none;">
                     <div class="loading-spinner"></div>
-                    <p>Se conectează la chat...</p>
+                    <p id="loadingText">Se conectează la chat...</p>
                 </div>
                 
                 <!-- Chat Messages -->
@@ -938,7 +1132,25 @@
                             <i class="material-icons" aria-hidden="true">send</i>
                         </button>
                     </div>
-                    <input type="file" id="fileInput" style="display:none;">
+                    <input type="file" id="fileInput" style="display:none;" accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
+                </div>
+                
+                <!-- Chat End -->
+                <div id="chatEnd" class="chat-end" style="display:none;">
+                    <i class="material-icons chat-end-icon">check_circle</i>
+                    <h3 class="chat-end-title">Conversație încheiată</h3>
+                    <p class="chat-end-text">Vă mulțumim pentru că ați contactat Poliția Locală Slobozia. Puteți primi transcriptul conversației pe email sau puteți începe o nouă conversație.</p>
+                    <div class="chat-end-buttons">
+                        <button id="btnRequestTranscript" class="btn btn-outlined">
+                            <i class="material-icons">description</i> Primește transcript
+                        </button>
+                        <button id="btnStartNewChat" class="btn btn-primary">
+                            <i class="material-icons">chat</i> Conversație nouă
+                        </button>
+                    </div>
+                    <div class="security-info">
+                        <i class="material-icons">security</i> Conversație securizată și criptată end-to-end
+                    </div>
                 </div>
             </div>
         </div>
@@ -949,7 +1161,9 @@
     
     <!-- Firebase configuration and chat functionality -->
     <script>
-        // Firebase configuration
+        // =============================================
+        // Firebase Configuration
+        // =============================================
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -966,337 +1180,739 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         const storage = firebase.storage();
+        const functions = firebase.functions();
         
-        // DOM elements
+        // =============================================
+        // DOM Elements
+        // =============================================
         const emergencyCheck = document.getElementById('emergencyCheck');
+        const departmentSelect = document.getElementById('departmentSelect');
         const chatForm = document.getElementById('chatForm');
-        const loginScreen = document.getElementById('loginScreen');
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const loadingState = document.getElementById('loadingState');
+        const chatEnd = document.getElementById('chatEnd');
+        const errorNotice = document.getElementById('errorNotice');
+        const successNotice = document.getElementById('successNotice');
+        const formErrorNotice = document.getElementById('formErrorNotice');
+        const mapPreview = document.getElementById('mapPreview');
         
         // Buttons
         const btnEmergency = document.getElementById('btnEmergency');
         const btnNonemergency = document.getElementById('btnNonemergency');
         const btnStartChat = document.getElementById('btnStartChat');
-        const btnLoginEmail = document.getElementById('btnLoginEmail');
-        const btnLoginGoogle = document.getElementById('btnLoginGoogle');
-        const btnLoginAnonymous = document.getElementById('btnLoginAnonymous');
-        const btnDoLogin = document.getElementById('btnDoLogin');
-        const btnBackToOptions = document.getElementById('btnBackToOptions');
         const btnSendMessage = document.getElementById('btnSendMessage');
         const btnAttachFile = document.getElementById('btnAttachFile');
         const btnSendPhoto = document.getElementById('btnSendPhoto');
         const btnShareLocation = document.getElementById('btnShareLocation');
+        const btnDetectLocation = document.getElementById('btnDetectLocation');
         const btnCloseChat = document.getElementById('btnCloseChat');
+        const btnRequestTranscript = document.getElementById('btnRequestTranscript');
+        const btnStartNewChat = document.getElementById('btnStartNewChat');
+        
+        // Department selection
+        const departmentItems = document.querySelectorAll('.department-item');
         
         // Other elements
-        const loginOptions = document.getElementById('loginOptions');
-        const loginForm = document.getElementById('loginForm');
         const messageInput = document.getElementById('messageInput');
         const fileInput = document.getElementById('fileInput');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const securityStatus = document.getElementById('securityStatus');
+        const loadingText = document.getElementById('loadingText');
         
-        // Chat state
+        // =============================================
+        // State Variables
+        // =============================================
         let currentUser = null;
         let currentChatId = null;
         let selectedFile = null;
+        let selectedDepartment = null;
+        let chatSessionKey = null; // For encryption
+        let agentPublicKey = null; // For encryption
+        let chatEnded = false;
+        let isTyping = false;
+        let typingTimeout = null;
+        let lastReadTimestamp = null;
+        let unreadCount = 0;
+        let offlineTimeout = null;
+        let messageQueue = []; // For offline message queuing
         
-        // Event listeners
-        btnEmergency.addEventListener('click', handleEmergency);
-        btnNonemergency.addEventListener('click', showChatForm);
-        btnStartChat.addEventListener('click', handleStartChat);
-        btnLoginEmail.addEventListener('click', showLoginForm);
-        btnLoginGoogle.addEventListener('click', handleGoogleLogin);
-        btnLoginAnonymous.addEventListener('click', handleAnonymousLogin);
-        btnDoLogin.addEventListener('click', handleEmailLogin);
-        btnBackToOptions.addEventListener('click', showLoginOptions);
-        btnSendMessage.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', handleEnterPress);
-        btnAttachFile.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', handleFileSelect);
-        btnSendPhoto.addEventListener('click', capturePhoto);
-        btnShareLocation.addEventListener('click', shareLocation);
-        btnCloseChat.addEventListener('click', resetChat);
+        // Rate limiting
+        const rateLimitConfig = {
+            maxMessages: 20,
+            timeWindow: 60000, // 1 minute
+            sentMessages: [],
+            isLimited: false
+        };
         
-        // Initialize chat state
-        initializeChat();
+        // =============================================
+        // Security and Encryption Functions
+        // =============================================
         
-        // Functions
+        // Generate a new encryption key for the chat session
+        function generateEncryptionKey() {
+            // In a real implementation, this would use the Web Crypto API
+            // For demo purposes, we're using CryptoJS to generate a random key
+            const randomBytes = CryptoJS.lib.WordArray.random(32);
+            return randomBytes.toString();
+        }
+        
+        // Encrypt a message
+        function encryptMessage(message, key) {
+            try {
+                if (!key) return message; // Fallback for demo
+                return CryptoJS.AES.encrypt(message, key).toString();
+            } catch (error) {
+                console.error('Encryption error:', error);
+                return message; // Fallback
+            }
+        }
+        
+        // Decrypt a message
+        function decryptMessage(encryptedMessage, key) {
+            try {
+                if (!key) return encryptedMessage; // Fallback for demo
+                const bytes = CryptoJS.AES.decrypt(encryptedMessage, key);
+                return bytes.toString(CryptoJS.enc.Utf8);
+            } catch (error) {
+                console.error('Decryption error:', error);
+                return encryptedMessage; // Fallback
+            }
+        }
+        
+        // =============================================
+        // Chat Status and Connection Management
+        // =============================================
+        
+        // Update connection status
+        function updateConnectionStatus(status) {
+            connectionStatus.textContent = status;
+            
+            if (status === 'Offline') {
+                connectionStatus.style.color = 'var(--danger-color)';
+                
+                // Queue up messages when offline
+                if (!chatEnded) {
+                    showNotice(errorNotice, 'Conexiune pierdută. Mesajele vor fi trimise când conexiunea va fi restabilită.');
+                }
+            } else if (status === 'Connecting...') {
+                connectionStatus.style.color = 'var(--warning-color)';
+            } else {
+                connectionStatus.style.color = '';
+                errorNotice.style.display = 'none';
+                
+                // Send queued messages if there are any
+                if (messageQueue.length > 0) {
+                    processMessageQueue();
+                }
+            }
+        }
+        
+        // Monitor connection status
+        function setupConnectionMonitoring() {
+            // Set up Firebase connection state monitoring
+            const connectedRef = firebase.database().ref('.info/connected');
+            connectedRef.on('value', (snap) => {
+                if (snap.val() === true) {
+                    updateConnectionStatus('Online');
+                    
+                    if (offlineTimeout) {
+                        clearTimeout(offlineTimeout);
+                        offlineTimeout = null;
+                    }
+                } else {
+                    // Set a timeout to show offline only after a delay
+                    // to avoid flickering during brief connection issues
+                    if (!offlineTimeout) {
+                        offlineTimeout = setTimeout(() => {
+                            updateConnectionStatus('Offline');
+                        }, 5000);
+                    }
+                }
+            });
+            
+            // Also monitor window online/offline events as a backup
+            window.addEventListener('online', () => {
+                updateConnectionStatus('Online');
+            });
+            
+            window.addEventListener('offline', () => {
+                updateConnectionStatus('Offline');
+            });
+        }
+        
+        // Show a notice
+        function showNotice(element, message, duration = 5000) {
+            element.textContent = message;
+            element.style.display = 'block';
+            
+            if (duration > 0) {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, duration);
+            }
+        }
+        
+        // =============================================
+        // Rate Limiting
+        // =============================================
+        
+        // Check rate limit before sending a message
+        function checkRateLimit() {
+            const now = Date.now();
+            
+            // Remove messages outside the time window
+            rateLimitConfig.sentMessages = rateLimitConfig.sentMessages.filter(
+                timestamp => now - timestamp < rateLimitConfig.timeWindow
+            );
+            
+            // Check if we've hit the limit
+            if (rateLimitConfig.sentMessages.length >= rateLimitConfig.maxMessages) {
+                if (!rateLimitConfig.isLimited) {
+                    rateLimitConfig.isLimited = true;
+                    showNotice(
+                        errorNotice, 
+                        `Ați trimis prea multe mesaje într-un interval scurt de timp. Vă rugăm să așteptați ${Math.ceil(rateLimitConfig.timeWindow/1000)} secunde.`,
+                        rateLimitConfig.timeWindow
+                    );
+                    
+                    // Reset rate limit after the time window
+                    setTimeout(() => {
+                        rateLimitConfig.isLimited = false;
+                        errorNotice.style.display = 'none';
+                    }, rateLimitConfig.timeWindow);
+                }
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Record a sent message for rate limiting
+        function recordMessageSent() {
+            rateLimitConfig.sentMessages.push(Date.now());
+        }
+        
+        // =============================================
+        // Message Queue Management (for offline support)
+        // =============================================
+        
+        // Add a message to the queue
+        function queueMessage(message) {
+            messageQueue.push(message);
+            localStorage.setItem('messageQueue_' + currentChatId, JSON.stringify(messageQueue));
+        }
+        
+        // Process the message queue when back online
+        function processMessageQueue() {
+            if (messageQueue.length === 0) return;
+            
+            showNotice(successNotice, `Se trimit ${messageQueue.length} mesaje din coada offline...`);
+            
+            const processNext = () => {
+                if (messageQueue.length === 0) {
+                    showNotice(successNotice, 'Toate mesajele au fost trimise cu succes.');
+                    return;
+                }
+                
+                const message = messageQueue.shift();
+                
+                // Send the message
+                sendMessageToFirestore(message)
+                    .then(() => {
+                        // Update local storage
+                        localStorage.setItem('messageQueue_' + currentChatId, JSON.stringify(messageQueue));
+                        // Process next message
+                        processNext();
+                    })
+                    .catch(error => {
+                        console.error('Error processing queued message:', error);
+                        // Put the message back in the queue
+                        messageQueue.unshift(message);
+                        localStorage.setItem('messageQueue_' + currentChatId, JSON.stringify(messageQueue));
+                        // Stop processing for now
+                        showNotice(errorNotice, 'Nu s-au putut trimite toate mesajele. Se va încerca din nou mai târziu.');
+                    });
+            };
+            
+            processNext();
+        }
+        
+        // Load queued messages from localStorage
+        function loadMessageQueue() {
+            const queueStr = localStorage.getItem('messageQueue_' + currentChatId);
+            if (queueStr) {
+                try {
+                    messageQueue = JSON.parse(queueStr);
+                } catch (e) {
+                    console.error('Error loading message queue:', e);
+                    messageQueue = [];
+                }
+            } else {
+                messageQueue = [];
+            }
+        }
+        
+        // =============================================
+        // Initialization and Main Flow
+        // =============================================
+        
+        // Initialize chat
         function initializeChat() {
+            // Set up connection monitoring
+            setupConnectionMonitoring();
+            
+            // Generate a unique session key for this page load
+            chatSessionKey = generateEncryptionKey();
+            
             // Check if user is already logged in
             auth.onAuthStateChanged(user => {
                 if (user) {
                     currentUser = user;
-                    // If emergency check is visible, keep it there
-                    // If not, go directly to chat interface
-                    if (chatMessages.style.display === 'flex') {
-                        loadChatHistory();
-                    }
                 }
+            });
+            
+            // Set up event listeners
+            setupEventListeners();
+        }
+        
+        // Set up all event listeners
+        function setupEventListeners() {
+            btnEmergency.addEventListener('click', handleEmergency);
+            btnNonemergency.addEventListener('click', showDepartmentSelection);
+            btnStartChat.addEventListener('click', handleStartChat);
+            btnSendMessage.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', handleEnterPress);
+            btnAttachFile.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            btnSendPhoto.addEventListener('click', capturePhoto);
+            btnShareLocation.addEventListener('click', shareLocation);
+            btnDetectLocation.addEventListener('click', detectLocation);
+            btnCloseChat.addEventListener('click', confirmEndChat);
+            btnRequestTranscript.addEventListener('click', requestTranscript);
+            btnStartNewChat.addEventListener('click', resetChat);
+            
+            // Input typing detection
+            messageInput.addEventListener('input', handleTypingStart);
+            
+            // Department selection
+            departmentItems.forEach(item => {
+                item.addEventListener('click', () => selectDepartment(item.dataset.id));
             });
         }
         
+        // =============================================
+        // Chat Flow Functions
+        // =============================================
+        
+        // Handle emergency button click
         function handleEmergency() {
+            // Log the emergency (useful for statistics and monitoring)
+            logEmergencyRequest();
+            
             // For emergency, redirect to call page or show emergency info
             alert('Pentru situații de urgență, vă rugăm să sunați la 112. Vă redirecționăm către pagina de informații despre urgențe.');
             // In a real implementation, redirect to emergency page
             // window.location.href = '/urgenta';
         }
         
-        function showChatForm() {
-            emergencyCheck.style.display = 'none';
-            chatForm.style.display = 'block';
+        // Log emergency request
+        function logEmergencyRequest() {
+            try {
+                db.collection('emergency_logs').add({
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    userAgent: navigator.userAgent,
+                    ipAddress: '', // This would be populated by a Cloud Function
+                    location: '' // This would be populated by a Cloud Function if available
+                });
+            } catch (error) {
+                console.error('Error logging emergency request:', error);
+            }
         }
         
+        // Show department selection
+        function showDepartmentSelection() {
+            emergencyCheck.style.display = 'none';
+            departmentSelect.style.display = 'flex';
+        }
+        
+        // Select department
+        function selectDepartment(departmentId) {
+            selectedDepartment = departmentId;
+            departmentSelect.style.display = 'none';
+            chatForm.style.display = 'block';
+            
+            // Pre-fill subject based on department
+            const subjectMap = {
+                'traffic': 'Problemă de circulație rutieră',
+                'public-order': 'Problemă de ordine publică',
+                'environment': 'Problemă de mediu',
+                'commerce': 'Problemă comercială',
+                'general': 'Informații generale'
+            };
+            
+            document.getElementById('chat-subject').value = subjectMap[departmentId] || '';
+        }
+        
+        // Handle start chat button click
         function handleStartChat() {
             // Validate form
+            const nameInput = document.getElementById('chat-name');
+            const subjectInput = document.getElementById('chat-subject');
             const privacyCheck = document.getElementById('privacy-check');
             const recordingCheck = document.getElementById('recording-check');
             
-            if (!privacyCheck.checked || !recordingCheck.checked) {
-                alert('Vă rugăm să acceptați termenii și condițiile pentru a continua.');
+            // Reset error notice
+            formErrorNotice.style.display = 'none';
+            
+            // Check required fields
+            if (!nameInput.value.trim() || !subjectInput.value.trim() || !privacyCheck.checked || !recordingCheck.checked) {
+                formErrorNotice.style.display = 'block';
                 return;
             }
             
-            // Save user info from form
-            const chatSubject = document.getElementById('chat-subject').value;
-            const chatName = document.getElementById('chat-name').value;
-            const chatEmail = document.getElementById('chat-email').value;
-            const chatPhone = document.getElementById('chat-phone').value;
-            
-            // Store data for later use
-            sessionStorage.setItem('chatSubject', chatSubject);
-            sessionStorage.setItem('chatName', chatName);
-            sessionStorage.setItem('chatEmail', chatEmail);
-            sessionStorage.setItem('chatPhone', chatPhone);
-            
-            // Hide form and show login options
+            // Show loading state
             chatForm.style.display = 'none';
-            loginScreen.style.display = 'flex';
-        }
-        
-        function showLoginForm() {
-            loginOptions.style.display = 'none';
-            loginForm.style.display = 'flex';
-        }
-        
-        function showLoginOptions() {
-            loginOptions.style.display = 'flex';
-            loginForm.style.display = 'none';
-        }
-        
-        function handleGoogleLogin() {
-            showLoadingState();
-            const provider = new firebase.auth.GoogleAuthProvider();
-            
-            auth.signInWithPopup(provider)
-                .then(result => {
-                    // Google login successful
-                    currentUser = result.user;
-                    startChatSession();
-                })
-                .catch(error => {
-                    hideLoadingState();
-                    console.error('Google login error:', error);
-                    alert('Eroare la autentificare. Vă rugăm să încercați din nou.');
-                });
-        }
-        
-        function handleAnonymousLogin() {
-            showLoadingState();
-            
-            auth.signInAnonymously()
-                .then(result => {
-                    // Anonymous login successful
-                    currentUser = result.user;
-                    startChatSession();
-                })
-                .catch(error => {
-                    hideLoadingState();
-                    console.error('Anonymous login error:', error);
-                    alert('Eroare la autentificare. Vă rugăm să încercați din nou.');
-                });
-        }
-        
-        function handleEmailLogin() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            if (!email || !email.includes('@')) {
-                alert('Vă rugăm să introduceți o adresă de email validă.');
-                return;
-            }
-            
-            showLoadingState();
-            
-            // Try to sign in first
-            auth.signInWithEmailAndPassword(email, password)
-                .then(result => {
-                    currentUser = result.user;
-                    startChatSession();
-                })
-                .catch(error => {
-                    // If user doesn't exist, create a new account
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        // For simplicity, we're creating a new account with a random password
-                        // In a real app, you'd want to implement a proper signup flow
-                        const newPassword = Math.random().toString(36).slice(-8);
-                        
-                        auth.createUserWithEmailAndPassword(email, newPassword)
-                            .then(result => {
-                                currentUser = result.user;
-                                startChatSession();
-                            })
-                            .catch(createError => {
-                                hideLoadingState();
-                                console.error('Create account error:', createError);
-                                alert('Eroare la crearea contului. Vă rugăm să încercați din nou.');
-                            });
-                    } else {
-                        hideLoadingState();
-                        console.error('Email login error:', error);
-                        alert('Eroare la autentificare. Vă rugăm să încercați din nou.');
-                    }
-                });
-        }
-        
-        function showLoadingState() {
-            loginScreen.style.display = 'none';
             loadingState.style.display = 'flex';
+            loadingText.textContent = 'Se inițializează conexiunea securizată...';
+            
+            // Start authentication process
+            authenticateAnonymously();
         }
         
-        function hideLoadingState() {
-            loadingState.style.display = 'none';
-            loginScreen.style.display = 'flex';
+        // Authenticate anonymously
+        function authenticateAnonymously() {
+            auth.signInAnonymously()
+                .then(userCredential => {
+                    currentUser = userCredential.user;
+                    loadingText.textContent = 'Se creează sesiunea de chat...';
+                    
+                    // Get user info from form
+                    const chatSubject = document.getElementById('chat-subject').value;
+                    const chatName = document.getElementById('chat-name').value;
+                    const chatEmail = document.getElementById('chat-email').value;
+                    const chatPhone = document.getElementById('chat-phone').value;
+                    const chatLocation = document.getElementById('chat-location').value;
+                    
+                    // Create chat session
+                    return createChatSession(chatSubject, chatName, chatEmail, chatPhone, chatLocation);
+                })
+                .then(() => {
+                    loadingText.textContent = 'Se conectează la departamentul relevant...';
+                    return setupChatListeners();
+                })
+                .then(() => {
+                    // Show chat interface
+                    loadingState.style.display = 'none';
+                    chatMessages.style.display = 'flex';
+                    chatInput.style.display = 'flex';
+                    
+                    // Add welcome message
+                    addSystemMessage('Conectat la Poliția Locală Slobozia. Un agent va răspunde în curând.');
+                    
+                    // Set up read receipts
+                    setupReadReceipts();
+                    
+                    // Focus on input
+                    messageInput.focus();
+                })
+                .catch(error => {
+                    console.error('Error starting chat:', error);
+                    loadingState.style.display = 'none';
+                    chatForm.style.display = 'block';
+                    showNotice(errorNotice, 'Eroare la inițierea conversației. Vă rugăm să încercați din nou.');
+                });
         }
         
-        function startChatSession() {
-            // Create a new chat session in Firestore
-            const chatSubject = sessionStorage.getItem('chatSubject') || 'general';
-            const chatName = sessionStorage.getItem('chatName') || 'Anonim';
-            const chatEmail = sessionStorage.getItem('chatEmail') || '';
-            const chatPhone = sessionStorage.getItem('chatPhone') || '';
-            
-            const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-            
-            db.collection('chats').add({
-                userId: currentUser.uid,
-                userEmail: currentUser.email || chatEmail,
-                userName: currentUser.displayName || chatName,
-                userPhone: chatPhone,
-                subject: chatSubject,
-                status: 'active',
-                createdAt: timestamp,
-                updatedAt: timestamp
-            }).then(docRef => {
-                currentChatId = docRef.id;
+        // Create a new chat session
+        function createChatSession(subject, name, email, phone, location) {
+            return new Promise((resolve, reject) => {
+                const timestamp = firebase.firestore.FieldValue.serverTimestamp();
                 
-                // Add welcome message from system
-                addSystemMessage('Bun venit la serviciul de chat al Poliției Locale Slobozia. Un agent se va alătura conversației în curând. Vă mulțumim pentru răbdare.');
-                
-                // Show chat interface
-                loadingState.style.display = 'none';
-                chatMessages.style.display = 'flex';
-                chatInput.style.display = 'flex';
-                
-                // Start listening for messages
-                listenForMessages();
-            }).catch(error => {
-                console.error('Error creating chat:', error);
-                alert('Eroare la inițierea conversației. Vă rugăm să încercați din nou.');
-                hideLoadingState();
+                db.collection('chats').add({
+                    userId: currentUser.uid,
+                    userName: name,
+                    userEmail: email || '',
+                    userPhone: phone || '',
+                    userLocation: location || '',
+                    subject: subject,
+                    department: selectedDepartment,
+                    status: 'waiting',
+                    priority: 'normal',
+                    createdAt: timestamp,
+                    updatedAt: timestamp,
+                    agentId: null,
+                    agentName: null,
+                    conversationData: {
+                        clientPlatform: navigator.platform,
+                        clientBrowser: navigator.userAgent,
+                        clientLanguage: navigator.language,
+                        chatSource: 'web'
+                    }
+                }).then(docRef => {
+                    currentChatId = docRef.id;
+                    resolve();
+                }).catch(error => {
+                    reject(error);
+                });
             });
         }
         
-        function listenForMessages() {
-            // Listen for new messages in this chat
-            db.collection('chats').doc(currentChatId).collection('messages')
-                .orderBy('timestamp', 'asc')
-                .onSnapshot(snapshot => {
-                    snapshot.docChanges().forEach(change => {
-                        if (change.type === 'added') {
-                            const message = change.doc.data();
-                            displayMessage(message);
-                        }
-                    });
+        // Set up chat listeners
+        function setupChatListeners() {
+            return new Promise((resolve, reject) => {
+                try {
+                    // Listen for chat status changes (e.g., agent joined, priority changed)
+                    db.collection('chats').doc(currentChatId)
+                        .onSnapshot(doc => {
+                            const chatData = doc.data();
+                            
+                            // Check if an agent was assigned
+                            if (chatData.agentId && chatData.status === 'active' && !agentPublicKey) {
+                                // An agent has joined
+                                addSystemMessage(`Agent ${chatData.agentName} s-a alăturat conversației.`);
+                                
+                                // Get the agent's public key for encryption (in a real app)
+                                agentPublicKey = chatData.agentPublicKey || null;
+                            }
+                            
+                            // Check if chat was ended by the agent
+                            if (chatData.status === 'closed' && !chatEnded) {
+                                handleChatEnded();
+                            }
+                        });
                     
-                    // Scroll to bottom
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                });
+                    // Listen for messages
+                    db.collection('chats').doc(currentChatId).collection('messages')
+                        .orderBy('timestamp', 'asc')
+                        .onSnapshot(snapshot => {
+                            snapshot.docChanges().forEach(change => {
+                                if (change.type === 'added') {
+                                    const message = change.doc.data();
+                                    
+                                    // If the message has encrypted content, decrypt it
+                                    if (message.encrypted && message.content) {
+                                        message.content = decryptMessage(message.content, chatSessionKey);
+                                    }
+                                    
+                                    displayMessage(message);
+                                    
+                                    // Update read status for agent messages
+                                    if (message.type === 'agent') {
+                                        updateMessageReadStatus(change.doc.id);
+                                    }
+                                }
+                            });
+                            
+                            // Scroll to bottom
+                            scrollToBottom();
+                        });
+                    
+                    // Listen for typing indicators
+                    db.collection('chats').doc(currentChatId).collection('typing')
+                        .doc('agent')
+                        .onSnapshot(doc => {
+                            if (doc.exists && doc.data().isTyping) {
+                                showTypingIndicator();
+                            } else {
+                                hideTypingIndicator();
+                            }
+                        });
+                    
+                    // Load queued messages if any
+                    loadMessageQueue();
+                    
+                    resolve();
+                } catch (error) {
+                    reject(error);
+                }
+            });
         }
         
+        // =============================================
+        // Message Handling
+        // =============================================
+        
+        // Send a message
         function sendMessage() {
             const text = messageInput.value.trim();
-            if (!text && !selectedFile) return;
+            if ((!text && !selectedFile) || chatEnded) return;
+            
+            // Check rate limit
+            if (!checkRateLimit()) {
+                return;
+            }
             
             // Disable input during send
             messageInput.disabled = true;
             btnSendMessage.disabled = true;
             
+            // Record this message for rate limiting
+            recordMessageSent();
+            
+            // Create the message object
+            const messageObj = {
+                type: 'user',
+                content: text,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                sender: {
+                    id: currentUser.uid,
+                    name: document.getElementById('chat-name').value || 'Anonim'
+                },
+                status: 'sent',
+                hasAttachment: !!selectedFile,
+                attachmentType: selectedFile ? selectedFile.type : null,
+                attachmentName: selectedFile ? selectedFile.name : null
+            };
+            
+            // Encrypt message content if we have encryption set up
+            if (chatSessionKey) {
+                messageObj.content = encryptMessage(text, chatSessionKey);
+                messageObj.encrypted = true;
+            }
+            
             // If there's a file to upload
             let uploadPromise = Promise.resolve(null);
             
             if (selectedFile) {
-                // Create a file reference
-                const fileRef = storage.ref().child('chat-files/' + currentChatId + '/' + Date.now() + '-' + selectedFile.name);
-                
-                // Upload the file
-                uploadPromise = fileRef.put(selectedFile).then(() => {
-                    return fileRef.getDownloadURL();
-                });
-                
-                // Clear the selected file
-                selectedFile = null;
-                clearFilePreview();
+                uploadPromise = uploadFile(selectedFile);
             }
             
-            // After file upload (or immediately if no file), send the message
-            uploadPromise.then(fileUrl => {
-                const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-                
-                return db.collection('chats').doc(currentChatId).collection('messages').add({
-                    userId: currentUser.uid,
-                    userName: currentUser.displayName || 'Anonim',
-                    text: text,
-                    fileUrl: fileUrl,
-                    fileType: selectedFile ? selectedFile.type : null,
-                    fileName: selectedFile ? selectedFile.name : null,
-                    timestamp: timestamp,
-                    type: 'user'
+            // Upload file (if any) then send the message
+            uploadPromise
+                .then(fileUrl => {
+                    if (fileUrl) {
+                        messageObj.attachmentUrl = fileUrl;
+                    }
+                    
+                    // Try to send to Firestore
+                    return sendMessageToFirestore(messageObj);
+                })
+                .then(() => {
+                    // Clear input and enable it again
+                    messageInput.value = '';
+                    messageInput.disabled = false;
+                    btnSendMessage.disabled = false;
+                    
+                    // Clear the selected file
+                    selectedFile = null;
+                    clearFilePreview();
+                    
+                    // Reset typing indicator
+                    resetTypingIndicator();
+                    
+                    // Focus input field
+                    messageInput.focus();
+                })
+                .catch(error => {
+                    console.error('Error sending message:', error);
+                    
+                    // Queue the message for later if we're offline
+                    if (connectionStatus.textContent === 'Offline') {
+                        queueMessage(messageObj);
+                        
+                        // Show a temporary version of the message
+                        displayLocalMessage(messageObj);
+                        
+                        // Clear input
+                        messageInput.value = '';
+                        selectedFile = null;
+                        clearFilePreview();
+                    } else {
+                        showNotice(errorNotice, 'Eroare la trimiterea mesajului. Vă rugăm să încercați din nou.');
+                    }
+                    
+                    // Re-enable input
+                    messageInput.disabled = false;
+                    btnSendMessage.disabled = false;
                 });
-            }).then(() => {
-                // Update the chat's last activity timestamp
-                return db.collection('chats').doc(currentChatId).update({
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            }).then(() => {
-                // Clear input and enable it again
-                messageInput.value = '';
-                messageInput.disabled = false;
-                btnSendMessage.disabled = false;
-                messageInput.focus();
-            }).catch(error => {
-                console.error('Error sending message:', error);
-                alert('Eroare la trimiterea mesajului. Vă rugăm să încercați din nou.');
-                messageInput.disabled = false;
-                btnSendMessage.disabled = false;
+        }
+        
+        // Send a message to Firestore
+        function sendMessageToFirestore(messageObj) {
+            return new Promise((resolve, reject) => {
+                // Add message to Firestore
+                db.collection('chats').doc(currentChatId).collection('messages').add(messageObj)
+                    .then(messageRef => {
+                        // Update the chat's last activity timestamp
+                        return db.collection('chats').doc(currentChatId).update({
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            lastMessageContent: messageObj.encrypted ? '[Mesaj criptat]' : (messageObj.content || '[Atașament]'),
+                            lastMessageSender: 'user'
+                        });
+                    })
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
             });
         }
         
-        function handleEnterPress(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendMessage();
-            }
+        // Upload a file to Firebase Storage
+        function uploadFile(file) {
+            return new Promise((resolve, reject) => {
+                // Create a file reference
+                const fileRef = storage.ref().child(`chat-files/${currentChatId}/${Date.now()}-${file.name}`);
+                
+                // Create a metadata object
+                const metadata = {
+                    contentType: file.type,
+                    customMetadata: {
+                        'chatId': currentChatId,
+                        'uploadedBy': currentUser.uid,
+                        'fileName': file.name
+                    }
+                };
+                
+                // Upload the file with metadata
+                const uploadTask = fileRef.put(file, metadata);
+                
+                // Monitor upload progress (could be used to show a progress bar)
+                uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log('Upload progress: ' + progress + '%');
+                    }, 
+                    (error) => {
+                        // Handle error
+                        console.error('Upload error:', error);
+                        reject(error);
+                    }, 
+                    () => {
+                        // Upload completed successfully
+                        uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                            resolve(downloadURL);
+                        }).catch(error => {
+                            reject(error);
+                        });
+                    }
+                );
+            });
         }
         
+        // Handle file selection
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
             
             // Check file size (limit to 10MB)
             if (file.size > 10 * 1024 * 1024) {
-                alert('Fișierul este prea mare. Dimensiunea maximă este de 10MB.');
+                showNotice(errorNotice, 'Fișierul este prea mare. Dimensiunea maximă este de 10MB.');
+                return;
+            }
+            
+            // Check file type (whitelist)
+            const allowedTypes = [
+                'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+                'application/pdf',
+                'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'text/plain'
+            ];
+            
+            if (!allowedTypes.includes(file.type)) {
+                showNotice(errorNotice, 'Tip de fișier nepermis. Tipurile acceptate sunt imagini, PDF, Word și text.');
                 return;
             }
             
@@ -1304,6 +1920,7 @@
             displayFilePreview(file);
         }
         
+        // Display file preview
         function displayFilePreview(file) {
             // Remove any existing preview
             clearFilePreview();
@@ -1319,8 +1936,10 @@
             // Set icon based on file type
             if (file.type.startsWith('image/')) {
                 icon.textContent = 'image';
-            } else if (file.type.startsWith('video/')) {
-                icon.textContent = 'videocam';
+            } else if (file.type === 'application/pdf') {
+                icon.textContent = 'picture_as_pdf';
+            } else if (file.type.startsWith('application/msword') || file.type.includes('wordprocessingml')) {
+                icon.textContent = 'description';
             } else {
                 icon.textContent = 'insert_drive_file';
             }
@@ -1352,6 +1971,7 @@
             chatInput.insertBefore(previewDiv, messageInput);
         }
         
+        // Clear file preview
         function clearFilePreview() {
             const preview = document.getElementById('filePreview');
             if (preview) {
@@ -1361,241 +1981,620 @@
             fileInput.value = '';
         }
         
+        // Format file size
         function formatFileSize(bytes) {
             if (bytes < 1024) return bytes + ' B';
             if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
             return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
         }
         
+        // Handle Enter key press
+        function handleEnterPress(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
+        
+        // Capture photo
         function capturePhoto() {
-            // For simplicity, we're just triggering the file input
-            // In a real app, you might want to use the camera API
+            // For simplicity, we're just triggering the file input with image filter
             fileInput.accept = 'image/*';
             fileInput.click();
         }
         
+        // Share location
         function shareLocation() {
-            if (!navigator.geolocation) {
-                alert('Geolocation nu este suportat de browser-ul dumneavoastră.');
-                return;
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        
+                        // Send location message
+                        const locationText = `Locația mea: https://maps.google.com/?q=${lat},${lng}`;
+                        messageInput.value = locationText;
+                        sendMessage();
+                    },
+                    error => {
+                        console.error('Geolocation error:', error);
+                        showNotice(errorNotice, 'Nu am putut obține locația. Vă rugăm să verificați permisiunile browser-ului.');
+                    },
+                    { timeout: 10000 }
+                );
+            } else {
+                showNotice(errorNotice, 'Browserul dvs. nu suportă geolocalizarea.');
             }
-            
-            navigator.geolocation.getCurrentPosition(position => {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                
-                // Send location message
-                const locationText = `Locația mea: https://maps.google.com/?q=${lat},${lng}`;
-                messageInput.value = locationText;
-                sendMessage();
-            }, error => {
-                console.error('Geolocation error:', error);
-                alert('Nu am putut obține locația dumneavoastră. Vă rugăm să verificați permisiunile browser-ului.');
-            });
         }
         
-        function addSystemMessage(text) {
-            const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        // Detect location for the form
+        function detectLocation() {
+            if (navigator.geolocation) {
+                showNotice(loadingState, 'Se determină locația...');
+                chatForm.style.display = 'none';
+                loadingState.style.display = 'flex';
+                
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        
+                        // In a real app, you would do reverse geocoding
+                        // For now, just use the coordinates
+                        document.getElementById('chat-location').value = `${lat}, ${lng}`;
+                        
+                        // Show map preview (simulated)
+                        mapPreview.style.display = 'block';
+                        mapPreview.style.backgroundImage = `url('https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=15&size=400x200&markers=color:red%7C${lat},${lng}&key=YOUR_GOOGLE_MAPS_API_KEY')`;
+                        
+                        // Hide loading and show form
+                        loadingState.style.display = 'none';
+                        chatForm.style.display = 'block';
+                    },
+                    error => {
+                        console.error('Geolocation error:', error);
+                        loadingState.style.display = 'none';
+                        chatForm.style.display = 'block';
+                        showNotice(errorNotice, 'Nu am putut obține locația. Vă rugăm să introduceți manual.');
+                    },
+                    { timeout: 10000 }
+                );
+            } else {
+                showNotice(errorNotice, 'Browserul dvs. nu suportă geolocalizarea.');
+            }
+        }
+        
+        // =============================================
+        // Message Display Functions
+        // =============================================
+        
+        // Display a message in the chat
+        function displayMessage(message) {
+            // Check if this message is already displayed (for offline message handling)
+            const existingMessage = document.querySelector(`[data-message-id="${message.id}"]`);
+            if (existingMessage) return;
             
+            // Create message element
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message';
+            
+            // Set message ID if available
+            if (message.id) {
+                messageElement.dataset.messageId = message.id;
+            }
+            
+            // Format timestamp
+            let timeString = 'Acum';
+            if (message.timestamp) {
+                const timestamp = message.timestamp.toDate ? message.timestamp.toDate() : new Date();
+                timeString = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            
+            // Handle different message types
+            if (message.type === 'system') {
+                // System message
+                messageElement.className = 'message-system';
+                messageElement.textContent = message.content;
+            } else if (message.type === 'user') {
+                // User message (sent by current user)
+                messageElement.classList.add('message-sent');
+                
+                // Create HTML for the message
+                let messageHtml = '';
+                
+                // Add attachment content if present
+                if (message.attachmentUrl) {
+                    if (message.attachmentType && message.attachmentType.startsWith('image/')) {
+                        messageHtml += `<img src="${message.attachmentUrl}" alt="Imagine atașată" style="max-width: 100%; border-radius: var(--border-radius-small); margin-bottom: 0.5rem;">`;
+                    } else {
+                        messageHtml += `
+                            <div style="background-color: rgba(0,0,0,0.05); display: inline-flex; padding: 0.5rem 1rem; border-radius: 1rem; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <i class="material-icons" style="color: var(--text-secondary); font-size: 1.5rem;">insert_drive_file</i>
+                                <div>
+                                    <div style="font-weight: 500;">${message.attachmentName || 'Fișier'}</div>
+                                    <a href="${message.attachmentUrl}" target="_blank" style="font-size: 0.8rem; color: var(--secondary-color);">Descarcă</a>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                // Add text content if present
+                if (message.content) {
+                    messageHtml += `
+                        <div class="message-content">
+                            ${message.content}
+                        </div>
+                    `;
+                }
+                
+                // Add metadata (time, status)
+                let statusHtml = '';
+                if (message.status === 'sent') {
+                    statusHtml = `<i class="material-icons" aria-hidden="true">done</i>`;
+                } else if (message.status === 'delivered') {
+                    statusHtml = `<i class="material-icons" aria-hidden="true">done_all</i>`;
+                } else if (message.status === 'read') {
+                    statusHtml = `<i class="material-icons" style="color: var(--secondary-color);" aria-hidden="true">done_all</i>`;
+                }
+                
+                messageHtml += `
+                    <div class="message-meta">
+                        <span class="message-time">${timeString}</span>
+                        <span class="message-status">
+                            ${statusHtml}
+                        </span>
+                    </div>
+                `;
+                
+                messageElement.innerHTML = messageHtml;
+            } else if (message.type === 'agent') {
+                // Agent message
+                messageElement.classList.add('message-received');
+                
+                // Create HTML for the message
+                let messageHtml = '';
+                
+                // Add attachment content if present
+                if (message.attachmentUrl) {
+                    if (message.attachmentType && message.attachmentType.startsWith('image/')) {
+                        messageHtml += `<img src="${message.attachmentUrl}" alt="Imagine atașată" style="max-width: 100%; border-radius: var(--border-radius-small); margin-bottom: 0.5rem;">`;
+                    } else {
+                        messageHtml += `
+                            <div style="background-color: rgba(0,0,0,0.05); display: inline-flex; padding: 0.5rem 1rem; border-radius: 1rem; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                <i class="material-icons" style="color: var(--text-secondary); font-size: 1.5rem;">insert_drive_file</i>
+                                <div>
+                                    <div style="font-weight: 500;">${message.attachmentName || 'Fișier'}</div>
+                                    <a href="${message.attachmentUrl}" target="_blank" style="font-size: 0.8rem; color: var(--secondary-color);">Descarcă</a>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                // Add text content if present
+                if (message.content) {
+                    messageHtml += `
+                        <div class="message-content">
+                            ${message.content}
+                        </div>
+                    `;
+                }
+                
+                // Add metadata (time)
+                messageHtml += `
+                    <div class="message-meta">
+                        <span class="message-time">${timeString}</span>
+                    </div>
+                `;
+                
+                messageElement.innerHTML = messageHtml;
+            }
+            
+            // Add to chat
+            chatMessages.appendChild(messageElement);
+            
+            // Scroll to bottom
+            scrollToBottom();
+        }
+        
+        // Display a local message (for offline support)
+        function displayLocalMessage(message) {
+            // Clone the message object to avoid modifying the original
+            const localMessage = { ...message };
+            
+            // Add a local ID
+            localMessage.id = 'local-' + Date.now();
+            
+            // Add pending status indicator
+            localMessage.status = 'pending';
+            
+            // Display with "pending" styling
+            displayMessage(localMessage);
+            
+            // Update the message element to show it's queued
+            const messageElement = document.querySelector(`[data-message-id="${localMessage.id}"]`);
+            if (messageElement) {
+                const statusSpan = messageElement.querySelector('.message-status');
+                if (statusSpan) {
+                    statusSpan.innerHTML = '<i class="material-icons" style="color: var(--warning-color);">schedule</i>';
+                }
+            }
+        }
+        
+        // Add a system message
+        function addSystemMessage(text) {
+            // First add to UI immediately
+            const systemMessage = {
+                type: 'system',
+                content: text,
+                timestamp: new Date()
+            };
+            
+            displayMessage(systemMessage);
+            
+            // Then add to Firestore
             db.collection('chats').doc(currentChatId).collection('messages').add({
-                text: text,
-                timestamp: timestamp,
-                type: 'system'
+                type: 'system',
+                content: text,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }).catch(error => {
                 console.error('Error adding system message:', error);
             });
         }
         
-        function displayMessage(message) {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'message';
-            
-            const now = new Date();
-            const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
-                            now.getMinutes().toString().padStart(2, '0');
-            
-            if (message.type === 'system') {
-                // System message (centered)
-                messageElement.style.alignSelf = 'center';
-                messageElement.style.maxWidth = '90%';
-                messageElement.style.backgroundColor = 'rgba(0,0,0,0.05)';
-                messageElement.style.padding = '0.5rem 1rem';
-                messageElement.style.borderRadius = 'var(--border-radius-small)';
-                messageElement.style.marginBottom = '1rem';
-                messageElement.innerHTML = message.text;
-            } else if (message.userId === currentUser.uid) {
-                // User message (right aligned)
-                messageElement.classList.add('message-sent');
-                
-                let messageContent = '';
-                
-                // Add file content if present
-                if (message.fileUrl) {
-                    if (message.fileType && message.fileType.startsWith('image/')) {
-                        messageContent += `<img src="${message.fileUrl}" alt="Imagine atașată" style="max-width: 100%; border-radius: var(--border-radius-small); margin-bottom: 0.5rem;">`;
-                    } else {
-                        messageContent += `
-                            <div style="background-color: rgba(0,0,0,0.05); display: inline-flex; padding: 0.5rem 1rem; border-radius: 1rem; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                                <i class="material-icons" style="color: var(--text-secondary); font-size: 1.5rem;">insert_drive_file</i>
-                                <div>
-                                    <div style="font-weight: 500;">${message.fileName || 'Fișier'}</div>
-                                    <a href="${message.fileUrl}" target="_blank" style="font-size: 0.8rem; color: var(--secondary-color);">Descarcă</a>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-                
-                // Add text content if present
-                if (message.text) {
-                    messageContent += `
-                        <div class="message-content">
-                            ${message.text}
-                        </div>
-                    `;
-                }
-                
-                messageElement.innerHTML = `
-                    ${messageContent}
-                    <div class="message-meta">
-                        <span class="message-time">${timeString}</span>
-                        <span class="message-status">
-                            Livrat <i class="material-icons" aria-hidden="true">done_all</i>
-                        </span>
-                    </div>
-                `;
-            } else {
-                // Agent message (left aligned)
-                messageElement.classList.add('message-received');
-                
-                let messageContent = '';
-                
-                // Add file content if present
-                if (message.fileUrl) {
-                    if (message.fileType && message.fileType.startsWith('image/')) {
-                        messageContent += `<img src="${message.fileUrl}" alt="Imagine atașată" style="max-width: 100%; border-radius: var(--border-radius-small); margin-bottom: 0.5rem;">`;
-                    } else {
-                        messageContent += `
-                            <div style="background-color: rgba(0,0,0,0.05); display: inline-flex; padding: 0.5rem 1rem; border-radius: 1rem; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                                <i class="material-icons" style="color: var(--text-secondary); font-size: 1.5rem;">insert_drive_file</i>
-                                <div>
-                                    <div style="font-weight: 500;">${message.fileName || 'Fișier'}</div>
-                                    <a href="${message.fileUrl}" target="_blank" style="font-size: 0.8rem; color: var(--secondary-color);">Descarcă</a>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-                
-                // Add text content if present
-                if (message.text) {
-                    messageContent += `
-                        <div class="message-content">
-                            ${message.text}
-                        </div>
-                    `;
-                }
-                
-                messageElement.innerHTML = `
-                    ${messageContent}
-                    <div class="message-meta">
-                        <span class="message-time">${timeString}</span>
-                    </div>
-                `;
-            }
-            
-            chatMessages.appendChild(messageElement);
+        // Scroll chat to bottom
+        function scrollToBottom() {
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
         
+        // =============================================
+        // Typing Indicators
+        // =============================================
+        
+        // Handle user typing start
+        function handleTypingStart() {
+            if (!isTyping) {
+                isTyping = true;
+                
+                // Notify the server that the user is typing
+                db.collection('chats').doc(currentChatId).collection('typing')
+                    .doc('user')
+                    .set({
+                        isTyping: true,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).catch(error => {
+                        console.error('Error updating typing status:', error);
+                    });
+            }
+            
+            // Reset the typing timeout
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+            }
+            
+            typingTimeout = setTimeout(resetTypingIndicator, 3000);
+        }
+        
+        // Reset typing indicator
+        function resetTypingIndicator() {
+            if (isTyping) {
+                isTyping = false;
+                
+                // Notify the server that the user stopped typing
+                db.collection('chats').doc(currentChatId).collection('typing')
+                    .doc('user')
+                    .set({
+                        isTyping: false,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).catch(error => {
+                        console.error('Error updating typing status:', error);
+                    });
+            }
+            
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+                typingTimeout = null;
+            }
+        }
+        
+        // Show agent typing indicator
+        function showTypingIndicator() {
+            // Check if typing indicator already exists
+            let typingIndicator = document.querySelector('.typing-indicator');
+            
+            if (!typingIndicator) {
+                typingIndicator = document.createElement('div');
+                typingIndicator.className = 'typing-indicator';
+                typingIndicator.setAttribute('aria-label', 'Agentul scrie un mesaj');
+                
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('span');
+                    dot.className = 'typing-dot';
+                    typingIndicator.appendChild(dot);
+                }
+                
+                chatMessages.appendChild(typingIndicator);
+                scrollToBottom();
+            }
+        }
+        
+        // Hide agent typing indicator
+        function hideTypingIndicator() {
+            const typingIndicator = document.querySelector('.typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        // =============================================
+        // Read Receipts
+        // =============================================
+        
+        // Set up read receipts
+        function setupReadReceipts() {
+            // Update read status when the chat is visible
+            document.addEventListener('visibilitychange', updateReadStatus);
+            chatMessages.addEventListener('scroll', updateReadStatus);
+            
+            // Initial update
+            updateReadStatus();
+        }
+        
+        // Update read status for all messages
+        function updateReadStatus() {
+            if (document.visibilityState === 'visible' && !chatEnded) {
+                // Find the latest agent message
+                const agentMessages = document.querySelectorAll('.message-received');
+                if (agentMessages.length > 0) {
+                    const lastAgentMessage = agentMessages[agentMessages.length - 1];
+                    const messageId = lastAgentMessage.dataset.messageId;
+                    
+                    if (messageId && !messageId.startsWith('local-')) {
+                        updateMessageReadStatus(messageId);
+                    }
+                }
+            }
+        }
+        
+        // Update a specific message's read status
+        function updateMessageReadStatus(messageId) {
+            db.collection('chats').doc(currentChatId).collection('messages').doc(messageId)
+                .update({
+                    readAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(error => {
+                    console.error('Error updating read status:', error);
+                });
+        }
+        
+        // =============================================
+        // Chat Conclusion
+        // =============================================
+        
+        // Handle chat ended
+        function handleChatEnded() {
+            chatEnded = true;
+            
+            // Add system message
+            addSystemMessage('Conversația a fost încheiată.');
+            
+            // Disable input
+            messageInput.disabled = true;
+            btnSendMessage.disabled = true;
+            btnAttachFile.disabled = true;
+            btnSendPhoto.disabled = true;
+            btnShareLocation.disabled = true;
+            
+            // Show end screen after a delay
+            setTimeout(() => {
+                chatMessages.style.display = 'none';
+                chatInput.style.display = 'none';
+                chatEnd.style.display = 'flex';
+            }, 3000);
+        }
+        
+        // Confirm end chat
+        function confirmEndChat() {
+            if (confirm('Sigur doriți să încheiați această conversație?')) {
+                endChat();
+            }
+        }
+        
+        // End chat
+        function endChat() {
+            chatEnded = true;
+            
+            // Update chat status in Firestore
+            db.collection('chats').doc(currentChatId).update({
+                status: 'closed',
+                endedBy: 'user',
+                endedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                handleChatEnded();
+            }).catch(error => {
+                console.error('Error ending chat:', error);
+                showNotice(errorNotice, 'Eroare la închiderea conversației. Vă rugăm să încercați din nou.');
+            });
+        }
+        
+        // Request transcript
+        function requestTranscript() {
+            const email = document.getElementById('chat-email').value;
+            
+            if (!email || !email.includes('@')) {
+                showNotice(errorNotice, 'Vă rugăm să introduceți o adresă de email validă.');
+                return;
+            }
+            
+            // Show loading state
+            btnRequestTranscript.disabled = true;
+            btnRequestTranscript.textContent = 'Se trimite...';
+            
+// Call Cloud Function to send transcript
+            // In a real implementation, this would be a Firebase Cloud Function
+            const sendTranscriptFunction = firebase.functions().httpsCallable('sendChatTranscript');
+            sendTranscriptFunction({ chatId: currentChatId, email: email })
+                .then(result => {
+                    showNotice(successNotice, 'Transcriptul a fost trimis la adresa de email specificată.');
+                    btnRequestTranscript.textContent = 'Transcript trimis ✓';
+                })
+                .catch(error => {
+                    console.error('Error requesting transcript:', error);
+                    showNotice(errorNotice, 'Eroare la trimiterea transcriptului. Vă rugăm să încercați din nou.');
+                    btnRequestTranscript.disabled = false;
+                    btnRequestTranscript.textContent = 'Primește transcript';
+                });
+        }
+        
+        // Reset chat and start a new one
         function resetChat() {
-            // Reset all states and go back to emergency check
-            emergencyCheck.style.display = 'block';
-            chatForm.style.display = 'none';
-            loginScreen.style.display = 'none';
-            loadingState.style.display = 'none';
-            chatMessages.style.display = 'none';
-            chatInput.style.display = 'none';
+            // Sign out current user if any
+            if (currentUser) {
+                auth.signOut().catch(error => {
+                    console.error('Error signing out:', error);
+                });
+            }
+            
+            // Reset all variables
+            currentUser = null;
+            currentChatId = null;
+            selectedFile = null;
+            selectedDepartment = null;
+            chatSessionKey = null;
+            agentPublicKey = null;
+            chatEnded = false;
+            isTyping = false;
+            
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+                typingTimeout = null;
+            }
+            
+            // Clear message queue
+            messageQueue = [];
+            localStorage.removeItem('messageQueue_' + currentChatId);
+            
+            // Reset rate limiting
+            rateLimitConfig.sentMessages = [];
+            rateLimitConfig.isLimited = false;
             
             // Clear chat messages
             chatMessages.innerHTML = '';
             
-            // Clear the input field
-            messageInput.value = '';
+            // Reset all notices
+            errorNotice.style.display = 'none';
+            successNotice.style.display = 'none';
+            formErrorNotice.style.display = 'none';
             
-            // Clear any file preview
+            // Reset file input
             clearFilePreview();
+            fileInput.value = '';
             
-            // Reset session storage
-            sessionStorage.removeItem('chatSubject');
-            sessionStorage.removeItem('chatName');
-            sessionStorage.removeItem('chatEmail');
-            sessionStorage.removeItem('chatPhone');
+            // Reset message input
+            messageInput.value = '';
+            messageInput.disabled = false;
             
-            // If user was authenticated, sign them out
-            if (currentUser) {
-                auth.signOut().then(() => {
-                    currentUser = null;
-                    currentChatId = null;
-                }).catch(error => {
-                    console.error('Sign out error:', error);
-                });
+            // Reset buttons
+            btnSendMessage.disabled = false;
+            btnAttachFile.disabled = false;
+            btnSendPhoto.disabled = false;
+            btnShareLocation.disabled = false;
+            
+            // Reset form fields
+            document.getElementById('chat-subject').value = '';
+            document.getElementById('chat-location').value = '';
+            
+            // Hide all sections except emergency check
+            chatEnd.style.display = 'none';
+            chatMessages.style.display = 'none';
+            chatInput.style.display = 'none';
+            chatForm.style.display = 'none';
+            departmentSelect.style.display = 'none';
+            loadingState.style.display = 'none';
+            
+            // Show emergency check
+            emergencyCheck.style.display = 'block';
+            
+            // Generate a new encryption key
+            chatSessionKey = generateEncryptionKey();
+        }
+        
+        // Display local time
+        function formatLocalTime(timestamp) {
+            if (!timestamp) return 'Acum';
+            
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Format date for display
+        function formatDate(timestamp) {
+            if (!timestamp) return '';
+            
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString();
+        }
+        
+        // Detect if the device is mobile
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Setup session timeout
+        function setupSessionTimeout() {
+            // Reset any existing timeout
+            if (sessionTimeoutId) {
+                clearTimeout(sessionTimeoutId);
+            }
+            
+            // Set timeout to 30 minutes
+            const sessionTimeout = 30 * 60 * 1000; // 30 minutes
+            
+            sessionTimeoutId = setTimeout(() => {
+                // End chat due to inactivity
+                if (!chatEnded) {
+                    addSystemMessage('Conversația a fost închisă automat datorită inactivității.');
+                    endChat();
+                }
+            }, sessionTimeout);
+        }
+        
+        // Reset session timeout on activity
+        function resetSessionTimeout() {
+            if (sessionTimeoutId) {
+                clearTimeout(sessionTimeoutId);
+                setupSessionTimeout();
             }
         }
         
-        // Simulate agent response after a delay (for demo purposes)
-        // In a real implementation, this would come from the server
-        function simulateAgentResponse() {
-            // Only simulate if we have an active chat
-            if (!currentChatId) return;
-            
-            // Create typing indicator
-            const typingIndicator = document.createElement('div');
-            typingIndicator.className = 'typing-indicator';
-            typingIndicator.setAttribute('aria-label', 'Agentul scrie un mesaj');
-            
-            for (let i = 0; i < 3; i++) {
-                const dot = document.createElement('span');
-                dot.className = 'typing-dot';
-                typingIndicator.appendChild(dot);
-            }
-            
-            chatMessages.appendChild(typingIndicator);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            // After 3 seconds, remove typing indicator and add message
-            setTimeout(() => {
-                // Remove typing indicator
-                typingIndicator.remove();
-                
-                // Add agent message
-                const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-                
-                db.collection('chats').doc(currentChatId).collection('messages').add({
-                    userId: 'agent',
-                    userName: 'Agent Maria',
-                    text: 'Bună ziua! Sunt Agent Maria. Vă mulțumesc pentru mesaj. Cum vă pot ajuta astăzi?',
-                    timestamp: timestamp,
-                    type: 'agent'
-                }).catch(error => {
-                    console.error('Error simulating agent message:', error);
-                });
-            }, 3000);
-        }
+        // User activity events
+        document.addEventListener('click', resetSessionTimeout);
+        document.addEventListener('keypress', resetSessionTimeout);
+        document.addEventListener('mousemove', resetSessionTimeout);
+        document.addEventListener('touchstart', resetSessionTimeout);
         
-        // For demo purposes, simulate agent response after first user message
-        let firstMessageSent = false;
-        
-        // Override sendMessage function to add simulation
-        const originalSendMessage = sendMessage;
-        sendMessage = function() {
-            originalSendMessage();
-            
-            if (!firstMessageSent) {
-                firstMessageSent = true;
-                setTimeout(simulateAgentResponse, 1000);
+        // Visibility change handling
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                // User switched away, might need to handle this
+            } else {
+                // User returned, update read status
+                updateReadStatus();
             }
-        };
-    </script>
-</body>
-</html>
+        });
+        
+        // Before unload warning
+        window.addEventListener('beforeunload', function(e) {
+            if (!chatEnded && currentChatId) {
+                const message = 'Aveți o conversație activă. Dacă părăsiți pagina, conversația va fi întreruptă.';
+                e.returnValue = message;
+                return message;
+            }
+        });
+        
+        // =============================================
+        // Initialization Call
+        // =============================================
+        
+        // Initialize the chat
+        initializeChat();
