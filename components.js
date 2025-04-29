@@ -655,7 +655,7 @@ footer {
 
 .footer-logo-badge {
     width: 50px;
-    height: 57px;
+    height: 50px;
     margin-right: 1rem;
 }
 
@@ -843,7 +843,6 @@ footer {
     box-shadow: var(--shadow-medium);
     z-index: 1001;
     margin-top: 5px;
-    overflow: hidden;
 }
 
 .header-search-suggestions:empty {
@@ -1104,7 +1103,7 @@ const HEADER_HTML = `
         </div>
         <div class="utility-menu">
             <a href="/pls/cariere" class="utility-item">Oportunități de Carieră</a>
-            <a href="/pls/transparenta" class="utility-item">Registre Publice</a>
+            <a href="/pls/registre" class="utility-item">Registre Publice</a>
             <a href="/pls/petitii" class="utility-item">Depunere Sesizare</a>
             <a href="tel:0243955" class="utility-item emergency">
                 <i class="material-icons">phone_in_talk</i> (0243) 955
@@ -1117,7 +1116,7 @@ const HEADER_HTML = `
             <ul>
                 <li class="active"><a href="/pls/"><i class="material-icons menu-icon">home</i> Acasă</a></li>
                 <li class="has-dropdown">
-                    <a href="/pls/atributii">
+                    <a href="/pls/despre-noi">
                         <i class="material-icons menu-icon">info</i> Despre Noi
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
@@ -1150,7 +1149,7 @@ const HEADER_HTML = `
                     </ul>
                 </li>
                 <li class="has-dropdown">
-                    <a href="/pls/relatii-cu-publicul">
+                    <a href="/pls/contact">
                         <i class="material-icons menu-icon">phone</i> Contact
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
@@ -1225,8 +1224,9 @@ const FOOTER_HTML = `
                 </div>
                 <p class="footer-description">Servim comunitatea noastră cu integritate, profesionalism și dedicare față de siguranța publică. Misiunea noastră este să lucrăm în parteneriat cu comunitatea noastră pentru a proteja viața și proprietatea, a rezolva probleme și a îmbunătăți calitatea vieții.</p>
                 <div class="footer-social">
-                    <a href="https://www.facebook.com/sloboziapolloc/" class="social-icon"><i class="material-icons">facebook</i></a>
-                    <a href="/pls/relatii-cu-publicul" class="social-icon"><i class="material-icons">alternate_email</i></a>
+                    <a href="/pls/social/facebook" class="social-icon"><i class="material-icons">facebook</i></a>
+                    <a href="/pls/contact" class="social-icon"><i class="material-icons">alternate_email</i></a>
+                    <a href="/pls/galerie" class="social-icon"><i class="material-icons">photo_camera</i></a>
                     <a href="/pls/reportaj" class="social-icon"><i class="material-icons">play_circle_filled</i></a>
                 </div>
             </div>
@@ -1234,10 +1234,10 @@ const FOOTER_HTML = `
             <div class="footer-column">
                 <h3 class="footer-title">Link-uri Rapide</h3>
                 <div class="footer-links">
-                    <a href="https://sts.ro/ro/servicii/despre-112/" class="footer-link"><i class="material-icons">arrow_right</i> Servicii de Urgență</a>
+                    <a href="/pls/urgente" class="footer-link"><i class="material-icons">arrow_right</i> Servicii de Urgență</a>
                     <a href="/pls/sesizari" class="footer-link"><i class="material-icons">arrow_right</i> Raportează o Infracțiune</a>
                     <a href="/pls/amenzi" class="footer-link"><i class="material-icons">arrow_right</i> Plătește Amenzi</a>
-                    <a href="/pls/relatii-cu-publicul/" class="footer-link"><i class="material-icons">arrow_right</i> Solicită Înregistrări</a>
+                    <a href="/pls/inregistrari" class="footer-link"><i class="material-icons">arrow_right</i> Solicită Înregistrări</a>
                     <a href="/pls/petitii" class="footer-link"><i class="material-icons">arrow_right</i> Depune o Reclamație</a>
                     <a href="/pls/cariere" class="footer-link"><i class="material-icons">arrow_right</i> Oportunități de Carieră</a>
                 </div>
@@ -1284,7 +1284,7 @@ const FOOTER_HTML = `
                 &copy; 2025 Poliția Locală Slobozia. Toate drepturile rezervate.
             </div>
             <div class="footer-links-bottom">
-                <a href="/pls/gdpr" class="footer-bottom-link">GDPR</a>
+                <a href="/pls/confidentialitate" class="footer-bottom-link">Politica de Confidențialitate</a>
                 <a href="/pls/termeni" class="footer-bottom-link">Termeni de Utilizare</a>
                 <a href="/pls/accesibilitate" class="footer-bottom-link">Accesibilitate</a>
                 <a href="/pls/sitemap" class="footer-bottom-link">Hartă Site</a>
@@ -1300,7 +1300,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!document.querySelector('link[rel="icon"]')) {
         const faviconLink = document.createElement('link');
         faviconLink.rel = "icon";
-        faviconLink.href = "https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png";
+        faviconLink.href = "https://images4.imagebam.com/7d/dc/f5/ME11KAXQ_o.png";
         faviconLink.type = "image/png";
         document.head.appendChild(faviconLink);
     }
@@ -1446,215 +1446,182 @@ function initDropdownMenu() {
     });
 }
 
-// Initialize search functionality - UPDATED VERSION with fail-safes
+// Initialize search functionality - UPDATED VERSION with fixes
 function initSearchBar() {
     const searchInput = document.querySelector('.search-bar input');
     
     if (!searchInput) return;
     
     // Create search form if not already wrapped
-    let searchForm = searchInput.closest('form');
+    let searchForm = document.querySelector('.search-bar form');
     if (!searchForm) {
         searchForm = document.createElement('form');
         searchInput.parentNode.insertBefore(searchForm, searchInput);
         searchForm.appendChild(searchInput);
+        
+        // Make sure the icon is inside the form too
+        const searchIcon = document.querySelector('.search-bar i');
+        if (searchIcon && !searchForm.contains(searchIcon)) {
+            searchForm.appendChild(searchIcon);
+        }
     }
     
     // Set form attributes
     searchForm.setAttribute('action', '/pls/cautare');
     searchForm.setAttribute('method', 'get');
+    searchForm.style.width = '100%';
+    searchForm.style.position = 'relative';
     
     // Add name attribute to the input
     searchInput.setAttribute('name', 'q');
     
     // Create suggestions container
-    const suggestionsContainer = document.createElement('div');
-    suggestionsContainer.className = 'header-search-suggestions';
-    searchInput.parentNode.appendChild(suggestionsContainer);
-    
-    // Fallback for storing recent searches
-    function storeRecentSearch(query) {
-        if (!query || query.length < 3) return;
-        
-        try {
-            // Get existing recent searches
-            let recentSearches = [];
-            const storedSearches = localStorage.getItem('pls_recent_searches');
-            
-            if (storedSearches) {
-                recentSearches = JSON.parse(storedSearches);
-            }
-            
-            // Remove if already exists
-            recentSearches = recentSearches.filter(item => item !== query);
-            
-            // Add to the beginning
-            recentSearches.unshift(query);
-            
-            // Limit size
-            if (recentSearches.length > 10) {
-                recentSearches = recentSearches.slice(0, 10);
-            }
-            
-            // Store in localStorage
-            localStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
-        } catch (e) {
-            console.warn('Failed to save recent searches to localStorage', e);
-        }
+    let suggestionsContainer = document.querySelector('.header-search-suggestions');
+    if (!suggestionsContainer) {
+        suggestionsContainer = document.createElement('div');
+        suggestionsContainer.className = 'header-search-suggestions';
+        searchForm.appendChild(suggestionsContainer);
     }
     
-    // Fallback for getting recent searches
-    function getRecentSearches() {
-        try {
-            const storedSearches = localStorage.getItem('pls_recent_searches');
-            return storedSearches ? JSON.parse(storedSearches) : [];
-        } catch (e) {
-            console.warn('Failed to get recent searches from localStorage', e);
-            return [];
-        }
-    }
+    // Fix suggestions container styles
+    suggestionsContainer.style.position = 'absolute';
+    suggestionsContainer.style.top = '100%';
+    suggestionsContainer.style.left = '0';
+    suggestionsContainer.style.width = '100%';
+    suggestionsContainer.style.backgroundColor = 'white';
+    suggestionsContainer.style.borderRadius = '0 0 8px 8px';
+    suggestionsContainer.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+    suggestionsContainer.style.zIndex = '1001';
+    suggestionsContainer.style.marginTop = '5px';
+    suggestionsContainer.style.display = 'none';
     
-    // Fallback function for search suggestions
-    function getFallbackSuggestions(query) {
-        // Basic fallback suggestions based on common terms
-        const commonTerms = [
-            'gdpr', 'politia locala', 'amenzi', 'contact', 'sesizare', 'petitii', 
-            'cariere', 'documente', 'conducere', 'program', 'regulament'
-        ];
-        
-        // Filter terms that match the query
-        return commonTerms.filter(term => 
-            term.toLowerCase().includes(query.toLowerCase())
-        ).slice(0, 5); // Limit to 5 suggestions
-    }
-    
-    // Display search suggestions with fail-safe
+    // A simpler function to display search suggestions
     function displaySearchSuggestions(suggestions) {
-        if (!suggestions || suggestions.length === 0) {
-            suggestionsContainer.innerHTML = '';
+        if (!suggestions || !Array.isArray(suggestions) || suggestions.length === 0) {
+            suggestionsContainer.style.display = 'none';
             return;
         }
         
-        try {
-            let html = '<ul>';
-            
-            // Ensure suggestions is an array
-            if (!Array.isArray(suggestions)) {
-                suggestions = [suggestions.toString()];
+        let html = '<ul style="list-style:none; padding:0; margin:0; max-height:300px; overflow-y:auto;">';
+        
+        // Add each suggestion
+        suggestions.forEach(suggestion => {
+            if (suggestion) {
+                html += `
+                    <li style="margin:0; padding:0; border-bottom:1px solid rgba(0,0,0,0.05);">
+                        <a href="/pls/cautare?q=${encodeURIComponent(suggestion)}" style="display:flex; align-items:center; padding:0.8rem 1rem; color:#424242; text-decoration:none;">
+                            <i class="material-icons" style="margin-right:0.8rem; color:#1e88e5; font-size:1.2rem; opacity:0.7;">search</i>
+                            ${suggestion}
+                        </a>
+                    </li>
+                `;
             }
+        });
+        
+        // Add recent searches if available
+        const recentSearches = getRecentSearches();
+        if (recentSearches && recentSearches.length > 0) {
+            html += `<li style="padding:0.5rem 1rem; font-size:0.7rem; font-weight:600; color:#1a2f5f; background-color:rgba(0,0,0,0.03); text-transform:uppercase; letter-spacing:0.5px;">Căutări recente</li>`;
             
-            suggestions.forEach(suggestion => {
-                if (suggestion) {
+            recentSearches.slice(0, 3).forEach(recent => {
+                if (recent) {
                     html += `
-                        <li>
-                            <a href="/pls/cautare?q=${encodeURIComponent(suggestion)}">
-                                <i class="material-icons">search</i>
-                                ${suggestion}
+                        <li style="margin:0; padding:0; border-bottom:1px solid rgba(0,0,0,0.05);">
+                            <a href="/pls/cautare?q=${encodeURIComponent(recent)}" style="display:flex; align-items:center; padding:0.8rem 1rem; color:#424242; text-decoration:none;">
+                                <i class="material-icons" style="margin-right:0.8rem; color:#1e88e5; font-size:1.2rem; opacity:0.7;">history</i>
+                                ${recent}
                             </a>
                         </li>
                     `;
                 }
             });
-            
-            // Add "recent searches" item if available
-            let recentSearches = [];
-            
-            // Try to get from SiteSearch first
-            if (typeof window.siteSearch !== 'undefined' && window.siteSearch.getRecentSearches) {
-                try {
-                    recentSearches = window.siteSearch.getRecentSearches();
-                } catch (e) {
-                    console.warn('Error getting recent searches from SiteSearch:', e);
-                    recentSearches = getRecentSearches();
-                }
-            } else {
-                recentSearches = getRecentSearches();
-            }
-            
-            if (recentSearches && recentSearches.length > 0) {
-                html += '<li class="suggestion-header">Căutări recente</li>';
-                
-                recentSearches.slice(0, 3).forEach(recent => {
-                    if (recent) {
-                        html += `
-                            <li>
-                                <a href="/pls/cautare?q=${encodeURIComponent(recent)}">
-                                    <i class="material-icons">history</i>
-                                    ${recent}
-                                </a>
-                            </li>
-                        `;
-                    }
-                });
-            }
-            
-            html += '</ul>';
-            suggestionsContainer.innerHTML = html;
+        }
+        
+        html += '</ul>';
+        suggestionsContainer.innerHTML = html;
+        suggestionsContainer.style.display = 'block';
+    }
+    
+    // Simple fallback for getting recent searches
+    function getRecentSearches() {
+        try {
+            const storedSearches = localStorage.getItem('pls_recent_searches');
+            return storedSearches ? JSON.parse(storedSearches) : [];
         } catch (e) {
-            console.warn('Error displaying suggestions:', e);
-            suggestionsContainer.innerHTML = ''; // Clear in case of error
+            return [];
         }
     }
     
-    // Check for SiteSearch availability
-    let siteSearchChecked = false;
+    // Simple fallback for storing recent searches
+    function storeRecentSearch(query) {
+        if (!query || query.length < 2) return;
+        
+        try {
+            let recentSearches = getRecentSearches();
+            recentSearches = recentSearches.filter(item => item !== query);
+            recentSearches.unshift(query);
+            if (recentSearches.length > 10) {
+                recentSearches = recentSearches.slice(0, 10);
+            }
+            localStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
+        } catch (e) {
+            console.warn('Failed to save recent searches');
+        }
+    }
     
-    // Debounced search function for suggestions
-    let debounceTimer;
-    searchInput.addEventListener('input', function() {
-        const query = this.value.trim();
+    // Fallback suggestions
+    function getFallbackSuggestions(query) {
+        const commonTerms = [
+            'gdpr', 'politia locala', 'amenzi', 'contact', 'sesizare', 'petitii', 
+            'cariere', 'documente', 'conducere', 'program', 'regulament'
+        ];
         
-        // Clear previous timer
-        clearTimeout(debounceTimer);
-        
-        // Clear suggestions for empty input
+        return commonTerms.filter(term => 
+            term.toLowerCase().includes(query.toLowerCase())
+        ).slice(0, 5);
+    }
+    
+    // Debounce implementation
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+    
+    // Handle input for real-time suggestions
+    const debouncedHandleInput = debounce(function(query) {
         if (query.length < 2) {
-            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.style.display = 'none';
             return;
         }
         
-        // Set new timer with fail-safe
-        debounceTimer = setTimeout(function() {
+        // Try to use SiteSearch if available
+        if (window.siteSearch && typeof window.siteSearch.getSearchSuggestions === 'function') {
             try {
-                // Check for SiteSearch if not already checked
-                if (!siteSearchChecked) {
-                    siteSearchChecked = true;
-                    
-                    // If SiteSearch is not available, check for it after a delay
-                    if (typeof window.siteSearch === 'undefined') {
-                        setTimeout(function() {
-                            siteSearchChecked = false; // Reset to check again on next input
-                        }, 1000);
-                    }
-                }
-                
-                // Check if SiteSearch is available for suggestions
-                if (typeof window.siteSearch !== 'undefined' && window.siteSearch.getSearchSuggestions) {
-                    const suggestions = window.siteSearch.getSearchSuggestions(query);
-                    displaySearchSuggestions(suggestions);
-                } else {
-                    // Fallback to basic suggestions
-                    const fallbackSuggestions = getFallbackSuggestions(query);
-                    displaySearchSuggestions(fallbackSuggestions);
-                }
+                const suggestions = window.siteSearch.getSearchSuggestions(query);
+                displaySearchSuggestions(suggestions);
             } catch (e) {
-                console.warn('Error generating search suggestions:', e);
-                // Fallback to basic suggestions in case of error
-                try {
-                    const fallbackSuggestions = getFallbackSuggestions(query);
-                    displaySearchSuggestions(fallbackSuggestions);
-                } catch (err) {
-                    console.error('Critical error in search suggestions:', err);
-                    suggestionsContainer.innerHTML = '';
-                }
+                console.warn('Error getting suggestions from SiteSearch', e);
+                displaySearchSuggestions(getFallbackSuggestions(query));
             }
-        }, 300); // 300ms debounce
+        } else {
+            // Fallback to basic suggestions
+            displaySearchSuggestions(getFallbackSuggestions(query));
+        }
+    }, 300);
+    
+    // Listen for input events
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        debouncedHandleInput(query);
     });
     
     // Hide suggestions when clicking outside
     document.addEventListener('click', function(event) {
         if (!event.target.closest('.search-bar')) {
-            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.style.display = 'none';
         }
     });
     
@@ -1664,32 +1631,29 @@ function initSearchBar() {
         const query = searchInput.value.trim();
         
         if (query.length >= 2) {
-            // Store in recent searches if available
-            try {
-                if (typeof window.siteSearch !== 'undefined' && window.siteSearch.search) {
-                    // Use SiteSearch if available to record the search
-                    window.siteSearch.search(query, { page: 1 });
-                } else {
-                    // Fallback: Store in localStorage
-                    storeRecentSearch(query);
-                }
-            } catch (e) {
-                console.warn('Error storing search:', e);
-                // Still try the fallback
-                storeRecentSearch(query);
-            }
+            // Store in recent searches
+            storeRecentSearch(query);
             
-            // Redirect to search page with query
+            // Redirect to search page
             window.location.href = `/pls/cautare?q=${encodeURIComponent(query)}`;
         }
     });
     
-    // Also add event listener for the icon click
-    const searchIcon = searchInput.parentNode.querySelector('i');
+    // FIX: Event listener for the icon click that definitely works
+    const searchIcon = document.querySelector('.search-bar i');
     if (searchIcon) {
         searchIcon.style.cursor = 'pointer';
-        searchIcon.addEventListener('click', function() {
-            searchForm.dispatchEvent(new Event('submit'));
+        
+        // Direct click handler that doesn't rely on form submission
+        searchIcon.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const query = searchInput.value.trim();
+            if (query.length >= 2) {
+                storeRecentSearch(query);
+                window.location.href = `/pls/cautare?q=${encodeURIComponent(query)}`;
+            }
         });
     }
     
@@ -1697,28 +1661,40 @@ function initSearchBar() {
     searchInput.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             this.blur();
-            suggestionsContainer.innerHTML = '';
+            suggestionsContainer.style.display = 'none';
         }
     });
 }
 
 // Legacy search function - kept for backwards compatibility
 function performSearch(query) {
-    // Get the base URL for the search
-    const baseUrl = `/pls/cautare`;
+    if (!query || query.length < 2) return;
     
-    // Construct the search URL with the query parameter
-    const searchUrl = `${baseUrl}?q=${encodeURIComponent(query)}`;
-    
-    // Check if we're in development/local environment without a search page
-    const isLocalDev = window.location.hostname === 'localhost' || 
-                       window.location.hostname === '127.0.0.1';
-    
-    if (isLocalDev) {
-        // For local development, show an alert with the search query
-        alert(`Căutare pentru: "${query}"\n\nÎn mediul de producție, această căutare va duce la: ${searchUrl}`);
-    } else {
-        // In production, redirect to the search results page
-        window.location.href = searchUrl;
+    // Store this search in recent searches
+    try {
+        let recentSearches = [];
+        const storedSearches = localStorage.getItem('pls_recent_searches');
+        
+        if (storedSearches) {
+            recentSearches = JSON.parse(storedSearches);
+        }
+        
+        // Remove if already exists
+        recentSearches = recentSearches.filter(item => item !== query);
+        
+        // Add to the beginning
+        recentSearches.unshift(query);
+        
+        // Limit size
+        if (recentSearches.length > 10) {
+            recentSearches = recentSearches.slice(0, 10);
+        }
+        
+        localStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
+    } catch (e) {
+        console.warn('Failed to save recent search');
     }
+    
+    // Redirect to search page
+    window.location.href = `/pls/cautare?q=${encodeURIComponent(query)}`;
 }
