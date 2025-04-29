@@ -637,18 +637,8 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <nav class="navbar">
-                <div class="logo">
-                    <a href="/">
-                        <img src="https://pcslobozia.ro/wp-content/uploads/2020/11/WebLogo2.png" alt="Poliția Locală Slobozia">
-                    </a>
-                </div>
-            </nav>
-        </div>
-    </header>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
 
     <!-- Page Title Section -->
     <section class="page-title-section">
@@ -1517,44 +1507,12 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3 class="footer-title">Poliția Locală Slobozia</h3>
-                    <div class="footer-contact">
-                        <i class="material-icons">phone</i>
-                        <span>(0243) 955</span>
-                    </div>
-                    <div class="footer-contact">
-                        <i class="material-icons">email</i>
-                        <span>politia.locala@pcslobozia.ro</span>
-                    </div>
-                    <div class="footer-contact">
-                        <i class="material-icons">location_on</i>
-                        <span>Strada Răzoare, nr. 3, Slobozia, județul Ialomița</span>
-                    </div>
-                </div>
-                
-                <div class="footer-column">
-                    <h3 class="footer-title">Link-uri utile</h3>
-                    <ul class="footer-links">
-                        <li><a href="/"><i class="material-icons">home</i> Pagina principală</a></li>
-                        <li><a href="/legislatie"><i class="material-icons">gavel</i> Legislație</a></li>
-                        <li><a href="/contact"><i class="material-icons">contact_mail</i> Contact</a></li>
-                        <li><a href="/gdpr"><i class="material-icons">security</i> GDPR</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>© 2025 Poliția Locală Slobozia. Toate drepturile rezervate.</p>
-                <p>Misiunea noastră - protecția și liniștea dumneavoastră!</p>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
 
+    <!-- Include components.js to load header and footer -->
+    <script src="../../components.js"></script>
+    
     <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
