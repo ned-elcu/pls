@@ -1285,7 +1285,7 @@ const FOOTER_HTML = `
                 &copy; 2025 Poliția Locală Slobozia. Toate drepturile rezervate.
             </div>
             <div class="footer-links-bottom">
-                <a href="/pls/confidentialitate" class="footer-bottom-link">Politica de Confidențialitate</a>
+                <a href="/pls/gdpr" class="footer-bottom-link">GDPR</a>
                 <a href="/pls/termeni" class="footer-bottom-link">Termeni de Utilizare</a>
                 <a href="/pls/accesibilitate" class="footer-bottom-link">Accesibilitate</a>
                 <a href="/pls/sitemap" class="footer-bottom-link">Hartă Site</a>
