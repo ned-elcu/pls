@@ -691,6 +691,7 @@ footer {
     background-color: var(--accent-color);
     color: var(--primary-color);
     transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
 }
 
 .footer-title {
@@ -997,6 +998,85 @@ body {
 .material-icons {
     vertical-align: middle;
     line-height: 1;
+}
+
+/* Header search suggestions */
+.header-search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium);
+    box-shadow: var(--shadow-medium);
+    z-index: 1000;
+    margin-top: 5px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease;
+}
+
+.header-search-suggestions:not(:empty) {
+    max-height: 300px;
+}
+
+.header-search-suggestions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.header-search-suggestions li {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.header-search-suggestions li:last-child {
+    border-bottom: none;
+}
+
+.header-search-suggestions li.suggestion-header {
+    padding: 0.5rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    background-color: rgba(0,0,0,0.03);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.header-search-suggestions a {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.header-search-suggestions a:hover {
+    background-color: rgba(30, 136, 229, 0.05);
+    padding-left: 1.3rem;
+}
+
+.header-search-suggestions i {
+    margin-right: 0.8rem;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .header-search-suggestions {
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        width: 100%;
+        border-radius: 0;
+    }
 }
 `;
 
@@ -1369,44 +1449,135 @@ function initDropdownMenu() {
     });
 }
 
-// Initialize search functionality
+// Initialize search functionality - UPDATED VERSION
 function initSearchBar() {
     const searchInput = document.querySelector('.search-bar input');
-    const searchForm = document.createElement('form');
     
-    if (searchInput) {
-        // Wrap the input in a form for proper submission
+    if (!searchInput) return;
+    
+    // Create suggestions container
+    const suggestionsContainer = document.createElement('div');
+    suggestionsContainer.className = 'header-search-suggestions';
+    searchInput.parentNode.appendChild(suggestionsContainer);
+    
+    // Create search form if not already wrapped
+    let searchForm = searchInput.closest('form');
+    if (!searchForm) {
+        searchForm = document.createElement('form');
         searchInput.parentNode.insertBefore(searchForm, searchInput);
         searchForm.appendChild(searchInput);
-        searchForm.setAttribute('action', '/pls/cautare');
-        searchForm.setAttribute('method', 'get');
+    }
+    
+    // Set form attributes
+    searchForm.setAttribute('action', '/pls/cautare');
+    searchForm.setAttribute('method', 'get');
+    
+    // Add name attribute to the input
+    searchInput.setAttribute('name', 'q');
+    
+    // Debounced search function for suggestions
+    let debounceTimer;
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
         
-        // Add name attribute to the input
-        searchInput.setAttribute('name', 'q');
-
-        // Add event listener for the form submission
-        searchForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const query = searchInput.value.trim();
-            
-            if (query) {
-                // If we have a query, perform the search
-                performSearch(query);
+        // Clear previous timer
+        clearTimeout(debounceTimer);
+        
+        if (query.length < 2) {
+            suggestionsContainer.innerHTML = '';
+            return;
+        }
+        
+        // Set new timer
+        debounceTimer = setTimeout(function() {
+            // Get suggestions using our search module
+            if (window.siteSearch) {
+                const suggestions = window.siteSearch.getSearchSuggestions(query);
+                displayHeaderSuggestions(suggestions, suggestionsContainer);
             }
-        });
+        }, 300); // 300ms debounce
+    });
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.search-bar')) {
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+    
+    // Add event listener for the form submission
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const query = searchInput.value.trim();
         
-        // Also add event listener for the icon click
-        const searchIcon = searchForm.parentNode.querySelector('.search-bar i');
-        if (searchIcon) {
-            searchIcon.style.cursor = 'pointer';
-            searchIcon.addEventListener('click', function() {
-                searchForm.dispatchEvent(new Event('submit'));
+        if (query) {
+            // Redirect to search page with query
+            window.location.href = `/pls/cautare?q=${encodeURIComponent(query)}`;
+        }
+    });
+    
+    // Also add event listener for the icon click
+    const searchIcon = searchInput.parentNode.querySelector('i');
+    if (searchIcon) {
+        searchIcon.style.cursor = 'pointer';
+        searchIcon.addEventListener('click', function() {
+            searchForm.dispatchEvent(new Event('submit'));
+        });
+    }
+    
+    // Focus out when pressing Escape key
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            this.blur();
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+}
+
+// Display search suggestions in header - NEW FUNCTION
+function displayHeaderSuggestions(suggestions, container) {
+    if (!suggestions || suggestions.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    let html = '<ul>';
+    
+    suggestions.forEach(suggestion => {
+        html += `
+            <li>
+                <a href="/pls/cautare?q=${encodeURIComponent(suggestion)}">
+                    <i class="material-icons">search</i>
+                    ${suggestion}
+                </a>
+            </li>
+        `;
+    });
+    
+    // Add "recent searches" item if we have any
+    if (window.siteSearch && window.siteSearch.getRecentSearches) {
+        const recentSearches = window.siteSearch.getRecentSearches();
+        if (recentSearches && recentSearches.length > 0) {
+            html += '<li class="suggestion-header">Căutări recente</li>';
+            
+            recentSearches.slice(0, 3).forEach(recent => {
+                html += `
+                    <li>
+                        <a href="/pls/cautare?q=${encodeURIComponent(recent)}">
+                            <i class="material-icons">history</i>
+                            ${recent}
+                        </a>
+                    </li>
+                `;
             });
         }
     }
+    
+    html += '</ul>';
+    container.innerHTML = html;
 }
 
-// Function to handle the search
+// Legacy search function - REPLACED BY ENHANCED VERSION ABOVE
 function performSearch(query) {
     // Get the base URL for the search
     const baseUrl = `/pls/cautare`;
