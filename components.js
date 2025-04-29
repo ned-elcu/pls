@@ -1025,10 +1025,10 @@ const HEADER_HTML = `
             </div>
         </div>
         <div class="utility-menu">
-            <a href="#" class="utility-item">Oportunități de Carieră</a>
-            <a href="#" class="utility-item">Registre Publice</a>
-            <a href="#" class="utility-item">Depunere Sesizare</a>
-            <a href="#" class="utility-item emergency">
+            <a href="/pls/cariere" class="utility-item">Oportunități de Carieră</a>
+            <a href="/pls/registre" class="utility-item">Registre Publice</a>
+            <a href="/pls/petitii" class="utility-item">Depunere Sesizare</a>
+            <a href="tel:0243955" class="utility-item emergency">
                 <i class="material-icons">phone_in_talk</i> (0243) 955
             </a>
         </div>
@@ -1037,91 +1037,91 @@ const HEADER_HTML = `
     <div class="header-main" id="header-main">
         <nav class="main-nav" id="main-nav">
             <ul>
-                <li class="active"><a href="#"><i class="material-icons menu-icon">home</i> Acasă</a></li>
+                <li class="active"><a href="/pls/"><i class="material-icons menu-icon">home</i> Acasă</a></li>
                 <li class="has-dropdown">
-                    <a href="#">
+                    <a href="/pls/despre-noi">
                         <i class="material-icons menu-icon">info</i> Despre Noi
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
                         <div class="dropdown-group-header">Informații generale</div>
                         <div class="dropdown-group-1">
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">gavel</i> Acte normative</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">assignment</i> Atribuții</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">description</i> Regulament</a></li>
+                            <li><a href="/pls/acte-normative"><i class="material-icons dropdown-icon-item">gavel</i> Acte normative</a></li>
+                            <li><a href="/pls/atributii"><i class="material-icons dropdown-icon-item">assignment</i> Atribuții</a></li>
+                            <li><a href="/pls/regulament"><i class="material-icons dropdown-icon-item">description</i> Regulament</a></li>
                         </div>
                         <div class="dropdown-group-header">Structură și facilități</div>
                         <div class="dropdown-group-2">
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">account_tree</i> Organigrama</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">track_changes</i> Poligonul de tragere</a></li>
+                            <li><a href="/pls/organigrama"><i class="material-icons dropdown-icon-item">account_tree</i> Organigrama</a></li>
+                            <li><a href="/pls/poligon"><i class="material-icons dropdown-icon-item">track_changes</i> Poligonul de tragere</a></li>
                         </div>
                         <div class="dropdown-group-header">Media</div>
                         <div class="dropdown-group-3">
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">play_circle_filled</i> Reportaje și înregistrări video</a></li>
+                            <li><a href="/pls/reportaj"><i class="material-icons dropdown-icon-item">play_circle_filled</i> Reportaje și înregistrări video</a></li>
                         </div>
                     </ul>
                 </li>
                 <li class="has-dropdown">
-                    <a href="#">
+                    <a href="/pls/petitii">
                         <i class="material-icons menu-icon">feedback</i> Petiții
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"><i class="material-icons dropdown-icon-item">edit_note</i> Petiții</a></li>
-                        <li><a href="#"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări, reclamații, anonime</a></li>
+                        <li><a href="/pls/petitii"><i class="material-icons dropdown-icon-item">edit_note</i> Petiții</a></li>
+                        <li><a href="/pls/raspunsuri"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări, reclamații, anonime</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
-                    <a href="#">
+                    <a href="/pls/contact">
                         <i class="material-icons menu-icon">phone</i> Contact
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"><i class="material-icons dropdown-icon-item">supervisor_account</i> Conducere</a></li>
-                        <li><a href="#"><i class="material-icons dropdown-icon-item">people</i> Relații cu publicul</a></li>
-                        <li><a href="#"><i class="material-icons dropdown-icon-item">location_on</i> Sediul operativ și administrativ</a></li>
-                        <li><a href="#"><i class="material-icons dropdown-icon-item">event</i> Program de audiențe</a></li>
+                        <li><a href="/pls/conducere"><i class="material-icons dropdown-icon-item">supervisor_account</i> Conducere</a></li>
+                        <li><a href="/pls/relatii-cu-publicul"><i class="material-icons dropdown-icon-item">people</i> Relații cu publicul</a></li>
+                        <li><a href="/pls/sediu"><i class="material-icons dropdown-icon-item">location_on</i> Sediul operativ și administrativ</a></li>
+                        <li><a href="/pls/audiente"><i class="material-icons dropdown-icon-item">event</i> Program de audiențe</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
-                    <a href="#">
+                    <a href="/pls/integritate">
                         <i class="material-icons menu-icon">verified_user</i> Integritate instituțională
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
-                        <li><a href="#"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
-                        <li><a href="#"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
+                        <li><a href="/pls/integritate/sna"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
+                        <li><a href="/pls/integritate/cod-etic"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
+                        <li><a href="/pls/integritate/cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
-                    <a href="#">
+                    <a href="/pls/transparenta">
                         <i class="material-icons menu-icon">public</i> Informații de interes public
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
                         <div class="dropdown-group-header">Financiare</div>
                         <div class="dropdown-group-1">
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
+                            <li><a href="/pls/transparenta/salarii"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
+                            <li><a href="/pls/transparenta/buget"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
+                            <li><a href="/pls/transparenta/achizitii"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
                         </div>
                         <div class="dropdown-group-header">Transparență</div>
                         <div class="dropdown-group-2">
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
+                            <li><a href="/pls/transparenta/declaratii-interese"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
+                            <li><a href="/pls/transparenta/declaratii-avere"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
+                            <li><a href="/pls/transparenta/raport-544"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
+                            <li><a href="/pls/transparenta/documente"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
                         </div>
                         <div class="dropdown-group-header">Dezvoltare</div>
                         <div class="dropdown-group-3">
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
-                            <li><a href="#"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
+                            <li><a href="/pls/transparenta/formare"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
+                            <li><a href="/pls/transparenta/cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
                         </div>
                     </ul>
                 </li>
-                <li><a href="#"><i class="material-icons menu-icon">security</i> GDPR</a></li>
-                <li><a href="#"><i class="material-icons menu-icon">videocam</i> Camere publice</a></li>
+                <li><a href="/pls/gdpr"><i class="material-icons menu-icon">security</i> GDPR</a></li>
+                <li><a href="/pls/camere"><i class="material-icons menu-icon">videocam</i> Camere publice</a></li>
             </ul>
         </nav>
         <div class="search-bar">
@@ -1147,22 +1147,22 @@ const FOOTER_HTML = `
                 </div>
                 <p class="footer-description">Servim comunitatea noastră cu integritate, profesionalism și dedicare față de siguranța publică. Misiunea noastră este să lucrăm în parteneriat cu comunitatea noastră pentru a proteja viața și proprietatea, a rezolva probleme și a îmbunătăți calitatea vieții.</p>
                 <div class="footer-social">
-                    <a href="#" class="social-icon"><i class="material-icons">facebook</i></a>
-                    <a href="#" class="social-icon"><i class="material-icons">alternate_email</i></a>
-                    <a href="#" class="social-icon"><i class="material-icons">photo_camera</i></a>
-                    <a href="#" class="social-icon"><i class="material-icons">play_circle_filled</i></a>
+                    <a href="/pls/social/facebook" class="social-icon"><i class="material-icons">facebook</i></a>
+                    <a href="/pls/contact" class="social-icon"><i class="material-icons">alternate_email</i></a>
+                    <a href="/pls/galerie" class="social-icon"><i class="material-icons">photo_camera</i></a>
+                    <a href="/pls/reportaj" class="social-icon"><i class="material-icons">play_circle_filled</i></a>
                 </div>
             </div>
             
             <div class="footer-column">
                 <h3 class="footer-title">Link-uri Rapide</h3>
                 <div class="footer-links">
-                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Servicii de Urgență</a>
-                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Raportează o Infracțiune</a>
-                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Plătește Amenzi</a>
-                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Solicită Înregistrări</a>
-                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Depune o Reclamație</a>
-                    <a href="#" class="footer-link"><i class="material-icons">arrow_right</i> Oportunități de Carieră</a>
+                    <a href="/pls/urgente" class="footer-link"><i class="material-icons">arrow_right</i> Servicii de Urgență</a>
+                    <a href="/pls/sesizari" class="footer-link"><i class="material-icons">arrow_right</i> Raportează o Infracțiune</a>
+                    <a href="/pls/amenzi" class="footer-link"><i class="material-icons">arrow_right</i> Plătește Amenzi</a>
+                    <a href="/pls/inregistrari" class="footer-link"><i class="material-icons">arrow_right</i> Solicită Înregistrări</a>
+                    <a href="/pls/petitii" class="footer-link"><i class="material-icons">arrow_right</i> Depune o Reclamație</a>
+                    <a href="/pls/cariere" class="footer-link"><i class="material-icons">arrow_right</i> Oportunități de Carieră</a>
                 </div>
             </div>
             
@@ -1207,10 +1207,10 @@ const FOOTER_HTML = `
                 &copy; 2025 Poliția Locală Slobozia. Toate drepturile rezervate.
             </div>
             <div class="footer-links-bottom">
-                <a href="#" class="footer-bottom-link">Politica de Confidențialitate</a>
-                <a href="#" class="footer-bottom-link">Termeni de Utilizare</a>
-                <a href="#" class="footer-bottom-link">Accesibilitate</a>
-                <a href="#" class="footer-bottom-link">Hartă Site</a>
+                <a href="/pls/confidentialitate" class="footer-bottom-link">Politica de Confidențialitate</a>
+                <a href="/pls/termeni" class="footer-bottom-link">Termeni de Utilizare</a>
+                <a href="/pls/accesibilitate" class="footer-bottom-link">Accesibilitate</a>
+                <a href="/pls/sitemap" class="footer-bottom-link">Hartă Site</a>
             </div>
         </div>
     </div>
