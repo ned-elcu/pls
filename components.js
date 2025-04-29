@@ -345,6 +345,8 @@ const COMPONENTS_CSS = `
 .main-nav ul {
     display: flex;
     list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .main-nav ul li {
@@ -830,6 +832,73 @@ footer {
     color: var(--accent-color);
 }
 
+/* Header search suggestions styles */
+.header-search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium);
+    box-shadow: var(--shadow-medium);
+    z-index: 1001;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.header-search-suggestions:empty {
+    display: none;
+}
+
+.header-search-suggestions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.header-search-suggestions li {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.header-search-suggestions li:last-child {
+    border-bottom: none;
+}
+
+.header-search-suggestions li.suggestion-header {
+    padding: 0.5rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    background-color: rgba(0,0,0,0.03);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.header-search-suggestions a {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.8rem 1rem !important;
+    color: var(--text-secondary) !important;
+    text-decoration: none !important;
+    transition: var(--transition-fast) !important;
+}
+
+.header-search-suggestions a:hover {
+    background-color: rgba(30, 136, 229, 0.05);
+    padding-left: 1.3rem !important;
+}
+
+.header-search-suggestions a i {
+    margin-right: 0.8rem;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    opacity: 0.7;
+}
+
 /* Mobile adjustments */
 @media (max-width: 992px) {
     .header-top,
@@ -921,6 +990,14 @@ footer {
     .dropdown-group-header {
         padding-left: 3rem !important;
     }
+    
+    .header-search-suggestions {
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        width: 100%;
+        border-radius: 0;
+    }
 }
 
 @media (max-width: 768px) {
@@ -998,85 +1075,6 @@ body {
 .material-icons {
     vertical-align: middle;
     line-height: 1;
-}
-
-/* Header search suggestions */
-.header-search-suggestions {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium);
-    box-shadow: var(--shadow-medium);
-    z-index: 1000;
-    margin-top: 5px;
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.3s ease;
-}
-
-.header-search-suggestions:not(:empty) {
-    max-height: 300px;
-}
-
-.header-search-suggestions ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.header-search-suggestions li {
-    margin: 0;
-    padding: 0;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-}
-
-.header-search-suggestions li:last-child {
-    border-bottom: none;
-}
-
-.header-search-suggestions li.suggestion-header {
-    padding: 0.5rem 1rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--primary-color);
-    background-color: rgba(0,0,0,0.03);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.header-search-suggestions a {
-    display: flex;
-    align-items: center;
-    padding: 0.8rem 1rem;
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: var(--transition-fast);
-}
-
-.header-search-suggestions a:hover {
-    background-color: rgba(30, 136, 229, 0.05);
-    padding-left: 1.3rem;
-}
-
-.header-search-suggestions i {
-    margin-right: 0.8rem;
-    color: var(--secondary-color);
-    font-size: 1.2rem;
-    opacity: 0.7;
-}
-
-@media (max-width: 768px) {
-    .header-search-suggestions {
-        position: fixed;
-        top: var(--header-height);
-        left: 0;
-        width: 100%;
-        border-radius: 0;
-    }
 }
 `;
 
@@ -1449,16 +1447,11 @@ function initDropdownMenu() {
     });
 }
 
-// Initialize search functionality - UPDATED VERSION
+// Initialize search functionality - UPDATED VERSION with fail-safes
 function initSearchBar() {
     const searchInput = document.querySelector('.search-bar input');
     
     if (!searchInput) return;
-    
-    // Create suggestions container
-    const suggestionsContainer = document.createElement('div');
-    suggestionsContainer.className = 'header-search-suggestions';
-    searchInput.parentNode.appendChild(suggestionsContainer);
     
     // Create search form if not already wrapped
     let searchForm = searchInput.closest('form');
@@ -1475,6 +1468,138 @@ function initSearchBar() {
     // Add name attribute to the input
     searchInput.setAttribute('name', 'q');
     
+    // Create suggestions container
+    const suggestionsContainer = document.createElement('div');
+    suggestionsContainer.className = 'header-search-suggestions';
+    searchInput.parentNode.appendChild(suggestionsContainer);
+    
+    // Fallback for storing recent searches
+    function storeRecentSearch(query) {
+        if (!query || query.length < 3) return;
+        
+        try {
+            // Get existing recent searches
+            let recentSearches = [];
+            const storedSearches = localStorage.getItem('pls_recent_searches');
+            
+            if (storedSearches) {
+                recentSearches = JSON.parse(storedSearches);
+            }
+            
+            // Remove if already exists
+            recentSearches = recentSearches.filter(item => item !== query);
+            
+            // Add to the beginning
+            recentSearches.unshift(query);
+            
+            // Limit size
+            if (recentSearches.length > 10) {
+                recentSearches = recentSearches.slice(0, 10);
+            }
+            
+            // Store in localStorage
+            localStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
+        } catch (e) {
+            console.warn('Failed to save recent searches to localStorage', e);
+        }
+    }
+    
+    // Fallback for getting recent searches
+    function getRecentSearches() {
+        try {
+            const storedSearches = localStorage.getItem('pls_recent_searches');
+            return storedSearches ? JSON.parse(storedSearches) : [];
+        } catch (e) {
+            console.warn('Failed to get recent searches from localStorage', e);
+            return [];
+        }
+    }
+    
+    // Fallback function for search suggestions
+    function getFallbackSuggestions(query) {
+        // Basic fallback suggestions based on common terms
+        const commonTerms = [
+            'gdpr', 'politia locala', 'amenzi', 'contact', 'sesizare', 'petitii', 
+            'cariere', 'documente', 'conducere', 'program', 'regulament'
+        ];
+        
+        // Filter terms that match the query
+        return commonTerms.filter(term => 
+            term.toLowerCase().includes(query.toLowerCase())
+        ).slice(0, 5); // Limit to 5 suggestions
+    }
+    
+    // Display search suggestions with fail-safe
+    function displaySearchSuggestions(suggestions) {
+        if (!suggestions || suggestions.length === 0) {
+            suggestionsContainer.innerHTML = '';
+            return;
+        }
+        
+        try {
+            let html = '<ul>';
+            
+            // Ensure suggestions is an array
+            if (!Array.isArray(suggestions)) {
+                suggestions = [suggestions.toString()];
+            }
+            
+            suggestions.forEach(suggestion => {
+                if (suggestion) {
+                    html += `
+                        <li>
+                            <a href="/pls/cautare?q=${encodeURIComponent(suggestion)}">
+                                <i class="material-icons">search</i>
+                                ${suggestion}
+                            </a>
+                        </li>
+                    `;
+                }
+            });
+            
+            // Add "recent searches" item if available
+            let recentSearches = [];
+            
+            // Try to get from SiteSearch first
+            if (typeof window.siteSearch !== 'undefined' && window.siteSearch.getRecentSearches) {
+                try {
+                    recentSearches = window.siteSearch.getRecentSearches();
+                } catch (e) {
+                    console.warn('Error getting recent searches from SiteSearch:', e);
+                    recentSearches = getRecentSearches();
+                }
+            } else {
+                recentSearches = getRecentSearches();
+            }
+            
+            if (recentSearches && recentSearches.length > 0) {
+                html += '<li class="suggestion-header">Căutări recente</li>';
+                
+                recentSearches.slice(0, 3).forEach(recent => {
+                    if (recent) {
+                        html += `
+                            <li>
+                                <a href="/pls/cautare?q=${encodeURIComponent(recent)}">
+                                    <i class="material-icons">history</i>
+                                    ${recent}
+                                </a>
+                            </li>
+                        `;
+                    }
+                });
+            }
+            
+            html += '</ul>';
+            suggestionsContainer.innerHTML = html;
+        } catch (e) {
+            console.warn('Error displaying suggestions:', e);
+            suggestionsContainer.innerHTML = ''; // Clear in case of error
+        }
+    }
+    
+    // Check for SiteSearch availability
+    let siteSearchChecked = false;
+    
     // Debounced search function for suggestions
     let debounceTimer;
     searchInput.addEventListener('input', function() {
@@ -1483,17 +1608,46 @@ function initSearchBar() {
         // Clear previous timer
         clearTimeout(debounceTimer);
         
+        // Clear suggestions for empty input
         if (query.length < 2) {
             suggestionsContainer.innerHTML = '';
             return;
         }
         
-        // Set new timer
+        // Set new timer with fail-safe
         debounceTimer = setTimeout(function() {
-            // Get suggestions using our search module
-            if (window.siteSearch) {
-                const suggestions = window.siteSearch.getSearchSuggestions(query);
-                displayHeaderSuggestions(suggestions, suggestionsContainer);
+            try {
+                // Check for SiteSearch if not already checked
+                if (!siteSearchChecked) {
+                    siteSearchChecked = true;
+                    
+                    // If SiteSearch is not available, check for it after a delay
+                    if (typeof window.siteSearch === 'undefined') {
+                        setTimeout(function() {
+                            siteSearchChecked = false; // Reset to check again on next input
+                        }, 1000);
+                    }
+                }
+                
+                // Check if SiteSearch is available for suggestions
+                if (typeof window.siteSearch !== 'undefined' && window.siteSearch.getSearchSuggestions) {
+                    const suggestions = window.siteSearch.getSearchSuggestions(query);
+                    displaySearchSuggestions(suggestions);
+                } else {
+                    // Fallback to basic suggestions
+                    const fallbackSuggestions = getFallbackSuggestions(query);
+                    displaySearchSuggestions(fallbackSuggestions);
+                }
+            } catch (e) {
+                console.warn('Error generating search suggestions:', e);
+                // Fallback to basic suggestions in case of error
+                try {
+                    const fallbackSuggestions = getFallbackSuggestions(query);
+                    displaySearchSuggestions(fallbackSuggestions);
+                } catch (err) {
+                    console.error('Critical error in search suggestions:', err);
+                    suggestionsContainer.innerHTML = '';
+                }
             }
         }, 300); // 300ms debounce
     });
@@ -1510,7 +1664,22 @@ function initSearchBar() {
         e.preventDefault();
         const query = searchInput.value.trim();
         
-        if (query) {
+        if (query.length >= 2) {
+            // Store in recent searches if available
+            try {
+                if (typeof window.siteSearch !== 'undefined' && window.siteSearch.search) {
+                    // Use SiteSearch if available to record the search
+                    window.siteSearch.search(query, { page: 1 });
+                } else {
+                    // Fallback: Store in localStorage
+                    storeRecentSearch(query);
+                }
+            } catch (e) {
+                console.warn('Error storing search:', e);
+                // Still try the fallback
+                storeRecentSearch(query);
+            }
+            
             // Redirect to search page with query
             window.location.href = `/pls/cautare?q=${encodeURIComponent(query)}`;
         }
@@ -1534,50 +1703,7 @@ function initSearchBar() {
     });
 }
 
-// Display search suggestions in header - NEW FUNCTION
-function displayHeaderSuggestions(suggestions, container) {
-    if (!suggestions || suggestions.length === 0) {
-        container.innerHTML = '';
-        return;
-    }
-    
-    let html = '<ul>';
-    
-    suggestions.forEach(suggestion => {
-        html += `
-            <li>
-                <a href="/pls/cautare?q=${encodeURIComponent(suggestion)}">
-                    <i class="material-icons">search</i>
-                    ${suggestion}
-                </a>
-            </li>
-        `;
-    });
-    
-    // Add "recent searches" item if we have any
-    if (window.siteSearch && window.siteSearch.getRecentSearches) {
-        const recentSearches = window.siteSearch.getRecentSearches();
-        if (recentSearches && recentSearches.length > 0) {
-            html += '<li class="suggestion-header">Căutări recente</li>';
-            
-            recentSearches.slice(0, 3).forEach(recent => {
-                html += `
-                    <li>
-                        <a href="/pls/cautare?q=${encodeURIComponent(recent)}">
-                            <i class="material-icons">history</i>
-                            ${recent}
-                        </a>
-                    </li>
-                `;
-            });
-        }
-    }
-    
-    html += '</ul>';
-    container.innerHTML = html;
-}
-
-// Legacy search function - REPLACED BY ENHANCED VERSION ABOVE
+// Legacy search function - kept for backwards compatibility
 function performSearch(query) {
     // Get the base URL for the search
     const baseUrl = `/pls/cautare`;
