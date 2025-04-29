@@ -1104,7 +1104,7 @@ const HEADER_HTML = `
         </div>
         <div class="utility-menu">
             <a href="/pls/cariere" class="utility-item">Oportunități de Carieră</a>
-            <a href="/pls/registre" class="utility-item">Registre Publice</a>
+            <a href="/pls/transparenta" class="utility-item">Registre Publice</a>
             <a href="/pls/petitii" class="utility-item">Depunere Sesizare</a>
             <a href="tel:0243955" class="utility-item emergency">
                 <i class="material-icons">phone_in_talk</i> (0243) 955
