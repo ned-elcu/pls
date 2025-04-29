@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDPR - Poliția Locală Slobozia</title>
+    <!-- Added Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+            padding-top: var(--header-height);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Material Icons styling */
+        .material-icons {
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Container (will be loaded via components.js) */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+            top: 0;
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 3rem;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0; 
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title-left {
+            max-width: 800px;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            opacity: 0.5;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 3rem;
+            background-color: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* GDPR Container Styling */
+        .gdpr-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .gdpr-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .gdpr-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        .gdpr-intro {
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+        
+        .gdpr-intro p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-text {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        /* GDPR Cards */
+        .gdpr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .gdpr-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            transition: var(--transition-medium);
+            border-left: 4px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .gdpr-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .gdpr-card-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .gdpr-card-title i {
+            margin-right: 0.7rem;
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+        }
+        
+        .gdpr-card-content {
+            margin-top: 0.5rem;
+            line-height: 1.6;
+        }
+        
+        .gdpr-card-content p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .gdpr-card-content ul {
+            padding-left: 1.5rem;
+            margin: 0.5rem 0;
+        }
+        
+        .gdpr-card-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Footer */
+        .page-footer {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: var(--spacing-lg) 0;
+            margin-top: var(--spacing-xl);
+            text-align: center;
+        }
+        
+        /* Related Resources */
+        .related-resources {
+            margin-top: 4rem;
+            padding: 3rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-large);
+        }
+        
+        .related-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .related-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-medium);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .resource-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+        }
+        
+        .resource-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            align-self: flex-start;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link i {
+            margin-left: 0.3rem;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .resource-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 5rem;
+            padding: 4rem 0;
+            background-color: var(--primary-color);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .cta-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .btn i {
+            margin-left: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .page-title-section {
+                padding: 4rem 2rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .content-section {
+                padding: 4rem 2rem;
+            }
+            
+            .gdpr-container {
+                padding: 2rem;
+            }
+            
+            .gdpr-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .related-resources {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+                position: relative;
+                z-index: 2;
+                margin-top: 0;
+                background: white;
+            }
+            
+            .gdpr-container {
+                padding: 1.5rem;
+            }
+            
+            .gdpr-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-container {
+                padding: 0 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-title-left">
+                <div class="page-title-badge">Protecția datelor personale</div>
+                <h1 class="page-title">GDPR</h1>
+                <p class="page-description">Informații privind prelucrarea datelor cu caracter personal conform Regulamentului General privind Protecția Datelor (GDPR) și legislației naționale în vigoare.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="https://pcslobozia.ro/">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">GDPR</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="content-container">
+            <!-- Main GDPR Container -->
+            <div class="gdpr-container">
+                <h2 class="gdpr-heading">Prelucrarea datelor cu caracter personal</h2>
+                
+                <div class="gdpr-intro">
+                    <p>În conformitate cu Regulamentul General privind Protecția Datelor (GDPR) și legislația națională în vigoare, Poliția Locală Slobozia vă informează despre modul în care prelucrăm datele dumneavoastră personale, în special în ceea ce privește supravegherea video din spațiile publice.</p>
+                    <p>Mai jos găsiți informații despre operatorul de date, destinatarii imaginilor captate de camerele de supraveghere, scopul utilizării acestora, perioada și locul de stocare, precum și drepturile dumneavoastră și modalitățile de exercitare a acestora.</p>
+                </div>
+                
+                <!-- GDPR Information Cards -->
+                <div class="gdpr-grid">
+                    <!-- Card 1: Operator -->
+                    <div class="gdpr-card">
+                        <h3 class="gdpr-card-title">
+                            <i class="material-icons">business</i>
+                            OPERATOR
+                        </h3>
+                        <div class="gdpr-card-content">
+                            <p><strong>POLIȚIA LOCALĂ SLOBOZIA</strong></p>
+                            <p>Adresa: Str. Răzoare, nr.3,<br>
+                            Mun. Slobozia, Jud. Ialomița, România</p>
+                            <p>Operator prelucrare date cu caracter personal nr. 3697</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 2: Destinatarii înregistrărilor -->
+                    <div class="gdpr-card">
+                        <h3 class="gdpr-card-title">
+                            <i class="material-icons">people</i>
+                            DESTINATARII ÎNREGISTRĂRILOR
+                        </h3>
+                        <div class="gdpr-card-content">
+                            <p>Următoarele entități au acces la înregistrările imaginilor captate de camerele de supraveghere video:</p>
+                            <ul>
+                                <li>POLIȚIA LOCALĂ SLOBOZIA</li>
+                                <li>POLIȚIA ROMÂNĂ</li>
+                                <li>JANDARMERIA ROMÂNĂ</li>
+                                <li>MINISTERUL PUBLIC</li>
+                                <li>MINISTERUL JUSTIȚIEI</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 3: Scopul utilizării -->
+                    <div class="gdpr-card">
+                        <h3 class="gdpr-card-title">
+                            <i class="material-icons">security</i>
+                            SCOPUL UTILIZĂRII
+                        </h3>
+                        <div class="gdpr-card-content">
+                            <p>Camerele de supraveghere video sunt utilizate pentru:</p>
+                            <ul>
+                                <li>Prevenirea şi combaterea săvârşirii infracţiunilor</li>
+                                <li>Supravegherea traficului rutier şi constatarea încălcării regulilor de circulaţie rutieră</li>
+                                <li>Asigurarea pazei şi protecţiei persoanelor, bunurilor şi valorilor, a imobilelor şi a instalaţiilor de utilitate publică, precum şi a împrejmuirilor afectate acestora</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 4: Perioada de stocare -->
+                    <div class="gdpr-card">
+                        <h3 class="gdpr-card-title">
+                            <i class="material-icons">schedule</i>
+                            PERIOADA DE STOCARE
+                        </h3>
+                        <div class="gdpr-card-content">
+                            <p>Înregistrările sunt păstrate între 20 și 30 zile de la momentul captării imaginilor.</p>
+                            <p>Excepție fac cazurile în care înregistrările constituie probe în cazul infracțiunilor sau contravențiilor, situație în care acestea pot fi păstrate pentru o perioadă mai lungă, conform legii.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 5: Locul de stocare -->
+                    <div class="gdpr-card">
+                        <h3 class="gdpr-card-title">
+                            <i class="material-icons">storage</i>
+                            LOCUL DE STOCARE
+                        </h3>
+                        <div class="gdpr-card-content">
+                            <p>Toate înregistrările sunt stocate în condiții de siguranță la Sediul Poliției Locale Slobozia.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 6: Drepturile dumneavoastră -->
+                    <div class="gdpr-card">
+                        <h3 class="gdpr-card-title">
+                            <i class="material-icons">gavel</i>
+                            DREPTURILE DUMNEAVOASTRĂ
+                        </h3>
+                        <div class="gdpr-card-content">
+                            <p>Conform legislației în vigoare, beneficiați de următoarele drepturi:</p>
+                            <ul>
+                                <li><strong>Dreptul de a fi informat</strong> - despre scopul și modul în care sunt prelucrate datele dumneavoastră</li>
+                                <li><strong>Dreptul la acces</strong> - de a obține confirmarea că datele dumneavoastră sunt prelucrate și de a primi informații despre această prelucrare</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 7: Modalități de exercitare a drepturilor -->
+                    <div class="gdpr-card">
+                        <h3 class="gdpr-card-title">
+                            <i class="material-icons">description</i>
+                            MODALITĂȚI DE EXERCITARE A DREPTURILOR
+                        </h3>
+                        <div class="gdpr-card-content">
+                            <p>Persoana vizată poate solicita de la operator informaţiile prevăzute la Art.16 alin. (1) din Legea 363/2018, printr-o cerere întocmită în formă scrisă, datată şi semnată.</p>
+                            <p>În cerere puteți specifica dacă doriți ca informaţiile să vă fie comunicate la o anumită adresă, care poate fi și de poştă electronică, sau printr-un serviciu de corespondenţă care să asigure că predarea se va face doar personal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Resources Section -->
+            <div class="related-resources">
+                <h3 class="related-heading">Resurse utile</h3>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">security</i></div>
+                        <h4 class="resource-title">Autoritatea Națională de Supraveghere</h4>
+                        <p class="resource-description">Informații despre ANSPDCP - autoritatea care supraveghează aplicarea legislației privind protecția datelor personale.</p>
+                        <a href="https://www.dataprotection.ro/" target="_blank" class="resource-link">Vizitează site-ul <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">gavel</i></div>
+                        <h4 class="resource-title">Legislație GDPR</h4>
+                        <p class="resource-description">Textul integral al Regulamentului (UE) 2016/679 privind protecția persoanelor fizice.</p>
+                        <a href="https://eur-lex.europa.eu/legal-content/RO/TXT/?uri=CELEX%3A32016R0679" target="_blank" class="resource-link">Consultă legislația <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">help_outline</i></div>
+                        <h4 class="resource-title">Ghid de informare</h4>
+                        <p class="resource-description">Ghid practic despre drepturile persoanelor vizate și modul de exercitare a acestora.</p>
+                        <a href="#" class="resource-link">Descarcă ghidul <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">contact_mail</i></div>
+                        <h4 class="resource-title">Contact DPO</h4>
+                        <p class="resource-description">Informații de contact ale responsabilului cu protecția datelor din cadrul instituției noastre.</p>
+                        <a href="/contact/dpo" class="resource-link">Contact DPO <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-bg"></div>
+                <div class="cta-container">
+                    <h2 class="cta-title">Aveți întrebări despre datele dumneavoastră?</h2>
+                    <p class="cta-description">Pentru orice solicitare legată de exercitarea drepturilor dumneavoastră conform GDPR sau pentru alte informații legate de protecția datelor personale, vă invităm să ne contactați.</p>
+                    <div class="cta-buttons">
+                        <a href="/contact" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
+                        <a href="/formulare/gdpr" class="btn btn-secondary">Formular cerere GDPR <i class="material-icons">download</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="../components.js"></script>
+</body>
+</html>
