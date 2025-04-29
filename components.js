@@ -1117,7 +1117,7 @@ const HEADER_HTML = `
             <ul>
                 <li class="active"><a href="/pls/"><i class="material-icons menu-icon">home</i> Acasă</a></li>
                 <li class="has-dropdown">
-                    <a href="/pls/despre-noi">
+                    <a href="/pls/atributii">
                         <i class="material-icons menu-icon">info</i> Despre Noi
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
