@@ -1301,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!document.querySelector('link[rel="icon"]')) {
         const faviconLink = document.createElement('link');
         faviconLink.rel = "icon";
-        faviconLink.href = "https://images4.imagebam.com/7d/dc/f5/ME11KAXQ_o.png";
+        faviconLink.href = "https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png";
         faviconLink.type = "image/png";
         document.head.appendChild(faviconLink);
     }
