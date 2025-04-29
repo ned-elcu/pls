@@ -1,1222 +1,1628 @@
 /**
- * search.js - Advanced search system for Poliția Locală Slobozia website
+ * search.js - Advanced search system using Elasticlunr.js
  * 
  * Features:
- * - Better search algorithm with stemming and fuzzy matching
- * - Debounced real-time search
+ * - Full-text search with Elasticlunr.js
+ * - Automatic crawling and indexing of all site content
+ * - Support for Romanian language (diacritics handling, stopwords)
+ * - Advanced result ranking and highlighting
  * - Search suggestions and autocomplete
  * - Cached results
- * - Analytics tracking
- * - Prepared for backend integration
- * - Faceted search support
- * - Advanced search operators
  */
+
+// First, load Elasticlunr library
+// Add this script tag to your HTML pages: <script src="https://cdnjs.cloudflare.com/ajax/libs/elasticlunr/0.9.6/elasticlunr.min.js"></script>
 
 /**
- * Search module using revealing module pattern for better encapsulation
+ * SiteSearch module using revealing module pattern
  */
 const SiteSearch = (function() {
-  // Private variables
-  let _searchIndex = {};
-  let _searchCache = new Map();
-  let _recentSearches = [];
-  let _searchConfig = {
-    maxCacheSize: 50,
-    maxRecentSearches: 10,
-    debounceTime: 300,  // ms
-    minQueryLength: 2,
-    fuzzyMatchThreshold: 0.7,
-    maxResults: 100,
-    defaultPerPage: 10,
-    highlightClass: 'search-highlight',
-    searchEndpoint: '/api/cautare', // For future backend integration
-    useServerSearch: false,        // Set to true when backend is ready
-    trackAnalytics: true,
-    stopWords: ['si', 'in', 'la', 'de', 'pe', 'cu', 'pentru', 'din', 'sau', 'este', 'sunt'],
-    searchableFields: ['title', 'content', 'keywords', 'url'],
-    fieldWeights: {
-      title: 10,
-      url: 8,
-      keywords: 6,
-      content: 4,
-      importance: 1
-    }
-  };
-  
-  // Singleton pattern - store the search instance when it's initialized
-  let _instance = null;
-  
-  // Current search state
-  let _currentSearchState = {
-    query: '',
-    page: 1,
-    filters: {},
-    sortBy: 'relevance'
-  };
-  
-  // Debounce implementation
-  function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-      const context = this;
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(context, args), wait);
-    };
-  }
-  
-  // Simple stemming function for Romanian language
-  // In production, consider using a proper stemming library like snowball-stemmer
-  function stemWord(word) {
-    if (word.length < 4) return word;
+    // Private variables
+    let _searchIndex = null;
+    let _indexReady = false;
+    let _searchCache = new Map();
+    let _recentSearches = [];
+    let _pagesData = [];
     
-    // Handle some common Romanian suffixes (simplified)
-    const suffixes = ['ilor', 'ului', 'elor', 'ile', 'ul', 'uri', 'ele', 'ii', 'lor', 'i', 'e'];
-    
-    for (const suffix of suffixes) {
-      if (word.endsWith(suffix) && word.length > suffix.length + 2) {
-        return word.slice(0, -suffix.length);
-      }
-    }
-    
-    return word;
-  }
-  
-  // Normalize text: lowercase, remove diacritics, remove punctuation
-  function normalizeText(text) {
-    if (!text) return '';
-    
-    // Convert to lowercase
-    text = text.toLowerCase();
-    
-    // Remove diacritics (ă, â, î, ș, ț)
-    text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    text = text.replace(/ă/g, 'a')
-               .replace(/â/g, 'a')
-               .replace(/î/g, 'i')
-               .replace(/ș/g, 's')
-               .replace(/ț/g, 't');
-    
-    // Remove punctuation
-    text = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ' ');
-    
-    // Remove extra spaces
-    text = text.replace(/\s{2,}/g, ' ').trim();
-    
-    return text;
-  }
-  
-  // Calculate Levenshtein distance for fuzzy matching
-  function levenshteinDistance(a, b) {
-    if (a.length === 0) return b.length;
-    if (b.length === 0) return a.length;
-    
-    const matrix = [];
-    
-    // Initialize matrix
-    for (let i = 0; i <= b.length; i++) {
-      matrix[i] = [i];
-    }
-    
-    for (let j = 0; j <= a.length; j++) {
-      matrix[0][j] = j;
-    }
-    
-    // Fill matrix
-    for (let i = 1; i <= b.length; i++) {
-      for (let j = 1; j <= a.length; j++) {
-        if (b.charAt(i - 1) === a.charAt(j - 1)) {
-          matrix[i][j] = matrix[i - 1][j - 1];
-        } else {
-          matrix[i][j] = Math.min(
-            matrix[i - 1][j - 1] + 1, // substitution
-            matrix[i][j - 1] + 1,     // insertion
-            matrix[i - 1][j] + 1      // deletion
-          );
-        }
-      }
-    }
-    
-    return matrix[b.length][a.length];
-  }
-  
-  // Calculate similarity score between 0 and 1
-  function calculateSimilarity(str1, str2) {
-    const distance = levenshteinDistance(str1, str2);
-    const maxLength = Math.max(str1.length, str2.length);
-    return maxLength > 0 ? 1 - distance / maxLength : 1;
-  }
-  
-  // Process text to remove stop words and apply stemming
-  function processText(text) {
-    if (!text) return [];
-    
-    const normalizedText = normalizeText(text);
-    const words = normalizedText.split(/\s+/);
-    
-    // Remove stop words and apply stemming
-    return words
-      .filter(word => word.length > 2 && !_searchConfig.stopWords.includes(word))
-      .map(word => stemWord(word));
-  }
-  
-  // Extract meaningful terms from text
-  function extractTerms(text) {
-    const processedWords = processText(text);
-    const terms = new Set();
-    
-    // Add individual terms
-    processedWords.forEach(word => terms.add(word));
-    
-    // Add bigrams (pairs of adjacent words)
-    for (let i = 0; i < processedWords.length - 1; i++) {
-      terms.add(`${processedWords[i]} ${processedWords[i + 1]}`);
-    }
-    
-    return Array.from(terms);
-  }
-  
-  // Parse search query to handle operators
-  function parseQuery(queryString) {
-    const rawQuery = queryString.trim();
-    const result = {
-      original: rawQuery,
-      normalized: normalizeText(rawQuery),
-      terms: [],
-      exactPhrases: [],
-      excludeTerms: [],
-      operators: {}
-    };
-    
-    // Extract exact phrases (text in quotes)
-    const exactPhraseRegex = /"([^"]*)"/g;
-    let match;
-    while ((match = exactPhraseRegex.exec(rawQuery)) !== null) {
-      if (match[1].trim()) {
-        result.exactPhrases.push(normalizeText(match[1]));
-      }
-    }
-    
-    // Remove the exact phrases from the query for further processing
-    let remainingQuery = rawQuery.replace(exactPhraseRegex, '');
-    
-    // Extract excluded terms (prefixed with -)
-    const excludeTermRegex = /\s-(\w+)/g;
-    while ((match = excludeTermRegex.exec(remainingQuery)) !== null) {
-      if (match[1].trim()) {
-        result.excludeTerms.push(normalizeText(match[1]));
-      }
-    }
-    
-    // Replace excluded terms with spaces for further processing
-    remainingQuery = remainingQuery.replace(excludeTermRegex, ' ');
-    
-    // Extract operator filters (field:value)
-    const operatorRegex = /(\w+):(\w+)/g;
-    while ((match = operatorRegex.exec(remainingQuery)) !== null) {
-      const field = match[1].toLowerCase();
-      const value = normalizeText(match[2]);
-      result.operators[field] = value;
-    }
-    
-    // Replace operators with spaces for further processing
-    remainingQuery = remainingQuery.replace(operatorRegex, ' ');
-    
-    // Process remaining terms
-    result.terms = processText(remainingQuery);
-    
-    return result;
-  }
-  
-  // Generate a search excerpt with context
-  function generateExcerpt(text, searchTerms, maxLength = 160) {
-    if (!text) return '';
-    
-    // Try to find the best position for an excerpt
-    let bestPosition = 0;
-    let bestScore = -1;
-    
-    const normalizedText = normalizeText(text);
-    
-    // Find the position with most matches
-    for (let i = 0; i < normalizedText.length; i++) {
-      let score = 0;
-      
-      for (const term of searchTerms) {
-        if (normalizedText.substring(i, i + term.length).toLowerCase() === term.toLowerCase()) {
-          score += 10 + term.length;  // More weight for longer terms
-        }
-      }
-      
-      if (score > bestScore) {
-        bestScore = score;
-        bestPosition = i;
-      }
-    }
-    
-    // If no matches found, just take the beginning
-    if (bestScore === -1) {
-      bestPosition = 0;
-    }
-    
-    // Extract excerpt
-    let startPos = Math.max(0, bestPosition - maxLength / 2);
-    let endPos = Math.min(text.length, startPos + maxLength);
-    
-    // Adjust to avoid cutting words
-    while (startPos > 0 && text[startPos] !== ' ') {
-      startPos--;
-    }
-    
-    while (endPos < text.length && text[endPos] !== ' ') {
-      endPos++;
-    }
-    
-    let excerpt = text.substring(startPos, endPos);
-    
-    // Add ellipsis if needed
-    if (startPos > 0) {
-      excerpt = '...' + excerpt;
-    }
-    
-    if (endPos < text.length) {
-      excerpt = excerpt + '...';
-    }
-    
-    return excerpt;
-  }
-  
-  // Calculate relevance score for an item
-  function calculateScore(item, parsedQuery) {
-    let score = 0;
-    const matchDetails = [];
-    const weights = _searchConfig.fieldWeights;
-    
-    // Process each searchable field
-    for (const field of _searchConfig.searchableFields) {
-      if (!item[field]) continue;
-      
-      const fieldValue = normalizeText(String(item[field]));
-      
-      // Check for exact phrases (highest priority)
-      for (const phrase of parsedQuery.exactPhrases) {
-        if (fieldValue.includes(phrase)) {
-          const bonus = weights[field] * 20;
-          score += bonus;
-          matchDetails.push(`Expresie exactă în ${field}: "${phrase}" (+${bonus})`);
-        }
-      }
-      
-      // Check for term matches
-      for (const term of parsedQuery.terms) {
-        // Exact term match
-        if (fieldValue.includes(` ${term} `) || fieldValue.startsWith(term + ' ') || fieldValue.endsWith(' ' + term) || fieldValue === term) {
-          const bonus = weights[field] * 10;
-          score += bonus;
-          matchDetails.push(`Termen exact în ${field}: "${term}" (+${bonus})`);
-        }
-        // Partial term match
-        else if (fieldValue.includes(term)) {
-          const bonus = weights[field] * 5;
-          score += bonus;
-          matchDetails.push(`Termen parțial în ${field}: "${term}" (+${bonus})`);
-        }
-        // Fuzzy match for longer terms
-        else if (term.length > 3) {
-          // For arrays (like keywords), check each item
-          if (Array.isArray(item[field])) {
-            for (const value of item[field]) {
-              const normalizedValue = normalizeText(String(value));
-              const similarity = calculateSimilarity(term, normalizedValue);
-              
-              if (similarity >= _searchConfig.fuzzyMatchThreshold) {
-                const bonus = weights[field] * 3 * similarity;
-                score += bonus;
-                matchDetails.push(`Potrivire fuzzy în ${field}: "${term}" ~ "${value}" (${Math.round(similarity * 100)}%, +${Math.round(bonus)})`);
-              }
-            }
-          } else {
-            // For string fields, check for fuzzy matches within words
-            const fieldWords = fieldValue.split(/\s+/);
-            for (const word of fieldWords) {
-              const similarity = calculateSimilarity(term, word);
-              
-              if (similarity >= _searchConfig.fuzzyMatchThreshold) {
-                const bonus = weights[field] * 3 * similarity;
-                score += bonus;
-                matchDetails.push(`Potrivire fuzzy în ${field}: "${term}" ~ "${word}" (${Math.round(similarity * 100)}%, +${Math.round(bonus)})`);
-              }
-            }
-          }
-        }
-      }
-      
-      // Check for operator matches
-      for (const [operator, value] of Object.entries(parsedQuery.operators)) {
-        if (operator === field || (operator === 'type' && field === 'type')) {
-          if (String(item[field]).toLowerCase() === value) {
-            const bonus = weights[field] * 15;
-            score += bonus;
-            matchDetails.push(`Operator ${operator}:${value} (+${bonus})`);
-          }
-        }
-      }
-    }
-    
-    // Check for excluded terms (negative scoring)
-    for (const excludeTerm of parsedQuery.excludeTerms) {
-      for (const field of _searchConfig.searchableFields) {
-        if (!item[field]) continue;
+    // Search configuration
+    const _searchConfig = {
+        maxCacheSize: 50,
+        maxRecentSearches: 10,
+        debounceTime: 300,  // ms
+        minQueryLength: 2,
+        maxResults: 100,
+        defaultPerPage: 10,
+        highlightClass: 'search-highlight',
+        useServerIndex: true,  // Set to true to load a pre-built index, false to build on client
+        indexUrl: '/pls/search-index.json', // URL for the pre-built index
+        siteMapUrl: '/pls/sitemap.xml', // URL for the sitemap to use when building the index
+        crawlStartUrl: '/pls/', // Starting URL for crawler if not using sitemap
+        trackAnalytics: true,
         
-        const fieldValue = normalizeText(String(item[field]));
-        
-        if (fieldValue.includes(excludeTerm)) {
-          score -= 1000;  // Large penalty to effectively exclude
-          matchDetails.push(`Termen exclus găsit: "${excludeTerm}" (-1000)`);
-          break;
-        }
-      }
-    }
-    
-    // Add base importance score
-    if (typeof item.importance === 'number') {
-      const importanceScore = item.importance * weights.importance;
-      score += importanceScore;
-      matchDetails.push(`Scor de importanță: ${importanceScore}`);
-    }
-    
-    // Special handling for document format queries
-    if (/^[a-z]+\.?\s*\d+\s*\/\s*\d{4}$/i.test(parsedQuery.original) && item.type === 'document') {
-      score += 150;
-      matchDetails.push(`Format document (+150)`);
-    }
-    
-    return { score, matchDetails };
-  }
-  
-  // Generate search suggestions based on query prefix
-  function generateSuggestions(query, maxSuggestions = 5) {
-    if (!query || query.length < 2) return [];
-    
-    const normalizedQuery = normalizeText(query.toLowerCase());
-    const suggestions = new Set();
-    
-    // Add recent searches that start with the query
-    _recentSearches.forEach(search => {
-      if (normalizeText(search).startsWith(normalizedQuery)) {
-        suggestions.add(search);
-      }
-    });
-    
-    // Add popular terms from the index
-    for (const key in _searchIndex) {
-      const item = _searchIndex[key];
-      
-      // Check title
-      if (normalizeText(item.title).includes(normalizedQuery)) {
-        suggestions.add(item.title);
-      }
-      
-      // Check keywords
-      if (item.keywords) {
-        item.keywords.forEach(keyword => {
-          if (normalizeText(keyword).startsWith(normalizedQuery)) {
-            suggestions.add(keyword);
-          }
-        });
-      }
-    }
-    
-    return Array.from(suggestions).slice(0, maxSuggestions);
-  }
-  
-  // Store a search in recent searches
-  function addToRecentSearches(query) {
-    if (!query || query.length < 3) return;
-    
-    // Remove if already exists
-    _recentSearches = _recentSearches.filter(item => item !== query);
-    
-    // Add to the beginning
-    _recentSearches.unshift(query);
-    
-    // Limit size
-    if (_recentSearches.length > _searchConfig.maxRecentSearches) {
-      _recentSearches = _recentSearches.slice(0, _searchConfig.maxRecentSearches);
-    }
-    
-    // Store in localStorage
-    try {
-      localStorage.setItem('pls_recent_searches', JSON.stringify(_recentSearches));
-    } catch (e) {
-      console.warn('Failed to save recent searches to localStorage', e);
-    }
-  }
-  
-  // Get search results with excerpts and highlighting
-  function processSearchResults(items, parsedQuery) {
-    const allTerms = [...parsedQuery.terms, ...parsedQuery.exactPhrases.flatMap(phrase => phrase.split(/\s+/))];
-    
-    return items.map(item => {
-      // Generate excerpt if item has content
-      if (item.content) {
-        item.excerpt = generateExcerpt(item.content, allTerms);
-      }
-      
-      // Add additional metadata
-      item.queryTerms = allTerms;
-      
-      return item;
-    });
-  }
-  
-  // Client-side search implementation
-  async function clientSearch(query, options = {}) {
-    const defaults = {
-      page: 1,
-      perPage: _searchConfig.defaultPerPage,
-      filters: {},
-      sortBy: 'relevance'
+        // Romanian stopwords
+        stopWords: [
+            'a', 'acea', 'aceasta', 'această', 'aceea', 'acei', 'aceia', 'acel', 'acela', 'acele', 'acelea', 'acest',
+            'acesta', 'aceste', 'acestea', 'aceşti', 'aceştia', 'acolo', 'acord', 'acum', 'ai', 'aia', 'aibă', 'aici',
+            'al', 'ala', 'ale', 'alea', 'altceva', 'altcineva', 'am', 'ar', 'are', 'as', 'aş', 'aşa', 'asta', 'astăzi',
+            'astea', 'astfel', 'asupra', 'au', 'avea', 'avem', 'aveţi', 'avut', 'azi', 'aș', 'b', 'ba', 'bine', 'bucur',
+            'bună', 'c', 'ca', 'care', 'caut', 'ce', 'cel', 'ceva', 'cineva', 'cine', 'cât', 'câţi', 'când', 'cât',
+            'către', 'ceea', 'cei', 'celor', 'cine', 'cineva', 'cite', 'cîte', 'cîţi', 'cînd', 'cui', 'cum', 'cumva',
+            'curând', 'curînd', 'd', 'da', 'daca', 'dacă', 'dar', 'datorită', 'dată', 'dau', 'de', 'deci', 'deja', 'deoarece',
+            'departe', 'deşi', 'din', 'dinaintea', 'dintr', 'dintre', 'doar', 'doi', 'doilea', 'două', 'drept', 'după', 'dă',
+            'e', 'ea', 'ei', 'el', 'ele', 'era', 'este', 'eu', 'eşti', 'f', 'face', 'fata', 'fi', 'fie', 'fiecare', 'fii',
+            'fim', 'fiţi', 'fiu', 'fost', 'frumos', 'fără', 'g', 'geaba', 'graţie', 'h', 'hain', 'i', 'ia', 'iar', 'ieri',
+            'ii', 'il', 'imi', 'împotriva', 'în', 'înainte', 'înaintea', 'încât', 'încît', 'încotro', 'între', 'întrucât',
+            'întrucît', 'îţi', 'j', 'k', 'l', 'la', 'le', 'li', 'lor', 'lui', 'lângă', 'lîngă', 'm', 'ma', 'mai', 'mare',
+            'mea', 'mei', 'mele', 'mereu', 'meu', 'mi', 'mie', 'mine', 'mod', 'mult', 'multă', 'mulţi', 'mulţumesc', 'mâine',
+            'mîine', 'mă', 'n', 'ne', 'nevoie', 'ni', 'nici', 'nimeni', 'nimeri', 'nimic', 'nişte', 'noastră', 'noastre',
+            'noi', 'noroc', 'nostru', 'nouă', 'noştri', 'nu', 'numai', 'o', 'or', 'ori', 'oricare', 'orice', 'oricine',
+            'oricum', 'oricând', 'oricît', 'oriunde', 'p', 'pai', 'parca', 'pe', 'pentru', 'peste', 'pic', 'pina', 'plus',
+            'poate', 'pot', 'prea', 'prima', 'primul', 'prin', 'printr', 'putini', 'puţin', 'puţina', 'puţină', 'până', 'pînă',
+            'r', 'rog', 's', 'sa', 'sale', 'sau', 'se', 'si', 'sint', 'sintem', 'spate', 'spre', 'sub', 'sunt', 'suntem',
+            'sunteţi', 'sus', 'sută', 'sînt', 'sîntem', 'sînteţi', 'să', 't', 'tale', 'te', 'timp', 'tine', 'toată', 'toate',
+            'toată', 'tocmai', 'tot', 'toti', 'totul', 'totusi', 'totuşi', 'toţi', 'trei', 'treia', 'treilea', 'tu', 'tuturor',
+            'tăi', 'tău', 'tîi', 'tîu', 'u', 'ul', 'ule', 'ului', 'un', 'una', 'unde', 'undeva', 'unei', 'uneia', 'unele',
+            'uneori', 'unii', 'unor', 'unora', 'unu', 'unui', 'unuia', 'unul', 'v', 'va', 'vi', 'voastră', 'voastre', 'voi',
+            'voştri', 'vostru', 'vouă', 'voştri', 'vreme', 'vreo', 'vreun', 'vă', 'x', 'z', 'zece', 'zero', 'zi', 'zice'
+        ]
     };
     
-    const searchOptions = { ...defaults, ...options };
-    const cacheKey = `${query}|${JSON.stringify(searchOptions)}`;
+    // Singleton pattern - store the search instance
+    let _instance = null;
     
-    // Check cache first
-    if (_searchCache.has(cacheKey)) {
-      return _searchCache.get(cacheKey);
-    }
-    
-    // Add to recent searches
-    if (query.trim()) {
-      addToRecentSearches(query);
-    }
-    
-    // Track analytics if enabled
-    if (_searchConfig.trackAnalytics) {
-      trackSearchAnalytics(query, searchOptions);
-    }
-    
-    // Handle empty query
-    if (!query.trim() || query.length < _searchConfig.minQueryLength) {
-      return {
-        query,
-        totalResults: 0,
-        currentPage: searchOptions.page,
-        totalPages: 0,
-        perPage: searchOptions.perPage,
-        results: [],
-        suggestions: generateSuggestions('', 5)
-      };
-    }
-    
-    // Parse the search query
-    const parsedQuery = parseQuery(query);
-    
-    // Array to store search results with relevance scores
-    const searchResults = [];
-    
-    // Process each item in our index
-    for (const key in _searchIndex) {
-      const item = _searchIndex[key];
-      
-      // Apply filters if any
-      let passesFilters = true;
-      for (const [filter, value] of Object.entries(searchOptions.filters)) {
-        if (item[filter] !== value) {
-          passesFilters = false;
-          break;
-        }
-      }
-      
-      if (!passesFilters) continue;
-      
-      // Calculate score
-      const { score, matchDetails } = calculateScore(item, parsedQuery);
-      
-      // If we have any match, add this item to results
-      if (score > 0) {
-        searchResults.push({
-          ...item,
-          score,
-          matchDetails
+    // Initialize elasticlunr with configuration for Romanian
+    function initializeSearchIndex() {
+        if (_searchIndex !== null) return _searchIndex;
+        
+        // Configure elasticlunr for Romanian
+        _searchIndex = elasticlunr(function() {
+            this.setRef('id');               // document identifier field
+            this.addField('title');          // title field with boost of 10
+            this.addField('content');        // content field
+            this.addField('keywords');       // keywords field with boost of 5
+            this.addField('url');            // URL field
+            
+            // Register Romanian stop words
+            this.pipeline.remove(elasticlunr.stopWordFilter);
+            this.pipeline.add(createRomanianStopWordFilter(_searchConfig.stopWords));
+            
+            // Add Romanian stemmer
+            this.pipeline.remove(elasticlunr.stemmer);
+            this.pipeline.add(romanianStemmer);
+            
+            // Set custom tokenizer that handles Romanian diacritics
+            this.tokenizer = romanianTokenizer;
         });
-      }
+        
+        return _searchIndex;
     }
     
-    // Sort results
-    if (searchOptions.sortBy === 'date' && searchResults[0]?.date) {
-      searchResults.sort((a, b) => new Date(b.date) - new Date(a.date));
-    } else if (searchOptions.sortBy === 'title') {
-      searchResults.sort((a, b) => a.title.localeCompare(b.title));
-    } else {
-      // Default sort by relevance (score)
-      searchResults.sort((a, b) => b.score - a.score);
+    // Define a custom tokenizer for Romanian (handling diacritics)
+    function romanianTokenizer(str) {
+        if (!str) return [];
+        
+        // Normalize and remove diacritics
+        str = normalizeRomanian(str);
+        
+        // Split on non-alphanumeric characters and convert to lowercase
+        let tokens = str.toLowerCase()
+            .split(/[^\p{L}0-9]+/u)
+            .filter(token => token && token.length > 1);
+        
+        return tokens;
     }
     
-    // Limit to max results
-    const limitedResults = searchResults.slice(0, _searchConfig.maxResults);
+    // Normalize Romanian text (remove diacritics)
+    function normalizeRomanian(text) {
+        if (!text) return '';
+        
+        // Convert to lowercase
+        text = text.toLowerCase();
+        
+        // Replace Romanian diacritics
+        const diacriticsMap = {
+            'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ş': 's', 'ț': 't', 'ţ': 't'
+        };
+        
+        return text.replace(/[ăâîșşțţ]/g, match => diacriticsMap[match] || match);
+    }
     
-    // Calculate pagination
-    const totalResults = limitedResults.length;
-    const totalPages = Math.ceil(totalResults / searchOptions.perPage);
-    const startIndex = (searchOptions.page - 1) * searchOptions.perPage;
-    const endIndex = Math.min(startIndex + searchOptions.perPage, totalResults);
-    const paginatedResults = limitedResults.slice(startIndex, endIndex);
+    // Create custom stop word filter for Romanian
+    function createRomanianStopWordFilter(stopWords) {
+        const stopWordFilter = function(token) {
+            if (stopWords.indexOf(token) === -1) {
+                return token;
+            }
+            return null;
+        };
+        
+        return stopWordFilter;
+    }
     
-    // Process results to add excerpts and highlights
-    const processedResults = processSearchResults(paginatedResults, parsedQuery);
+    // Simple Romanian stemmer
+    function romanianStemmer(token) {
+        if (!token) return token;
+        
+        // Convert to lowercase and trim
+        let word = token.toLowerCase().trim();
+        
+        // Words shorter than 3 characters are not stemmed
+        if (word.length < 3) return word;
+        
+        // Common Romanian suffixes
+        const suffixes = [
+            'ilor', 'ului', 'elor', 'iile', 'ilor', 'atia', 'atie', 
+            'ații', 'eați', 'ește', 'esc', 'ează', 'ați', 'ate', 'ata',
+            'ati', 'ata', 'ând', 'eau', 'eal', 'ele', 'ile', 'ul', 'uri', 
+            'eii', 'ii', 'ă', 'a', 'e', 'i', 'u'
+        ];
+        
+        for (let suffix of suffixes) {
+            if (word.endsWith(suffix) && word.length - suffix.length >= 3) {
+                return word.slice(0, word.length - suffix.length);
+            }
+        }
+        
+        return word;
+    }
     
-    // Generate facets
-    const facets = generateFacets(searchResults);
+    // Debounce implementation
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), wait);
+        };
+    }
     
-    // Generate related searches
-    const relatedSearches = generateRelatedSearches(query, searchResults);
+    // Load or build the search index
+    async function loadSearchIndex() {
+        if (_indexReady) return;
+        
+        try {
+            if (_searchConfig.useServerIndex) {
+                // Load pre-built index from server
+                await loadServerIndex();
+            } else {
+                // Build index by crawling the site
+                await buildSearchIndex();
+            }
+            
+            _indexReady = true;
+            console.log('Search index is ready');
+        } catch (error) {
+            console.error('Error initializing search index:', error);
+            
+            // Fallback to simple index if loading fails
+            buildFallbackIndex();
+            _indexReady = true;
+        }
+    }
     
-    // Determine if we have a direct match
-    const directMatch = searchResults.length > 0 && searchResults[0].score > 200 ? 
-      searchResults[0] : null;
+    // Load the search index from server
+    async function loadServerIndex() {
+        try {
+            const response = await fetch(_searchConfig.indexUrl);
+            
+            if (!response.ok) {
+                throw new Error(`Failed to load search index: ${response.status} ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.index && data.pages) {
+                // Load serialized index into elasticlunr
+                _searchIndex = elasticlunr.Index.load(data.index);
+                _pagesData = data.pages;
+                console.log(`Loaded search index with ${_pagesData.length} pages`);
+            } else {
+                throw new Error('Invalid search index format');
+            }
+        } catch (error) {
+            console.error('Error loading search index:', error);
+            throw error;
+        }
+    }
+    
+    // Build search index by crawling the site
+    async function buildSearchIndex() {
+        // Initialize index
+        _searchIndex = initializeSearchIndex();
+        
+        try {
+            // Try to load sitemap
+            const pages = await loadSitemap();
+            
+            // Process each page from the sitemap
+            for (const pageUrl of pages) {
+                try {
+                    await indexPage(pageUrl);
+                } catch (error) {
+                    console.warn(`Failed to index page ${pageUrl}:`, error);
+                }
+            }
+            
+            console.log(`Built search index with ${_pagesData.length} pages`);
+        } catch (error) {
+            console.error('Error building search index:', error);
+            throw error;
+        }
+    }
+    
+    // Load sitemap and extract URLs
+    async function loadSitemap() {
+        try {
+            const response = await fetch(_searchConfig.siteMapUrl);
+            
+            if (!response.ok) {
+                throw new Error(`Failed to load sitemap: ${response.status} ${response.statusText}`);
+            }
+            
+            const text = await response.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(text, 'text/xml');
+            
+            // Extract URLs from sitemap
+            const urls = Array.from(xmlDoc.querySelectorAll('url loc')).map(el => el.textContent);
+            
+            if (urls.length === 0) {
+                throw new Error('No URLs found in sitemap');
+            }
+            
+            return urls;
+        } catch (error) {
+            console.warn('Error loading sitemap:', error);
+            
+            // Fallback to single starting page
+            return [_searchConfig.crawlStartUrl];
+        }
+    }
+    
+    // Index a single page
+    async function indexPage(url) {
+        try {
+            // Fetch page content
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                throw new Error(`Failed to fetch page: ${response.status} ${response.statusText}`);
+            }
+            
+            const html = await response.text();
+            
+            // Parse HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // Extract page information
+            const title = doc.querySelector('title')?.textContent || '';
+            const content = extractPageContent(doc);
+            const keywords = extractMetaKeywords(doc);
+            
+            // Create unique ID
+            const id = url.replace(/https?:\/\/[^/]+\//, '').replace(/\//g, '_') || 'home';
+            
+            // Add to pages data
+            const pageData = {
+                id,
+                url,
+                title,
+                content,
+                keywords,
+                type: determinePageType(url, doc),
+                excerpt: createExcerpt(content, 200)
+            };
+            
+            _pagesData.push(pageData);
+            
+            // Add to search index
+            _searchIndex.addDoc(pageData);
+            
+            return pageData;
+        } catch (error) {
+            console.warn(`Error indexing page ${url}:`, error);
+            throw error;
+        }
+    }
+    
+    // Extract content from page
+    function extractPageContent(doc) {
+        // Remove script and style elements
+        doc.querySelectorAll('script, style, header, footer, nav').forEach(el => el.remove());
+        
+        // Extract text from main content areas
+        const mainContent = doc.querySelector('main') || doc.querySelector('.content') || doc.body;
+        
+        // Get all text nodes
+        let text = mainContent.textContent || '';
+        
+        // Clean up text
+        text = text.replace(/\s+/g, ' ').trim();
+        
+        return text;
+    }
+    
+    // Extract meta keywords
+    function extractMetaKeywords(doc) {
+        const metaKeywords = doc.querySelector('meta[name="keywords"]');
+        if (metaKeywords && metaKeywords.getAttribute('content')) {
+            return metaKeywords.getAttribute('content').split(',').map(k => k.trim());
+        }
+        return [];
+    }
+    
+    // Determine page type
+    function determinePageType(url, doc) {
+        // Check if URL contains indicators of document
+        if (url.includes('/documente/') || url.includes('/documents/') || 
+            url.endsWith('.pdf') || url.endsWith('.doc') || url.endsWith('.docx')) {
+            return 'document';
+        }
+        
+        // Check page content for clues
+        const h1 = doc.querySelector('h1')?.textContent || '';
+        if (h1.includes('Document') || h1.includes('Regulament') || 
+            h1.includes('Hotărâre') || h1.includes('Lege')) {
+            return 'document';
+        }
+        
+        // Default to page
+        return 'page';
+    }
+    
+    // Create a text excerpt
+    function createExcerpt(text, maxLength = 200) {
+        if (!text) return '';
+        
+        // Truncate text and add ellipsis if needed
+        if (text.length > maxLength) {
+            let excerpt = text.substring(0, maxLength);
+            
+            // Find last space to avoid cutting words
+            const lastSpace = excerpt.lastIndexOf(' ');
+            if (lastSpace > 0) {
+                excerpt = excerpt.substring(0, lastSpace);
+            }
+            
+            return excerpt + '...';
+        }
+        
+        return text;
+    }
+    
+    // Build fallback search index with basic content
+    function buildFallbackIndex() {
+        console.log('Building fallback search index');
+        
+        // Initialize index
+        _searchIndex = initializeSearchIndex();
+        
+        // Add basic pages
+        const fallbackPages = [
+            {
+                id: 'home',
+                url: '/pls/',
+                title: 'Poliția Locală Slobozia - Pagina principală',
+                content: 'Pagina principală a Poliției Locale Slobozia. Informații despre serviciile oferite, noutăți și evenimente recente.',
+                keywords: ['politia locala', 'slobozia', 'siguranta publica', 'ordine publica'],
+                type: 'page'
+            },
+            {
+                id: 'despre-noi',
+                url: '/pls/despre-noi',
+                title: 'Despre Noi - Poliția Locală Slobozia',
+                content: 'Informații generale despre Poliția Locală Slobozia, istoric, misiune, viziune și valori. Structura organizatorică și principalele atribuții.',
+                keywords: ['despre', 'misiune', 'viziune', 'valori', 'structura', 'organizare', 'istoric'],
+                type: 'page'
+            },
+            {
+                id: 'acte-normative',
+                url: '/pls/acte-normative',
+                title: 'Acte Normative - Poliția Locală Slobozia',
+                content: 'Documente legale care stau la baza funcționării Poliției Locale Slobozia. Lista include: LEGEA poliției locale nr. 155/2010, H.G. nr. 1332/2010, H.C.L. nr. 84/2008 privind adoptarea unor Regulamente şi Reglementări privind transportul în regim de taxi. H.C.L. nr. 257/2007 privind adoptarea Regulamentului pentru înregistrarea, H.C.L. nr. 111/2008 privind reglementarea unor obligaţii ale operatorilor economici.',
+                keywords: ['acte normative', 'legi', 'hotarari', 'regulamente', 'hcl', 'documente', 'legislatie', 'H.C.L. nr. 84/2008', 'H.C.L. nr. 257/2007', 'H.C.L. nr. 111/2008'],
+                type: 'page'
+            },
+            {
+                id: 'contact',
+                url: '/pls/contact',
+                title: 'Contact - Poliția Locală Slobozia',
+                content: 'Date de contact ale Poliției Locale Slobozia. Adresă, numere de telefon, email, program de funcționare și harta locației.',
+                keywords: ['contact', 'adresa', 'telefon', 'email', 'program', 'harta'],
+                type: 'page'
+            },
+            {
+                id: 'petitii',
+                url: '/pls/petitii',
+                title: 'Petiții - Poliția Locală Slobozia',
+                content: 'Informații despre depunerea și procesarea petițiilor, reclamațiilor și sesizărilor. Formular online pentru depunerea petițiilor.',
+                keywords: ['petitii', 'reclamatii', 'sesizari', 'formular', 'plangeri'],
+                type: 'page'
+            }
+        ];
+        
+        // Add pages to index
+        fallbackPages.forEach(page => {
+            _pagesData.push(page);
+            _searchIndex.addDoc(page);
+        });
+        
+        console.log(`Built fallback index with ${_pagesData.length} pages`);
+    }
+    
+    // Store recent searches
+    function addToRecentSearches(query) {
+        if (!query || query.length < 3) return;
+        
+        // Remove if already exists and add to beginning
+        _recentSearches = _recentSearches.filter(item => item !== query);
+        _recentSearches.unshift(query);
+        
+        // Limit size
+        if (_recentSearches.length > _searchConfig.maxRecentSearches) {
+            _recentSearches = _recentSearches.slice(0, _searchConfig.maxRecentSearches);
+        }
+        
+        // Store in localStorage
+        try {
+            localStorage.setItem('pls_recent_searches', JSON.stringify(_recentSearches));
+        } catch (e) {
+            console.warn('Failed to save recent searches to localStorage', e);
+        }
+    }
+    
+    // Generate excerpt with search term context
+    function generateExcerpt(text, searchTerms, maxLength = 200) {
+        if (!text) return '';
+        
+        // Find first occurrence of any search term
+        let bestPos = -1;
+        let bestTerm = '';
+        
+        for (const term of searchTerms) {
+            const normalizedText = normalizeRomanian(text.toLowerCase());
+            const normalizedTerm = normalizeRomanian(term.toLowerCase());
+            const pos = normalizedText.indexOf(normalizedTerm);
+            
+            if (pos !== -1 && (bestPos === -1 || pos < bestPos)) {
+                bestPos = pos;
+                bestTerm = term;
+            }
+        }
+        
+        // If no terms found, use start of text
+        if (bestPos === -1) {
+            if (text.length > maxLength) {
+                return text.substring(0, maxLength) + '...';
+            }
+            return text;
+        }
+        
+        // Create excerpt around search term
+        const contextBefore = Math.floor((maxLength - bestTerm.length) / 2);
+        const contextAfter = maxLength - bestTerm.length - contextBefore;
+        
+        let start = Math.max(0, bestPos - contextBefore);
+        let end = Math.min(text.length, bestPos + bestTerm.length + contextAfter);
+        
+        // Adjust to avoid cutting words
+        if (start > 0) {
+            const prevSpace = text.lastIndexOf(' ', start);
+            if (prevSpace !== -1 && start - prevSpace < 15) {
+                start = prevSpace + 1;
+            }
+        }
+        
+        if (end < text.length) {
+            const nextSpace = text.indexOf(' ', end);
+            if (nextSpace !== -1 && nextSpace - end < 15) {
+                end = nextSpace;
+            }
+        }
+        
+        let excerpt = text.substring(start, end);
+        
+        // Add ellipsis
+        if (start > 0) excerpt = '...' + excerpt;
+        if (end < text.length) excerpt = excerpt + '...';
+        
+        return excerpt;
+    }
+    
+    // Search implementation
+    async function search(query, options = {}) {
+        // Ensure index is ready
+        if (!_indexReady) {
+            await loadSearchIndex();
+        }
+        
+        const defaults = {
+            page: 1,
+            perPage: _searchConfig.defaultPerPage,
+            filters: {},
+            sortBy: 'relevance'
+        };
+        
+        const searchOptions = { ...defaults, ...options };
+        const cacheKey = `${query}|${JSON.stringify(searchOptions)}`;
+        
+        // Check cache
+        if (_searchCache.has(cacheKey)) {
+            return _searchCache.get(cacheKey);
+        }
+        
+        // Add to recent searches
+        addToRecentSearches(query);
+        
+        // Track analytics if enabled
+        if (_searchConfig.trackAnalytics) {
+            trackSearchAnalytics(query, searchOptions);
+        }
+        
+        // Empty query check
+        if (!query.trim() || query.length < _searchConfig.minQueryLength) {
+            return {
+                query,
+                totalResults: 0,
+                currentPage: searchOptions.page,
+                totalPages: 0,
+                perPage: searchOptions.perPage,
+                results: [],
+                suggestions: getSearchSuggestions('', 5),
+                facets: { type: {} }
+            };
+        }
+        
+        try {
+            // Normalize query
+            const normalizedQuery = normalizeRomanian(query);
+            
+            // Search configuration
+            const config = {
+                fields: {
+                    title: { boost: 10 },
+                    content: { boost: 1 },
+                    keywords: { boost: 5 },
+                    url: { boost: 2 }
+                },
+                expand: true,  // Expand query with stemmer
+                bool: 'OR'     // Match any term (more results)
+            };
+            
+            // Perform the search
+            let searchResults = _searchIndex.search(normalizedQuery, config);
+            
+            // Map results to page data
+            let results = searchResults.map(result => {
+                const page = _pagesData.find(p => p.id === result.ref);
+                if (!page) return null;
+                
+                return {
+                    ...page,
+                    score: result.score,
+                    excerpt: generateExcerpt(page.content, normalizedQuery.split(' '), 200)
+                };
+            }).filter(Boolean);
+            
+            // Apply filters
+            if (searchOptions.filters) {
+                for (const [key, value] of Object.entries(searchOptions.filters)) {
+                    if (value) {
+                        results = results.filter(item => item[key] === value);
+                    }
+                }
+            }
+            
+            // Sort results
+            if (searchOptions.sortBy === 'date' && results[0]?.date) {
+                results.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else if (searchOptions.sortBy === 'title') {
+                results.sort((a, b) => a.title.localeCompare(b.title));
+            }
+            // Default is by score, which is already done by elasticlunr
+            
+            // Set up pagination
+            const totalResults = results.length;
+            const totalPages = Math.ceil(totalResults / searchOptions.perPage);
+            const startIndex = (searchOptions.page - 1) * searchOptions.perPage;
+            const endIndex = Math.min(startIndex + searchOptions.perPage, totalResults);
+            
+            // Get paginated results
+            const paginatedResults = results.slice(startIndex, endIndex);
+            
+            // Compute facets
+            const facets = {
+                type: {}
+            };
+            
+            results.forEach(item => {
+                if (item.type) {
+                    facets.type[item.type] = (facets.type[item.type] || 0) + 1;
+                }
+            });
+            
+            // Determine if we have a direct match
+            const directMatch = results.length > 0 && results[0].score > 10 
+                ? results[0] : null;
+            
+            // Generate related searches
+            const relatedSearches = getRelatedSearches(query, results);
+            
+            // Generate search suggestions
+            const suggestions = getSearchSuggestions(query);
+            
+            // Final search result object
+            const result = {
+                query,
+                totalResults,
+                currentPage: searchOptions.page,
+                totalPages,
+                perPage: searchOptions.perPage,
+                results: paginatedResults,
+                directMatch,
+                facets,
+                relatedSearches,
+                suggestions
+            };
+            
+            // Cache the result
+            _searchCache.set(cacheKey, result);
+            
+            // Manage cache size
+            if (_searchCache.size > _searchConfig.maxCacheSize) {
+                const firstKey = _searchCache.keys().next().value;
+                _searchCache.delete(firstKey);
+            }
+            
+            return result;
+        } catch (error) {
+            console.error('Error performing search:', error);
+            
+            // Return empty result on error
+            return {
+                query,
+                totalResults: 0,
+                currentPage: searchOptions.page,
+                totalPages: 0,
+                perPage: searchOptions.perPage,
+                results: [],
+                suggestions: getSearchSuggestions(query, 5),
+                error: error.message
+            };
+        }
+    }
     
     // Generate search suggestions
-    const suggestions = generateSuggestions(query);
-    
-    // Build the result object
-    const result = {
-      query,
-      parsedQuery,
-      totalResults,
-      currentPage: searchOptions.page,
-      totalPages,
-      perPage: searchOptions.perPage,
-      results: processedResults,
-      directMatch,
-      facets,
-      relatedSearches,
-      suggestions
-    };
-    
-    // Cache the results
-    _searchCache.set(cacheKey, result);
-    
-    // Manage cache size
-    if (_searchCache.size > _searchConfig.maxCacheSize) {
-      const firstKey = _searchCache.keys().next().value;
-      _searchCache.delete(firstKey);
-    }
-    
-    return result;
-  }
-  
-  // Server-side search implementation (for future use)
-  async function serverSearch(query, options = {}) {
-    const defaults = {
-      page: 1,
-      perPage: _searchConfig.defaultPerPage,
-      filters: {},
-      sortBy: 'relevance'
-    };
-    
-    const searchOptions = { ...defaults, ...options };
-    const cacheKey = `${query}|${JSON.stringify(searchOptions)}`;
-    
-    // Check cache first
-    if (_searchCache.has(cacheKey)) {
-      return _searchCache.get(cacheKey);
-    }
-    
-    // Add to recent searches
-    if (query.trim()) {
-      addToRecentSearches(query);
-    }
-    
-    // Track analytics if enabled
-    if (_searchConfig.trackAnalytics) {
-      trackSearchAnalytics(query, searchOptions);
-    }
-    
-    try {
-      // Prepare request parameters
-      const params = new URLSearchParams({
-        q: query,
-        page: searchOptions.page,
-        perPage: searchOptions.perPage,
-        sortBy: searchOptions.sortBy,
-        ...Object.entries(searchOptions.filters).reduce((acc, [key, value]) => {
-          acc[`filter_${key}`] = value;
-          return acc;
-        }, {})
-      });
-      
-      // Send request to server
-      const response = await fetch(`${_searchConfig.searchEndpoint}?${params.toString()}`);
-      
-      if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      
-      // Cache the results
-      _searchCache.set(cacheKey, result);
-      
-      // Manage cache size
-      if (_searchCache.size > _searchConfig.maxCacheSize) {
-        const firstKey = _searchCache.keys().next().value;
-        _searchCache.delete(firstKey);
-      }
-      
-      return result;
-    } catch (error) {
-      console.error('Error performing server search:', error);
-      
-      // Fallback to client search if server fails
-      return clientSearch(query, options);
-    }
-  }
-  
-  // Perform search with appropriate method
-  async function performSearch(query, options = {}) {
-    // Update current search state
-    _currentSearchState = {
-      query,
-      page: options.page || 1,
-      filters: options.filters || {},
-      sortBy: options.sortBy || 'relevance'
-    };
-    
-    // Choose search method based on configuration
-    if (_searchConfig.useServerSearch) {
-      return serverSearch(query, options);
-    } else {
-      return clientSearch(query, options);
-    }
-  }
-  
-  // Generate facets from search results for filtering
-  function generateFacets(results) {
-    const facets = {
-      type: {},
-      // Add more facet fields as needed
-    };
-    
-    results.forEach(item => {
-      // Count by type
-      if (item.type) {
-        facets.type[item.type] = (facets.type[item.type] || 0) + 1;
-      }
-      
-      // Add more facet counting as needed
-    });
-    
-    return facets;
-  }
-  
-  // Generate related searches based on results
-  function generateRelatedSearches(query, results, maxRelated = 3) {
-    if (results.length === 0) return [];
-    
-    // Extract terms from top results
-    const termsCount = {};
-    const originalTerms = new Set(processText(query));
-    
-    // Process top results
-    results.slice(0, 10).forEach(item => {
-      // Process title
-      processText(item.title).forEach(term => {
-        if (!originalTerms.has(term)) {
-          termsCount[term] = (termsCount[term] || 0) + 3;
-        }
-      });
-      
-      // Process keywords
-      if (item.keywords) {
-        item.keywords.forEach(keyword => {
-          processText(keyword).forEach(term => {
-            if (!originalTerms.has(term)) {
-              termsCount[term] = (termsCount[term] || 0) + 2;
+    function getSearchSuggestions(query, maxSuggestions = 5) {
+        if (!query || query.length < 2) return [];
+        
+        const normalizedQuery = normalizeRomanian(query.toLowerCase());
+        const suggestions = new Set();
+        
+        // Add recent searches that match
+        _recentSearches.forEach(search => {
+            if (normalizeRomanian(search.toLowerCase()).includes(normalizedQuery)) {
+                suggestions.add(search);
             }
-          });
         });
-      }
-    });
-    
-    // Sort terms by frequency
-    const sortedTerms = Object.entries(termsCount)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([term]) => term);
-    
-    // Combine with original query to create related searches
-    const relatedSearches = [];
-    const originalQuery = query.trim();
-    
-    for (const term of sortedTerms) {
-      if (relatedSearches.length >= maxRelated) break;
-      relatedSearches.push(`${originalQuery} ${term}`);
-    }
-    
-    return relatedSearches;
-  }
-  
-  // Track search analytics
-  function trackSearchAnalytics(query, options) {
-    // In a real implementation, this would send data to an analytics service
-    if (typeof window !== 'undefined' && window.dataLayer) {
-      window.dataLayer.push({
-        event: 'search',
-        searchQuery: query,
-        searchFilters: options.filters,
-        searchPage: options.page,
-        searchSortBy: options.sortBy
-      });
-    }
-    
-    // For future backend analytics
-    if (_searchConfig.useServerSearch) {
-      // Could send a separate analytics call to the server
-      try {
-        navigator.sendBeacon('/api/analytics/search', JSON.stringify({
-          query,
-          timestamp: new Date().toISOString(),
-          options
-        }));
-      } catch (e) {
-        // Silent fail for analytics
-      }
-    }
-  }
-  
-  // Highlight search terms in text
-  function highlightSearchTerms(text, query) {
-    if (!text || !query) return text;
-    
-    const parsedQuery = parseQuery(query);
-    let highlightedText = text;
-    const terms = [
-      ...parsedQuery.terms,
-      ...parsedQuery.exactPhrases,
-      ...parsedQuery.exactPhrases.flatMap(phrase => phrase.split(/\s+/))
-    ];
-    
-    // Sort terms by length (longest first) to avoid nested highlights
-    const sortedTerms = [...new Set(terms)]
-      .filter(term => term.length > 2)
-      .sort((a, b) => b.length - a.length);
-    
-    // Highlight each term
-    for (const term of sortedTerms) {
-      const regex = new RegExp(term.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'gi');
-      highlightedText = highlightedText.replace(regex, match => 
-        `<span class="${_searchConfig.highlightClass}">${match}</span>`
-      );
-    }
-    
-    return highlightedText;
-  }
-  
-  // Initialize search module
-  function init(config = {}) {
-    // Only initialize once
-    if (_instance) return _instance;
-    
-    // Merge configuration
-    _searchConfig = { ..._searchConfig, ...config };
-    
-    // Load recent searches from localStorage
-    try {
-      const storedSearches = localStorage.getItem('pls_recent_searches');
-      if (storedSearches) {
-        _recentSearches = JSON.parse(storedSearches);
-      }
-    } catch (e) {
-      console.warn('Failed to load recent searches from localStorage', e);
-    }
-    
-    // Load the search index either from a hardcoded source or via AJAX
-    if (_searchConfig.indexUrl && !_searchConfig.useServerSearch) {
-      fetch(_searchConfig.indexUrl)
-        .then(response => response.json())
-        .then(data => {
-          _searchIndex = data;
-        })
-        .catch(error => {
-          console.error('Failed to load search index:', error);
-          // Fallback to hardcoded index
-          _searchIndex = window.fallbackSearchIndex || {};
+        
+        // Add suggestions from page titles
+        _pagesData.forEach(page => {
+            if (normalizeRomanian(page.title.toLowerCase()).includes(normalizedQuery)) {
+                suggestions.add(page.title);
+            }
+            
+            // Add from keywords
+            if (page.keywords && Array.isArray(page.keywords)) {
+                page.keywords.forEach(keyword => {
+                    if (normalizeRomanian(keyword.toLowerCase()).includes(normalizedQuery)) {
+                        suggestions.add(keyword);
+                    }
+                });
+            }
         });
-    } else {
-      // Use the hardcoded index as a fallback
-      _searchIndex = window.fallbackSearchIndex || {};
+        
+        return Array.from(suggestions).slice(0, maxSuggestions);
     }
     
-    // Create debounced search function for real-time search
-    const debouncedSearch = debounce(performSearch, _searchConfig.debounceTime);
+    // Generate related searches
+    function getRelatedSearches(query, results, maxRelated = 3) {
+        if (!query || results.length === 0) return [];
+        
+        // Extract terms from query
+        const queryTerms = normalizeRomanian(query).toLowerCase()
+            .split(/\s+/)
+            .filter(term => term.length > 2);
+        
+        if (queryTerms.length === 0) return [];
+        
+        // Extract terms from top results
+        const termCounts = {};
+        
+        // Only use top results
+        const topResults = results.slice(0, 5);
+        
+        topResults.forEach(result => {
+            // Extract terms from title
+            const titleTerms = normalizeRomanian(result.title).toLowerCase()
+                .split(/\s+/)
+                .filter(term => term.length > 2);
+            
+            // Count terms not in query
+            titleTerms.forEach(term => {
+                if (!queryTerms.includes(term)) {
+                    termCounts[term] = (termCounts[term] || 0) + 2;
+                }
+            });
+            
+            // Extract from content (with lower weight)
+            const contentTerms = normalizeRomanian(result.content.substring(0, 1000)).toLowerCase()
+                .split(/\s+/)
+                .filter(term => term.length > 3);
+            
+            contentTerms.forEach(term => {
+                if (!queryTerms.includes(term)) {
+                    termCounts[term] = (termCounts[term] || 0) + 1;
+                }
+            });
+        });
+        
+        // Sort terms by count
+        const topTerms = Object.entries(termCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([term]) => term);
+        
+        // Create related searches by combining with original query
+        const relatedSearches = [];
+        
+        for (const term of topTerms) {
+            if (relatedSearches.length >= maxRelated) break;
+            relatedSearches.push(`${query} ${term}`);
+        }
+        
+        return relatedSearches;
+    }
     
-    // Create the instance
-    _instance = {
-      search: performSearch,
-      searchRealTime: debouncedSearch,
-      highlightSearchTerms,
-      getSearchSuggestions: generateSuggestions,
-      clearSearchCache: () => _searchCache.clear(),
-      getRecentSearches: () => [..._recentSearches],
-      clearRecentSearches: () => {
-        _recentSearches = [];
-        localStorage.removeItem('pls_recent_searches');
-      },
-      getCurrentSearchState: () => ({ ..._currentSearchState }),
-      configure: newConfig => {
-        _searchConfig = { ..._searchConfig, ...newConfig };
+    // Highlight search terms in text
+    function highlightSearchTerms(text, query) {
+        if (!text || !query) return text;
+        
+        // Extract query terms
+        const normalizedText = text;
+        const queryTerms = normalizeRomanian(query).toLowerCase()
+            .split(/\s+/)
+            .filter(term => term.length > 2)
+            .sort((a, b) => b.length - a.length); // Highlight longest terms first
+        
+        let highlightedText = text;
+        
+        // Highlight each term
+        for (const term of queryTerms) {
+            const regex = new RegExp(`(${term.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi');
+            highlightedText = highlightedText.replace(regex, `<span class="${_searchConfig.highlightClass}">$1</span>`);
+        }
+        
+        return highlightedText;
+    }
+    
+    // Track search analytics
+    function trackSearchAnalytics(query, options) {
+        // Simple console analytics for now
+        console.log(`Search analytics - Query: ${query}, Options:`, options);
+        
+        // In a real implementation, send to your analytics service
+        if (typeof window !== 'undefined' && window.dataLayer) {
+            window.dataLayer.push({
+                event: 'search',
+                searchQuery: query,
+                searchFilters: options.filters,
+                searchPage: options.page,
+                searchSortBy: options.sortBy
+            });
+        }
+    }
+    
+    // Initialize
+    function init(config = {}) {
+        // Return existing instance if already initialized
+        if (_instance) return _instance;
+        
+        // Merge configuration
+        Object.assign(_searchConfig, config);
+        
+        // Load recent searches from localStorage
+        try {
+            const storedSearches = localStorage.getItem('pls_recent_searches');
+            if (storedSearches) {
+                _recentSearches = JSON.parse(storedSearches);
+            }
+        } catch (e) {
+            console.warn('Failed to load recent searches from localStorage', e);
+        }
+        
+        // Start loading the search index
+        loadSearchIndex().catch(err => {
+            console.error('Error during search index initialization:', err);
+        });
+        
+        // Create debounced search function for real-time search
+        const debouncedSearch = debounce(search, _searchConfig.debounceTime);
+        
+        // Create the public API
+        _instance = {
+            search,
+            searchRealTime: debouncedSearch,
+            highlightSearchTerms,
+            getSearchSuggestions,
+            clearSearchCache: () => _searchCache.clear(),
+            getRecentSearches: () => [..._recentSearches],
+            clearRecentSearches: () => {
+                _recentSearches = [];
+                localStorage.removeItem('pls_recent_searches');
+            },
+            isReady: () => _indexReady,
+            waitForReady: async () => {
+                if (!_indexReady) {
+                    await loadSearchIndex();
+                }
+                return _indexReady;
+            },
+            configure: newConfig => {
+                Object.assign(_searchConfig, newConfig);
+                return _instance;
+            }
+        };
+        
         return _instance;
-      }
-    };
+    }
     
-    return _instance;
-  }
-  
-  // Return the public API
-  return {
-    init
-  };
+    // Return public API
+    return {
+        init
+    };
 })();
 
-// The sample search index for offline/fallback mode
-window.fallbackSearchIndex = {
-    // Main pages
-    "acasa": {
-        url: "/pls/",
-        title: "Acasă - Poliția Locală Slobozia",
-        content: "Pagina principală a Poliției Locale Slobozia. Informații despre serviciile oferite, noutăți și evenimente recente.",
-        keywords: ["politia locala", "slobozia", "siguranta publica", "ordine publica"],
-        type: "page",
-        importance: 10
-    },
-    "despre-noi": {
-        url: "/pls/despre-noi",
-        title: "Despre Noi - Poliția Locală Slobozia",
-        content: "Informații generale despre Poliția Locală Slobozia, istoric, misiune, viziune și valori. Structura organizatorică și principalele atribuții.",
-        keywords: ["despre", "misiune", "viziune", "valori", "structura", "organizare", "istoric"],
-        type: "page",
-        importance: 9
-    },
-    "gdpr": {
-        url: "/pls/gdpr",
-        title: "GDPR - Poliția Locală Slobozia",
-        content: "Informații despre conformitatea cu Regulamentul General privind Protecția Datelor (GDPR). Politica de confidențialitate și prelucrare a datelor cu caracter personal.",
-        keywords: ["gdpr", "protectia datelor", "confidentialitate", "date personale", "regulament"],
-        type: "page",
-        importance: 8
-    },
-    "contact": {
-        url: "/pls/contact",
-        title: "Contact - Poliția Locală Slobozia",
-        content: "Date de contact ale Poliției Locale Slobozia. Adresă, numere de telefon, email, program de funcționare și harta locației.",
-        keywords: ["contact", "adresa", "telefon", "email", "program", "harta"],
-        type: "page",
-        importance: 9
-    },
-    "petitii": {
-        url: "/pls/petitii",
-        title: "Petiții - Poliția Locală Slobozia",
-        content: "Informații despre depunerea și procesarea petițiilor, reclamațiilor și sesizărilor. Formular online pentru depunerea petițiilor.",
-        keywords: ["petitii", "reclamatii", "sesizari", "formular", "plangeri"],
-        type: "page",
-        importance: 8
-    },
-    "cariere": {
-        url: "/pls/cariere",
-        title: "Cariere - Poliția Locală Slobozia",
-        content: "Oportunități de carieră în cadrul Poliției Locale Slobozia. Posturi vacante, condiții de participare la concursuri și etapele procesului de recrutare.",
-        keywords: ["cariere", "job", "angajare", "recrutare", "concurs", "posturi vacante"],
-        type: "page",
-        importance: 7
-    },
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if elasticlunr is available
+    if (typeof elasticlunr === 'undefined') {
+        console.error('Elasticlunr library not found! Please include elasticlunr.js before this script.');
+        
+        // Add script tag to load elasticlunr
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/elasticlunr/0.9.6/elasticlunr.min.js';
+        script.onload = function() {
+            console.log('Elasticlunr loaded dynamically');
+            initSearch();
+        };
+        script.onerror = function() {
+            console.error('Failed to load Elasticlunr dynamically');
+        };
+        document.head.appendChild(script);
+    } else {
+        initSearch();
+    }
     
-    // Documents
-    "og-43-1997": {
-        url: "/pls/documente/og-43-1997",
-        title: "O.G. nr. 43/1997 privind regimul drumurilor",
-        content: "Ordonanța Guvernului nr. 43/1997 privind regimul drumurilor, republicată, cu modificările și completările ulterioare. Document legislativ important pentru activitatea poliției locale.",
-        keywords: ["og 43", "og 43/1997", "ordonanta", "regimul drumurilor", "legislatie", "documente"],
-        type: "document",
-        importance: 7
-    },
-    "legea-155-2010": {
-        url: "/pls/documente/legea-155-2010",
-        title: "Legea nr. 155/2010 a poliției locale",
-        content: "Legea nr. 155/2010 a poliției locale, republicată, cu modificările și completările ulterioare. Cadrul legal de organizare și funcționare a poliției locale.",
-        keywords: ["legea 155", "legea 155/2010", "politia locala", "lege", "legislatie", "documente"],
-        type: "document",
-        importance: 9
-    },
-    "hcl-1-2011": {
-        url: "/pls/documente/hcl-1-2011",
-        title: "HCL nr. 1/2011 privind înființarea Poliției Locale Slobozia",
-        content: "Hotărârea Consiliului Local nr. 1/2011 privind înființarea Poliției Locale Slobozia ca serviciu public local, cu personalitate juridică.",
-        keywords: ["hcl 1", "hcl 1/2011", "hotarare", "infiintare", "consiliu local", "documente"],
-        type: "document", 
-        importance: 8
-    },
+    function initSearch() {
+        // Initialize the search module
+        window.siteSearch = SiteSearch.init({
+            useServerIndex: false,  // Build index on client (change to true in production with a pre-built index)
+            indexUrl: '/pls/search-index.json',
+            siteMapUrl: '/pls/sitemap.xml',
+            crawlStartUrl: '/pls/',
+            maxResults: 100,
+            debounceTime: 300
+        });
+        
+        // Attach to search input in header (if any)
+        const headerSearchInput = document.querySelector('.search-bar input');
+        if (headerSearchInput) {
+            headerSearchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                if (query.length >= 2) {
+                    // Get suggestions for header search
+                    const suggestions = window.siteSearch.getSearchSuggestions(query);
+                    
+                    // Display suggestions in header
+                    displayHeaderSuggestions(suggestions);
+                } else {
+                    // Clear suggestions
+                    hideHeaderSuggestions();
+                }
+            });
+            
+            // Handle form submission
+            const searchForm = headerSearchInput.closest('form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const query = headerSearchInput.value.trim();
+                    if (query.length >= 2) {
+                        // Redirect to search page
+                        window.location.href = `/pls/cautare?q=${encodeURIComponent(query)}`;
+                    }
+                });
+            }
+        }
+        
+        // Check if we're on the search page
+        const searchPageInput = document.getElementById('search-input');
+        if (searchPageInput) {
+            // Get query from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q') || '';
+            
+            // Set the search input value
+            searchPageInput.value = query;
+            
+            // Perform search if we have a query
+            if (query) {
+                performSearch(query);
+            }
+            
+            // Handle search form submission
+            const searchForm = document.getElementById('search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const query = searchPageInput.value.trim();
+                    if (query) {
+                        // Update URL
+                        const url = new URL(window.location);
+                        url.searchParams.set('q', query);
+                        url.searchParams.set('page', '1');
+                        window.history.pushState({}, '', url);
+                        
+                        // Perform search
+                        performSearch(query);
+                    }
+                });
+            }
+            
+            // Handle real-time suggestions
+            searchPageInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                if (query.length >= 2) {
+                    // Get and display suggestions
+                    const suggestions = window.siteSearch.getSearchSuggestions(query);
+                    displaySearchSuggestions(suggestions);
+                } else {
+                    // Clear suggestions
+                    document.getElementById('search-suggestions').innerHTML = '';
+                }
+            });
+        }
+    }
     
-    // Additional pages
-    "acte-normative": {
-        url: "/pls/acte-normative",
-        title: "Acte Normative - Poliția Locală Slobozia",
-        content: "Lista actelor normative care reglementează organizarea și funcționarea Poliției Locale Slobozia. Legi, ordonanțe, hotărâri și alte documente relevante.",
-        keywords: ["acte normative", "legi", "ordonante", "hotarari", "legislatie"],
-        type: "page",
-        importance: 7
-    },
-    "atributii": {
-        url: "/pls/atributii",
-        title: "Atribuții - Poliția Locală Slobozia",
-        content: "Atribuțiile Poliției Locale Slobozia conform legii. Competențe în domeniul ordinii publice, circulației, mediului, comerțului și construcțiilor.",
-        keywords: ["atributii", "competente", "ordine publica", "circulatie", "mediu", "comert"],
-        type: "page",
-        importance: 8
-    },
-    "conducere": {
-        url: "/pls/conducere",
-        title: "Conducere - Poliția Locală Slobozia",
-        content: "Prezentarea echipei de conducere a Poliției Locale Slobozia. Director executiv, directori adjuncți și șefi de servicii.",
-        keywords: ["conducere", "director", "management", "echipa", "leadership"],
-        type: "page",
-        importance: 7
+    // Display suggestions in header search
+    function displayHeaderSuggestions(suggestions) {
+        if (!suggestions || suggestions.length === 0) {
+            hideHeaderSuggestions();
+            return;
+        }
+        
+        // Look for existing suggestions container or create it
+        let suggestionsContainer = document.querySelector('.header-search-suggestions');
+        if (!suggestionsContainer) {
+            suggestionsContainer = document.createElement('div');
+            suggestionsContainer.className = 'header-search-suggestions';
+            document.querySelector('.search-bar').appendChild(suggestionsContainer);
+        }
+        
+        // Generate HTML for suggestions
+        let html = '<ul>';
+        suggestions.forEach(suggestion => {
+            html += `
+                <li>
+                    <a href="/pls/cautare?q=${encodeURIComponent(suggestion)}">
+                        <i class="material-icons">search</i>
+                        ${suggestion}
+                    </a>
+                </li>
+            `;
+        });
+        html += '</ul>';
+        
+        // Set content and show
+        suggestionsContainer.innerHTML = html;
+        suggestionsContainer.style.display = 'block';
+    }
+    
+    // Hide header suggestions
+    function hideHeaderSuggestions() {
+        const suggestionsContainer = document.querySelector('.header-search-suggestions');
+        if (suggestionsContainer) {
+            suggestionsContainer.style.display = 'none';
+        }
+    }
+    
+    // Display search suggestions on search page
+    function displaySearchSuggestions(suggestions) {
+        const suggestionsContainer = document.getElementById('search-suggestions');
+        if (!suggestionsContainer) return;
+        
+        if (!suggestions || suggestions.length === 0) {
+            suggestionsContainer.innerHTML = '';
+            return;
+        }
+        
+        let html = '<ul>';
+        suggestions.forEach(suggestion => {
+            html += `
+                <li>
+                    <a href="#" onclick="quickSearch('${suggestion}'); return false;">
+                        ${suggestion}
+                    </a>
+                </li>
+            `;
+        });
+        html += '</ul>';
+        
+        suggestionsContainer.innerHTML = html;
+    }
+    
+    // Perform search on search page
+    async function performSearch(query, page = 1, sortBy = 'relevance', filters = {}) {
+        const resultList = document.getElementById('result-list');
+        if (!resultList) return;
+        
+        // Show loading state
+        resultList.innerHTML = `
+            <div class="search-loading">
+                <div class="search-loading-spinner"></div>
+                <p>Se încarcă rezultatele căutării...</p>
+            </div>
+        `;
+        
+        try {
+            // Ensure search module is ready
+            await window.siteSearch.waitForReady();
+            
+            // Perform search
+            const searchResult = await window.siteSearch.search(query, {
+                page,
+                perPage: 10,
+                sortBy,
+                filters
+            });
+            
+            // Update search summary
+            const searchSummary = document.getElementById('search-summary');
+            if (searchSummary) {
+                searchSummary.innerHTML = `
+                    S-au găsit <strong>${searchResult.totalResults}</strong> rezultate pentru 
+                    <span class="search-term">"${query}"</span>
+                `;
+            }
+            
+            // Handle direct match if any
+            const directMatchContainer = document.getElementById('direct-match-container');
+            if (directMatchContainer) {
+                if (searchResult.directMatch) {
+                    directMatchContainer.innerHTML = `
+                        <div class="direct-match">
+                            <div class="direct-match-icon">
+                                <i class="material-icons">${searchResult.directMatch.type === 'document' ? 'description' : 'find_in_page'}</i>
+                            </div>
+                            <div class="direct-match-content">
+                                <h3>Rezultat exact găsit</h3>
+                                <p>${searchResult.directMatch.title}</p>
+                                <a href="${searchResult.directMatch.url}" class="direct-match-link">
+                                    Accesează direct
+                                    <i class="material-icons">arrow_forward</i>
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    directMatchContainer.innerHTML = '';
+                }
+            }
+            
+            // Update filter counts
+            updateFilterCounts(searchResult);
+            
+            // Display results
+            if (searchResult.totalResults > 0) {
+                displaySearchResults(searchResult, query);
+                displayPagination(searchResult.totalPages, page);
+                displayRelatedSearches(searchResult);
+            } else {
+                showNoResultsState(query, searchResult);
+            }
+        } catch (error) {
+            console.error('Error performing search:', error);
+            resultList.innerHTML = `
+                <div class="no-results">
+                    <div class="no-results-icon"><i class="material-icons">error</i></div>
+                    <h3>Eroare de căutare</h3>
+                    <p>A apărut o eroare în timpul căutării: ${error.message}</p>
+                    <p>Vă rugăm să încercați din nou mai târziu.</p>
+                </div>
+            `;
+        }
+    }
+    
+    // Update filter counts in sidebar
+    function updateFilterCounts(searchResult) {
+        // Update total count
+        const countAll = document.getElementById('count-all');
+        if (countAll) {
+            countAll.textContent = searchResult.totalResults || 0;
+        }
+        
+        // Update type filter counts
+        const facets = searchResult.facets || {};
+        const countPage = document.getElementById('count-page');
+        const countDocument = document.getElementById('count-document');
+        
+        if (countPage && facets.type) {
+            countPage.textContent = facets.type.page || 0;
+        }
+        
+        if (countDocument && facets.type) {
+            countDocument.textContent = facets.type.document || 0;
+        }
+    }
+    
+    // Display search results
+    function displaySearchResults(searchResult, query) {
+        const resultList = document.getElementById('result-list');
+        if (!resultList) return;
+        
+        let html = '';
+        
+        // Add each result
+        searchResult.results.forEach(result => {
+            // Determine icon based on result type
+            const icon = result.type === 'document' ? 'description' : 'insert_drive_file';
+            
+            // Extract section from URL
+            const urlParts = result.url.split('/');
+            const section = urlParts.length > 2 ? urlParts[2] : 'general';
+            
+            // Generate highlighted excerpt
+            const highlightedExcerpt = window.siteSearch.highlightSearchTerms(result.excerpt || '', query);
+            
+            html += `
+                <div class="result-card" data-type="${result.type}" data-section="${section}">
+                    <div class="result-meta">
+                        <div class="result-type">
+                            <i class="material-icons">${icon}</i>
+                            ${result.type === 'document' ? 'Document' : 'Pagină'}
+                        </div>
+                        <a href="${result.url}" class="result-url" title="${result.url}">${result.url}</a>
+                    </div>
+                    <h3 class="result-title">
+                        <a href="${result.url}">${window.siteSearch.highlightSearchTerms(result.title, query)}</a>
+                    </h3>
+                    <div class="result-excerpt">
+                        ${highlightedExcerpt}
+                    </div>
+                    <div class="result-actions">
+                        <a href="${result.url}" class="result-action">
+                            <i class="material-icons">visibility</i>
+                            Vizualizare
+                        </a>
+                        <a href="#" class="result-action" onclick="shareResult('${result.url}', '${result.title.replace(/'/g, "\\'")}'); return false;">
+                            <i class="material-icons">share</i>
+                            Distribuie
+                        </a>
+                    </div>
+                </div>
+            `;
+        });
+        
+        resultList.innerHTML = html;
+    }
+    
+    // Display pagination
+    function displayPagination(totalPages, currentPage) {
+        const paginationContainer = document.getElementById('search-pagination');
+        if (!paginationContainer) return;
+        
+        if (totalPages <= 1) {
+            paginationContainer.innerHTML = '';
+            return;
+        }
+        
+        let html = '';
+        
+        // Previous button
+        html += `
+            <a href="#" 
+               class="pagination-nav ${currentPage <= 1 ? 'disabled' : ''}" 
+               onclick="navigateToPage(${currentPage - 1}); return false;"
+               ${currentPage <= 1 ? 'aria-disabled="true"' : ''}>
+                <i class="material-icons">chevron_left</i>
+            </a>
+        `;
+        
+        // Page numbers
+        const maxPages = 5;
+        const startPage = Math.max(1, Math.min(currentPage - Math.floor(maxPages / 2), totalPages - maxPages + 1));
+        const endPage = Math.min(totalPages, startPage + maxPages - 1);
+        
+        for (let i = startPage; i <= endPage; i++) {
+            html += `
+                <a href="#" 
+                   class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+                   onclick="navigateToPage(${i}); return false;"
+                   aria-current="${i === currentPage ? 'page' : 'false'}">
+                    ${i}
+                </a>
+            `;
+        }
+        
+        // Next button
+        html += `
+            <a href="#" 
+               class="pagination-nav ${currentPage >= totalPages ? 'disabled' : ''}" 
+               onclick="navigateToPage(${currentPage + 1}); return false;"
+               ${currentPage >= totalPages ? 'aria-disabled="true"' : ''}>
+                <i class="material-icons">chevron_right</i>
+            </a>
+        `;
+        
+        paginationContainer.innerHTML = html;
+    }
+    
+    // Display related searches
+    function displayRelatedSearches(searchResult) {
+        if (!searchResult.relatedSearches || searchResult.relatedSearches.length === 0) {
+            return;
+        }
+        
+        const container = document.createElement('div');
+        container.className = 'related-searches';
+        container.innerHTML = `
+            <h3>Căutări similare:</h3>
+            <div class="suggestion-list">
+                ${searchResult.relatedSearches.map(term => 
+                    `<a href="#" class="suggestion-item" onclick="quickSearch('${term}'); return false;">${term}</a>`
+                ).join('')}
+            </div>
+        `;
+        
+        // Remove any existing related searches
+        const existingRelated = document.querySelector('.related-searches');
+        if (existingRelated) {
+            existingRelated.remove();
+        }
+        
+        // Add to page
+        const pagination = document.querySelector('.search-pagination');
+        if (pagination) {
+            pagination.after(container);
+        }
+    }
+    
+    // Show no results state
+    function showNoResultsState(query, searchResult) {
+        const resultList = document.getElementById('result-list');
+        if (!resultList) return;
+        
+        let suggestionsHTML = '';
+        
+        // Add search suggestions if available
+        if (searchResult.suggestions && searchResult.suggestions.length > 0) {
+            suggestionsHTML = `
+                <h4>Încercați în schimb:</h4>
+                <div class="suggestion-list">
+                    ${searchResult.suggestions.map(suggestion => 
+                        `<a href="#" class="suggestion-item" onclick="quickSearch('${suggestion}'); return false;">${suggestion}</a>`
+                    ).join('')}
+                </div>
+            `;
+        }
+        
+        resultList.innerHTML = `
+            <div class="no-results">
+                <div class="no-results-icon"><i class="material-icons">search_off</i></div>
+                <h3>Niciun rezultat găsit</h3>
+                <p>Nu am găsit niciun rezultat pentru căutarea "${query}". Vă rugăm să încercați alte cuvinte cheie.</p>
+                ${suggestionsHTML}
+                <div class="suggestion-list">
+                    <a href="#" class="suggestion-item" onclick="quickSearch('gdpr'); return false;">GDPR</a>
+                    <a href="#" class="suggestion-item" onclick="quickSearch('petitii'); return false;">Petiții</a>
+                    <a href="#" class="suggestion-item" onclick="quickSearch('contact'); return false;">Contact</a>
+                    <a href="#" class="suggestion-item" onclick="quickSearch('cariere'); return false;">Cariere</a>
+                </div>
+            </div>
+        `;
+        
+        // Clear pagination
+        const paginationContainer = document.getElementById('search-pagination');
+        if (paginationContainer) {
+            paginationContainer.innerHTML = '';
+        }
+    }
+});
+
+// Global functions needed for the search page
+window.navigateToPage = function(page) {
+    const url = new URL(window.location);
+    const query = url.searchParams.get('q') || '';
+    const sortBy = url.searchParams.get('sortBy') || 'relevance';
+    
+    // Update URL parameters
+    url.searchParams.set('page', page);
+    window.history.pushState({}, '', url);
+    
+    // Get filters
+    const filters = {};
+    const typeFilter = url.searchParams.get('type');
+    const sectionFilter = url.searchParams.get('section');
+    
+    if (typeFilter) filters.type = typeFilter;
+    if (sectionFilter) filters.section = sectionFilter;
+    
+    // Execute search
+    window.siteSearch.search(query, {
+        page,
+        perPage: 10,
+        sortBy,
+        filters
+    }).then(result => {
+        // Update UI
+        const searchSummary = document.getElementById('search-summary');
+        if (searchSummary) {
+            searchSummary.innerHTML = `
+                S-au găsit <strong>${result.totalResults}</strong> rezultate pentru 
+                <span class="search-term">"${query}"</span>
+            `;
+        }
+        
+        if (result.totalResults > 0) {
+            displaySearchResults(result, query);
+            displayPagination(result.totalPages, page);
+        } else {
+            showNoResultsState(query, result);
+        }
+    }).catch(error => {
+        console.error('Error during pagination:', error);
+    });
+    
+    // Scroll to top of results
+    document.querySelector('.search-container').scrollIntoView({ behavior: 'smooth' });
+};
+
+window.quickSearch = function(query) {
+    if (!query) return;
+    
+    // Update search input
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.value = query;
+    }
+    
+    // Update URL
+    const url = new URL(window.location);
+    url.searchParams.set('q', query);
+    url.searchParams.set('page', '1');
+    window.history.pushState({}, '', url);
+    
+    // Clear search suggestions
+    const suggestionsContainer = document.getElementById('search-suggestions');
+    if (suggestionsContainer) {
+        suggestionsContainer.innerHTML = '';
+    }
+    
+    // Perform search
+    window.siteSearch.search(query, {
+        page: 1,
+        perPage: 10,
+        sortBy: url.searchParams.get('sortBy') || 'relevance'
+    }).then(result => {
+        // Update UI
+        const searchSummary = document.getElementById('search-summary');
+        if (searchSummary) {
+            searchSummary.innerHTML = `
+                S-au găsit <strong>${result.totalResults}</strong> rezultate pentru 
+                <span class="search-term">"${query}"</span>
+            `;
+        }
+        
+        if (result.totalResults > 0) {
+            displaySearchResults(result, query);
+            displayPagination(result.totalPages, 1);
+            displayRelatedSearches(result);
+        } else {
+            showNoResultsState(query, result);
+        }
+    }).catch(error => {
+        console.error('Error during quick search:', error);
+    });
+};
+
+window.shareResult = function(url, title) {
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            url: url
+        }).catch(console.error);
+    } else {
+        // Fallback - copy to clipboard
+        const tempInput = document.createElement('input');
+        document.body.appendChild(tempInput);
+        tempInput.value = url;
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        
+        alert('Link-ul a fost copiat în clipboard!');
     }
 };
 
-// Create a DOM-ready function
-function onDOMReady(fn) {
-  if (document.readyState !== 'loading') {
-    fn();
-  } else {
-    document.addEventListener('DOMContentLoaded', fn);
-  }
+// Helper functions for DOM manipulation (internal use)
+function displaySearchResults(searchResult, query) {
+    const resultList = document.getElementById('result-list');
+    if (!resultList || !window.siteSearch) return;
+    
+    let html = '';
+    
+    // Add each result
+    searchResult.results.forEach(result => {
+        // Determine icon based on result type
+        const icon = result.type === 'document' ? 'description' : 'insert_drive_file';
+        
+        // Extract section from URL
+        const urlParts = result.url.split('/');
+        const section = urlParts.length > 2 ? urlParts[2] : 'general';
+        
+        // Generate highlighted excerpt
+        const highlightedExcerpt = window.siteSearch.highlightSearchTerms(result.excerpt || '', query);
+        const highlightedTitle = window.siteSearch.highlightSearchTerms(result.title, query);
+        
+        html += `
+            <div class="result-card" data-type="${result.type}" data-section="${section}">
+                <div class="result-meta">
+                    <div class="result-type">
+                        <i class="material-icons">${icon}</i>
+                        ${result.type === 'document' ? 'Document' : 'Pagină'}
+                    </div>
+                    <a href="${result.url}" class="result-url" title="${result.url}">${result.url}</a>
+                </div>
+                <h3 class="result-title">
+                    <a href="${result.url}">${highlightedTitle}</a>
+                </h3>
+                <div class="result-excerpt">
+                    ${highlightedExcerpt}
+                </div>
+                <div class="result-actions">
+                    <a href="${result.url}" class="result-action">
+                        <i class="material-icons">visibility</i>
+                        Vizualizare
+                    </a>
+                    <a href="#" class="result-action" onclick="shareResult('${result.url}', '${result.title.replace(/'/g, "\\'")}'); return false;">
+                        <i class="material-icons">share</i>
+                        Distribuie
+                    </a>
+                </div>
+            </div>
+        `;
+    });
+    
+    resultList.innerHTML = html;
 }
 
-// Initialize search when DOM is ready
-onDOMReady(() => {
-  // Initialize with default configuration
-  window.siteSearch = SiteSearch.init({
-    // Configuration options
-    useServerSearch: false, // Set to true when backend is available
-    indexUrl: '/pls/api/search-index.json', // URL to load search index
-    debounceTime: 300,
-    minQueryLength: 2,
-    maxCacheSize: 50,
-    maxResults: 100,
-    defaultPerPage: 10,
-    fuzzyMatchThreshold: 0.7,
-    trackAnalytics: true,
-    highlightClass: 'search-highlight'
-  });
-  
-  // Attach to search form if exists
-  const searchForm = document.getElementById('search-form');
-  const searchInput = document.getElementById('search-input');
-  const searchResults = document.getElementById('search-results');
-  const searchSuggestions = document.getElementById('search-suggestions');
-  
-  if (searchForm && searchInput) {
-    // Handle form submission
-    searchForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const query = searchInput.value.trim();
-      
-      if (query.length >= 2) {
-        const results = await window.siteSearch.search(query);
-        displaySearchResults(results);
-      }
-    });
+function displayPagination(totalPages, currentPage) {
+    const paginationContainer = document.getElementById('search-pagination');
+    if (!paginationContainer) return;
     
-    // Handle real-time search
-    searchInput.addEventListener('input', async () => {
-      const query = searchInput.value.trim();
-      
-      if (query.length >= 2) {
-        // Get suggestions while typing
-        const suggestions = window.siteSearch.getSearchSuggestions(query);
-        displaySearchSuggestions(suggestions);
-        
-        // Perform real-time search
-        const results = await window.siteSearch.searchRealTime(query);
-        displaySearchResults(results);
-      } else if (query.length === 0) {
-        // Clear results when input is empty
-        if (searchResults) {
-          searchResults.innerHTML = '';
-        }
-        
-        if (searchSuggestions) {
-          searchSuggestions.innerHTML = '';
-        }
-      }
-    });
-  }
-  
-  // Get URL parameters for search
-  const urlParams = new URLSearchParams(window.location.search);
-  const queryParam = urlParams.get('q');
-  
-  // If search query is in URL, perform search
-  if (queryParam && searchInput) {
-    searchInput.value = queryParam;
-    window.siteSearch.search(queryParam).then(displaySearchResults);
-  }
-});
-
-// Display search results
-function displaySearchResults(results) {
-  const searchResults = document.getElementById('search-results');
-  if (!searchResults) return;
-  
-  if (results.totalResults === 0) {
-    searchResults.innerHTML = `
-      <div class="no-results">
-        <p>Nu s-au găsit rezultate pentru <strong>${results.query}</strong>.</p>
-        <div class="search-suggestions">
-          <h3>Încercați:</h3>
-          <ul>
-            <li>Verificați ortografia cuvintelor introduse</li>
-            <li>Folosiți cuvinte-cheie diferite</li>
-            <li>Folosiți termeni mai generali</li>
-          </ul>
-        </div>
-      </div>
-    `;
-    return;
-  }
-  
-  // Build results HTML
-  let resultsHTML = `
-    <div class="search-summary">
-      <p>S-au găsit <strong>${results.totalResults}</strong> rezultate pentru <strong>${results.query}</strong></p>
-    </div>
-    <div class="search-results-list">
-  `;
-  
-  // Add direct match notification if exists
-  if (results.directMatch) {
-    resultsHTML += `
-      <div class="direct-match">
-        <p>Rezultat direct: <a href="${results.directMatch.url}">${results.directMatch.title}</a></p>
-      </div>
-    `;
-  }
-  
-  // Add each result
-  results.results.forEach(item => {
-    let excerpt = item.excerpt ? 
-      window.siteSearch.highlightSearchTerms(item.excerpt, results.query) : '';
-    
-    resultsHTML += `
-      <div class="search-result-item">
-        <h3><a href="${item.url}">${window.siteSearch.highlightSearchTerms(item.title, results.query)}</a></h3>
-        <div class="search-result-url">${item.url}</div>
-        ${excerpt ? `<div class="search-result-excerpt">${excerpt}</div>` : ''}
-        <div class="search-result-meta">
-          <span class="search-result-type">${item.type === 'document' ? 'Document' : 'Pagină'}</span>
-        </div>
-      </div>
-    `;
-  });
-  
-  // Add pagination if needed
-  if (results.totalPages > 1) {
-    resultsHTML += '<div class="search-pagination">';
-    
-    for (let i = 1; i <= results.totalPages; i++) {
-      resultsHTML += `
-        <a href="#" class="search-page-link ${i === results.currentPage ? 'active' : ''}" 
-           data-page="${i}">${i}</a>
-      `;
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
     }
     
-    resultsHTML += '</div>';
-  }
-  
-  // Add related searches if available
-  if (results.relatedSearches && results.relatedSearches.length > 0) {
-    resultsHTML += `
-      <div class="related-searches">
+    let html = '';
+    
+    // Previous button
+    html += `
+        <a href="#" 
+           class="pagination-nav ${currentPage <= 1 ? 'disabled' : ''}" 
+           onclick="navigateToPage(${currentPage - 1}); return false;"
+           ${currentPage <= 1 ? 'aria-disabled="true"' : ''}>
+            <i class="material-icons">chevron_left</i>
+        </a>
+    `;
+    
+    // Page numbers
+    const maxPages = 5;
+    const startPage = Math.max(1, Math.min(currentPage - Math.floor(maxPages / 2), totalPages - maxPages + 1));
+    const endPage = Math.min(totalPages, startPage + maxPages - 1);
+    
+    for (let i = startPage; i <= endPage; i++) {
+        html += `
+            <a href="#" 
+               class="pagination-btn ${i === currentPage ? 'active' : ''}" 
+               onclick="navigateToPage(${i}); return false;"
+               aria-current="${i === currentPage ? 'page' : 'false'}">
+                ${i}
+            </a>
+        `;
+    }
+    
+    // Next button
+    html += `
+        <a href="#" 
+           class="pagination-nav ${currentPage >= totalPages ? 'disabled' : ''}" 
+           onclick="navigateToPage(${currentPage + 1}); return false;"
+           ${currentPage >= totalPages ? 'aria-disabled="true"' : ''}>
+            <i class="material-icons">chevron_right</i>
+        </a>
+    `;
+    
+    paginationContainer.innerHTML = html;
+}
+
+function displayRelatedSearches(searchResult) {
+    if (!searchResult.relatedSearches || searchResult.relatedSearches.length === 0) {
+        return;
+    }
+    
+    const container = document.createElement('div');
+    container.className = 'related-searches';
+    container.innerHTML = `
         <h3>Căutări similare:</h3>
-        <ul>
-          ${results.relatedSearches.map(term => 
-            `<li><a href="/pls/cautare?q=${encodeURIComponent(term)}">${term}</a></li>`
-          ).join('')}
-        </ul>
-      </div>
+        <div class="suggestion-list">
+            ${searchResult.relatedSearches.map(term => 
+                `<a href="#" class="suggestion-item" onclick="quickSearch('${term}'); return false;">${term}</a>`
+            ).join('')}
+        </div>
     `;
-  }
-  
-  resultsHTML += '</div>';
-  
-  // Update the DOM
-  searchResults.innerHTML = resultsHTML;
-  
-  // Add pagination event handlers
-  const pageLinks = searchResults.querySelectorAll('.search-page-link');
-  pageLinks.forEach(link => {
-    link.addEventListener('click', async (event) => {
-      event.preventDefault();
-      const page = parseInt(link.getAttribute('data-page'), 10);
-      const query = document.getElementById('search-input').value.trim();
-      
-      if (query) {
-        const results = await window.siteSearch.search(query, { page });
-        displaySearchResults(results);
-        
-        // Update URL without reloading
-        const url = new URL(window.location);
-        url.searchParams.set('q', query);
-        url.searchParams.set('page', page);
-        window.history.pushState({}, '', url);
-      }
-    });
-  });
+    
+    // Remove any existing related searches
+    const existingRelated = document.querySelector('.related-searches');
+    if (existingRelated) {
+        existingRelated.remove();
+    }
+    
+    // Add to page
+    const pagination = document.querySelector('.search-pagination');
+    if (pagination) {
+        pagination.after(container);
+    }
 }
 
-// Display search suggestions
-function displaySearchSuggestions(suggestions) {
-  const searchSuggestions = document.getElementById('search-suggestions');
-  if (!searchSuggestions || !suggestions || suggestions.length === 0) {
-    if (searchSuggestions) {
-      searchSuggestions.innerHTML = '';
+function showNoResultsState(query, searchResult) {
+    const resultList = document.getElementById('result-list');
+    if (!resultList) return;
+    
+    let suggestionsHTML = '';
+    
+    // Add search suggestions if available
+    if (searchResult.suggestions && searchResult.suggestions.length > 0) {
+        suggestionsHTML = `
+            <h4>Încercați în schimb:</h4>
+            <div class="suggestion-list">
+                ${searchResult.suggestions.map(suggestion => 
+                    `<a href="#" class="suggestion-item" onclick="quickSearch('${suggestion}'); return false;">${suggestion}</a>`
+                ).join('')}
+            </div>
+        `;
     }
-    return;
-  }
-  
-  let suggestionsHTML = '<ul class="search-suggestions-list">';
-  
-  suggestions.forEach(suggestion => {
-    suggestionsHTML += `
-      <li><a href="/pls/search?q=${encodeURIComponent(suggestion)}">${suggestion}</a></li>
+    
+    resultList.innerHTML = `
+        <div class="no-results">
+            <div class="no-results-icon"><i class="material-icons">search_off</i></div>
+            <h3>Niciun rezultat găsit</h3>
+            <p>Nu am găsit niciun rezultat pentru căutarea "${query}". Vă rugăm să încercați alte cuvinte cheie.</p>
+            ${suggestionsHTML}
+            <div class="suggestion-list">
+                <a href="#" class="suggestion-item" onclick="quickSearch('gdpr'); return false;">GDPR</a>
+                <a href="#" class="suggestion-item" onclick="quickSearch('petitii'); return false;">Petiții</a>
+                <a href="#" class="suggestion-item" onclick="quickSearch('contact'); return false;">Contact</a>
+                <a href="#" class="suggestion-item" onclick="quickSearch('cariere'); return false;">Cariere</a>
+            </div>
+        </div>
     `;
-  });
-  
-  suggestionsHTML += '</ul>';
-  
-  searchSuggestions.innerHTML = suggestionsHTML;
-  
-  // Add click handlers for suggestions
-  const suggestionLinks = searchSuggestions.querySelectorAll('a');
-  suggestionLinks.forEach(link => {
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      const suggestion = link.textContent;
-      const searchInput = document.getElementById('search-input');
-      
-      if (searchInput) {
-        searchInput.value = suggestion;
-        window.siteSearch.search(suggestion).then(displaySearchResults);
-        
-        // Update URL without reloading
-        const url = new URL(window.location);
-        url.searchParams.set('q', suggestion);
-        window.history.pushState({}, '', url);
-        
-        // Hide suggestions
-        searchSuggestions.innerHTML = '';
-      }
-    });
-  });
+    
+    // Clear pagination
+    const paginationContainer = document.getElementById('search-pagination');
+    if (paginationContainer) {
+        paginationContainer.innerHTML = '';
+    }
 }
