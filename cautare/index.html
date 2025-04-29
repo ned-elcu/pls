@@ -6,7 +6,10 @@
     <title>Rezultate Căutare - Poliția Locală Slobozia</title>
     
     <!-- Include components.js first to load shared styles and favicon -->
-    <script src="components.js"></script>
+    <script src="../components.js"></script>
+    
+    <!-- Ensure Material Icons are loaded (as a backup in case components.js fails) -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <!-- Include the search engine script -->
     <script src="../search.js"></script>
@@ -443,11 +446,77 @@
                 margin-bottom: 1rem;
             }
         }
+        
+        /* Additional styles to ensure consistency with the main page */
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            background-color: var(--background-light);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        .page-title-container {
+            background-color: var(--primary-color);
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                url('/api/placeholder/1920/100');
+            background-size: cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
     <!-- Header container - will be populated by components.js -->
     <div id="header-container"></div>
+    
+    <!-- Page Title -->
+    <div class="page-title-container">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-subtitle">Căutare</div>
+            <h1 class="page-title">Rezultate Căutare</h1>
+        </div>
+    </div>
     
     <div class="search-container">
         <div class="search-header">
