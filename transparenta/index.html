@@ -971,9 +971,9 @@
                 <p class="page-description">Acces la declarațiile de avere, declarațiile de interese și raportările salariale ale personalului Poliției Locale Slobozia, conform cerințelor legale de transparență.</p>
                 
                 <div class="breadcrumbs">
-                    <a href="../">Acasă</a>
+                    <a href="/pls/">Acasă</a>
                     <span class="separator"><i class="material-icons">chevron_right</i></span>
-                    <a href="#">Informații de interes public</a>
+                    <a href="/pls/transparenta">Informații de interes public</a>
                     <span class="separator"><i class="material-icons">chevron_right</i></span>
                     <span class="current">Documente de Transparență</span>
                 </div>
@@ -1017,22 +1017,22 @@
                 <!-- Main Tabs for Document Types -->
                 <div class="main-tabs-container">
                     <div class="main-tabs">
-                        <button class="main-tab active" data-tab="declaratii-avere">
+                        <button class="main-tab" data-tab="declaratii-avere" id="tab-declaratii-avere">
                             <i class="material-icons">description</i> Declarații de avere
                         </button>
-                        <button class="main-tab" data-tab="declaratii-interese">
+                        <button class="main-tab" data-tab="declaratii-interese" id="tab-declaratii-interese">
                             <i class="material-icons">business_center</i> Declarații de interese
                         </button>
-                        <button class="main-tab" data-tab="raportare-salariala">
+                        <button class="main-tab" data-tab="raportare-salariala" id="tab-raportare-salariala">
                             <i class="material-icons">payments</i> Raportare salarială
                         </button>
-                        <button class="main-tab" data-tab="rapoarte-544">
+                        <button class="main-tab" data-tab="rapoarte-544" id="tab-rapoarte-544">
                             <i class="material-icons">find_in_page</i> Rapoarte Legea 544/2001
                         </button>
                     </div>
                     
                     <!-- Tab Content - Declarații Avere -->
-                    <div class="main-tab-content active" id="declaratii-avere">
+                    <div class="main-tab-content" id="declaratii-avere">
                         <!-- Year Tabs -->
                         <div class="year-tabs-container">
                             <div class="year-tabs">
@@ -1641,25 +1641,25 @@
                         <div class="resource-icon"><i class="material-icons">important_devices</i></div>
                         <h4 class="resource-title">Buletin informativ</h4>
                         <p class="resource-description">Informații publice comunicat periodic de Poliția Locală Slobozia referitoare la activitatea instituției.</p>
-                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="/pls/transparenta/buletin" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                     <div class="resource-card">
                         <div class="resource-icon"><i class="material-icons">gavel</i></div>
                         <h4 class="resource-title">Legislație</h4>
                         <p class="resource-description">Documente gestionate conform legii, inclusiv hotărâri, ordonanțe și alte acte normative.</p>
-                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="/pls/legislatie" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                     <div class="resource-card">
                         <div class="resource-icon"><i class="material-icons">shopping_cart</i></div>
                         <h4 class="resource-title">Program achiziții anuale</h4>
                         <p class="resource-description">Planul anual de achiziții publice al Poliției Locale Slobozia.</p>
-                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="/pls/transparenta/achizitii" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                     <div class="resource-card">
                         <div class="resource-icon"><i class="material-icons">account_balance</i></div>
                         <h4 class="resource-title">Bilanțuri și bugete</h4>
                         <p class="resource-description">Documente financiare și contabile ale instituției, incluzând bilanțuri contabile și bugete anuale.</p>
-                        <a href="#" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="/pls/transparenta/buget" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                 </div>
             </div>
@@ -1671,8 +1671,8 @@
                     <h2 class="cta-title">Ai nevoie de informații suplimentare?</h2>
                     <p class="cta-description">Pentru solicitări de informații în baza Legii nr. 544/2001 privind liberul acces la informațiile de interes public, te invităm să contactezi Compartimentul de Relații cu Publicul.</p>
                     <div class="cta-buttons">
-                        <a href="#" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
-                        <a href="#" class="btn btn-secondary">Formular cerere <i class="material-icons">download</i></a>
+                        <a href="/pls/contact" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
+                        <a href="/pls/formulare/cerere-544" class="btn btn-secondary">Formular cerere <i class="material-icons">download</i></a>
                     </div>
                 </div>
             </div>
@@ -1688,6 +1688,52 @@
     <!-- Page Specific JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Check URL hash to activate the appropriate tab
+            function checkHash() {
+                const hash = window.location.hash.substring(1); // Remove the # symbol
+                if (hash) {
+                    // Check if it's a main tab
+                    const mainTabElement = document.getElementById('tab-' + hash);
+                    if (mainTabElement) {
+                        // Activate the appropriate tab
+                        activateMainTab(hash);
+                    }
+                } else {
+                    // Default to the first tab if no hash is present
+                    activateMainTab('declaratii-avere');
+                }
+            }
+            
+            // Function to activate a main tab
+            function activateMainTab(tabId) {
+                // Remove active class from all tabs
+                document.querySelectorAll('.main-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Add active class to selected tab
+                const tabElement = document.getElementById('tab-' + tabId);
+                if (tabElement) {
+                    tabElement.classList.add('active');
+                }
+                
+                // Hide all tab content
+                document.querySelectorAll('.main-tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show target content
+                const contentElement = document.getElementById(tabId);
+                if (contentElement) {
+                    contentElement.classList.add('active');
+                }
+                
+                // Update URL hash without triggering page scroll
+                const currentScrollPosition = window.pageYOffset;
+                window.location.hash = tabId;
+                window.scrollTo(0, currentScrollPosition);
+            }
+            
             // Main Tabs functionality
             const mainTabs = document.querySelectorAll('.main-tab');
             
@@ -1695,32 +1741,7 @@
                 tab.addEventListener('click', function() {
                     // Get the tab target
                     const target = this.getAttribute('data-tab');
-                    
-                    // Remove active class from all tabs
-                    mainTabs.forEach(t => t.classList.remove('active'));
-                    
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-                    
-                    // Hide all tab content
-                    document.querySelectorAll('.main-tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    // Show target content
-                    document.getElementById(target).classList.add('active');
-                    
-                    // Update page title based on selected tab
-                    const pageTitle = document.querySelector('.page-title');
-                    if (target === 'declaratii-avere') {
-                        pageTitle.textContent = 'Documente de Transparență';
-                    } else if (target === 'declaratii-interese') {
-                        pageTitle.textContent = 'Documente de Transparență';
-                    } else if (target === 'raportare-salariala') {
-                        pageTitle.textContent = 'Documente de Transparență';
-                    } else if (target === 'rapoarte-544') {
-                        pageTitle.textContent = 'Documente de Transparență';
-                    }
+                    activateMainTab(target);
                 });
             });
             
@@ -1836,6 +1857,12 @@
                     alert('Filtre resetate. Aceasta este o demonstrație.');
                 });
             }
+            
+            // Check hash on page load
+            checkHash();
+            
+            // Listen for hash changes
+            window.addEventListener('hashchange', checkHash);
         });
     </script>
 </body>
