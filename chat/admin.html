@@ -1,0 +1,4175 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Panou de administrare pentru Chat Online - Poliția Locală Slobozia">
+    <title>Admin Dashboard - Poliția Locală Slobozia</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-auth-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-firestore-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-storage-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-functions-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Admin Dashboard styles -->
+    <style>
+        /* Import fonts to match main site */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1A2F5F;
+            --primary-dark: #142446;
+            --primary-light: #29478c;
+            --secondary-color: #1E88E5;
+            --secondary-light: rgba(30, 136, 229, 0.2);
+            --secondary-dark: #1565c0;
+            --accent-color: #FFCA28;
+            --accent-dark: #FFC107;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --background-light: #F5F7FA;
+            --background-dark: #172B4D;
+            --success-color: #4CAF50;
+            --warning-color: #FF9800;
+            --danger-color: #F44336;
+            --info-color: #03A9F4;
+            --border-radius-small: 6px;
+            --border-radius-medium: 10px;
+            --border-radius-large: 15px;
+            --shadow-small: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --shadow-large: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --transition-fast: all 0.3s ease;
+            --transition-medium: all 0.5s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            background-color: var(--background-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        a:focus, button:focus, input:focus, select:focus, textarea:focus {
+            outline: 3px solid var(--secondary-light);
+            outline-offset: 2px;
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            background: linear-gradient(to bottom right, var(--primary-color), var(--secondary-dark));
+        }
+        
+        .login-card {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large);
+            width: 100%;
+            max-width: 450px;
+            padding: 2.5rem;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+        }
+        
+        .login-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        
+        .form-control {
+            padding: 0.8rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-medium);
+            transition: var(--transition-fast);
+        }
+        
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px var(--secondary-light);
+        }
+        
+        .login-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            border: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: var(--border-radius-medium);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .alert-danger {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .alert-success {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .auth-providers {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .auth-provider-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            border-radius: var(--border-radius-medium);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .auth-provider-button:hover {
+            background-color: var(--background-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 1.5rem 0;
+        }
+        
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .auth-divider::before {
+            margin-right: 0.5rem;
+        }
+        
+        .auth-divider::after {
+            margin-left: 0.5rem;
+        }
+        
+        /* Two-factor authentication screen */
+        .twofa-card {
+            display: none;
+        }
+        
+        .twofa-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .twofa-input {
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-medium);
+        }
+        
+        .twofa-input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px var(--secondary-light);
+        }
+        
+        /* Main Dashboard Layout */
+        .dashboard-container {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .dashboard-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .dashboard-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .dashboard-logo img {
+            height: 40px;
+        }
+        
+        .dashboard-logo-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .dashboard-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-name {
+            font-weight: 500;
+        }
+        
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-toggle {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-medium);
+            width: 200px;
+            z-index: 1000;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 0.8rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--background-light);
+        }
+        
+        /* Dashboard Content */
+        .dashboard-content {
+            display: flex;
+            flex: 1;
+        }
+        
+        .dashboard-sidebar {
+            width: 250px;
+            background-color: white;
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 1.5rem 0;
+        }
+        
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-nav-item:hover,
+        .sidebar-nav-item.active {
+            background-color: var(--background-light);
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+        
+        .sidebar-nav-item i {
+            color: var(--text-secondary);
+        }
+        
+        .sidebar-nav-item:hover i,
+        .sidebar-nav-item.active i {
+            color: var(--primary-color);
+        }
+        
+        .sidebar-divider {
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin: 1rem 0;
+        }
+        
+        .sidebar-header {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            padding: 0.8rem 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .dashboard-main {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .dashboard-section {
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        /* Cards */
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-small);
+            overflow: hidden;
+            transition: var(--transition-fast);
+        }
+        
+        .card:hover {
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-3px);
+        }
+        
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            transition: var(--transition-fast);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-card:hover {
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-3px);
+        }
+        
+        .stat-card-primary {
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .stat-card-secondary {
+            border-top: 4px solid var(--secondary-color);
+        }
+        
+        .stat-card-success {
+            border-top: 4px solid var(--success-color);
+        }
+        
+        .stat-card-warning {
+            border-top: 4px solid var(--warning-color);
+        }
+        
+        .stat-card-danger {
+            border-top: 4px solid var(--danger-color);
+        }
+        
+        .stat-card-info {
+            border-top: 4px solid var(--info-color);
+        }
+        
+        .stat-icon {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-size: 2rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .stat-change {
+            margin-top: auto;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .stat-change-up {
+            color: var(--success-color);
+        }
+        
+        .stat-change-down {
+            color: var(--danger-color);
+        }
+        
+        /* Chat Queue */
+        .chat-queue-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 1.5rem;
+            height: calc(100vh - 220px);
+            min-height: 500px;
+        }
+        
+        .chat-list {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-small);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-list-header {
+            padding: 1rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .chat-list-title {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        
+        .chat-list-tabs {
+            display: flex;
+            background-color: var(--background-light);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-list-tab {
+            flex: 1;
+            padding: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+        }
+        
+        .chat-list-tab:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        
+        .chat-list-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .chat-list-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .chat-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .chat-item:hover {
+            background-color: var(--background-light);
+        }
+        
+        .chat-item.active {
+            background-color: var(--secondary-light);
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        .chat-item.unread {
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        .chat-item.high-priority {
+            border-left: 3px solid var(--danger-color);
+        }
+        
+        .chat-item-user {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .chat-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: normal;
+        }
+        
+        .chat-item-message {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .chat-item-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .chat-item-department {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+        }
+        
+        .chat-item-badges {
+            display: flex;
+            gap: 0.3rem;
+        }
+        
+        .chat-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 0.7rem;
+        }
+        
+        .chat-badge-new {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+        }
+        
+        .chat-badge-priority {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .chat-interface {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-small);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-interface-placeholder {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .chat-interface-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        .chat-interface-placeholder h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .chat-header {
+            padding: 1rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .chat-user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .chat-user-name {
+            font-weight: 600;
+        }
+        
+        .chat-user-detail {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .chat-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .chat-action-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: var(--border-radius-medium);
+            color: white;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+        }
+        
+        .chat-action-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .chat-action-button.danger {
+            background: rgba(244, 67, 54, 0.6);
+        }
+        
+        .chat-action-button.danger:hover {
+            background: rgba(244, 67, 54, 0.8);
+        }
+        
+        .chat-content {
+            display: flex;
+            flex: 1;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+        }
+        
+        .message {
+            margin-bottom: 1rem;
+            max-width: 80%;
+        }
+        
+        .message-received {
+            align-self: flex-start;
+        }
+        
+        .message-sent {
+            align-self: flex-end;
+        }
+        
+        .message-content {
+            padding: 1rem;
+            border-radius: var(--border-radius-medium);
+            position: relative;
+        }
+        
+        .message-received .message-content {
+            background-color: white;
+            border-bottom-left-radius: 0;
+            box-shadow: var(--shadow-small);
+        }
+        
+        .message-sent .message-content {
+            background-color: var(--secondary-light);
+            color: var(--primary-color);
+            border-bottom-right-radius: 0;
+        }
+        
+        .message-system {
+            align-self: center;
+            max-width: 90%;
+            background-color: rgba(0,0,0,0.05);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-small);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .message-sender {
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+            color: var(--primary-color);
+        }
+        
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        .message-time {
+            color: var(--text-secondary);
+        }
+        
+        .message-status {
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            align-self: flex-start;
+        }
+        
+        .typing-dot {
+            height: 8px;
+            width: 8px;
+            margin: 0 1px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            display: inline-block;
+            animation: typingAnimation 1.5s infinite;
+        }
+        
+        @keyframes typingAnimation {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        .chat-sidebar {
+            width: 300px;
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        
+        .chat-sidebar-section {
+            margin-bottom: 2rem;
+        }
+        
+        .chat-sidebar-title {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .user-info-list {
+            list-style: none;
+        }
+        
+        .user-info-item {
+            margin-bottom: 0.8rem;
+        }
+        
+        .user-info-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.2rem;
+        }
+        
+        .user-info-value {
+            font-weight: 500;
+        }
+        
+        .location-map {
+            width: 100%;
+            height: 150px;
+            background-color: #e9e9e9;
+            border-radius: var(--border-radius-medium);
+            margin-bottom: 0.5rem;
+        }
+        
+        .quick-responses {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .quick-response {
+            padding: 0.8rem 1rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-size: 0.9rem;
+        }
+        
+        .quick-response:hover {
+            background-color: var(--secondary-light);
+            transform: translateY(-2px);
+        }
+        
+        .chat-input-container {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        .chat-input-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-medium);
+            transition: var(--transition-fast);
+            font-family: 'Poppins', sans-serif;
+            resize: none;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px var(--secondary-light);
+        }
+        
+        .chat-input-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chat-input-action {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f1f1f1;
+            color: var(--text-secondary);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .chat-input-action:hover {
+            background-color: var(--secondary-light);
+            color: var(--secondary-color);
+        }
+        
+        .chat-input-action-send {
+            width: auto;
+            padding: 0 1.5rem;
+            border-radius: var(--border-radius-medium);
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .chat-input-action-send:hover {
+            background-color: var(--secondary-dark);
+            color: white;
+        }
+        
+        /* Analytics Section */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .chart-container {
+            height: 350px;
+            padding: 1rem;
+        }
+        
+        /* Templates Management */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .template-card {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-small);
+            overflow: hidden;
+            transition: var(--transition-fast);
+        }
+        
+        .template-card:hover {
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-3px);
+        }
+        
+        .template-content {
+            padding: 1.5rem;
+            height: 150px;
+            overflow-y: auto;
+        }
+        
+        .template-actions {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .template-category {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background-color: var(--secondary-light);
+            color: var(--secondary-color);
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .template-action {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .template-action:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-fast);
+        }
+        
+        .modal-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(-20px);
+            transition: var(--transition-fast);
+        }
+        
+        .modal-backdrop.show .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .modal-close:hover {
+            color: var(--danger-color);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        /* Settings Page */
+        .settings-section {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-small);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .settings-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .settings-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .settings-body {
+            padding: 1.5rem;
+        }
+        
+        .settings-group {
+            margin-bottom: 2rem;
+        }
+        
+        .settings-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .settings-group-title {
+            font-size: 1rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .settings-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .settings-label {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .settings-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+        
+        .settings-control {
+            width: 300px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: var(--transition-fast);
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: var(--transition-fast);
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--success-color);
+        }
+        
+        input:focus + .toggle-slider {
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* File Upload */
+        .file-upload {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-upload-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--background-light);
+            border: 1px dashed rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius-medium);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .file-upload-label:hover {
+            background-color: var(--secondary-light);
+            border-color: var(--secondary-color);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .dashboard-sidebar {
+                width: 60px;
+                overflow: visible;
+            }
+            
+            .sidebar-nav-text {
+                display: none;
+            }
+            
+            .sidebar-nav-item {
+                justify-content: center;
+                padding: 0.8rem;
+            }
+            
+            .sidebar-header {
+                display: none;
+            }
+            
+            .chat-queue-container {
+                grid-template-columns: 300px 1fr;
+            }
+            
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-header {
+                padding: 1rem;
+            }
+            
+            .dashboard-logo-text {
+                display: none;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chat-queue-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .chat-interface {
+                display: none;
+            }
+            
+            .chat-interface.show-mobile {
+                display: flex;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1500;
+            }
+            
+            .chat-sidebar {
+                display: none;
+            }
+            
+            .settings-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .settings-control {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+        }
+        
+        /* High contrast mode enhancements */
+        @media (forced-colors: active) {
+            .btn, 
+            .chat-input-action,
+            .form-control,
+            .chat-input {
+                border: 1px solid currentColor;
+            }
+            
+            .message-content {
+                border: 1px solid currentColor;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" style="display:flex; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.8); z-index:9999;">
+        <div style="text-align:center;">
+            <div style="border:4px solid #f3f3f3; border-top:4px solid #1A2F5F; border-radius:50%; width:50px; height:50px; animation:spin 2s linear infinite; margin:0 auto 1rem;"></div>
+            <p>Se încarcă...</p>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card" id="loginCard">
+            <div class="login-header">
+                <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Logo Poliția Locală" class="login-logo">
+                <h1 class="login-title">Admin Dashboard</h1>
+                <p class="login-subtitle">Poliția Locală Slobozia</p>
+            </div>
+            
+            <div id="loginError" class="alert alert-danger" style="display:none;">
+                Email sau parolă incorecte. Vă rugăm să încercați din nou.
+            </div>
+            
+            <div class="auth-providers">
+                <button id="btnGoogleAuth" class="auth-provider-button">
+                    <i class="material-icons">account_circle</i>
+                    Conectare cu contul Google
+                </button>
+                <button id="btnLdapAuth" class="auth-provider-button">
+                    <i class="material-icons">business</i>
+                    Conectare cu credențiale instituționale
+                </button>
+            </div>
+            
+            <div class="auth-divider">sau</div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="agent@politia-locala.ro" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Parolă</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <div class="login-actions">
+                    <button type="submit" id="btnLogin" class="btn btn-primary">Conectare</button>
+                    <button type="button" id="btnRecoverPassword" class="btn btn-secondary">Am uitat parola</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="login-card twofa-card" id="twofaCard">
+            <div class="login-header">
+                <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Logo Poliția Locală" class="login-logo">
+                <h1 class="login-title">Verificare în doi pași</h1>
+                <p class="login-subtitle">Introduceți codul primit pe telefon sau email</p>
+            </div>
+            
+            <div id="twofaError" class="alert alert-danger" style="display:none;">
+                Cod incorect. Vă rugăm să încercați din nou.
+            </div>
+            
+            <form id="twofaForm" class="login-form">
+                <div class="twofa-inputs">
+                    <input type="text" maxlength="1" class="twofa-input" required>
+                    <input type="text" maxlength="1" class="twofa-input" required>
+                    <input type="text" maxlength="1" class="twofa-input" required>
+                    <input type="text" maxlength="1" class="twofa-input" required>
+                    <input type="text" maxlength="1" class="twofa-input" required>
+                    <input type="text" maxlength="1" class="twofa-input" required>
+                </div>
+                <div class="login-actions">
+                    <button type="submit" id="btnVerifyCode" class="btn btn-primary">Verifică</button>
+                    <button type="button" id="btnResendCode" class="btn btn-secondary">Retrimite cod</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Main Dashboard -->
+    <div id="dashboardContainer" class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="dashboard-logo">
+                <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Logo Poliția Locală">
+                <div class="dashboard-logo-text">Poliția Locală Slobozia</div>
+            </div>
+            
+            <div class="dashboard-user">
+                <div class="user-info">
+                    <div class="user-name" id="userName">Agent Nume</div>
+                    <div class="user-role" id="userRole">Administrator</div>
+                </div>
+                
+                <div class="dropdown">
+                    <button class="dropdown-toggle" id="userDropdown">
+                        <div class="user-avatar" id="userAvatar">A</div>
+                        <i class="material-icons">keyboard_arrow_down</i>
+                    </button>
+                    <div class="dropdown-menu" id="userDropdownMenu">
+                        <a href="#profile" class="dropdown-item">
+                            <i class="material-icons">person</i> Profil
+                        </a>
+                        <a href="#settings" class="dropdown-item">
+                            <i class="material-icons">settings</i> Setări
+                        </a>
+                        <a href="#help" class="dropdown-item">
+                            <i class="material-icons">help</i> Ajutor
+                        </a>
+                        <div class="sidebar-divider"></div>
+                        <a href="#logout" class="dropdown-item" id="btnLogout">
+                            <i class="material-icons">exit_to_app</i> Deconectare
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            <!-- Sidebar -->
+            <div class="dashboard-sidebar">
+                <nav class="sidebar-nav">
+                    <a href="#dashboard" class="sidebar-nav-item active" id="navDashboard">
+                        <i class="material-icons">dashboard</i>
+                        <span class="sidebar-nav-text">Dashboard</span>
+                    </a>
+                    <a href="#chats" class="sidebar-nav-item" id="navChats">
+                        <i class="material-icons">chat</i>
+                        <span class="sidebar-nav-text">Conversații</span>
+                    </a>
+                    <a href="#analytics" class="sidebar-nav-item" id="navAnalytics">
+                        <i class="material-icons">analytics</i>
+                        <span class="sidebar-nav-text">Analiză</span>
+                    </a>
+                    <a href="#templates" class="sidebar-nav-item" id="navTemplates">
+                        <i class="material-icons">format_quote</i>
+                        <span class="sidebar-nav-text">Șabloane</span>
+                    </a>
+                    
+                    <div class="sidebar-divider"></div>
+                    
+                    <div class="sidebar-header">Administrare</div>
+                    
+                    <a href="#users" class="sidebar-nav-item" id="navUsers">
+                        <i class="material-icons">people</i>
+                        <span class="sidebar-nav-text">Utilizatori</span>
+                    </a>
+                    <a href="#departments" class="sidebar-nav-item" id="navDepartments">
+                        <i class="material-icons">business</i>
+                        <span class="sidebar-nav-text">Departamente</span>
+                    </a>
+                    <a href="#settings" class="sidebar-nav-item" id="navSettings">
+                        <i class="material-icons">settings</i>
+                        <span class="sidebar-nav-text">Setări</span>
+                    </a>
+                    <a href="#audit" class="sidebar-nav-item" id="navAudit">
+                        <i class="material-icons">security</i>
+                        <span class="sidebar-nav-text">Audit</span>
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div class="dashboard-main">
+                <!-- Dashboard View -->
+                <div id="dashboardView" class="dashboard-view">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Dashboard</h2>
+                            <div class="section-actions">
+                                <button class="btn btn-secondary" id="btnRefreshDashboard">
+                                    <i class="material-icons">refresh</i> Actualizează
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card stat-card-primary">
+                                <i class="material-icons stat-icon">chat</i>
+                                <div class="stat-value" id="statActiveChats">0</div>
+                                <div class="stat-label">Conversații active</div>
+                                <div class="stat-change stat-change-up">
+                                    <i class="material-icons">arrow_upward</i> 
+                                    <span id="statActiveChatsTrend">0%</span> față de ieri
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card stat-card-warning">
+                                <i class="material-icons stat-icon">schedule</i>
+                                <div class="stat-value" id="statWaitingChats">0</div>
+                                <div class="stat-label">În așteptare</div>
+                                <div class="stat-change stat-change-up">
+                                    <i class="material-icons">arrow_upward</i> 
+                                    <span id="statWaitingChatsTrend">0%</span> față de ieri
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card stat-card-success">
+                                <i class="material-icons stat-icon">done_all</i>
+                                <div class="stat-value" id="statResolvedChats">0</div>
+                                <div class="stat-label">Conversații rezolvate</div>
+                                <div class="stat-change stat-change-up">
+                                    <i class="material-icons">arrow_upward</i> 
+                                    <span id="statResolvedChatsTrend">0%</span> față de ieri
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card stat-card-secondary">
+                                <i class="material-icons stat-icon">speed</i>
+                                <div class="stat-value" id="statAvgResponseTime">0m</div>
+                                <div class="stat-label">Timp mediu răspuns</div>
+                                <div class="stat-change stat-change-down">
+                                    <i class="material-icons">arrow_downward</i> 
+                                    <span id="statAvgResponseTimeTrend">0%</span> față de ieri
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Activitate recentă</h2>
+                            <div class="section-actions">
+                                <a href="#chats" class="btn btn-secondary">
+                                    <i class="material-icons">open_in_new</i> Vezi toate
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Conversații recente</h3>
+                            </div>
+                            <div class="card-body" style="padding: 0;">
+                                <div id="recentChats" style="max-height: 400px; overflow-y: auto;">
+                                    <!-- Recent chats will be added here dynamically -->
+                                    <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                                        <i class="material-icons" style="font-size: 3rem; opacity: 0.3;">chat</i>
+                                        <p>Se încarcă conversațiile recente...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chats View -->
+                <div id="chatsView" class="dashboard-view" style="display:none;">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Conversații</h2>
+                            <div class="section-actions">
+                                <div class="form-group" style="margin: 0; display: flex; gap: 1rem;">
+                                    <select id="departmentFilter" class="form-control" style="width: auto;">
+                                        <option value="all">Toate departamentele</option>
+                                        <option value="traffic">Circulație Rutieră</option>
+                                        <option value="public-order">Ordine Publică</option>
+                                        <option value="environment">Protecția Mediului</option>
+                                        <option value="commerce">Control Comercial</option>
+                                        <option value="general">Informații Generale</option>
+                                    </select>
+                                    <button class="btn btn-secondary" id="btnRefreshChats">
+                                        <i class="material-icons">refresh</i> Actualizează
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-queue-container">
+                            <div class="chat-list">
+                                <div class="chat-list-header">
+                                    <h3 class="chat-list-title">Conversații</h3>
+                                </div>
+                                <div class="chat-list-tabs">
+                                    <div class="chat-list-tab active" data-tab="waiting">În așteptare</div>
+                                    <div class="chat-list-tab" data-tab="active">Active</div>
+                                    <div class="chat-list-tab" data-tab="closed">Închise</div>
+                                </div>
+                                <div class="chat-list-content" id="chatListContent">
+                                    <!-- Chat items will be added here dynamically -->
+                                    <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                                        <p>Se încarcă conversațiile...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="chat-interface" id="chatInterface">
+                                <div class="chat-interface-placeholder">
+                                    <i class="material-icons">chat</i>
+                                    <h3>Selectați o conversație pentru a începe</h3>
+                                    <p>Alegeți o conversație din lista din stânga pentru a răspunde cetățenilor.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Analytics View -->
+                <div id="analyticsView" class="dashboard-view" style="display:none;">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Analiză</h2>
+                            <div class="section-actions">
+                                <div class="form-group" style="margin: 0; display: flex; gap: 1rem;">
+                                    <select id="timeRangeFilter" class="form-control" style="width: auto;">
+                                        <option value="day">Ultima zi</option>
+                                        <option value="week" selected>Ultima săptămână</option>
+                                        <option value="month">Ultima lună</option>
+                                        <option value="quarter">Ultimele 3 luni</option>
+                                        <option value="year">Ultimul an</option>
+                                    </select>
+                                    <button class="btn btn-secondary" id="btnExportAnalytics">
+                                        <i class="material-icons">file_download</i> Export
+                                    </button>
+                                    <button class="btn btn-secondary" id="btnPrintAnalytics">
+                                        <i class="material-icons">print</i> Printează
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Conversații pe zile</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="chatsByDayChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Conversații pe departamente</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="chatsByDepartmentChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Timp mediu de răspuns</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="responseTimeChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Satisfacție utilizatori</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="satisfactionChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Performanță agenți</h2>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Statistici agenți</h3>
+                            </div>
+                            <div class="card-body" style="padding: 0;">
+                                <div style="overflow-x: auto;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr style="background-color: var(--background-light);">
+                                                <th style="padding: 1rem; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.1);">Agent</th>
+                                                <th style="padding: 1rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.1);">Conversații</th>
+                                                <th style="padding: 1rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.1);">Rezolvate</th>
+                                                <th style="padding: 1rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.1);">Timp mediu răspuns</th>
+                                                <th style="padding: 1rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.1);">Satisfacție</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="agentStatsTable">
+                                            <!-- Agent stats will be added here dynamically -->
+                                            <tr>
+                                                <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                                                    Se încarcă statisticile agenților...
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Templates View -->
+                <div id="templatesView" class="dashboard-view" style="display:none;">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Șabloane răspunsuri</h2>
+                            <div class="section-actions">
+                                <button class="btn btn-primary" id="btnNewTemplate">
+                                    <i class="material-icons">add</i> Șablon nou
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="card" style="margin-bottom: 2rem;">
+                            <div class="card-body">
+                                <div class="form-group" style="margin: 0; display: flex; gap: 1rem;">
+                                    <input type="text" id="templateSearch" class="form-control" placeholder="Caută șabloane..." style="flex: 1;">
+                                    <select id="templateCategoryFilter" class="form-control" style="width: auto;">
+                                        <option value="all">Toate categoriile</option>
+                                        <option value="greeting">Salut</option>
+                                        <option value="info">Informații</option>
+                                        <option value="traffic">Circulație</option>
+                                        <option value="complaint">Reclamații</option>
+                                        <option value="emergency">Urgențe</option>
+                                        <option value="closing">Încheiere</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="templates-grid" id="templatesGrid">
+                            <!-- Templates will be added here dynamically -->
+                            <div style="padding: 2rem; text-align: center; color: var(--text-secondary); grid-column: 1 / -1;">
+                                <i class="material-icons" style="font-size: 3rem; opacity: 0.3;">format_quote</i>
+                                <p>Se încarcă șabloanele...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings View -->
+                <div id="settingsView" class="dashboard-view" style="display:none;">
+                    <div class="dashboard-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Setări</h2>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <div class="settings-header">
+                                <h3 class="settings-title">Setări generale aplicație</h3>
+                            </div>
+                            <div class="settings-body">
+                                <div class="settings-group">
+                                    <h4 class="settings-group-title">Notificări</h4>
+                                    
+                                    <div class="settings-row">
+                                        <div class="settings-label">
+                                            <div>Notificări browser</div>
+                                            <div class="settings-description">Primește notificări în browser când sosesc conversații noi</div>
+                                        </div>
+                                        <div class="settings-control">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" checked id="settingBrowserNotifications">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="settings-row">
+                                        <div class="settings-label">
+                                            <div>Notificări sonore</div>
+                                            <div class="settings-description">Redă un sunet când sosesc conversații noi</div>
+                                        </div>
+                                        <div class="settings-control">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" checked id="settingSoundNotifications">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="settings-row">
+                                        <div class="settings-label">
+                                            <div>Notificări email</div>
+                                            <div class="settings-description">Primește email-uri pentru conversații noi în așteptare</div>
+                                        </div>
+                                        <div class="settings-control">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="settingEmailNotifications">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <h4 class="settings-group-title">Securitate</h4>
+                                    
+                                    <div class="settings-row">
+                                        <div class="settings-label">
+                                            <div>Autentificare în doi pași</div>
+                                            <div class="settings-description">Solicită un cod de verificare la conectare</div>
+                                        </div>
+                                        <div class="settings-control">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" checked id="settingTwoFactorAuth">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="settings-row">
+                                        <div class="settings-label">
+                                            <div>Timp expirare sesiune</div>
+                                            <div class="settings-description">Deconectează automat după o perioadă de inactivitate</div>
+                                        </div>
+                                        <div class="settings-control">
+                                            <select id="settingSessionTimeout" class="form-control">
+                                                <option value="15">15 minute</option>
+                                                <option value="30" selected>30 minute</option>
+                                                <option value="60">1 oră</option>
+                                                <option value="120">2 ore</option>
+                                                <option value="240">4 ore</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <h4 class="settings-group-title">Gestionare conversații</h4>
+                                    
+                                    <div class="settings-row">
+                                        <div class="settings-label">
+                                            <div>Preluare automată conversații</div>
+                                            <div class="settings-description">Preia automat conversații noi când ești disponibil</div>
+                                        </div>
+                                        <div class="settings-control">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="settingAutoAssign">
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="settings-row">
+                                        <div class="settings-label">
+                                            <div>Număr maxim conversații simultane</div>
+                                            <div class="settings-description">Numărul maxim de conversații pe care le poți gestiona simultan</div>
+                                        </div>
+                                        <div class="settings-control">
+                                            <select id="settingMaxChats" class="form-control">
+                                                <option value="1">1 conversație</option>
+                                                <option value="3" selected>3 conversații</option>
+                                                <option value="5">5 conversații</option>
+                                                <option value="10">10 conversații</option>
+                                                <option value="0">Nelimitat</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="settings-row" style="justify-content: flex-end; margin-top: 2rem;">
+                                    <button class="btn btn-primary" id="btnSaveSettings">Salvează setările</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Template Modal -->
+    <div class="modal-backdrop" id="templateModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="templateModalTitle">Adaugă șablon nou</h3>
+                <button class="modal-close" id="templateModalClose">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="templateForm">
+                    <div class="form-group">
+                        <label for="templateTitle" class="form-label">Titlu</label>
+                        <input type="text" id="templateTitle" class="form-control" placeholder="Titlu șablon" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="templateCategory" class="form-label">Categorie</label>
+                        <select id="templateCategory" class="form-control" required>
+                            <option value="greeting">Salut</option>
+                            <option value="info">Informații</option>
+                            <option value="traffic">Circulație</option>
+                            <option value="complaint">Reclamații</option>
+                            <option value="emergency">Urgențe</option>
+                            <option value="closing">Încheiere</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="templateContent" class="form-label">Conținut</label>
+                        <textarea id="templateContent" class="form-control" rows="6" placeholder="Conținutul șablonului..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="templateModalCancel">Anulează</button>
+                <button class="btn btn-primary" id="templateModalSave">Salvează</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chat Interface Template (will be cloned when opening a chat) -->
+    <template id="chatInterfaceTemplate">
+        <div class="chat-header">
+            <div class="chat-user-info">
+                <div class="chat-user-avatar"></div>
+                <div>
+                    <div class="chat-user-name"></div>
+                    <div class="chat-user-detail"></div>
+                </div>
+            </div>
+            <div class="chat-actions">
+                <button class="chat-action-button" id="btnTransferChat">
+                    <i class="material-icons">swap_horiz</i> Transferă
+                </button>
+                <button class="chat-action-button danger" id="btnEndChat">
+                    <i class="material-icons">call_end</i> Încheie
+                </button>
+            </div>
+        </div>
+        
+        <div class="chat-content">
+            <div class="chat-messages">
+                <!-- Messages will be added here dynamically -->
+            </div>
+            
+            <div class="chat-sidebar">
+                <div class="chat-sidebar-section">
+                    <h4 class="chat-sidebar-title">Informații cetățean</h4>
+                    <ul class="user-info-list">
+                        <li class="user-info-item">
+                            <div class="user-info-label">Nume</div>
+                            <div class="user-info-value user-name-value"></div>
+                        </li>
+                        <li class="user-info-item">
+                            <div class="user-info-label">Email</div>
+                            <div class="user-info-value user-email-value"></div>
+                        </li>
+                        <li class="user-info-item">
+                            <div class="user-info-label">Telefon</div>
+                            <div class="user-info-value user-phone-value"></div>
+                        </li>
+                        <li class="user-info-item">
+                            <div class="user-info-label">Subiect</div>
+                            <div class="user-info-value user-subject-value"></div>
+                        </li>
+                        <li class="user-info-item">
+                            <div class="user-info-label">Departament</div>
+                            <div class="user-info-value user-department-value"></div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="chat-sidebar-section location-section" style="display: none;">
+                    <h4 class="chat-sidebar-title">Locație</h4>
+                    <div class="location-map"></div>
+                    <div class="user-info-value user-location-value"></div>
+                </div>
+                
+                <div class="chat-sidebar-section">
+                    <h4 class="chat-sidebar-title">Răspunsuri rapide</h4>
+                    <div class="quick-responses">
+                        <!-- Quick responses will be added here dynamically -->
+                    </div>
+                </div>
+                
+                <div class="chat-sidebar-section">
+                    <h4 class="chat-sidebar-title">Acțiuni</h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <button class="btn btn-secondary" id="btnEscalateChat">
+                            <i class="material-icons">priority_high</i> Escaladează
+                        </button>
+                        <button class="btn btn-secondary" id="btnSendTranscript">
+                            <i class="material-icons">description</i> Trimite transcript
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div id="filePreviewArea"></div>
+            <div class="chat-input-row">
+                <textarea class="chat-input" placeholder="Scrieți un mesaj..." rows="2"></textarea>
+            </div>
+            <div class="chat-input-row">
+                <div class="chat-input-actions">
+                    <div class="file-upload">
+                        <input type="file" id="chatFileInput" accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
+                        <button class="chat-input-action" title="Atașează fișier">
+                            <i class="material-icons">attach_file</i>
+                        </button>
+                    </div>
+                    <button class="chat-input-action" title="Șabloane răspunsuri">
+                        <i class="material-icons">format_quote</i>
+                    </button>
+                    <button class="chat-input-action" title="Partajează locația">
+                        <i class="material-icons">location_on</i>
+                    </button>
+                </div>
+                <button class="chat-input-action chat-input-action-send">
+                    <i class="material-icons">send</i> Trimite
+                </button>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Firebase configuration and dashboard functionality -->
+    <script>
+        // =============================================
+        // Firebase Configuration
+        // =============================================
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // References to Firebase services
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        const functions = firebase.functions();
+        
+        // =============================================
+        // DOM References
+        // =============================================
+        
+        // Login elements
+        const loginScreen = document.getElementById('loginScreen');
+        const loginCard = document.getElementById('loginCard');
+        const twofaCard = document.getElementById('twofaCard');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        const twofaForm = document.getElementById('twofaForm');
+        const twofaError = document.getElementById('twofaError');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        
+        // Login form elements
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const twofaInputs = document.querySelectorAll('.twofa-input');
+        
+        // Login buttons
+        const btnLogin = document.getElementById('btnLogin');
+        const btnGoogleAuth = document.getElementById('btnGoogleAuth');
+        const btnLdapAuth = document.getElementById('btnLdapAuth');
+        const btnRecoverPassword = document.getElementById('btnRecoverPassword');
+        const btnVerifyCode = document.getElementById('btnVerifyCode');
+        const btnResendCode = document.getElementById('btnResendCode');
+        
+        // Dashboard elements
+        const dashboardContainer = document.getElementById('dashboardContainer');
+        const userName = document.getElementById('userName');
+        const userRole = document.getElementById('userRole');
+        const userAvatar = document.getElementById('userAvatar');
+        const userDropdown = document.getElementById('userDropdown');
+        const userDropdownMenu = document.getElementById('userDropdownMenu');
+        const btnLogout = document.getElementById('btnLogout');
+        
+        // Navigation elements
+        const navItems = document.querySelectorAll('.sidebar-nav-item');
+        
+        // Views
+        const dashboardView = document.getElementById('dashboardView');
+        const chatsView = document.getElementById('chatsView');
+        const analyticsView = document.getElementById('analyticsView');
+        const templatesView = document.getElementById('templatesView');
+        const settingsView = document.getElementById('settingsView');
+        
+        // Dashboard elements
+        const statActiveChats = document.getElementById('statActiveChats');
+        const statWaitingChats = document.getElementById('statWaitingChats');
+        const statResolvedChats = document.getElementById('statResolvedChats');
+        const statAvgResponseTime = document.getElementById('statAvgResponseTime');
+        const statActiveChatsTrend = document.getElementById('statActiveChatsTrend');
+        const statWaitingChatsTrend = document.getElementById('statWaitingChatsTrend');
+        const statResolvedChatsTrend = document.getElementById('statResolvedChatsTrend');
+        const statAvgResponseTimeTrend = document.getElementById('statAvgResponseTimeTrend');
+        const recentChats = document.getElementById('recentChats');
+        const btnRefreshDashboard = document.getElementById('btnRefreshDashboard');
+        
+        // Chats view elements
+        const chatListContent = document.getElementById('chatListContent');
+        const chatListTabs = document.querySelectorAll('.chat-list-tab');
+        const chatInterface = document.getElementById('chatInterface');
+        const departmentFilter = document.getElementById('departmentFilter');
+        const btnRefreshChats = document.getElementById('btnRefreshChats');
+        
+        // Template elements
+        const templatesGrid = document.getElementById('templatesGrid');
+        const templateSearch = document.getElementById('templateSearch');
+        const templateCategoryFilter = document.getElementById('templateCategoryFilter');
+        const btnNewTemplate = document.getElementById('btnNewTemplate');
+        const templateModal = document.getElementById('templateModal');
+        const templateModalTitle = document.getElementById('templateModalTitle');
+        const templateForm = document.getElementById('templateForm');
+        const templateTitle = document.getElementById('templateTitle');
+        const templateCategory = document.getElementById('templateCategory');
+        const templateContent = document.getElementById('templateContent');
+        const templateModalClose = document.getElementById('templateModalClose');
+        const templateModalCancel = document.getElementById('templateModalCancel');
+        const templateModalSave = document.getElementById('templateModalSave');
+        
+        // Analytics elements
+        const timeRangeFilter = document.getElementById('timeRangeFilter');
+        const btnExportAnalytics = document.getElementById('btnExportAnalytics');
+        const btnPrintAnalytics = document.getElementById('btnPrintAnalytics');
+        const agentStatsTable = document.getElementById('agentStatsTable');
+        
+        // Settings elements
+        const settingBrowserNotifications = document.getElementById('settingBrowserNotifications');
+        const settingSoundNotifications = document.getElementById('settingSoundNotifications');
+        const settingEmailNotifications = document.getElementById('settingEmailNotifications');
+        const settingTwoFactorAuth = document.getElementById('settingTwoFactorAuth');
+        const settingSessionTimeout = document.getElementById('settingSessionTimeout');
+        const settingAutoAssign = document.getElementById('settingAutoAssign');
+        const settingMaxChats = document.getElementById('settingMaxChats');
+        const btnSaveSettings = document.getElementById('btnSaveSettings');
+        
+        // Templates
+        const chatInterfaceTemplate = document.getElementById('chatInterfaceTemplate');
+        
+        // =============================================
+        // State Variables
+        // =============================================
+        
+        // Current user
+        let currentUser = null;
+        
+        // Current view
+        let currentView = 'dashboard';
+        
+        // Active chats
+        const activeChats = {};
+        
+        // Current chat tab
+        let currentChatTab = 'waiting';
+        
+        // Current chat
+        let currentChatId = null;
+        
+        // Selected template for editing
+        let editingTemplateId = null;
+        
+        // Charts
+        let chatsByDayChart = null;
+        let chatsByDepartmentChart = null;
+        let responseTimeChart = null;
+        let satisfactionChart = null;
+        
+        // Session timeout
+        let sessionTimeoutId = null;
+        
+        // =============================================
+        // Authentication Functions
+        // =============================================
+        
+        // Handle login form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            
+            if (!email || !password) {
+                showLoginError('Vă rugăm să completați toate câmpurile.');
+                return;
+            }
+            
+            // Show loading indicator
+            showLoading();
+            
+            // Sign in with email and password
+            auth.signInWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    // Check if two-factor auth is enabled
+                    const user = userCredential.user;
+                    
+                    // For demo purposes, always show 2FA
+                    // In a real app, check if 2FA is enabled for the user
+                    showTwoFactorAuth();
+                })
+                .catch(error => {
+                    hideLoading();
+                    console.error('Login error:', error);
+                    showLoginError('Email sau parolă incorecte.');
+                });
+        });
+        
+        // Handle Google authentication
+        btnGoogleAuth.addEventListener('click', function() {
+            showLoading();
+            
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.setCustomParameters({
+                hd: 'politia-locala.ro' // Limit to domain (optional)
+            });
+            
+            auth.signInWithPopup(provider)
+                .then(result => {
+                    // Signed in successfully
+                    currentUser = result.user;
+                    checkUserRole(currentUser);
+                })
+                .catch(error => {
+                    hideLoading();
+                    console.error('Google auth error:', error);
+                    showLoginError('Eroare la autentificarea cu Google.');
+                });
+        });
+        
+        // Handle LDAP authentication
+        btnLdapAuth.addEventListener('click', function() {
+            // For demo purposes, show the normal login form
+            // In a real app, this would integrate with LDAP server
+            loginError.style.display = 'none';
+        });
+        
+        // Handle password recovery
+        btnRecoverPassword.addEventListener('click', function() {
+            const email = prompt('Introduceți adresa de email pentru recuperarea parolei:');
+            
+            if (email) {
+                showLoading();
+                
+                auth.sendPasswordResetEmail(email)
+                    .then(() => {
+                        hideLoading();
+                        alert('Un email de recuperare a fost trimis la adresa specificată.');
+                    })
+                    .catch(error => {
+                        hideLoading();
+                        console.error('Password reset error:', error);
+                        alert('Eroare la trimiterea email-ului de recuperare. Verificați adresa și încercați din nou.');
+                    });
+            }
+        });
+        
+        // Handle two-factor authentication
+        twofaForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get verification code
+            let code = '';
+            twofaInputs.forEach(input => {
+                code += input.value;
+            });
+            
+            if (code.length !== 6) {
+                showTwoFactorError('Vă rugăm să introduceți codul complet.');
+                return;
+            }
+            
+            showLoading();
+            
+            // In a real app, verify the code with the server
+// For demo purposes, accept any 6-digit code
+setTimeout(() => {
+    // Authentication successful
+    hideLoading();
+    
+    // Save the authentication state
+    sessionStorage.setItem('authenticated', 'true');
+    
+    // In a real app, get user role from the server
+    const roles = ['Agent', 'Supervizor', 'Administrator'];
+    const randomRole = roles[Math.floor(Math.random() * roles.length)];
+    
+    // Set current user
+    currentUser = auth.currentUser;
+    
+    // Show dashboard
+    showDashboard(randomRole);
+}, 1500);
+            
+            // In a production app, verify the code with a server-side function
+            // For example:
+            /*
+            const verifyTwoFactorFunction = firebase.functions().httpsCallable('verifyTwoFactorCode');
+            verifyTwoFactorFunction({ code: code })
+                .then(result => {
+                    hideLoading();
+                    if (result.data.valid) {
+                        // Authentication successful
+                        sessionStorage.setItem('authenticated', 'true');
+                        showDashboard(result.data.role);
+                    } else {
+                        showTwoFactorError('Cod de verificare invalid.');
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    console.error('Two-factor verification error:', error);
+                    showTwoFactorError('Eroare la verificarea codului. Vă rugăm să încercați din nou.');
+                });
+            */
+        });
+        
+        // Handle two-factor input navigation
+        twofaInputs.forEach((input, index) => {
+            input.addEventListener('keyup', function(e) {
+                // If a digit is entered, move to next input
+                if (e.key >= '0' && e.key <= '9') {
+                    if (index < twofaInputs.length - 1) {
+                        twofaInputs[index + 1].focus();
+                    }
+                }
+                // Handle backspace
+                else if (e.key === 'Backspace') {
+                    if (index > 0 && input.value === '') {
+                        twofaInputs[index - 1].focus();
+                    }
+                }
+            });
+            
+            // Handle paste event
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pasteData = e.clipboardData.getData('text');
+                const digits = pasteData.replace(/\D/g, '').slice(0, 6).split('');
+                
+                if (digits.length > 0) {
+                    // Fill inputs with pasted digits
+                    twofaInputs.forEach((input, idx) => {
+                        if (idx < digits.length) {
+                            input.value = digits[idx];
+                        }
+                    });
+                    
+                    // Focus the appropriate input
+                    if (digits.length < 6) {
+                        twofaInputs[digits.length].focus();
+                    } else {
+                        twofaInputs[5].focus();
+                    }
+                }
+            });
+        });
+        
+        // Handle resend code button
+        btnResendCode.addEventListener('click', function() {
+            // In a real app, resend the verification code
+            alert('Un cod nou a fost trimis pe telefonul sau email-ul dumneavoastră.');
+        });
+        
+        // Handle logout
+        btnLogout.addEventListener('click', function() {
+            showLoading();
+            
+            auth.signOut()
+                .then(() => {
+                    // Clear session data
+                    sessionStorage.removeItem('authenticated');
+                    currentUser = null;
+                    
+                    // Reset UI
+                    hideLoading();
+                    showLoginScreen();
+                })
+                .catch(error => {
+                    hideLoading();
+                    console.error('Sign out error:', error);
+                    alert('Eroare la deconectare. Vă rugăm să încercați din nou.');
+                });
+        });
+        
+        // =============================================
+        // UI Helper Functions
+        // =============================================
+        
+        // Show loading indicator
+        function showLoading() {
+            loadingIndicator.style.display = 'flex';
+        }
+        
+        // Hide loading indicator
+        function hideLoading() {
+            loadingIndicator.style.display = 'none';
+        }
+        
+        // Show login error
+        function showLoginError(message) {
+            loginError.textContent = message;
+            loginError.style.display = 'block';
+        }
+        
+        // Show two-factor error
+        function showTwoFactorError(message) {
+            twofaError.textContent = message;
+            twofaError.style.display = 'block';
+        }
+        
+        // Show login screen
+        function showLoginScreen() {
+            loginScreen.style.display = 'flex';
+            dashboardContainer.style.display = 'none';
+            
+            // Show login card, hide 2FA card
+            loginCard.style.display = 'block';
+            twofaCard.style.display = 'none';
+            
+            // Reset login form
+            loginForm.reset();
+            loginError.style.display = 'none';
+        }
+        
+        // Show two-factor authentication screen
+        function showTwoFactorAuth() {
+            // Hide login card, show 2FA card
+            loginCard.style.display = 'none';
+            twofaCard.style.display = 'block';
+            
+            // Reset 2FA form
+            twofaForm.reset();
+            twofaError.style.display = 'none';
+            
+            // Focus first input
+            twofaInputs[0].focus();
+            
+            // Hide loading
+            hideLoading();
+        }
+        
+        // Show dashboard
+        function showDashboard(role) {
+            loginScreen.style.display = 'none';
+            dashboardContainer.style.display = 'flex';
+            
+            // Set user info
+            const displayName = currentUser.displayName || emailInput.value.split('@')[0] || 'Agent';
+            userName.textContent = displayName;
+            userRole.textContent = role;
+            
+            // Set user avatar
+            const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase();
+            userAvatar.textContent = initials;
+            
+            // Load dashboard data
+            loadDashboardData();
+            
+            // Set up event listeners
+            setupDashboardEvents();
+            
+            // Start session timeout
+            setupSessionTimeout();
+        }
+        
+        // Show a specific view
+        function showView(viewName) {
+            // Hide all views
+            dashboardView.style.display = 'none';
+            chatsView.style.display = 'none';
+            analyticsView.style.display = 'none';
+            templatesView.style.display = 'none';
+            settingsView.style.display = 'none';
+            
+            // Show selected view
+            document.getElementById(`${viewName}View`).style.display = 'block';
+            
+            // Update navigation
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.id === `nav${viewName.charAt(0).toUpperCase() + viewName.slice(1)}`) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Load view-specific data
+            if (viewName === 'dashboard') {
+                loadDashboardData();
+            } else if (viewName === 'chats') {
+                loadChatsData();
+            } else if (viewName === 'analytics') {
+                loadAnalyticsData();
+            } else if (viewName === 'templates') {
+                loadTemplatesData();
+            } else if (viewName === 'settings') {
+                loadSettingsData();
+            }
+            
+            // Update current view
+            currentView = viewName;
+        }
+        
+        // Set up dashboard events
+        function setupDashboardEvents() {
+            // User dropdown toggle
+            userDropdown.addEventListener('click', function() {
+                userDropdownMenu.classList.toggle('show');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!userDropdown.contains(e.target) && userDropdownMenu.classList.contains('show')) {
+                    userDropdownMenu.classList.remove('show');
+                }
+            });
+            
+            // Navigation items
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const viewName = this.id.replace('nav', '').toLowerCase();
+                    showView(viewName);
+                });
+            });
+            
+            // Chat list tabs
+            chatListTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    chatListTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentChatTab = this.dataset.tab;
+                    loadChatList(currentChatTab);
+                });
+            });
+            
+            // Department filter
+            departmentFilter.addEventListener('change', function() {
+                loadChatList(currentChatTab);
+            });
+            
+            // Refresh buttons
+            btnRefreshDashboard.addEventListener('click', loadDashboardData);
+            btnRefreshChats.addEventListener('click', () => loadChatList(currentChatTab));
+            
+            // Template actions
+            btnNewTemplate.addEventListener('click', showNewTemplateModal);
+            templateModalClose.addEventListener('click', hideTemplateModal);
+            templateModalCancel.addEventListener('click', hideTemplateModal);
+            templateModalSave.addEventListener('click', saveTemplate);
+            templateSearch.addEventListener('input', filterTemplates);
+            templateCategoryFilter.addEventListener('change', filterTemplates);
+            
+            // Analytics filters and buttons
+            timeRangeFilter.addEventListener('change', loadAnalyticsData);
+            btnExportAnalytics.addEventListener('click', exportAnalytics);
+            btnPrintAnalytics.addEventListener('click', printAnalytics);
+            
+            // Settings
+            btnSaveSettings.addEventListener('click', saveSettings);
+        }
+        
+        // Setup session timeout
+        function setupSessionTimeout() {
+            // Get timeout duration from settings (default 30 minutes)
+            const timeoutDuration = parseInt(settingSessionTimeout.value, 10) * 60 * 1000;
+            
+            // Clear any existing timeout
+            if (sessionTimeoutId) {
+                clearTimeout(sessionTimeoutId);
+            }
+            
+            // Set new timeout
+            sessionTimeoutId = setTimeout(() => {
+                // Log out the user
+                alert('Sesiunea dvs. a expirat din motive de securitate. Vă rugăm să vă autentificați din nou.');
+                auth.signOut().then(() => {
+                    showLoginScreen();
+                });
+            }, timeoutDuration);
+        }
+        
+        // Reset session timeout on user activity
+        function resetSessionTimeout() {
+            if (sessionTimeoutId) {
+                clearTimeout(sessionTimeoutId);
+                setupSessionTimeout();
+            }
+        }
+        
+        // =============================================
+        // Dashboard Data Loading
+        // =============================================
+        
+        // Load dashboard data
+        function loadDashboardData() {
+            showLoading();
+            
+            // In a real app, fetch this data from Firestore
+            // For demo purposes, use random data
+            
+            // Generate random stats
+            const activeChatsCount = Math.floor(Math.random() * 20) + 5;
+            const waitingChatsCount = Math.floor(Math.random() * 10) + 1;
+            const resolvedChatsCount = Math.floor(Math.random() * 100) + 50;
+            const avgResponseTime = Math.floor(Math.random() * 5) + 1;
+            
+            // Generate random trends
+            const activeChatsTrend = Math.floor(Math.random() * 30) - 10;
+            const waitingChatsTrend = Math.floor(Math.random() * 50) - 20;
+            const resolvedChatsTrend = Math.floor(Math.random() * 20) + 5;
+            const avgResponseTimeTrend = Math.floor(Math.random() * 30) - 20;
+            
+            // Update the stats
+            statActiveChats.textContent = activeChatsCount;
+            statWaitingChats.textContent = waitingChatsCount;
+            statResolvedChats.textContent = resolvedChatsCount;
+            statAvgResponseTime.textContent = `${avgResponseTime}m`;
+            
+            // Update trends
+            statActiveChatsTrend.textContent = `${Math.abs(activeChatsTrend)}%`;
+            statWaitingChatsTrend.textContent = `${Math.abs(waitingChatsTrend)}%`;
+            statResolvedChatsTrend.textContent = `${Math.abs(resolvedChatsTrend)}%`;
+            statAvgResponseTimeTrend.textContent = `${Math.abs(avgResponseTimeTrend)}%`;
+            
+            // Update trend icons
+            statActiveChatsTrend.parentElement.classList.remove('stat-change-up', 'stat-change-down');
+            statWaitingChatsTrend.parentElement.classList.remove('stat-change-up', 'stat-change-down');
+            statResolvedChatsTrend.parentElement.classList.remove('stat-change-up', 'stat-change-down');
+            statAvgResponseTimeTrend.parentElement.classList.remove('stat-change-up', 'stat-change-down');
+            
+            statActiveChatsTrend.parentElement.classList.add(activeChatsTrend >= 0 ? 'stat-change-up' : 'stat-change-down');
+            statWaitingChatsTrend.parentElement.classList.add(waitingChatsTrend >= 0 ? 'stat-change-up' : 'stat-change-down');
+            statResolvedChatsTrend.parentElement.classList.add(resolvedChatsTrend >= 0 ? 'stat-change-up' : 'stat-change-down');
+            statAvgResponseTimeTrend.parentElement.classList.add(avgResponseTimeTrend >= 0 ? 'stat-change-up' : 'stat-change-down');
+            
+            // Update trend icons
+            const trendIcons = document.querySelectorAll('.stat-change i');
+            trendIcons.forEach(icon => {
+                if (icon.parentElement.classList.contains('stat-change-up')) {
+                    icon.textContent = 'arrow_upward';
+                } else {
+                    icon.textContent = 'arrow_downward';
+                }
+            });
+            
+            // For avgResponseTime, down is good, up is bad
+            const responseTimeTrendIcon = statAvgResponseTimeTrend.parentElement.querySelector('i');
+            if (avgResponseTimeTrend < 0) {
+                statAvgResponseTimeTrend.parentElement.classList.remove('stat-change-down');
+                statAvgResponseTimeTrend.parentElement.classList.add('stat-change-up');
+                responseTimeTrendIcon.textContent = 'arrow_downward';
+            } else {
+                statAvgResponseTimeTrend.parentElement.classList.remove('stat-change-up');
+                statAvgResponseTimeTrend.parentElement.classList.add('stat-change-down');
+                responseTimeTrendIcon.textContent = 'arrow_upward';
+            }
+            
+            // Load recent chats
+            loadRecentChats();
+            
+            hideLoading();
+        }
+        
+        // Load recent chats
+        function loadRecentChats() {
+            // Clear existing chats
+            recentChats.innerHTML = '';
+            
+            // In a real app, fetch from Firestore
+            // For demo purposes, create sample data
+            const sampleChats = [
+                {
+                    id: 'chat1',
+                    userName: 'Ioan Popescu',
+                    subject: 'Parcare ilegală pe strada Mihai Eminescu',
+                    timestamp: new Date(Date.now() - 10 * 60 * 1000), // 10 minutes ago
+                    status: 'active',
+                    department: 'traffic',
+                    lastMessage: 'Am trimis un echipaj la locația menționată. Vă mulțumim pentru sesizare.',
+                    agent: 'Maria Ionescu'
+                },
+                {
+                    id: 'chat2',
+                    userName: 'Elena Dumitrescu',
+                    subject: 'Zgomot excesiv în cartierul Slobozia Nouă',
+                    timestamp: new Date(Date.now() - 25 * 60 * 1000), // 25 minutes ago
+                    status: 'active',
+                    department: 'public-order',
+                    lastMessage: 'Puteți preciza adresa exactă de unde provine zgomotul?',
+                    agent: 'Alexandru Popa'
+                },
+                {
+                    id: 'chat3',
+                    userName: 'Mihai Stancu',
+                    subject: 'Depozitare ilegală de deșeuri',
+                    timestamp: new Date(Date.now() - 45 * 60 * 1000), // 45 minutes ago
+                    status: 'waiting',
+                    department: 'environment',
+                    lastMessage: 'Am observat o grămadă de deșeuri abandonate lângă parcul central.',
+                    agent: null
+                },
+                {
+                    id: 'chat4',
+                    userName: 'Ana Marinescu',
+                    subject: 'Vânzare neautorizată în piață',
+                    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+                    status: 'closed',
+                    department: 'commerce',
+                    lastMessage: 'Mulțumim pentru colaborare. Am rezolvat situația.',
+                    agent: 'Cristian Ionescu'
+                },
+                {
+                    id: 'chat5',
+                    userName: 'Vasile Georgescu',
+                    subject: 'Informații privind obținerea unui permis',
+                    timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000), // 3 hours ago
+                    status: 'closed',
+                    department: 'general',
+                    lastMessage: 'Vă mulțumim pentru utilizarea serviciului nostru de chat.',
+                    agent: 'Elena Radu'
+                }
+            ];
+            
+            // Create chat items
+            sampleChats.forEach(chat => {
+                const chatItem = document.createElement('div');
+                chatItem.className = 'chat-item';
+                chatItem.dataset.id = chat.id;
+                
+                // Format timestamp
+                const timeString = formatTime(chat.timestamp);
+                
+                // Set status class
+                if (chat.status === 'waiting') {
+                    chatItem.classList.add('unread');
+                }
+                
+                // Create chat content
+                chatItem.innerHTML = `
+                    <div class="chat-item-user">
+                        ${chat.userName}
+                        <span class="chat-time">${timeString}</span>
+                    </div>
+                    <div class="chat-item-message">${chat.lastMessage}</div>
+                    <div class="chat-item-info">
+                        <span class="chat-item-department">${getDepartmentName(chat.department)}</span>
+                        <span>${chat.agent ? `Agent: ${chat.agent}` : 'În așteptare'}</span>
+                    </div>
+                `;
+                
+                // Add click handler
+                chatItem.addEventListener('click', () => {
+                    // Navigate to chats view and load the selected chat
+                    showView('chats');
+                    loadChat(chat.id);
+                });
+                
+                recentChats.appendChild(chatItem);
+            });
+        }
+        
+        // =============================================
+        // Chats Management
+        // =============================================
+        
+        // Load chat list
+        function loadChatList(tabName) {
+            // Clear existing chats
+            chatListContent.innerHTML = '';
+            
+            // Show loading indicator
+            chatListContent.innerHTML = `
+                <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                    <div class="loading-spinner"></div>
+                    <p>Se încarcă conversațiile...</p>
+                </div>
+            `;
+            
+            // Get department filter
+            const department = departmentFilter.value;
+            
+            // In a real app, fetch from Firestore based on tab and department
+            // For demo purposes, create sample data
+            setTimeout(() => {
+                // Create sample chats based on selected tab
+                let sampleChats = [];
+                
+                if (tabName === 'waiting') {
+                    sampleChats = [
+                        {
+                            id: 'wait1',
+                            userName: 'Mihai Stancu',
+                            subject: 'Depozitare ilegală de deșeuri',
+                            timestamp: new Date(Date.now() - 5 * 60 * 1000),
+                            department: 'environment',
+                            lastMessage: 'Am observat o grămadă de deșeuri abandonate lângă parcul central.',
+                            priority: 'normal'
+                        },
+                        {
+                            id: 'wait2',
+                            userName: 'Georgeta Constantinescu',
+                            subject: 'Problema circulație intersecție',
+                            timestamp: new Date(Date.now() - 12 * 60 * 1000),
+                            department: 'traffic',
+                            lastMessage: 'Semaforul de la intersecția străzilor Mihai Eminescu și Ion Creangă nu funcționează.',
+                            priority: 'high'
+                        },
+                        {
+                            id: 'wait3',
+                            userName: 'Andrei Petrescu',
+                            subject: 'Tulburarea liniștii publice',
+                            timestamp: new Date(Date.now() - 18 * 60 * 1000),
+                            department: 'public-order',
+                            lastMessage: 'Un grup de tineri face gălăgie în parc după ora 22:00.',
+                            priority: 'high'
+                        }
+                    ];
+                } else if (tabName === 'active') {
+                    sampleChats = [
+                        {
+                            id: 'active1',
+                            userName: 'Ioan Popescu',
+                            subject: 'Parcare ilegală pe strada Mihai Eminescu',
+                            timestamp: new Date(Date.now() - 10 * 60 * 1000),
+                            department: 'traffic',
+                            lastMessage: 'Am trimis un echipaj la locația menționată. Vă mulțumim pentru sesizare.',
+                            agent: 'Maria Ionescu',
+                            unread: false
+                        },
+                        {
+                            id: 'active2',
+                            userName: 'Elena Dumitrescu',
+                            subject: 'Zgomot excesiv în cartierul Slobozia Nouă',
+                            timestamp: new Date(Date.now() - 25 * 60 * 1000),
+                            department: 'public-order',
+                            lastMessage: 'Puteți preciza adresa exactă de unde provine zgomotul?',
+                            agent: 'Alexandru Popa',
+                            unread: true
+                        }
+                    ];
+                } else if (tabName === 'closed') {
+                    sampleChats = [
+                        {
+                            id: 'closed1',
+                            userName: 'Ana Marinescu',
+                            subject: 'Vânzare neautorizată în piață',
+                            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+                            department: 'commerce',
+                            lastMessage: 'Mulțumim pentru colaborare. Am rezolvat situația.',
+                            agent: 'Cristian Ionescu'
+                        },
+                        {
+                            id: 'closed2',
+                            userName: 'Vasile Georgescu',
+                            subject: 'Informații privind obținerea unui permis',
+                            timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
+                            department: 'general',
+                            lastMessage: 'Vă mulțumim pentru utilizarea serviciului nostru de chat.',
+                            agent: 'Elena Radu'
+                        },
+                        {
+                            id: 'closed3',
+                            userName: 'Marian Diaconu',
+                            subject: 'Cerere informații program',
+                            timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+                            department: 'general',
+                            lastMessage: 'Programul de lucru este Luni-Vineri 8:00-16:00. Vă mulțumim!',
+                            agent: 'Diana Popa'
+                        }
+                    ];
+                }
+                
+                // Filter by department if selected
+                if (department !== 'all') {
+                    sampleChats = sampleChats.filter(chat => chat.department === department);
+                }
+                
+                // Clear loading indicator
+                chatListContent.innerHTML = '';
+                
+                // Create chat items
+                if (sampleChats.length === 0) {
+                    chatListContent.innerHTML = `
+                        <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                            <p>Nu există conversații în această categorie.</p>
+                        </div>
+                    `;
+                } else {
+                    sampleChats.forEach(chat => {
+                        const chatItem = document.createElement('div');
+                        chatItem.className = 'chat-item';
+                        chatItem.dataset.id = chat.id;
+                        
+                        // Format timestamp
+                        const timeString = formatTime(chat.timestamp);
+                        
+                        // Set status classes
+                        if (chat.unread) {
+                            chatItem.classList.add('unread');
+                        }
+                        
+                        if (chat.priority === 'high') {
+                            chatItem.classList.add('high-priority');
+                        }
+                        
+                        if (chat.id === currentChatId) {
+                            chatItem.classList.add('active');
+                        }
+                        
+                        // Create chat content
+                        const badges = `
+                            <div class="chat-item-badges">
+                                ${chat.unread ? '<span class="chat-badge chat-badge-new">1</span>' : ''}
+                                ${chat.priority === 'high' ? '<span class="chat-badge chat-badge-priority">!</span>' : ''}
+                            </div>
+                        `;
+                        
+                        chatItem.innerHTML = `
+                            <div class="chat-item-user">
+                                ${chat.userName}
+                                <span class="chat-time">${timeString}</span>
+                            </div>
+                            <div class="chat-item-message">${chat.lastMessage}</div>
+                            <div class="chat-item-info">
+                                <span class="chat-item-department">${getDepartmentName(chat.department)}</span>
+                                ${badges}
+                            </div>
+                        `;
+                        
+                        // Add click handler
+                        chatItem.addEventListener('click', () => {
+                            // Set as active
+                            document.querySelectorAll('.chat-item.active').forEach(item => {
+                                item.classList.remove('active');
+                            });
+                            chatItem.classList.add('active');
+                            
+                            // Load the chat
+                            loadChat(chat.id);
+                        });
+                        
+                        chatListContent.appendChild(chatItem);
+                    });
+                }
+            }, 1000);
+        }
+        
+        // Load a specific chat
+        function loadChat(chatId) {
+            // Set current chat
+            currentChatId = chatId;
+            
+            // Show loading in chat interface
+            chatInterface.innerHTML = `
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p>Se încarcă conversația...</p>
+                </div>
+            `;
+            
+            // In a real app, fetch chat data from Firestore
+            // For demo purposes, use sample data
+            setTimeout(() => {
+                // Clone the chat interface template
+                const template = chatInterfaceTemplate.content.cloneNode(true);
+                
+                // Use sample chat data
+                const chatData = {
+                    id: chatId,
+                    userName: 'Ioan Popescu',
+                    userEmail: 'ioan.popescu@example.com',
+                    userPhone: '0712 345 678',
+                    subject: 'Parcare ilegală pe strada Mihai Eminescu',
+                    department: 'traffic',
+                    location: 'Strada Mihai Eminescu, nr. 24, Slobozia',
+                    status: 'active',
+                    createdAt: new Date(Date.now() - 30 * 60 * 1000),
+                    messages: [
+                        {
+                            type: 'system',
+                            content: 'Conversația a început',
+                            timestamp: new Date(Date.now() - 30 * 60 * 1000)
+                        },
+                        {
+                            type: 'user',
+                            content: 'Bună ziua! Vreau să raportez o mașină parcată ilegal care blochează trotuarul pe strada Mihai Eminescu, în dreptul numărului 24.',
+                            timestamp: new Date(Date.now() - 29 * 60 * 1000)
+                        },
+                        {
+                            type: 'system',
+                            content: 'Agent Maria Ionescu s-a alăturat conversației',
+                            timestamp: new Date(Date.now() - 27 * 60 * 1000)
+                        },
+                        {
+                            type: 'agent',
+                            sender: 'Maria Ionescu',
+                            content: 'Bună ziua! Vă mulțumim pentru raportare. Puteți preciza marca mașinii și numărul de înmatriculare?',
+                            timestamp: new Date(Date.now() - 26 * 60 * 1000)
+                        },
+                        {
+                            type: 'user',
+                            content: 'Este un Audi A4 negru cu numărul IL-01-ABC.',
+                            timestamp: new Date(Date.now() - 24 * 60 * 1000)
+                        },
+                        {
+                            type: 'user',
+                            content: 'Am atașat și o fotografie.',
+                            timestamp: new Date(Date.now() - 24 * 60 * 1000),
+                            fileUrl: 'https://via.placeholder.com/800x600',
+                            fileName: 'masina_parcata.jpg',
+                            fileType: 'image/jpeg'
+                        },
+                        {
+                            type: 'agent',
+                            sender: 'Maria Ionescu',
+                            content: 'Mulțumesc pentru informații și pentru fotografie. Am trimis un echipaj la locația menționată pentru a verifica situația.',
+                            timestamp: new Date(Date.now() - 20 * 60 * 1000)
+                        },
+                        {
+                            type: 'user',
+                            content: 'Vă mulțumesc! În cât timp estimați că va ajunge echipajul?',
+                            timestamp: new Date(Date.now() - 15 * 60 * 1000)
+                        },
+                        {
+                            type: 'agent',
+                            sender: 'Maria Ionescu',
+                            content: 'Echipajul va ajunge în aproximativ 10-15 minute, în funcție de trafic.',
+                            timestamp: new Date(Date.now() - 12 * 60 * 1000)
+                        }
+                    ]
+                };
+                
+                // Set user info
+                template.querySelector('.chat-user-name').textContent = chatData.userName;
+                template.querySelector('.chat-user-detail').textContent = `${getDepartmentName(chatData.department)} • ${formatTime(chatData.createdAt)}`;
+                template.querySelector('.chat-user-avatar').textContent = chatData.userName.charAt(0).toUpperCase();
+                
+                // Set user info in sidebar
+                template.querySelector('.user-name-value').textContent = chatData.userName;
+                template.querySelector('.user-email-value').textContent = chatData.userEmail || 'N/A';
+                template.querySelector('.user-phone-value').textContent = chatData.userPhone || 'N/A';
+                template.querySelector('.user-subject-value').textContent = chatData.subject;
+                template.querySelector('.user-department-value').textContent = getDepartmentName(chatData.department);
+                
+                // Show location if available
+                if (chatData.location) {
+                    template.querySelector('.location-section').style.display = 'block';
+                    template.querySelector('.user-location-value').textContent = chatData.location;
+                    template.querySelector('.location-map').style.backgroundImage = `url('https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(chatData.location)}&zoom=15&size=300x150&markers=color:red%7C${encodeURIComponent(chatData.location)}&key=YOUR_GOOGLE_MAPS_API_KEY')`;
+                }
+                
+                // Add messages
+                const messagesContainer = template.querySelector('.chat-messages');
+                chatData.messages.forEach(message => {
+                    const messageElement = document.createElement('div');
+                    
+                    if (message.type === 'system') {
+                        messageElement.className = 'message-system';
+                        messageElement.textContent = message.content;
+                    } else if (message.type === 'user') {
+                        messageElement.className = 'message message-received';
+                        
+                        let messageContent = '';
+                        
+                        if (message.fileUrl && message.fileType.startsWith('image/')) {
+                            messageContent += `<img src="${message.fileUrl}" alt="Imagine atașată" style="max-width: 100%; border-radius: var(--border-radius-small); margin-bottom: 0.5rem;">`;
+                        } else if (message.fileUrl) {
+                            messageContent += `
+                                <div style="background-color: rgba(0,0,0,0.05); display: inline-flex; padding: 0.5rem 1rem; border-radius: 1rem; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <i class="material-icons" style="color: var(--text-secondary); font-size: 1.5rem;">insert_drive_file</i>
+                                    <div>
+                                        <div style="font-weight: 500;">${message.fileName || 'Fișier'}</div>
+                                        <a href="${message.fileUrl}" target="_blank" style="font-size: 0.8rem; color: var(--secondary-color);">Descarcă</a>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        if (message.content) {
+                            messageContent += `
+                                <div class="message-content">
+                                    <div class="message-sender">${chatData.userName}</div>
+                                    ${message.content}
+                                </div>
+                            `;
+                        }
+                        
+                        messageContent += `
+                            <div class="message-meta">
+                                <span class="message-time">${formatTime(message.timestamp)}</span>
+                            </div>
+                        `;
+                        
+                        messageElement.innerHTML = messageContent;
+                    } else if (message.type === 'agent') {
+                        messageElement.className = 'message message-sent';
+                        
+                        let messageContent = '';
+                        
+                        if (message.fileUrl) {
+                            if (message.fileType && message.fileType.startsWith('image/')) {
+                                messageContent += `<img src="${message.fileUrl}" alt="Imagine atașată" style="max-width: 100%; border-radius: var(--border-radius-small); margin-bottom: 0.5rem;">`;
+                            } else {
+                                messageContent += `
+                                    <div style="background-color: rgba(0,0,0,0.05); display: inline-flex; padding: 0.5rem 1rem; border-radius: 1rem; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i class="material-icons" style="color: var(--text-secondary); font-size: 1.5rem;">insert_drive_file</i>
+                                        <div>
+                                            <div style="font-weight: 500;">${message.fileName || 'Fișier'}</div>
+                                            <a href="${message.fileUrl}" target="_blank" style="font-size: 0.8rem; color: var(--secondary-color);">Descarcă</a>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        }
+                        
+                        if (message.content) {
+                            messageContent += `
+                                <div class="message-content">
+                                    <div class="message-sender">${message.sender}</div>
+                                    ${message.content}
+                                </div>
+                            `;
+                        }
+                        
+                        messageContent += `
+                            <div class="message-meta">
+                                <span class="message-time">${formatTime(message.timestamp)}</span>
+                                <span class="message-status">
+                                    <i class="material-icons">done_all</i>
+                                </span>
+                            </div>
+                        `;
+                        
+                        messageElement.innerHTML = messageContent;
+                    }
+                    
+                    messagesContainer.appendChild(messageElement);
+                });
+                
+                // Scroll to bottom
+                setTimeout(() => {
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 100);
+                
+                // Add quick responses
+                const quickResponses = template.querySelector('.quick-responses');
+                const responseTemplates = [
+                    'Bună ziua! Cu ce vă pot ajuta astăzi?',
+                    'Vă mulțumim pentru raportare. Vom trimite un echipaj la locația menționată.',
+                    'Puteți furniza mai multe detalii despre situație?',
+                    'Puteți atașa o fotografie pentru a ne ajuta să evaluăm situația?',
+                    'Am înregistrat sesizarea dumneavoastră cu numărul #12345. Veți fi contactat în curând.'
+                ];
+                
+                responseTemplates.forEach(response => {
+                    const quickResponse = document.createElement('div');
+                    quickResponse.className = 'quick-response';
+                    quickResponse.textContent = response;
+                    
+                    quickResponse.addEventListener('click', () => {
+                        const chatInput = template.querySelector('.chat-input');
+                        chatInput.value = response;
+                        chatInput.focus();
+                    });
+                    
+                    quickResponses.appendChild(quickResponse);
+                });
+                
+                // Set up send message functionality
+                const chatInputField = template.querySelector('.chat-input');
+                const sendButton = template.querySelector('.chat-input-action-send');
+                
+                sendButton.addEventListener('click', () => {
+                    const message = chatInputField.value.trim();
+                    if (!message) return;
+                    
+                    // Add message to chat
+                    const messageElement = document.createElement('div');
+                    messageElement.className = 'message message-sent';
+                    
+                    const messageContent = `
+                        <div class="message-content">
+                            <div class="message-sender">Maria Ionescu</div>
+                            ${message}
+                        </div>
+                        <div class="message-meta">
+                            <span class="message-time">${formatTime(new Date())}</span>
+                            <span class="message-status">
+                                <i class="material-icons">done_all</i>
+                            </span>
+                        </div>
+                    `;
+                    
+                    messageElement.innerHTML = messageContent;
+                    messagesContainer.appendChild(messageElement);
+                    
+                    // Clear input
+                    chatInputField.value = '';
+                    
+                    // Scroll to bottom
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                });
+                
+                // Set up chat file input
+                const chatFileInput = template.querySelector('#chatFileInput');
+                const fileUploadButton = template.querySelector('.file-upload button');
+                
+                fileUploadButton.addEventListener('click', () => {
+                    chatFileInput.click();
+                });
+                
+                chatFileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    // For demo, just show a preview
+                    alert(`File selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
+                });
+                
+                // Set up other buttons
+                const btnTransferChat = template.querySelector('#btnTransferChat');
+                const btnEndChat = template.querySelector('#btnEndChat');
+                const btnEscalateChat = template.querySelector('#btnEscalateChat');
+                const btnSendTranscript = template.querySelector('#btnSendTranscript');
+                
+                btnTransferChat.addEventListener('click', () => {
+                    const department = prompt('Introduceți departamentul la care doriți să transferați conversația:');
+                    if (department) {
+                        alert(`Conversația va fi transferată la departamentul: ${department}`);
+                    }
+                });
+                
+                btnEndChat.addEventListener('click', () => {
+                    if (confirm('Sigur doriți să încheiați această conversație?')) {
+                        alert('Conversația a fost încheiată.');
+                        // Reload chat list
+                        loadChatList(currentChatTab);
+                        // Clear chat interface
+                        chatInterface.innerHTML = `
+                            <div class="chat-interface-placeholder">
+                                <i class="material-icons">chat</i>
+                                <h3>Selectați o conversație pentru a începe</h3>
+                                <p>Alegeți o conversație din lista din stânga pentru a răspunde cetățenilor.</p>
+                            </div>
+                        `;
+                        currentChatId = null;
+                    }
+                });
+                
+                btnEscalateChat.addEventListener('click', () => {
+                    alert('Conversația a fost escaladată la un nivel superior de prioritate.');
+                });
+                
+                btnSendTranscript.addEventListener('click', () => {
+                    const email = prompt('Introduceți adresa de email pentru a trimite transcriptul:');
+                    if (email) {
+                        alert(`Transcriptul va fi trimis la adresa: ${email}`);
+                    }
+                });
+                
+                // Replace chat interface with the template
+                chatInterface.innerHTML = '';
+                chatInterface.appendChild(template);
+            }, 1500);
+        }
+        
+        // =============================================
+        // Analytics Functions
+        // =============================================
+        
+        // Load analytics data
+        function loadAnalyticsData() {
+            showLoading();
+            
+            // Get selected time range
+            const timeRange = timeRangeFilter.value;
+            
+            // In a real app, fetch this data from Firestore
+            // For demo purposes, generate random data
+            
+            // Create date labels based on time range
+            const dateLabels = [];
+            const today = new Date();
+            
+            if (timeRange === 'day') {
+                // Last 24 hours by hour
+                for (let i = 23; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setHours(today.getHours() - i);
+                    dateLabels.push(date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                }
+            } else if (timeRange === 'week') {
+                // Last 7 days
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(today.getDate() - i);
+                    dateLabels.push(date.toLocaleDateString([], { weekday: 'short', day: 'numeric' }));
+                }
+            } else if (timeRange === 'month') {
+                // Last 30 days by week
+                for (let i = 4; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(today.getDate() - (i * 7));
+                    dateLabels.push(`Săpt ${i + 1}`);
+                }
+            } else if (timeRange === 'quarter') {
+                // Last 3 months by month
+                for (let i = 2; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setMonth(today.getMonth() - i);
+                    dateLabels.push(date.toLocaleDateString([], { month: 'short' }));
+                }
+            } else if (timeRange === 'year') {
+                // Last 12 months
+                for (let i = 11; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setMonth(today.getMonth() - i);
+                    dateLabels.push(date.toLocaleDateString([], { month: 'short' }));
+                }
+            }
+            
+            // Generate random data
+            const generateRandomData = (count, min, max) => {
+                return Array.from({ length: count }, () => Math.floor(Math.random() * (max - min + 1)) + min);
+            };
+            
+            // Chats by day data
+            const totalChats = generateRandomData(dateLabels.length, 5, 30);
+            const resolvedChats = totalChats.map(val => Math.floor(val * (0.7 + Math.random() * 0.3)));
+            
+            // Chats by department data
+            const departments = ['Circulație', 'Ordine Publică', 'Mediu', 'Comerț', 'General'];
+            const departmentChats = generateRandomData(departments.length, 10, 50);
+            
+            // Response time data
+            const responseTime = generateRandomData(dateLabels.length, 1, 10);
+            
+            // Satisfaction data
+            const satisfactionLabels = ['Foarte mulțumit', 'Mulțumit', 'Neutru', 'Nemulțumit', 'Foarte nemulțumit'];
+            const satisfactionData = generateRandomData(satisfactionLabels.length, 5, 50);
+            
+            // Create/update charts
+            createOrUpdateCharts(dateLabels, totalChats, resolvedChats, departments, departmentChats, responseTime, satisfactionLabels, satisfactionData);
+            
+            // Load agent stats
+            loadAgentStats();
+            
+            hideLoading();
+        }
+        
+        // Create or update charts
+        function createOrUpdateCharts(dateLabels, totalChats, resolvedChats, departments, departmentChats, responseTime, satisfactionLabels, satisfactionData) {
+            // Configure Chart.js global settings
+            Chart.defaults.font.family = "'Poppins', sans-serif";
+            Chart.defaults.color = '#666666';
+            
+            // Chats by day chart
+            const chatsByDayCtx = document.getElementById('chatsByDayChart').getContext('2d');
+            
+            if (chatsByDayChart) {
+                chatsByDayChart.data.labels = dateLabels;
+                chatsByDayChart.data.datasets[0].data = totalChats;
+                chatsByDayChart.data.datasets[1].data = resolvedChats;
+                chatsByDayChart.update();
+            } else {
+                chatsByDayChart = new Chart(chatsByDayCtx, {
+                    type: 'line',
+                    data: {
+                        labels: dateLabels,
+                        datasets: [
+                            {
+                                label: 'Total conversații',
+                                data: totalChats,
+                                backgroundColor: 'rgba(30, 136, 229, 0.2)',
+                                borderColor: 'rgba(30, 136, 229, 1)',
+                                borderWidth: 2,
+                                tension: 0.3,
+                                fill: true
+                            },
+                            {
+                                label: 'Conversații rezolvate',
+                                data: resolvedChats,
+                                backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                                borderColor: 'rgba(76, 175, 80, 1)',
+                                borderWidth: 2,
+                                tension: 0.3,
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Chats by department chart
+            const chatsByDepartmentCtx = document.getElementById('chatsByDepartmentChart').getContext('2d');
+            
+            if (chatsByDepartmentChart) {
+                chatsByDepartmentChart.data.labels = departments;
+                chatsByDepartmentChart.data.datasets[0].data = departmentChats;
+                chatsByDepartmentChart.update();
+            } else {
+                chatsByDepartmentChart = new Chart(chatsByDepartmentCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: departments,
+                        datasets: [{
+                            label: 'Conversații',
+                            data: departmentChats,
+                            backgroundColor: [
+                                'rgba(30, 136, 229, 0.7)',
+                                'rgba(76, 175, 80, 0.7)',
+                                'rgba(255, 193, 7, 0.7)',
+                                'rgba(156, 39, 176, 0.7)',
+                                'rgba(233, 30, 99, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(30, 136, 229, 1)',
+                                'rgba(76, 175, 80, 1)',
+                                'rgba(255, 193, 7, 1)',
+                                'rgba(156, 39, 176, 1)',
+                                'rgba(233, 30, 99, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Response time chart
+            const responseTimeCtx = document.getElementById('responseTimeChart').getContext('2d');
+            
+            if (responseTimeChart) {
+                responseTimeChart.data.labels = dateLabels;
+                responseTimeChart.data.datasets[0].data = responseTime;
+                responseTimeChart.update();
+            } else {
+                responseTimeChart = new Chart(responseTimeCtx, {
+                    type: 'line',
+                    data: {
+                        labels: dateLabels,
+                        datasets: [{
+                            label: 'Timp mediu de răspuns (minute)',
+                            data: responseTime,
+                            backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                            borderColor: 'rgba(255, 193, 7, 1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Satisfaction chart
+            const satisfactionCtx = document.getElementById('satisfactionChart').getContext('2d');
+            
+            if (satisfactionChart) {
+                satisfactionChart.data.labels = satisfactionLabels;
+                satisfactionChart.data.datasets[0].data = satisfactionData;
+                satisfactionChart.update();
+            } else {
+                satisfactionChart = new Chart(satisfactionCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: satisfactionLabels,
+                        datasets: [{
+                            data: satisfactionData,
+                            backgroundColor: [
+                                'rgba(76, 175, 80, 0.7)',
+                                'rgba(139, 195, 74, 0.7)',
+                                'rgba(255, 193, 7, 0.7)',
+                                'rgba(255, 152, 0, 0.7)',
+                                'rgba(244, 67, 54, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(76, 175, 80, 1)',
+                                'rgba(139, 195, 74, 1)',
+                                'rgba(255, 193, 7, 1)',
+                                'rgba(255, 152, 0, 1)',
+                                'rgba(244, 67, 54, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Load agent stats
+        function loadAgentStats() {
+            // Clear existing data
+            agentStatsTable.innerHTML = '';
+            
+            // Sample agent data
+            const agents = [
+                {
+                    name: 'Maria Ionescu',
+                    totalChats: 123,
+                    resolvedChats: 118,
+                    avgResponseTime: '2m 15s',
+                    satisfaction: '4.8/5'
+                },
+                {
+                    name: 'Alexandru Popa',
+                    totalChats: 98,
+                    resolvedChats: 92,
+                    avgResponseTime: '3m 05s',
+                    satisfaction: '4.6/5'
+                },
+                {
+                    name: 'Elena Radu',
+                    totalChats: 145,
+                    resolvedChats: 138,
+                    avgResponseTime: '1m 58s',
+                    satisfaction: '4.9/5'
+                },
+                {
+                    name: 'Cristian Ionescu',
+                    totalChats: 87,
+                    resolvedChats: 80,
+                    avgResponseTime: '2m 42s',
+                    satisfaction: '4.5/5'
+                },
+                {
+                    name: 'Diana Popa',
+                    totalChats: 112,
+                    resolvedChats: 105,
+                    avgResponseTime: '2m 30s',
+                    satisfaction: '4.7/5'
+                }
+            ];
+            
+            // Create table rows
+            agents.forEach(agent => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td style="padding: 1rem; border-bottom: 1px solid rgba(0,0,0,0.1);">${agent.name}</td>
+                    <td style="padding: 1rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.1);">${agent.totalChats}</td>
+                    <td style="padding: 1rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.1);">${agent.resolvedChats} (${Math.round(agent.resolvedChats / agent.totalChats * 100)}%)</td>
+                    <td style="padding: 1rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.1);">${agent.avgResponseTime}</td>
+                    <td style="padding: 1rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                        ${agent.satisfaction}
+                        <div style="display: inline-block; color: var(--warning-color);">
+                            ${'★'.repeat(Math.floor(parseFloat(agent.satisfaction)))}
+                            ${parseFloat(agent.satisfaction) % 1 >= 0.5 ? '½' : ''}
+                        </div>
+                    </td>
+                `;
+                
+                agentStatsTable.appendChild(row);
+            });
+        }
+        
+        // Export analytics
+        function exportAnalytics() {
+            alert('Raportul a fost exportat în format CSV.');
+        }
+        
+        // Print analytics
+        function printAnalytics() {
+            window.print();
+        }
+        
+        // =============================================
+        // Templates Management
+        // =============================================
+        
+        // Load templates data
+        function loadTemplatesData() {
+            showLoading();
+            
+            // Clear existing templates
+            templatesGrid.innerHTML = '';
+            
+            // In a real app, fetch templates from Firestore
+            // For demo purposes, use sample data
+            setTimeout(() => {
+                const sampleTemplates = [
+                    {
+                        id: 'template1',
+                        title: 'Salut inițial',
+                        content: 'Bună ziua! Sunt [Nume Agent] de la Poliția Locală Slobozia. Cu ce vă pot ajuta astăzi?',
+                        category: 'greeting'
+                    },
+                    {
+                        id: 'template2',
+                        title: 'Confirmare raportare',
+                        content: 'Vă mulțumim pentru raportare. Cazul dvs. a fost înregistrat cu numărul #[NUMAR_CAZ]. Un echipaj va fi trimis la locația menționată în cel mai scurt timp posibil.',
+                        category: 'info'
+                    },
+                    {
+                        id: 'template3',
+                        title: 'Solicitare detalii',
+                        content: 'Pentru a vă putea ajuta mai eficient, aveți posibilitatea să ne furnizați mai multe detalii despre situație? Ar fi util să știm: locația exactă, ora incidentului și o scurtă descriere.',
+                        category: 'info'
+                    },
+                    {
+                        id: 'template4',
+                        title: 'Solicitare fotografie',
+                        content: 'O fotografie a situației ne-ar ajuta să evaluăm mai bine cazul. Dacă este posibil, puteți atașa o imagine folosind butonul de atașare din partea dreaptă jos a chat-ului?',
+                        category: 'info'
+                    },
+                    {
+                        id: 'template5',
+                        title: 'Parcare ilegală',
+                        content: 'Pentru a putea acționa în cazul parcării ilegale, avem nevoie de următoarele informații: marca mașinii, culoarea, numărul de înmatriculare și locația exactă. Dacă e posibil, și o fotografie ar fi utilă.',
+                        category: 'traffic'
+                    },
+                    {
+                        id: 'template6',
+                        title: 'Răspuns urgență',
+                        content: 'Situația pe care o descrieți necesită intervenție imediată. Vă recomandăm să sunați direct la numărul de urgență 112. Între timp, un echipaj de la Poliția Locală va fi trimis la fața locului.',
+                        category: 'emergency'
+                    },
+                    {
+                        id: 'template7',
+                        title: 'Închidere conversație',
+                        content: 'Vă mulțumim pentru că ați utilizat serviciul nostru de chat. Dacă aveți orice alte întrebări, nu ezitați să ne contactați din nou. O zi bună!',
+                        category: 'closing'
+                    },
+                    {
+                        id: 'template8',
+                        title: 'Informații reclamație',
+                        content: 'Pentru a înregistra o reclamație oficială, vom avea nevoie de datele dvs. de contact (nume, adresă, telefon, email) și detalii cât mai precise despre situație. Doriți să continuăm cu înregistrarea reclamației?',
+                        category: 'complaint'
+                    }
+                ];
+                
+                // Filter templates if search or category filter is applied
+                const searchTerm = templateSearch.value.toLowerCase();
+                const categoryFilter = templateCategoryFilter.value;
+                
+                let filteredTemplates = sampleTemplates;
+                
+                if (searchTerm) {
+                    filteredTemplates = filteredTemplates.filter(template => 
+                        template.title.toLowerCase().includes(searchTerm) || 
+                        template.content.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                if (categoryFilter !== 'all') {
+                    filteredTemplates = filteredTemplates.filter(template => 
+                        template.category === categoryFilter
+                    );
+                }
+                
+                // Create template cards
+                if (filteredTemplates.length === 0) {
+                    templatesGrid.innerHTML = `
+                        <div style="padding: 2rem; text-align: center; color: var(--text-secondary); grid-column: 1 / -1;">
+                            <i class="material-icons" style="font-size: 3rem; opacity: 0.3;">search_off</i>
+                            <p>Nu s-au găsit șabloane care să corespundă criteriilor de căutare.</p>
+                        </div>
+                    `;
+                } else {
+                    filteredTemplates.forEach(template => {
+                        const templateCard = document.createElement('div');
+                        templateCard.className = 'template-card';
+                        templateCard.dataset.id = template.id;
+                        
+                        templateCard.innerHTML = `
+                            <div class="template-content">${template.content}</div>
+                            <div class="template-actions">
+                                <span class="template-category">${getCategoryName(template.category)}</span>
+                                <div>
+                                    <button class="template-action btn-use" title="Folosește șablon">
+                                        <i class="material-icons">content_copy</i>
+                                    </button>
+                                    <button class="template-action btn-edit" title="Editează șablon">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                    <button class="template-action btn-delete" title="Șterge șablon">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Set up buttons
+                        const useBtn = templateCard.querySelector('.btn-use');
+                        const editBtn = templateCard.querySelector('.btn-edit');
+                        const deleteBtn = templateCard.querySelector('.btn-delete');
+                        
+                        useBtn.addEventListener('click', () => {
+                            // Copy to clipboard
+                            navigator.clipboard.writeText(template.content)
+                                .then(() => {
+                                    alert('Șablonul a fost copiat în clipboard.');
+                                })
+                                .catch(err => {
+                                    console.error('Could not copy text: ', err);
+                                    // Fallback
+                                    const textArea = document.createElement('textarea');
+                                    textArea.value = template.content;
+                                    document.body.appendChild(textArea);
+                                    textArea.select();
+                                    document.execCommand('copy');
+                                    document.body.removeChild(textArea);
+                                    alert('Șablonul a fost copiat în clipboard.');
+                                });
+                        });
+                        
+                        editBtn.addEventListener('click', () => {
+                            editTemplate(template);
+                        });
+                        
+                        deleteBtn.addEventListener('click', () => {
+                            if (confirm(`Sigur doriți să ștergeți șablonul "${template.title}"?`)) {
+                                // In a real app, delete from Firestore
+                                // For demo, just remove from the DOM
+                                templateCard.remove();
+                            }
+                        });
+                        
+                        templatesGrid.appendChild(templateCard);
+                    });
+                }
+                
+                hideLoading();
+            }, 1000);
+        }
+        
+        // Show new template modal
+        function showNewTemplateModal() {
+            // Reset form
+            templateForm.reset();
+            editingTemplateId = null;
+            
+            // Set title
+            templateModalTitle.textContent = 'Adaugă șablon nou';
+            
+            // Show modal
+            templateModal.classList.add('show');
+        }
+        
+        // Show edit template modal
+        function editTemplate(template) {
+            // Set form values
+            templateTitle.value = template.title;
+            templateCategory.value = template.category;
+            templateContent.value = template.content;
+            editingTemplateId = template.id;
+            
+            // Set title
+            templateModalTitle.textContent = 'Editează șablon';
+            
+            // Show modal
+            templateModal.classList.add('show');
+        }
+        
+        // Hide template modal
+        function hideTemplateModal() {
+            templateModal.classList.remove('show');
+        }
+        
+        // Save template
+        function saveTemplate() {
+            // Validate form
+            if (!templateTitle.value || !templateContent.value) {
+                alert('Vă rugăm să completați toate câmpurile obligatorii.');
+                return;
+            }
+            
+            // Get form values
+            const title = templateTitle.value;
+            const category = templateCategory.value;
+            const content = templateContent.value;
+            
+            // In a real app, save to Firestore
+            // For demo, just close the modal and reload templates
+            hideTemplateModal();
+            
+            // Show success message
+            alert(`Șablonul "${title}" a fost ${editingTemplateId ? 'actualizat' : 'adăugat'} cu succes.`);
+            
+            // Reload templates
+            loadTemplatesData();
+        }
+        
+        // Filter templates
+        function filterTemplates() {
+            loadTemplatesData();
+        }
+        
+        // =============================================
+        // Settings Management
+        // =============================================
+        
+        // Load settings data
+        function loadSettingsData() {
+            // In a real app, fetch user settings from Firestore
+            // For demo, use default values
+            
+            // Nothing to do for now as defaults are set in HTML
+        }
+        
+        // Save settings
+        function saveSettings() {
+            // Get settings values
+            const browserNotifications = settingBrowserNotifications.checked;
+            const soundNotifications = settingSoundNotifications.checked;
+            const emailNotifications = settingEmailNotifications.checked;
+            const twoFactorAuth = settingTwoFactorAuth.checked;
+            const sessionTimeout = settingSessionTimeout.value;
+            const autoAssign = settingAutoAssign.checked;
+            const maxChats = settingMaxChats.value;
+            
+            // In a real app, save to Firestore
+            // For demo, just show success message
+            alert('Setările au fost salvate cu succes.');
+            
+            // Update session timeout
+            setupSessionTimeout();
+        }
+        
+        // =============================================
+        // Helper Functions
+        // =============================================
+        
+        // Format time for display
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Get department name from ID
+        function getDepartmentName(departmentId) {
+            const departments = {
+                'traffic': 'Circulație Rutieră',
+                'public-order': 'Ordine Publică',
+                'environment': 'Protecția Mediului',
+                'commerce': 'Control Comercial',
+                'general': 'Informații Generale'
+            };
+            
+            return departments[departmentId] || departmentId;
+        }
+        
+        // Get category name from ID
+        function getCategoryName(categoryId) {
+            const categories = {
+                'greeting': 'Salut',
+                'info': 'Informații',
+                'traffic': 'Circulație',
+                'complaint': 'Reclamații',
+                'emergency': 'Urgențe',
+                'closing': 'Încheiere'
+            };
+            
+            return categories[categoryId] || categoryId;
+        }
+        
+        // Check user role and permissions
+        function checkUserRole(user) {
+            // In a real app, fetch user role from Firestore
+            // For demo, use a random role
+            const roles = ['Agent', 'Supervizor', 'Administrator'];
+            const randomRole = roles[Math.floor(Math.random() * roles.length)];
+            
+            // Show dashboard
+            hideLoading();
+            showDashboard(randomRole);
+        }
+        
+        // =============================================
+        // User Activity Monitoring (for session timeout)
+        // =============================================
+        
+        // User activity events
+        document.addEventListener('click', resetSessionTimeout);
+        document.addEventListener('keydown', resetSessionTimeout);
+        document.addEventListener('mousemove', resetSessionTimeout);
+        document.addEventListener('scroll', resetSessionTimeout);
+        
+        // =============================================
+        // Initialization
+        // =============================================
+        
+        // Check if user is already authenticated
+        if (sessionStorage.getItem('authenticated') === 'true' && auth.currentUser) {
+            showDashboard('Agent');
+        } else {
+            hideLoading();
+        }
+    </script>
+</body>
+</html>
