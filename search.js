@@ -3,19 +3,12 @@
  * 
  * Features:
  * - Full-text search with Elasticlunr.js
- * - Automatic crawling and indexing of all site content
  * - Support for Romanian language (diacritics handling, stopwords)
  * - Advanced result ranking and highlighting
  * - Search suggestions and autocomplete
- * - Cached results
  */
 
-// First, load Elasticlunr library
-// Add this script tag to your HTML pages: <script src="https://cdnjs.cloudflare.com/ajax/libs/elasticlunr/0.9.6/elasticlunr.min.js"></script>
-
-/**
- * SiteSearch module using revealing module pattern
- */
+// SiteSearch module using revealing module pattern
 const SiteSearch = (function() {
     // Private variables
     let _searchIndex = null;
@@ -33,11 +26,7 @@ const SiteSearch = (function() {
         maxResults: 100,
         defaultPerPage: 10,
         highlightClass: 'search-highlight',
-        useServerIndex: true,  // Set to true to load a pre-built index, false to build on client
-        indexUrl: '/pls/search-index.json', // URL for the pre-built index
-        siteMapUrl: '/pls/sitemap.xml', // URL for the sitemap to use when building the index
-        crawlStartUrl: '/pls/', // Starting URL for crawler if not using sitemap
-        trackAnalytics: true,
+        indexUrl: '/search-index.json',
         
         // Romanian stopwords
         stopWords: [
@@ -67,34 +56,47 @@ const SiteSearch = (function() {
         ]
     };
     
-    // Singleton pattern - store the search instance
+    // Singleton pattern
     let _instance = null;
     
-    // Initialize elasticlunr with configuration for Romanian
-    function initializeSearchIndex() {
-        if (_searchIndex !== null) return _searchIndex;
+    // Register custom Romanian pipeline functions before using them
+    if (elasticlunr && elasticlunr.Pipeline) {
+        // Create custom stop word filter for Romanian and register it
+        const romanianStopWordFilter = function(token) {
+            if (_searchConfig.stopWords.indexOf(token) === -1) {
+                return token;
+            }
+            return null;
+        };
+        elasticlunr.Pipeline.registerFunction(romanianStopWordFilter, 'romanianStopWordFilter');
         
-        // Configure elasticlunr for Romanian
-        _searchIndex = elasticlunr(function() {
-            this.setRef('id');               // document identifier field
-            this.addField('title');          // title field with boost of 10
-            this.addField('content');        // content field
-            this.addField('keywords');       // keywords field with boost of 5
-            this.addField('url');            // URL field
+        // Simple Romanian stemmer and register it
+        const romanianStemmer = function(token) {
+            if (!token) return token;
             
-            // Register Romanian stop words
-            this.pipeline.remove(elasticlunr.stopWordFilter);
-            this.pipeline.add(createRomanianStopWordFilter(_searchConfig.stopWords));
+            // Convert to lowercase and trim
+            let word = token.toLowerCase().trim();
             
-            // Add Romanian stemmer
-            this.pipeline.remove(elasticlunr.stemmer);
-            this.pipeline.add(romanianStemmer);
+            // Words shorter than 3 characters are not stemmed
+            if (word.length < 3) return word;
             
-            // Set custom tokenizer that handles Romanian diacritics
-            this.tokenizer = romanianTokenizer;
-        });
-        
-        return _searchIndex;
+            // Common Romanian suffixes
+            const suffixes = [
+                'ilor', 'ului', 'elor', 'iile', 'ilor', 'atia', 'atie', 
+                'ații', 'eați', 'ește', 'esc', 'ează', 'ați', 'ate', 'ata',
+                'ati', 'ata', 'ând', 'eau', 'eal', 'ele', 'ile', 'ul', 'uri', 
+                'eii', 'ii', 'ă', 'a', 'e', 'i', 'u'
+            ];
+            
+            for (let suffix of suffixes) {
+                if (word.endsWith(suffix) && word.length - suffix.length >= 3) {
+                    return word.slice(0, word.length - suffix.length);
+                }
+            }
+            
+            return word;
+        };
+        elasticlunr.Pipeline.registerFunction(romanianStemmer, 'romanianStemmer');
     }
     
     // Define a custom tokenizer for Romanian (handling diacritics)
@@ -106,7 +108,7 @@ const SiteSearch = (function() {
         
         // Split on non-alphanumeric characters and convert to lowercase
         let tokens = str.toLowerCase()
-            .split(/[^\p{L}0-9]+/u)
+            .split(/\W+/)
             .filter(token => token && token.length > 1);
         
         return tokens;
@@ -127,43 +129,30 @@ const SiteSearch = (function() {
         return text.replace(/[ăâîșşțţ]/g, match => diacriticsMap[match] || match);
     }
     
-    // Create custom stop word filter for Romanian
-    function createRomanianStopWordFilter(stopWords) {
-        const stopWordFilter = function(token) {
-            if (stopWords.indexOf(token) === -1) {
-                return token;
-            }
-            return null;
-        };
+    // Initialize elasticlunr with configuration for Romanian
+    function initializeSearchIndex() {
+        if (_searchIndex !== null) return _searchIndex;
         
-        return stopWordFilter;
-    }
-    
-    // Simple Romanian stemmer
-    function romanianStemmer(token) {
-        if (!token) return token;
+        // Configure elasticlunr for Romanian
+        _searchIndex = elasticlunr(function() {
+            this.setRef('id');
+            this.addField('title');
+            this.addField('content');
+            this.addField('keywords');
+            this.addField('url');
+            
+            // Use the registered Romanian pipeline functions
+            this.pipeline.remove(elasticlunr.stopWordFilter);
+            this.pipeline.add(elasticlunr.Pipeline.getRegisteredFunction('romanianStopWordFilter'));
+            
+            this.pipeline.remove(elasticlunr.stemmer);
+            this.pipeline.add(elasticlunr.Pipeline.getRegisteredFunction('romanianStemmer'));
+            
+            // Set custom tokenizer that handles Romanian diacritics
+            this.tokenizer = romanianTokenizer;
+        });
         
-        // Convert to lowercase and trim
-        let word = token.toLowerCase().trim();
-        
-        // Words shorter than 3 characters are not stemmed
-        if (word.length < 3) return word;
-        
-        // Common Romanian suffixes
-        const suffixes = [
-            'ilor', 'ului', 'elor', 'iile', 'ilor', 'atia', 'atie', 
-            'ații', 'eați', 'ește', 'esc', 'ează', 'ați', 'ate', 'ata',
-            'ati', 'ata', 'ând', 'eau', 'eal', 'ele', 'ile', 'ul', 'uri', 
-            'eii', 'ii', 'ă', 'a', 'e', 'i', 'u'
-        ];
-        
-        for (let suffix of suffixes) {
-            if (word.endsWith(suffix) && word.length - suffix.length >= 3) {
-                return word.slice(0, word.length - suffix.length);
-            }
-        }
-        
-        return word;
+        return _searchIndex;
     }
     
     // Debounce implementation
@@ -176,365 +165,87 @@ const SiteSearch = (function() {
         };
     }
     
-    // Load or build the search index
-    async function loadSearchIndex() {
-        if (_indexReady) return;
-        
-        try {
-            if (_searchConfig.useServerIndex) {
-                // Load pre-built index from server
-                await loadServerIndex();
-            } else {
-                // Build index by crawling the site
-                await buildSearchIndex();
-            }
-            
-            _indexReady = true;
-            console.log('Search index is ready');
-        } catch (error) {
-            console.error('Error initializing search index:', error);
-            
-            // Fallback to simple index if loading fails
-            buildFallbackIndex();
-            _indexReady = true;
-        }
-    }
-    
-    // Load the search index from server
-    async function loadServerIndex() {
-        try {
-            const response = await fetch(_searchConfig.indexUrl);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to load search index: ${response.status} ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            
-            if (data.index && data.pages) {
-                // Load serialized index into elasticlunr
-                _searchIndex = elasticlunr.Index.load(data.index);
-                _pagesData = data.pages;
-                console.log(`Loaded search index with ${_pagesData.length} pages`);
-            } else {
-                throw new Error('Invalid search index format');
-            }
-        } catch (error) {
-            console.error('Error loading search index:', error);
-            throw error;
-        }
-    }
-    
-    // Build search index by crawling the site
-    async function buildSearchIndex() {
-        // Initialize index
-        _searchIndex = initializeSearchIndex();
-        
-        try {
-            // Try to load sitemap
-            const pages = await loadSitemap();
-            
-            // Process each page from the sitemap
-            for (const pageUrl of pages) {
-                try {
-                    await indexPage(pageUrl);
-                } catch (error) {
-                    console.warn(`Failed to index page ${pageUrl}:`, error);
-                }
-            }
-            
-            console.log(`Built search index with ${_pagesData.length} pages`);
-        } catch (error) {
-            console.error('Error building search index:', error);
-            throw error;
-        }
-    }
-    
-    // Load sitemap and extract URLs
-    async function loadSitemap() {
-        try {
-            const response = await fetch(_searchConfig.siteMapUrl);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to load sitemap: ${response.status} ${response.statusText}`);
-            }
-            
-            const text = await response.text();
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(text, 'text/xml');
-            
-            // Extract URLs from sitemap
-            const urls = Array.from(xmlDoc.querySelectorAll('url loc')).map(el => el.textContent);
-            
-            if (urls.length === 0) {
-                throw new Error('No URLs found in sitemap');
-            }
-            
-            return urls;
-        } catch (error) {
-            console.warn('Error loading sitemap:', error);
-            
-            // Fallback to single starting page
-            return [_searchConfig.crawlStartUrl];
-        }
-    }
-    
-    // Index a single page
-    async function indexPage(url) {
-        try {
-            // Fetch page content
-            const response = await fetch(url);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to fetch page: ${response.status} ${response.statusText}`);
-            }
-            
-            const html = await response.text();
-            
-            // Parse HTML
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            
-            // Extract page information
-            const title = doc.querySelector('title')?.textContent || '';
-            const content = extractPageContent(doc);
-            const keywords = extractMetaKeywords(doc);
-            
-            // Create unique ID
-            const id = url.replace(/https?:\/\/[^/]+\//, '').replace(/\//g, '_') || 'home';
-            
-            // Add to pages data
-            const pageData = {
-                id,
-                url,
-                title,
-                content,
-                keywords,
-                type: determinePageType(url, doc),
-                excerpt: createExcerpt(content, 200)
-            };
-            
-            _pagesData.push(pageData);
-            
-            // Add to search index
-            _searchIndex.addDoc(pageData);
-            
-            return pageData;
-        } catch (error) {
-            console.warn(`Error indexing page ${url}:`, error);
-            throw error;
-        }
-    }
-    
-    // Extract content from page
-    function extractPageContent(doc) {
-        // Remove script and style elements
-        doc.querySelectorAll('script, style, header, footer, nav').forEach(el => el.remove());
-        
-        // Extract text from main content areas
-        const mainContent = doc.querySelector('main') || doc.querySelector('.content') || doc.body;
-        
-        // Get all text nodes
-        let text = mainContent.textContent || '';
-        
-        // Clean up text
-        text = text.replace(/\s+/g, ' ').trim();
-        
-        return text;
-    }
-    
-    // Extract meta keywords
-    function extractMetaKeywords(doc) {
-        const metaKeywords = doc.querySelector('meta[name="keywords"]');
-        if (metaKeywords && metaKeywords.getAttribute('content')) {
-            return metaKeywords.getAttribute('content').split(',').map(k => k.trim());
-        }
-        return [];
-    }
-    
-    // Determine page type
-    function determinePageType(url, doc) {
-        // Check if URL contains indicators of document
-        if (url.includes('/documente/') || url.includes('/documents/') || 
-            url.endsWith('.pdf') || url.endsWith('.doc') || url.endsWith('.docx')) {
-            return 'document';
-        }
-        
-        // Check page content for clues
-        const h1 = doc.querySelector('h1')?.textContent || '';
-        if (h1.includes('Document') || h1.includes('Regulament') || 
-            h1.includes('Hotărâre') || h1.includes('Lege')) {
-            return 'document';
-        }
-        
-        // Default to page
-        return 'page';
-    }
-    
-    // Create a text excerpt
-    function createExcerpt(text, maxLength = 200) {
-        if (!text) return '';
-        
-        // Truncate text and add ellipsis if needed
-        if (text.length > maxLength) {
-            let excerpt = text.substring(0, maxLength);
-            
-            // Find last space to avoid cutting words
-            const lastSpace = excerpt.lastIndexOf(' ');
-            if (lastSpace > 0) {
-                excerpt = excerpt.substring(0, lastSpace);
-            }
-            
-            return excerpt + '...';
-        }
-        
-        return text;
-    }
-    
-    // Build fallback search index with basic content
-    function buildFallbackIndex() {
-        console.log('Building fallback search index');
-        
-        // Initialize index
-        _searchIndex = initializeSearchIndex();
-        
-        // Add basic pages
-        const fallbackPages = [
-            {
-                id: 'home',
-                url: '/pls/',
-                title: 'Poliția Locală Slobozia - Pagina principală',
-                content: 'Pagina principală a Poliției Locale Slobozia. Informații despre serviciile oferite, noutăți și evenimente recente.',
-                keywords: ['politia locala', 'slobozia', 'siguranta publica', 'ordine publica'],
-                type: 'page'
-            },
-            {
-                id: 'despre-noi',
-                url: '/pls/despre-noi',
-                title: 'Despre Noi - Poliția Locală Slobozia',
-                content: 'Informații generale despre Poliția Locală Slobozia, istoric, misiune, viziune și valori. Structura organizatorică și principalele atribuții.',
-                keywords: ['despre', 'misiune', 'viziune', 'valori', 'structura', 'organizare', 'istoric'],
-                type: 'page'
-            },
-            {
-                id: 'acte-normative',
-                url: '/pls/acte-normative',
-                title: 'Acte Normative - Poliția Locală Slobozia',
-                content: 'Documente legale care stau la baza funcționării Poliției Locale Slobozia. Lista include: LEGEA poliției locale nr. 155/2010, H.G. nr. 1332/2010, H.C.L. nr. 84/2008 privind adoptarea unor Regulamente şi Reglementări privind transportul în regim de taxi. H.C.L. nr. 257/2007 privind adoptarea Regulamentului pentru înregistrarea, H.C.L. nr. 111/2008 privind reglementarea unor obligaţii ale operatorilor economici.',
-                keywords: ['acte normative', 'legi', 'hotarari', 'regulamente', 'hcl', 'documente', 'legislatie', 'H.C.L. nr. 84/2008', 'H.C.L. nr. 257/2007', 'H.C.L. nr. 111/2008'],
-                type: 'page'
-            },
-            {
-                id: 'contact',
-                url: '/pls/contact',
-                title: 'Contact - Poliția Locală Slobozia',
-                content: 'Date de contact ale Poliției Locale Slobozia. Adresă, numere de telefon, email, program de funcționare și harta locației.',
-                keywords: ['contact', 'adresa', 'telefon', 'email', 'program', 'harta'],
-                type: 'page'
-            },
-            {
-                id: 'petitii',
-                url: '/pls/petitii',
-                title: 'Petiții - Poliția Locală Slobozia',
-                content: 'Informații despre depunerea și procesarea petițiilor, reclamațiilor și sesizărilor. Formular online pentru depunerea petițiilor.',
-                keywords: ['petitii', 'reclamatii', 'sesizari', 'formular', 'plangeri'],
-                type: 'page'
-            }
-        ];
-        
-        // Add pages to index
-        fallbackPages.forEach(page => {
-            _pagesData.push(page);
-            _searchIndex.addDoc(page);
-        });
-        
-        console.log(`Built fallback index with ${_pagesData.length} pages`);
-    }
-    
-    // Store recent searches
-    function addToRecentSearches(query) {
-        if (!query || query.length < 3) return;
-        
-        // Remove if already exists and add to beginning
-        _recentSearches = _recentSearches.filter(item => item !== query);
-        _recentSearches.unshift(query);
-        
-        // Limit size
-        if (_recentSearches.length > _searchConfig.maxRecentSearches) {
-            _recentSearches = _recentSearches.slice(0, _searchConfig.maxRecentSearches);
-        }
-        
-        // Store in localStorage
-        try {
-            localStorage.setItem('pls_recent_searches', JSON.stringify(_recentSearches));
-        } catch (e) {
-            console.warn('Failed to save recent searches to localStorage', e);
-        }
-    }
-    
-    // Generate excerpt with search term context
-    function generateExcerpt(text, searchTerms, maxLength = 200) {
-        if (!text) return '';
-        
-        // Find first occurrence of any search term
-        let bestPos = -1;
-        let bestTerm = '';
-        
-        for (const term of searchTerms) {
-            const normalizedText = normalizeRomanian(text.toLowerCase());
-            const normalizedTerm = normalizeRomanian(term.toLowerCase());
-            const pos = normalizedText.indexOf(normalizedTerm);
-            
-            if (pos !== -1 && (bestPos === -1 || pos < bestPos)) {
-                bestPos = pos;
-                bestTerm = term;
-            }
-        }
-        
-        // If no terms found, use start of text
-        if (bestPos === -1) {
-            if (text.length > maxLength) {
-                return text.substring(0, maxLength) + '...';
-            }
-            return text;
-        }
-        
-        // Create excerpt around search term
-        const contextBefore = Math.floor((maxLength - bestTerm.length) / 2);
-        const contextAfter = maxLength - bestTerm.length - contextBefore;
-        
-        let start = Math.max(0, bestPos - contextBefore);
-        let end = Math.min(text.length, bestPos + bestTerm.length + contextAfter);
-        
-        // Adjust to avoid cutting words
-        if (start > 0) {
-            const prevSpace = text.lastIndexOf(' ', start);
-            if (prevSpace !== -1 && start - prevSpace < 15) {
-                start = prevSpace + 1;
-            }
-        }
-        
-        if (end < text.length) {
-            const nextSpace = text.indexOf(' ', end);
-            if (nextSpace !== -1 && nextSpace - end < 15) {
-                end = nextSpace;
-            }
-        }
-        
-        let excerpt = text.substring(start, end);
-        
-        // Add ellipsis
-        if (start > 0) excerpt = '...' + excerpt;
-        if (end < text.length) excerpt = excerpt + '...';
-        
-        return excerpt;
-    }
-    
     // Search implementation
     async function search(query, options = {}) {
-        // Ensure index is ready
+        // Initialize search index if not already done
         if (!_indexReady) {
-            await loadSearchIndex();
+            _searchIndex = initializeSearchIndex();
+            
+            // Add basic pages directly (no reliance on external data)
+            const basicPages = [
+                {
+                    id: 'home',
+                    url: '/',
+                    title: 'Poliția Locală Slobozia - Pagina principală',
+                    content: 'Pagina principală a Poliției Locale Slobozia. Informații despre serviciile oferite, noutăți și evenimente recente.',
+                    keywords: ['politia locala', 'slobozia', 'siguranta publica', 'ordine publica'],
+                    type: 'page'
+                },
+                {
+                    id: 'despre-noi',
+                    url: '/despre-noi',
+                    title: 'Despre Noi - Poliția Locală Slobozia',
+                    content: 'Informații generale despre Poliția Locală Slobozia, istoric, misiune, viziune și valori. Structura organizatorică și principalele atribuții.',
+                    keywords: ['despre', 'misiune', 'viziune', 'valori', 'structura', 'organizare', 'istoric'],
+                    type: 'page'
+                },
+                {
+                    id: 'contact',
+                    url: '/contact',
+                    title: 'Contact - Poliția Locală Slobozia',
+                    content: 'Date de contact ale Poliției Locale Slobozia. Adresă, numere de telefon, email, program de funcționare și harta locației.',
+                    keywords: ['contact', 'adresa', 'telefon', 'email', 'program', 'harta'],
+                    type: 'page'
+                },
+                {
+                    id: 'petitii',
+                    url: '/petitii',
+                    title: 'Petiții - Poliția Locală Slobozia',
+                    content: 'Informații despre depunerea și procesarea petițiilor, reclamațiilor și sesizărilor. Formular online pentru depunerea petițiilor.',
+                    keywords: ['petitii', 'reclamatii', 'sesizari', 'formular', 'plangeri'],
+                    type: 'page'
+                },
+                {
+                    id: 'gdpr',
+                    url: '/gdpr',
+                    title: 'GDPR - Poliția Locală Slobozia',
+                    content: 'Informații despre conformitatea cu Regulamentul General privind Protecția Datelor (GDPR). Politica de confidențialitate și prelucrare a datelor cu caracter personal.',
+                    keywords: ['gdpr', 'protectia datelor', 'confidentialitate', 'date personale', 'regulament'],
+                    type: 'page'
+                },
+                {
+                    id: 'cariere',
+                    url: '/cariere',
+                    title: 'Cariere - Poliția Locală Slobozia',
+                    content: 'Oportunități de carieră în cadrul Poliției Locale Slobozia. Posturi vacante, condiții de participare la concursuri și etapele procesului de recrutare.',
+                    keywords: ['cariere', 'job', 'angajare', 'recrutare', 'concurs', 'posturi vacante'],
+                    type: 'page'
+                },
+                {
+                    id: 'legea-155-2010',
+                    url: '/documente/legea-155-2010',
+                    title: 'Legea nr. 155/2010 a poliției locale',
+                    content: 'Legea nr. 155/2010 a poliției locale, republicată, cu modificările și completările ulterioare. Cadrul legal de organizare și funcționare a poliției locale.',
+                    keywords: ['legea 155', 'legea 155/2010', 'politia locala', 'lege', 'legislatie', 'documente'],
+                    type: 'document'
+                },
+                {
+                    id: 'og-43-1997',
+                    url: '/documente/og-43-1997',
+                    title: 'O.G. nr. 43/1997 privind regimul drumurilor',
+                    content: 'Ordonanța Guvernului nr. 43/1997 privind regimul drumurilor, republicată, cu modificările și completările ulterioare. Document legislativ important pentru activitatea poliției locale.',
+                    keywords: ['og 43', 'og 43/1997', 'ordonanta', 'regimul drumurilor', 'legislatie', 'documente'],
+                    type: 'document'
+                }
+            ];
+            
+            basicPages.forEach(page => {
+                _pagesData.push(page);
+                _searchIndex.addDoc(page);
+            });
+            
+            console.log(`Built search index with ${_pagesData.length} pages`);
+            _indexReady = true;
         }
         
         const defaults = {
@@ -554,11 +265,6 @@ const SiteSearch = (function() {
         
         // Add to recent searches
         addToRecentSearches(query);
-        
-        // Track analytics if enabled
-        if (_searchConfig.trackAnalytics) {
-            trackSearchAnalytics(query, searchOptions);
-        }
         
         // Empty query check
         if (!query.trim() || query.length < _searchConfig.minQueryLength) {
@@ -693,6 +399,85 @@ const SiteSearch = (function() {
         }
     }
     
+    // Store recent searches
+    function addToRecentSearches(query) {
+        if (!query || query.length < 3) return;
+        
+        // Remove if already exists and add to beginning
+        _recentSearches = _recentSearches.filter(item => item !== query);
+        _recentSearches.unshift(query);
+        
+        // Limit size
+        if (_recentSearches.length > _searchConfig.maxRecentSearches) {
+            _recentSearches = _recentSearches.slice(0, _searchConfig.maxRecentSearches);
+        }
+        
+        // Store in localStorage
+        try {
+            localStorage.setItem('pls_recent_searches', JSON.stringify(_recentSearches));
+        } catch (e) {
+            console.warn('Failed to save recent searches to localStorage', e);
+        }
+    }
+    
+    // Generate excerpt with search term context
+    function generateExcerpt(text, searchTerms, maxLength = 200) {
+        if (!text) return '';
+        
+        // Find first occurrence of any search term
+        let bestPos = -1;
+        let bestTerm = '';
+        
+        for (const term of searchTerms) {
+            const normalizedText = normalizeRomanian(text.toLowerCase());
+            const normalizedTerm = normalizeRomanian(term.toLowerCase());
+            const pos = normalizedText.indexOf(normalizedTerm);
+            
+            if (pos !== -1 && (bestPos === -1 || pos < bestPos)) {
+                bestPos = pos;
+                bestTerm = term;
+            }
+        }
+        
+        // If no terms found, use start of text
+        if (bestPos === -1) {
+            if (text.length > maxLength) {
+                return text.substring(0, maxLength) + '...';
+            }
+            return text;
+        }
+        
+        // Create excerpt around search term
+        const contextBefore = Math.floor((maxLength - bestTerm.length) / 2);
+        const contextAfter = maxLength - bestTerm.length - contextBefore;
+        
+        let start = Math.max(0, bestPos - contextBefore);
+        let end = Math.min(text.length, bestPos + bestTerm.length + contextAfter);
+        
+        // Adjust to avoid cutting words
+        if (start > 0) {
+            const prevSpace = text.lastIndexOf(' ', start);
+            if (prevSpace !== -1 && start - prevSpace < 15) {
+                start = prevSpace + 1;
+            }
+        }
+        
+        if (end < text.length) {
+            const nextSpace = text.indexOf(' ', end);
+            if (nextSpace !== -1 && nextSpace - end < 15) {
+                end = nextSpace;
+            }
+        }
+        
+        let excerpt = text.substring(start, end);
+        
+        // Add ellipsis
+        if (start > 0) excerpt = '...' + excerpt;
+        if (end < text.length) excerpt = excerpt + '...';
+        
+        return excerpt;
+    }
+    
     // Generate search suggestions
     function getSearchSuggestions(query, maxSuggestions = 5) {
         if (!query || query.length < 2) return [];
@@ -790,7 +575,6 @@ const SiteSearch = (function() {
         if (!text || !query) return text;
         
         // Extract query terms
-        const normalizedText = text;
         const queryTerms = normalizeRomanian(query).toLowerCase()
             .split(/\s+/)
             .filter(term => term.length > 2)
@@ -807,27 +591,16 @@ const SiteSearch = (function() {
         return highlightedText;
     }
     
-    // Track search analytics
-    function trackSearchAnalytics(query, options) {
-        // Simple console analytics for now
-        console.log(`Search analytics - Query: ${query}, Options:`, options);
-        
-        // In a real implementation, send to your analytics service
-        if (typeof window !== 'undefined' && window.dataLayer) {
-            window.dataLayer.push({
-                event: 'search',
-                searchQuery: query,
-                searchFilters: options.filters,
-                searchPage: options.page,
-                searchSortBy: options.sortBy
-            });
-        }
-    }
-    
     // Initialize
     function init(config = {}) {
         // Return existing instance if already initialized
         if (_instance) return _instance;
+        
+        // Make sure elasticlunr is available
+        if (typeof elasticlunr === 'undefined') {
+            console.error('Elasticlunr library not found! Please include elasticlunr.js before initializing SiteSearch.');
+            return null;
+        }
         
         // Merge configuration
         Object.assign(_searchConfig, config);
@@ -841,11 +614,6 @@ const SiteSearch = (function() {
         } catch (e) {
             console.warn('Failed to load recent searches from localStorage', e);
         }
-        
-        // Start loading the search index
-        loadSearchIndex().catch(err => {
-            console.error('Error during search index initialization:', err);
-        });
         
         // Create debounced search function for real-time search
         const debouncedSearch = debounce(search, _searchConfig.debounceTime);
@@ -865,7 +633,7 @@ const SiteSearch = (function() {
             isReady: () => _indexReady,
             waitForReady: async () => {
                 if (!_indexReady) {
-                    await loadSearchIndex();
+                    await search(''); // This will initialize the index
                 }
                 return _indexReady;
             },
@@ -889,111 +657,89 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check if elasticlunr is available
     if (typeof elasticlunr === 'undefined') {
         console.error('Elasticlunr library not found! Please include elasticlunr.js before this script.');
-        
-        // Add script tag to load elasticlunr
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/elasticlunr/0.9.6/elasticlunr.min.js';
-        script.onload = function() {
-            console.log('Elasticlunr loaded dynamically');
-            initSearch();
-        };
-        script.onerror = function() {
-            console.error('Failed to load Elasticlunr dynamically');
-        };
-        document.head.appendChild(script);
-    } else {
-        initSearch();
+        return;
     }
     
-    function initSearch() {
-        // Initialize the search module
-        window.siteSearch = SiteSearch.init({
-            useServerIndex: false,  // Build index on client (change to true in production with a pre-built index)
-            indexUrl: '/pls/search-index.json',
-            siteMapUrl: '/pls/sitemap.xml',
-            crawlStartUrl: '/pls/',
-            maxResults: 100,
-            debounceTime: 300
+    // Initialize the search module
+    window.siteSearch = SiteSearch.init();
+    
+    // Attach to search input in header (if any)
+    const headerSearchInput = document.querySelector('.search-bar input');
+    if (headerSearchInput) {
+        headerSearchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            if (query.length >= 2) {
+                // Get suggestions for header search
+                const suggestions = window.siteSearch.getSearchSuggestions(query);
+                
+                // Display suggestions in header
+                displayHeaderSuggestions(suggestions);
+            } else {
+                // Clear suggestions
+                hideHeaderSuggestions();
+            }
         });
         
-        // Attach to search input in header (if any)
-        const headerSearchInput = document.querySelector('.search-bar input');
-        if (headerSearchInput) {
-            headerSearchInput.addEventListener('input', function() {
-                const query = this.value.trim();
+        // Handle form submission
+        const searchForm = headerSearchInput.closest('form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = headerSearchInput.value.trim();
                 if (query.length >= 2) {
-                    // Get suggestions for header search
-                    const suggestions = window.siteSearch.getSearchSuggestions(query);
-                    
-                    // Display suggestions in header
-                    displayHeaderSuggestions(suggestions);
-                } else {
-                    // Clear suggestions
-                    hideHeaderSuggestions();
+                    // Redirect to search page
+                    window.location.href = `/cautare?q=${encodeURIComponent(query)}`;
                 }
             });
-            
-            // Handle form submission
-            const searchForm = headerSearchInput.closest('form');
-            if (searchForm) {
-                searchForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const query = headerSearchInput.value.trim();
-                    if (query.length >= 2) {
-                        // Redirect to search page
-                        window.location.href = `/pls/cautare?q=${encodeURIComponent(query)}`;
-                    }
-                });
-            }
+        }
+    }
+    
+    // Check if we're on the search page
+    const searchPageInput = document.getElementById('search-input');
+    if (searchPageInput) {
+        // Get query from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('q') || '';
+        
+        // Set the search input value
+        searchPageInput.value = query;
+        
+        // Perform search if we have a query
+        if (query) {
+            performSearch(query);
         }
         
-        // Check if we're on the search page
-        const searchPageInput = document.getElementById('search-input');
-        if (searchPageInput) {
-            // Get query from URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const query = urlParams.get('q') || '';
-            
-            // Set the search input value
-            searchPageInput.value = query;
-            
-            // Perform search if we have a query
-            if (query) {
-                performSearch(query);
-            }
-            
-            // Handle search form submission
-            const searchForm = document.getElementById('search-form');
-            if (searchForm) {
-                searchForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const query = searchPageInput.value.trim();
-                    if (query) {
-                        // Update URL
-                        const url = new URL(window.location);
-                        url.searchParams.set('q', query);
-                        url.searchParams.set('page', '1');
-                        window.history.pushState({}, '', url);
-                        
-                        // Perform search
-                        performSearch(query);
-                    }
-                });
-            }
-            
-            // Handle real-time suggestions
-            searchPageInput.addEventListener('input', function() {
-                const query = this.value.trim();
-                if (query.length >= 2) {
-                    // Get and display suggestions
-                    const suggestions = window.siteSearch.getSearchSuggestions(query);
-                    displaySearchSuggestions(suggestions);
-                } else {
-                    // Clear suggestions
-                    document.getElementById('search-suggestions').innerHTML = '';
+        // Handle search form submission
+        const searchForm = document.getElementById('search-form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = searchPageInput.value.trim();
+                if (query) {
+                    // Update URL
+                    const url = new URL(window.location);
+                    url.searchParams.set('q', query);
+                    url.searchParams.set('page', '1');
+                    window.history.pushState({}, '', url);
+                    
+                    // Perform search
+                    performSearch(query);
                 }
             });
         }
+        
+        // Handle real-time suggestions
+        searchPageInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            if (query.length >= 2) {
+                // Get and display suggestions
+                const suggestions = window.siteSearch.getSearchSuggestions(query);
+                displaySearchSuggestions(suggestions);
+            } else {
+                // Clear suggestions
+                document.getElementById('search-suggestions').innerHTML = '';
+            }
+        });
     }
     
     // Display suggestions in header search
@@ -1008,7 +754,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!suggestionsContainer) {
             suggestionsContainer = document.createElement('div');
             suggestionsContainer.className = 'header-search-suggestions';
-            document.querySelector('.search-bar').appendChild(suggestionsContainer);
+            const searchBar = document.querySelector('.search-bar');
+            if (searchBar) {
+                searchBar.appendChild(suggestionsContainer);
+            }
         }
         
         // Generate HTML for suggestions
@@ -1016,7 +765,7 @@ document.addEventListener('DOMContentLoaded', function() {
         suggestions.forEach(suggestion => {
             html += `
                 <li>
-                    <a href="/pls/cautare?q=${encodeURIComponent(suggestion)}">
+                    <a href="/cautare?q=${encodeURIComponent(suggestion)}">
                         <i class="material-icons">search</i>
                         ${suggestion}
                     </a>
@@ -1045,6 +794,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!suggestions || suggestions.length === 0) {
             suggestionsContainer.innerHTML = '';
+            suggestionsContainer.classList.remove('active');
             return;
         }
         
@@ -1053,6 +803,7 @@ document.addEventListener('DOMContentLoaded', function() {
             html += `
                 <li>
                     <a href="#" onclick="quickSearch('${suggestion}'); return false;">
+                        <i class="material-icons">search</i>
                         ${suggestion}
                     </a>
                 </li>
@@ -1061,10 +812,11 @@ document.addEventListener('DOMContentLoaded', function() {
         html += '</ul>';
         
         suggestionsContainer.innerHTML = html;
+        suggestionsContainer.classList.add('active');
     }
     
     // Perform search on search page
-    async function performSearch(query, page = 1, sortBy = 'relevance', filters = {}) {
+    function performSearch(query, page = 1, sortBy = 'relevance', filters = {}) {
         const resultList = document.getElementById('result-list');
         if (!resultList) return;
         
@@ -1072,22 +824,18 @@ document.addEventListener('DOMContentLoaded', function() {
         resultList.innerHTML = `
             <div class="search-loading">
                 <div class="search-loading-spinner"></div>
-                <p>Se încarcă rezultatele căutării...</p>
+                <p class="search-loading-text">Se încarcă rezultatele căutării...</p>
+                <div class="search-loading-progress"></div>
             </div>
         `;
         
-        try {
-            // Ensure search module is ready
-            await window.siteSearch.waitForReady();
-            
-            // Perform search
-            const searchResult = await window.siteSearch.search(query, {
-                page,
-                perPage: 10,
-                sortBy,
-                filters
-            });
-            
+        // Perform search
+        window.siteSearch.search(query, {
+            page,
+            perPage: 10,
+            sortBy,
+            filters
+        }).then(searchResult => {
             // Update search summary
             const searchSummary = document.getElementById('search-summary');
             if (searchSummary) {
@@ -1132,7 +880,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 showNoResultsState(query, searchResult);
             }
-        } catch (error) {
+        }).catch(error => {
             console.error('Error performing search:', error);
             resultList.innerHTML = `
                 <div class="no-results">
@@ -1142,206 +890,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p>Vă rugăm să încercați din nou mai târziu.</p>
                 </div>
             `;
-        }
-    }
-    
-    // Update filter counts in sidebar
-    function updateFilterCounts(searchResult) {
-        // Update total count
-        const countAll = document.getElementById('count-all');
-        if (countAll) {
-            countAll.textContent = searchResult.totalResults || 0;
-        }
-        
-        // Update type filter counts
-        const facets = searchResult.facets || {};
-        const countPage = document.getElementById('count-page');
-        const countDocument = document.getElementById('count-document');
-        
-        if (countPage && facets.type) {
-            countPage.textContent = facets.type.page || 0;
-        }
-        
-        if (countDocument && facets.type) {
-            countDocument.textContent = facets.type.document || 0;
-        }
-    }
-    
-    // Display search results
-    function displaySearchResults(searchResult, query) {
-        const resultList = document.getElementById('result-list');
-        if (!resultList) return;
-        
-        let html = '';
-        
-        // Add each result
-        searchResult.results.forEach(result => {
-            // Determine icon based on result type
-            const icon = result.type === 'document' ? 'description' : 'insert_drive_file';
-            
-            // Extract section from URL
-            const urlParts = result.url.split('/');
-            const section = urlParts.length > 2 ? urlParts[2] : 'general';
-            
-            // Generate highlighted excerpt
-            const highlightedExcerpt = window.siteSearch.highlightSearchTerms(result.excerpt || '', query);
-            
-            html += `
-                <div class="result-card" data-type="${result.type}" data-section="${section}">
-                    <div class="result-meta">
-                        <div class="result-type">
-                            <i class="material-icons">${icon}</i>
-                            ${result.type === 'document' ? 'Document' : 'Pagină'}
-                        </div>
-                        <a href="${result.url}" class="result-url" title="${result.url}">${result.url}</a>
-                    </div>
-                    <h3 class="result-title">
-                        <a href="${result.url}">${window.siteSearch.highlightSearchTerms(result.title, query)}</a>
-                    </h3>
-                    <div class="result-excerpt">
-                        ${highlightedExcerpt}
-                    </div>
-                    <div class="result-actions">
-                        <a href="${result.url}" class="result-action">
-                            <i class="material-icons">visibility</i>
-                            Vizualizare
-                        </a>
-                        <a href="#" class="result-action" onclick="shareResult('${result.url}', '${result.title.replace(/'/g, "\\'")}'); return false;">
-                            <i class="material-icons">share</i>
-                            Distribuie
-                        </a>
-                    </div>
-                </div>
-            `;
         });
-        
-        resultList.innerHTML = html;
-    }
-    
-    // Display pagination
-    function displayPagination(totalPages, currentPage) {
-        const paginationContainer = document.getElementById('search-pagination');
-        if (!paginationContainer) return;
-        
-        if (totalPages <= 1) {
-            paginationContainer.innerHTML = '';
-            return;
-        }
-        
-        let html = '';
-        
-        // Previous button
-        html += `
-            <a href="#" 
-               class="pagination-nav ${currentPage <= 1 ? 'disabled' : ''}" 
-               onclick="navigateToPage(${currentPage - 1}); return false;"
-               ${currentPage <= 1 ? 'aria-disabled="true"' : ''}>
-                <i class="material-icons">chevron_left</i>
-            </a>
-        `;
-        
-        // Page numbers
-        const maxPages = 5;
-        const startPage = Math.max(1, Math.min(currentPage - Math.floor(maxPages / 2), totalPages - maxPages + 1));
-        const endPage = Math.min(totalPages, startPage + maxPages - 1);
-        
-        for (let i = startPage; i <= endPage; i++) {
-            html += `
-                <a href="#" 
-                   class="pagination-btn ${i === currentPage ? 'active' : ''}" 
-                   onclick="navigateToPage(${i}); return false;"
-                   aria-current="${i === currentPage ? 'page' : 'false'}">
-                    ${i}
-                </a>
-            `;
-        }
-        
-        // Next button
-        html += `
-            <a href="#" 
-               class="pagination-nav ${currentPage >= totalPages ? 'disabled' : ''}" 
-               onclick="navigateToPage(${currentPage + 1}); return false;"
-               ${currentPage >= totalPages ? 'aria-disabled="true"' : ''}>
-                <i class="material-icons">chevron_right</i>
-            </a>
-        `;
-        
-        paginationContainer.innerHTML = html;
-    }
-    
-    // Display related searches
-    function displayRelatedSearches(searchResult) {
-        if (!searchResult.relatedSearches || searchResult.relatedSearches.length === 0) {
-            return;
-        }
-        
-        const container = document.createElement('div');
-        container.className = 'related-searches';
-        container.innerHTML = `
-            <h3>Căutări similare:</h3>
-            <div class="suggestion-list">
-                ${searchResult.relatedSearches.map(term => 
-                    `<a href="#" class="suggestion-item" onclick="quickSearch('${term}'); return false;">${term}</a>`
-                ).join('')}
-            </div>
-        `;
-        
-        // Remove any existing related searches
-        const existingRelated = document.querySelector('.related-searches');
-        if (existingRelated) {
-            existingRelated.remove();
-        }
-        
-        // Add to page
-        const pagination = document.querySelector('.search-pagination');
-        if (pagination) {
-            pagination.after(container);
-        }
-    }
-    
-    // Show no results state
-    function showNoResultsState(query, searchResult) {
-        const resultList = document.getElementById('result-list');
-        if (!resultList) return;
-        
-        let suggestionsHTML = '';
-        
-        // Add search suggestions if available
-        if (searchResult.suggestions && searchResult.suggestions.length > 0) {
-            suggestionsHTML = `
-                <h4>Încercați în schimb:</h4>
-                <div class="suggestion-list">
-                    ${searchResult.suggestions.map(suggestion => 
-                        `<a href="#" class="suggestion-item" onclick="quickSearch('${suggestion}'); return false;">${suggestion}</a>`
-                    ).join('')}
-                </div>
-            `;
-        }
-        
-        resultList.innerHTML = `
-            <div class="no-results">
-                <div class="no-results-icon"><i class="material-icons">search_off</i></div>
-                <h3>Niciun rezultat găsit</h3>
-                <p>Nu am găsit niciun rezultat pentru căutarea "${query}". Vă rugăm să încercați alte cuvinte cheie.</p>
-                ${suggestionsHTML}
-                <div class="suggestion-list">
-                    <a href="#" class="suggestion-item" onclick="quickSearch('gdpr'); return false;">GDPR</a>
-                    <a href="#" class="suggestion-item" onclick="quickSearch('petitii'); return false;">Petiții</a>
-                    <a href="#" class="suggestion-item" onclick="quickSearch('contact'); return false;">Contact</a>
-                    <a href="#" class="suggestion-item" onclick="quickSearch('cariere'); return false;">Cariere</a>
-                </div>
-            </div>
-        `;
-        
-        // Clear pagination
-        const paginationContainer = document.getElementById('search-pagination');
-        if (paginationContainer) {
-            paginationContainer.innerHTML = '';
-        }
     }
 });
 
-// Global functions needed for the search page
+// Additional helper functions needed for the search page
 window.navigateToPage = function(page) {
     const url = new URL(window.location);
     const query = url.searchParams.get('q') || '';
@@ -1359,34 +912,48 @@ window.navigateToPage = function(page) {
     if (typeFilter) filters.type = typeFilter;
     if (sectionFilter) filters.section = sectionFilter;
     
-    // Execute search
-    window.siteSearch.search(query, {
-        page,
-        perPage: 10,
-        sortBy,
-        filters
-    }).then(result => {
-        // Update UI
-        const searchSummary = document.getElementById('search-summary');
-        if (searchSummary) {
-            searchSummary.innerHTML = `
-                S-au găsit <strong>${result.totalResults}</strong> rezultate pentru 
-                <span class="search-term">"${query}"</span>
-            `;
-        }
-        
-        if (result.totalResults > 0) {
-            displaySearchResults(result, query);
-            displayPagination(result.totalPages, page);
-        } else {
-            showNoResultsState(query, result);
-        }
-    }).catch(error => {
-        console.error('Error during pagination:', error);
-    });
+    // Show loading state
+    const resultList = document.getElementById('result-list');
+    if (resultList) {
+        resultList.innerHTML = `
+            <div class="search-loading">
+                <div class="search-loading-spinner"></div>
+                <p class="search-loading-text">Se încarcă pagina ${page}...</p>
+                <div class="search-loading-progress"></div>
+            </div>
+        `;
+    }
     
-    // Scroll to top of results
-    document.querySelector('.search-container').scrollIntoView({ behavior: 'smooth' });
+    // Execute search
+    if (window.siteSearch) {
+        window.siteSearch.search(query, {
+            page,
+            perPage: 10,
+            sortBy,
+            filters
+        }).then(result => {
+            // Update UI
+            const searchSummary = document.getElementById('search-summary');
+            if (searchSummary) {
+                searchSummary.innerHTML = `
+                    S-au găsit <strong>${result.totalResults}</strong> rezultate pentru 
+                    <span class="search-term">"${query}"</span>
+                `;
+            }
+            
+            if (result.totalResults > 0) {
+                displaySearchResults(result, query);
+                displayPagination(result.totalPages, page);
+            } else {
+                showNoResultsState(query, result);
+            }
+            
+            // Scroll to top of results
+            document.querySelector('.search-container').scrollIntoView({ behavior: 'smooth' });
+        }).catch(error => {
+            console.error('Error during pagination:', error);
+        });
+    }
 };
 
 window.quickSearch = function(query) {
@@ -1407,34 +974,57 @@ window.quickSearch = function(query) {
     // Clear search suggestions
     const suggestionsContainer = document.getElementById('search-suggestions');
     if (suggestionsContainer) {
+        suggestionsContainer.classList.remove('active');
         suggestionsContainer.innerHTML = '';
     }
     
+    // Show loading state
+    const resultList = document.getElementById('result-list');
+    if (resultList) {
+        resultList.innerHTML = `
+            <div class="search-loading">
+                <div class="search-loading-spinner"></div>
+                <p class="search-loading-text">Se caută "${query}"...</p>
+                <div class="search-loading-progress"></div>
+            </div>
+        `;
+    }
+    
     // Perform search
-    window.siteSearch.search(query, {
-        page: 1,
-        perPage: 10,
-        sortBy: url.searchParams.get('sortBy') || 'relevance'
-    }).then(result => {
-        // Update UI
-        const searchSummary = document.getElementById('search-summary');
-        if (searchSummary) {
-            searchSummary.innerHTML = `
-                S-au găsit <strong>${result.totalResults}</strong> rezultate pentru 
-                <span class="search-term">"${query}"</span>
-            `;
-        }
-        
-        if (result.totalResults > 0) {
-            displaySearchResults(result, query);
-            displayPagination(result.totalPages, 1);
-            displayRelatedSearches(result);
-        } else {
-            showNoResultsState(query, result);
-        }
-    }).catch(error => {
-        console.error('Error during quick search:', error);
-    });
+    if (window.siteSearch) {
+        window.siteSearch.search(query, {
+            page: 1,
+            perPage: 10,
+            sortBy: url.searchParams.get('sortBy') || 'relevance'
+        }).then(result => {
+            // Update UI
+            const searchSummary = document.getElementById('search-summary');
+            if (searchSummary) {
+                searchSummary.innerHTML = `
+                    S-au găsit <strong>${result.totalResults}</strong> rezultate pentru 
+                    <span class="search-term">"${query}"</span>
+                `;
+            }
+            
+            if (result.totalResults > 0) {
+                displaySearchResults(result, query);
+                displayPagination(result.totalPages, 1);
+                displayRelatedSearches(result);
+                
+                // Show success toast if available
+                if (window.showToast) {
+                    window.showToast('search', 'Căutare finalizată', `${result.totalResults} rezultate pentru "${query}"`);
+                }
+            } else {
+                showNoResultsState(query, result);
+            }
+        }).catch(error => {
+            console.error('Error during quick search:', error);
+            if (window.showToast) {
+                window.showToast('error', 'Eroare', 'A apărut o eroare în timpul căutării.');
+            }
+        });
+    }
 };
 
 window.shareResult = function(url, title) {
@@ -1452,11 +1042,36 @@ window.shareResult = function(url, title) {
         document.execCommand('copy');
         document.body.removeChild(tempInput);
         
-        alert('Link-ul a fost copiat în clipboard!');
+        if (window.showToast) {
+            window.showToast('content_copy', 'Link copiat', 'Link-ul a fost copiat în clipboard!');
+        } else {
+            alert('Link-ul a fost copiat în clipboard!');
+        }
     }
 };
 
 // Helper functions for DOM manipulation (internal use)
+function updateFilterCounts(searchResult) {
+    // Update total count
+    const countAll = document.getElementById('count-all');
+    if (countAll) {
+        countAll.textContent = searchResult.totalResults || 0;
+    }
+    
+    // Update type filter counts
+    const facets = searchResult.facets || {};
+    const countPage = document.getElementById('count-page');
+    const countDocument = document.getElementById('count-document');
+    
+    if (countPage && facets.type) {
+        countPage.textContent = facets.type.page || 0;
+    }
+    
+    if (countDocument && facets.type) {
+        countDocument.textContent = facets.type.document || 0;
+    }
+}
+
 function displaySearchResults(searchResult, query) {
     const resultList = document.getElementById('result-list');
     if (!resultList || !window.siteSearch) return;
@@ -1464,7 +1079,7 @@ function displaySearchResults(searchResult, query) {
     let html = '';
     
     // Add each result
-    searchResult.results.forEach(result => {
+    searchResult.results.forEach((result, index) => {
         // Determine icon based on result type
         const icon = result.type === 'document' ? 'description' : 'insert_drive_file';
         
