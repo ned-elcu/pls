@@ -5,17 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rezultate Căutare - Poliția Locală Slobozia</title>
     
-    <!-- Include components.js first to load shared styles and favicon -->
+    <!-- Include the search engine script first -->
+    <script src="../search.js"></script>
+    
+    <!-- Then include components.js to load shared styles and favicon -->
     <script src="../components.js"></script>
     
     <!-- Ensure Material Icons are loaded (as a backup in case components.js fails) -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
-    <!-- Include the search engine script -->
-    <script src="../search.js"></script>
-    
     <!-- Additional search-specific styles -->
     <style>
+        /* Reset the body padding to fix overlapping */
+        body {
+            padding-top: 0;
+        }
+        
+        /* Add manual padding for content to account for fixed header */
+        .page-title-container {
+            margin-top: var(--header-height);
+        }
+        
         .search-container {
             max-width: 1200px;
             margin: 2rem auto;
@@ -153,6 +163,11 @@
             box-shadow: var(--shadow-small);
             margin-bottom: 1.5rem;
             overflow: hidden;
+            transition: var(--transition-fast);
+        }
+        
+        .filter-section:hover {
+            box-shadow: var(--shadow-medium);
         }
         
         .filter-header {
@@ -172,15 +187,58 @@
             align-items: center;
             margin-bottom: 0.8rem;
             cursor: pointer;
+            position: relative;
         }
         
-        .filter-option input {
+        .filter-option input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 3px;
             margin-right: 0.8rem;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .filter-option input[type="checkbox"]:checked {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .filter-option input[type="checkbox"]:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        .filter-option input[type="checkbox"]:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+        
+        .filter-option input[type="checkbox"]:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         
         .filter-option label {
             color: var(--text-secondary);
             font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .filter-option:hover label {
+            color: var(--secondary-color);
         }
         
         .filter-count {
@@ -319,6 +377,7 @@
             text-decoration: none;
             transition: var(--transition-fast);
             box-shadow: var(--shadow-small);
+            border: 1px solid rgba(0,0,0,0.1);
         }
         
         .pagination-btn:hover {
@@ -331,6 +390,7 @@
         .pagination-btn.active {
             background-color: var(--secondary-color);
             color: white;
+            transform: scale(1.1);
         }
         
         .pagination-nav {
@@ -345,6 +405,7 @@
             transition: var(--transition-fast);
             box-shadow: var(--shadow-small);
             text-decoration: none;
+            border: 1px solid rgba(0,0,0,0.1);
         }
         
         .pagination-nav:hover {
@@ -407,6 +468,128 @@
             background-color: var(--secondary-color);
             color: white;
         }
+        
+        /* NEW CSS FOR ENHANCED FEATURES */
+        
+        /* Search suggestions dropdown */
+        .search-suggestions-dropdown {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            width: 100%;
+            max-width: calc(100% - 170px); /* Account for button width */
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-medium);
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .search-suggestions-dropdown ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .search-suggestions-dropdown li {
+            padding: 0;
+            margin: 0;
+        }
+        
+        .search-suggestions-dropdown a {
+            display: block;
+            padding: 0.8rem 1.2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: var(--transition-fast);
+        }
+        
+        .search-suggestions-dropdown a:hover {
+            background-color: rgba(30, 136, 229, 0.05);
+            color: var(--secondary-color);
+            padding-left: 1.5rem;
+        }
+        
+        /* Loading animation */
+        .search-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .search-loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--secondary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Sort options */
+        .sorting-options {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            background-color: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+        }
+        
+        .sorting-options label {
+            margin-right: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .sorting-options select {
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius-small);
+            background-color: white;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23424242' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition-fast);
+        }
+        
+        .sorting-options select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+        
+        /* Related searches styling */
+        .related-searches {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .related-searches h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
 
         /* Mobile adjustments */
         @media (max-width: 992px) {
@@ -445,8 +628,32 @@
                 margin-right: 0;
                 margin-bottom: 1rem;
             }
+            
+            .search-suggestions-dropdown {
+                max-width: 100%;
+            }
+            
+            .sorting-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .sorting-options label {
+                margin-bottom: 0.5rem;
+            }
+            
+            .sorting-options select {
+                width: 100%;
+            }
         }
         
+        /* Fix for page title on mobile */
+        @media (max-width: 768px) {
+            .page-title-container {
+                margin-top: calc(var(--header-height) - 30px);
+            }
+        }
+
         /* Additional styles to ensure consistency with the main page */
         body {
             font-family: 'Poppins', sans-serif;
@@ -597,18 +804,88 @@
     
     <!-- Search Results JavaScript -->
     <script>
+        // Ensure SiteSearch is initialized before using it
+        let searchInitialized = false;
+        
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize SiteSearch if it's not already initialized
+            if (window.siteSearch && !searchInitialized) {
+                searchInitialized = true;
+            } else if (!window.siteSearch) {
+                // Wait for SiteSearch to be available
+                const checkInterval = setInterval(function() {
+                    if (window.siteSearch) {
+                        clearInterval(checkInterval);
+                        searchInitialized = true;
+                        initSearch();
+                    }
+                }, 100);
+                
+                // Fallback in case it takes too long
+                setTimeout(function() {
+                    if (!searchInitialized) {
+                        clearInterval(checkInterval);
+                        console.warn('SiteSearch not initialized after timeout, attempting to initialize anyway');
+                        initSearch();
+                    }
+                }, 2000);
+            }
+            
+            // Initialize search if SiteSearch is already available
+            if (searchInitialized) {
+                initSearch();
+            }
+        });
+        
+        function initSearch() {
             // Get query parameters from URL
             const urlParams = new URLSearchParams(window.location.search);
             const searchQuery = urlParams.get('q') || '';
             const page = parseInt(urlParams.get('page') || '1');
+            const sortBy = urlParams.get('sortBy') || 'relevance';
+            
+            // Get filter values if present
+            const typeFilter = urlParams.get('type');
+            const sectionFilter = urlParams.get('section');
+            
+            // Create filters object
+            const filters = {};
+            if (typeFilter) filters.type = typeFilter;
+            if (sectionFilter) filters.section = sectionFilter;
+            
+            // Initialize search suggestions container
+            const suggestionsContainer = document.createElement('div');
+            suggestionsContainer.id = 'search-suggestions';
+            suggestionsContainer.className = 'search-suggestions-dropdown';
+            document.querySelector('.search-header').appendChild(suggestionsContainer);
             
             // Update search input with the current query
-            document.getElementById('search-input').value = searchQuery;
+            const searchInput = document.getElementById('search-input');
+            searchInput.value = searchQuery;
+            
+            // Handle input for real-time suggestions
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                if (query.length >= 2 && window.siteSearch) {
+                    // Get suggestions in real-time
+                    const suggestions = window.siteSearch.getSearchSuggestions(query);
+                    displaySearchSuggestions(suggestions);
+                } else {
+                    // Hide suggestions if query is too short
+                    document.getElementById('search-suggestions').innerHTML = '';
+                }
+            });
+            
+            // Close suggestions when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('#search-input') && !event.target.closest('#search-suggestions')) {
+                    document.getElementById('search-suggestions').innerHTML = '';
+                }
+            });
             
             // Perform search if we have a query
             if (searchQuery) {
-                performSearch(searchQuery, page);
+                performSearch(searchQuery, page, sortBy, filters);
             } else {
                 // Show empty state
                 document.getElementById('search-summary').innerHTML = 'Introduceți termenii de căutare pentru a găsi informații pe site.';
@@ -632,14 +909,52 @@
                 e.preventDefault();
                 const newQuery = document.getElementById('search-input').value.trim();
                 if (newQuery) {
-                    // Redirect to search page with new query
-                    window.location.href = `/pls/cautare?q=${encodeURIComponent(newQuery)}`;
+                    // Update URL and perform search without full page reload
+                    const url = new URL(window.location);
+                    url.searchParams.set('q', newQuery);
+                    url.searchParams.set('page', '1'); // Reset to page 1 for new search
+                    window.history.pushState({}, '', url);
+                    
+                    performSearch(newQuery, 1, sortBy, filters);
                 }
+            });
+            
+            // Initialize sorting options
+            const sortingOptions = document.createElement('div');
+            sortingOptions.className = 'sorting-options';
+            sortingOptions.innerHTML = `
+                <label for="sort-by">Sortare:</label>
+                <select id="sort-by">
+                    <option value="relevance" ${sortBy === 'relevance' ? 'selected' : ''}>Relevanță</option>
+                    <option value="date" ${sortBy === 'date' ? 'selected' : ''}>Dată</option>
+                    <option value="title" ${sortBy === 'title' ? 'selected' : ''}>Titlu</option>
+                </select>
+            `;
+            document.getElementById('search-summary').parentNode.insertBefore(sortingOptions, document.getElementById('search-summary').nextSibling);
+            
+            // Add event listener for sort change
+            document.getElementById('sort-by').addEventListener('change', function() {
+                const newSortBy = this.value;
+                const url = new URL(window.location);
+                url.searchParams.set('sortBy', newSortBy);
+                window.history.pushState({}, '', url);
+                
+                performSearch(searchQuery, page, newSortBy, filters);
             });
             
             // Initialize content type filters
             const contentTypeFilters = document.querySelectorAll('input[name="content-type"]');
             contentTypeFilters.forEach(filter => {
+                // Set initial state based on URL parameters
+                if (typeFilter) {
+                    if (filter.value === 'all') {
+                        filter.checked = !typeFilter;
+                    } else {
+                        filter.checked = filter.value === typeFilter;
+                        filter.disabled = false;
+                    }
+                }
+                
                 filter.addEventListener('change', function() {
                     if (this.value === 'all') {
                         // If "All" is checked, update all other checkboxes
@@ -650,6 +965,14 @@
                                 f.disabled = checked;
                             }
                         });
+                        
+                        // Remove type filter from URL
+                        const url = new URL(window.location);
+                        url.searchParams.delete('type');
+                        window.history.pushState({}, '', url);
+                        
+                        // Update filters
+                        delete filters.type;
                     } else {
                         // If specific filter is checked, uncheck "All"
                         const allFilter = document.getElementById('filter-all');
@@ -659,16 +982,34 @@
                         contentTypeFilters.forEach(f => {
                             f.disabled = false;
                         });
+                        
+                        // Update URL with type filter
+                        const url = new URL(window.location);
+                        url.searchParams.set('type', this.value);
+                        window.history.pushState({}, '', url);
+                        
+                        // Update filters
+                        filters.type = this.value;
                     }
                     
-                    // Apply filters to results
-                    applyFilters();
+                    // Perform search with updated filters
+                    performSearch(searchQuery, 1, sortBy, filters);
                 });
             });
             
             // Initialize section filters
             const sectionFilters = document.querySelectorAll('input[name="section"]');
             sectionFilters.forEach(filter => {
+                // Set initial state based on URL parameters
+                if (sectionFilter) {
+                    if (filter.value === 'all') {
+                        filter.checked = !sectionFilter;
+                    } else {
+                        filter.checked = filter.value === sectionFilter;
+                        filter.disabled = false;
+                    }
+                }
+                
                 filter.addEventListener('change', function() {
                     if (this.value === 'all') {
                         // If "All" is checked, update all other checkboxes
@@ -679,6 +1020,14 @@
                                 f.disabled = checked;
                             }
                         });
+                        
+                        // Remove section filter from URL
+                        const url = new URL(window.location);
+                        url.searchParams.delete('section');
+                        window.history.pushState({}, '', url);
+                        
+                        // Update filters
+                        delete filters.section;
                     } else {
                         // If specific filter is checked, uncheck "All"
                         const allFilter = document.getElementById('filter-all-sections');
@@ -688,194 +1037,322 @@
                         sectionFilters.forEach(f => {
                             f.disabled = false;
                         });
+                        
+                        // Update URL with section filter
+                        const url = new URL(window.location);
+                        url.searchParams.set('section', this.value);
+                        window.history.pushState({}, '', url);
+                        
+                        // Update filters
+                        filters.section = this.value;
                     }
                     
-                    // Apply filters to results
-                    applyFilters();
+                    // Perform search with updated filters
+                    performSearch(searchQuery, 1, sortBy, filters);
                 });
             });
-        });
+        }
         
-        // Function to perform a search
-        function performSearch(query, page = 1) {
-            // Get search results from our search engine
-            const searchResult = window.siteSearch.performSearch(query, page);
-            
-            // Update search summary
-            document.getElementById('search-summary').innerHTML = `
-                S-au găsit <strong>${searchResult.totalResults}</strong> rezultate pentru 
-                <span class="search-term">"${query}"</span>
+        // Function to perform a search using the new search module
+        async function performSearch(query, page = 1, sortBy = 'relevance', filters = {}) {
+            // Show loading state
+            document.getElementById('result-list').innerHTML = `
+                <div class="search-loading">
+                    <div class="search-loading-spinner"></div>
+                    <p>Se încarcă rezultatele căutării...</p>
+                </div>
             `;
             
-            // Check if we have a direct match
-            if (searchResult.directMatch) {
-                const directMatch = searchResult.directMatch;
-                document.getElementById('direct-match-container').innerHTML = `
-                    <div class="direct-match">
-                        <div class="direct-match-icon">
-                            <i class="material-icons">${directMatch.type === 'document' ? 'description' : 'find_in_page'}</i>
-                        </div>
-                        <div class="direct-match-content">
-                            <h3>Rezultat exact găsit</h3>
-                            <p>${directMatch.title}</p>
-                            <a href="${directMatch.url}" class="direct-match-link">
-                                Accesează direct
-                                <i class="material-icons">arrow_forward</i>
-                            </a>
-                        </div>
+            // Ensure SiteSearch is available
+            if (!window.siteSearch) {
+                console.error('SiteSearch module not available');
+                document.getElementById('result-list').innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon"><i class="material-icons">error</i></div>
+                        <h3>Eroare de căutare</h3>
+                        <p>Modulul de căutare nu este disponibil. Vă rugăm să încercați din nou mai târziu.</p>
                     </div>
                 `;
-            } else {
-                document.getElementById('direct-match-container').innerHTML = '';
+                return;
             }
             
-            // Update result counts for filters
-            document.getElementById('count-all').textContent = searchResult.totalResults;
+            // Get search results from our search engine
+            const searchOptions = {
+                page: page,
+                perPage: 10,
+                sortBy: sortBy,
+                filters: filters
+            };
             
-            const pageCount = searchResult.results.filter(r => r.type === 'page').length;
-            const documentCount = searchResult.results.filter(r => r.type === 'document').length;
-            
-            document.getElementById('count-page').textContent = pageCount;
-            document.getElementById('count-document').textContent = documentCount;
-            
-            // Render search results
-            if (searchResult.totalResults > 0) {
-                let resultsHTML = '';
+            try {
+                const searchResult = await window.siteSearch.search(query, searchOptions);
                 
-                searchResult.results.forEach(result => {
-                    // Determine icon based on result type
-                    const icon = result.type === 'document' ? 'description' : 'insert_drive_file';
-                    
-                    // Highlight any excerpt
-                    const highlightedExcerpt = result.excerpt ? 
-                        window.siteSearch.highlightSearchTerms(result.excerpt, query) : 
-                        window.siteSearch.highlightSearchTerms(result.content.substring(0, 200) + '...', query);
-                    
-                    resultsHTML += `
-                        <div class="result-card" data-type="${result.type}" data-section="${result.url.split('/')[2] || 'general'}">
-                            <div class="result-meta">
-                                <div class="result-type">
-                                    <i class="material-icons">${icon}</i>
-                                    ${result.type === 'document' ? 'Document' : 'Pagină'}
-                                </div>
-                                <a href="${result.url}" class="result-url">${result.url}</a>
+                // Update search summary
+                document.getElementById('search-summary').innerHTML = `
+                    S-au găsit <strong>${searchResult.totalResults}</strong> rezultate pentru 
+                    <span class="search-term">"${query}"</span>
+                `;
+                
+                // Check if we have a direct match
+                if (searchResult.directMatch) {
+                    const directMatch = searchResult.directMatch;
+                    document.getElementById('direct-match-container').innerHTML = `
+                        <div class="direct-match">
+                            <div class="direct-match-icon">
+                                <i class="material-icons">${directMatch.type === 'document' ? 'description' : 'find_in_page'}</i>
                             </div>
-                            <h3 class="result-title">
-                                <a href="${result.url}">${window.siteSearch.highlightSearchTerms(result.title, query)}</a>
-                            </h3>
-                            <div class="result-excerpt">
-                                ${highlightedExcerpt}
-                            </div>
-                            <div class="result-actions">
-                                <a href="${result.url}" class="result-action">
-                                    <i class="material-icons">visibility</i>
-                                    Vizualizare
-                                </a>
-                                <a href="#" class="result-action" onclick="shareResult('${result.url}', '${result.title.replace(/'/g, "\\'")}'); return false;">
-                                    <i class="material-icons">share</i>
-                                    Distribuie
+                            <div class="direct-match-content">
+                                <h3>Rezultat exact găsit</h3>
+                                <p>${directMatch.title}</p>
+                                <a href="${directMatch.url}" class="direct-match-link">
+                                    Accesează direct
+                                    <i class="material-icons">arrow_forward</i>
                                 </a>
                             </div>
                         </div>
                     `;
-                });
+                } else {
+                    document.getElementById('direct-match-container').innerHTML = '';
+                }
                 
-                document.getElementById('result-list').innerHTML = resultsHTML;
+                // Update result counts for filters
+                document.getElementById('count-all').textContent = searchResult.totalResults;
                 
-                // Render pagination
-                if (searchResult.totalPages > 1) {
-                    let paginationHTML = '';
+                // Get facets from search result
+                const facets = searchResult.facets || {};
+                
+                // Update filter counts based on facets
+                if (facets.type) {
+                    document.getElementById('count-page').textContent = facets.type.page || 0;
+                    document.getElementById('count-document').textContent = facets.type.document || 0;
+                }
+                
+                // Render search results
+                if (searchResult.totalResults > 0) {
+                    let resultsHTML = '';
                     
-                    // Previous button
-                    paginationHTML += `
-                        <a href="${page > 1 ? `/pls/cautare?q=${encodeURIComponent(query)}&page=${page - 1}` : '#'}" 
-                           class="pagination-nav ${page <= 1 ? 'disabled' : ''}" 
-                           ${page <= 1 ? 'aria-disabled="true"' : ''}>
-                            <i class="material-icons">chevron_left</i>
-                        </a>
-                    `;
+                    searchResult.results.forEach(result => {
+                        // Determine icon based on result type
+                        const icon = result.type === 'document' ? 'description' : 'insert_drive_file';
+                        
+                        // Extract section from URL
+                        const section = result.url.split('/')[2] || 'general';
+                        
+                        // Highlight any excerpt
+                        const highlightedExcerpt = result.excerpt ? 
+                            window.siteSearch.highlightSearchTerms(result.excerpt, query) : 
+                            window.siteSearch.highlightSearchTerms(result.content.substring(0, 200) + '...', query);
+                        
+                        resultsHTML += `
+                            <div class="result-card" data-type="${result.type}" data-section="${section}">
+                                <div class="result-meta">
+                                    <div class="result-type">
+                                        <i class="material-icons">${icon}</i>
+                                        ${result.type === 'document' ? 'Document' : 'Pagină'}
+                                    </div>
+                                    <a href="${result.url}" class="result-url">${result.url}</a>
+                                </div>
+                                <h3 class="result-title">
+                                    <a href="${result.url}">${window.siteSearch.highlightSearchTerms(result.title, query)}</a>
+                                </h3>
+                                <div class="result-excerpt">
+                                    ${highlightedExcerpt}
+                                </div>
+                                <div class="result-actions">
+                                    <a href="${result.url}" class="result-action">
+                                        <i class="material-icons">visibility</i>
+                                        Vizualizare
+                                    </a>
+                                    <a href="#" class="result-action" onclick="shareResult('${result.url}', '${result.title.replace(/'/g, "\\'")}'); return false;">
+                                        <i class="material-icons">share</i>
+                                        Distribuie
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    });
                     
-                    // Page numbers
-                    const maxPages = 5;
-                    const startPage = Math.max(1, Math.min(page - Math.floor(maxPages / 2), searchResult.totalPages - maxPages + 1));
-                    const endPage = Math.min(searchResult.totalPages, startPage + maxPages - 1);
+                    document.getElementById('result-list').innerHTML = resultsHTML;
                     
-                    for (let i = startPage; i <= endPage; i++) {
+                    // Render pagination
+                    if (searchResult.totalPages > 1) {
+                        let paginationHTML = '';
+                        
+                        // Previous button
                         paginationHTML += `
-                            <a href="/pls/cautare?q=${encodeURIComponent(query)}&page=${i}" 
-                               class="pagination-btn ${i === page ? 'active' : ''}" 
-                               aria-current="${i === page ? 'page' : 'false'}">
-                                ${i}
+                            <a href="#" 
+                               class="pagination-nav ${page <= 1 ? 'disabled' : ''}" 
+                               onclick="navigateToPage(${page - 1}); return false;"
+                               ${page <= 1 ? 'aria-disabled="true"' : ''}>
+                                <i class="material-icons">chevron_left</i>
                             </a>
+                        `;
+                        
+                        // Page numbers
+                        const maxPages = 5;
+                        const startPage = Math.max(1, Math.min(page - Math.floor(maxPages / 2), searchResult.totalPages - maxPages + 1));
+                        const endPage = Math.min(searchResult.totalPages, startPage + maxPages - 1);
+                        
+                        for (let i = startPage; i <= endPage; i++) {
+                            paginationHTML += `
+                                <a href="#" 
+                                   class="pagination-btn ${i === page ? 'active' : ''}" 
+                                   onclick="navigateToPage(${i}); return false;"
+                                   aria-current="${i === page ? 'page' : 'false'}">
+                                    ${i}
+                                </a>
+                            `;
+                        }
+                        
+                        // Next button
+                        paginationHTML += `
+                            <a href="#" 
+                               class="pagination-nav ${page >= searchResult.totalPages ? 'disabled' : ''}" 
+                               onclick="navigateToPage(${page + 1}); return false;"
+                               ${page >= searchResult.totalPages ? 'aria-disabled="true"' : ''}>
+                                <i class="material-icons">chevron_right</i>
+                            </a>
+                        `;
+                        
+                        document.getElementById('search-pagination').innerHTML = paginationHTML;
+                    } else {
+                        document.getElementById('search-pagination').innerHTML = '';
+                    }
+                    
+                    // Display related searches if available
+                    if (searchResult.relatedSearches && searchResult.relatedSearches.length > 0) {
+                        const relatedContainer = document.createElement('div');
+                        relatedContainer.className = 'related-searches';
+                        relatedContainer.innerHTML = `
+                            <h3>Căutări similare:</h3>
+                            <div class="suggestion-list">
+                                ${searchResult.relatedSearches.map(term => 
+                                    `<a href="#" class="suggestion-item" onclick="quickSearch('${term}'); return false;">${term}</a>`
+                                ).join('')}
+                            </div>
+                        `;
+                        
+                        // Remove any existing related searches
+                        const existingRelated = document.querySelector('.related-searches');
+                        if (existingRelated) {
+                            existingRelated.remove();
+                        }
+                        
+                        // Add related searches after the results
+                        document.querySelector('.search-pagination').after(relatedContainer);
+                    }
+                } else {
+                    // No results found
+                    let suggestionsHTML = '';
+                    
+                    // Add search suggestions if available
+                    if (searchResult.suggestions && searchResult.suggestions.length > 0) {
+                        suggestionsHTML = `
+                            <h4>Încercați în schimb:</h4>
+                            <div class="suggestion-list">
+                                ${searchResult.suggestions.map(suggestion => 
+                                    `<a href="#" class="suggestion-item" onclick="quickSearch('${suggestion}'); return false;">${suggestion}</a>`
+                                ).join('')}
+                            </div>
                         `;
                     }
                     
-                    // Next button
-                    paginationHTML += `
-                        <a href="${page < searchResult.totalPages ? `/pls/cautare?q=${encodeURIComponent(query)}&page=${page + 1}` : '#'}" 
-                           class="pagination-nav ${page >= searchResult.totalPages ? 'disabled' : ''}" 
-                           ${page >= searchResult.totalPages ? 'aria-disabled="true"' : ''}>
-                            <i class="material-icons">chevron_right</i>
-                        </a>
+                    document.getElementById('result-list').innerHTML = `
+                        <div class="no-results">
+                            <div class="no-results-icon"><i class="material-icons">search_off</i></div>
+                            <h3>Niciun rezultat găsit</h3>
+                            <p>Nu am găsit niciun rezultat pentru căutarea "${query}". Vă rugăm să încercați alte cuvinte cheie.</p>
+                            ${suggestionsHTML}
+                            <div class="suggestion-list">
+                                <a href="#" class="suggestion-item" onclick="quickSearch('gdpr'); return false;">GDPR</a>
+                                <a href="#" class="suggestion-item" onclick="quickSearch('petitii'); return false;">Petiții</a>
+                                <a href="#" class="suggestion-item" onclick="quickSearch('contact'); return false;">Contact</a>
+                                <a href="#" class="suggestion-item" onclick="quickSearch('cariere'); return false;">Cariere</a>
+                            </div>
+                        </div>
                     `;
-                    
-                    document.getElementById('search-pagination').innerHTML = paginationHTML;
-                } else {
                     document.getElementById('search-pagination').innerHTML = '';
                 }
-            } else {
-                // No results found
+            } catch (error) {
+                console.error('Error performing search:', error);
                 document.getElementById('result-list').innerHTML = `
                     <div class="no-results">
-                        <div class="no-results-icon"><i class="material-icons">search_off</i></div>
-                        <h3>Niciun rezultat găsit</h3>
-                        <p>Nu am găsit niciun rezultat pentru căutarea "${query}". Vă rugăm să încercați alte cuvinte cheie.</p>
-                        <div class="suggestion-list">
-                            <a href="#" class="suggestion-item" onclick="quickSearch('gdpr'); return false;">GDPR</a>
-                            <a href="#" class="suggestion-item" onclick="quickSearch('petitii'); return false;">Petiții</a>
-                            <a href="#" class="suggestion-item" onclick="quickSearch('contact'); return false;">Contact</a>
-                            <a href="#" class="suggestion-item" onclick="quickSearch('cariere'); return false;">Cariere</a>
-                        </div>
+                        <div class="no-results-icon"><i class="material-icons">error</i></div>
+                        <h3>Eroare de căutare</h3>
+                        <p>A apărut o eroare în timpul căutării. Vă rugăm să încercați din nou mai târziu.</p>
                     </div>
                 `;
-                document.getElementById('search-pagination').innerHTML = '';
             }
         }
         
-        // Function to apply filters to search results
-        function applyFilters() {
-            // Get selected content types
-            const contentTypeFilters = document.querySelectorAll('input[name="content-type"]:checked');
-            const selectedTypes = Array.from(contentTypeFilters).map(f => f.value);
+        // Function to display search suggestions
+        function displaySearchSuggestions(suggestions) {
+            const suggestionsContainer = document.getElementById('search-suggestions');
             
-            // Get selected sections
-            const sectionFilters = document.querySelectorAll('input[name="section"]:checked');
-            const selectedSections = Array.from(sectionFilters).map(f => f.value);
+            if (!suggestions || suggestions.length === 0) {
+                suggestionsContainer.innerHTML = '';
+                return;
+            }
             
-            // Get all result cards
-            const resultCards = document.querySelectorAll('.result-card');
+            let suggestionsHTML = '<ul>';
             
-            // Apply filters
-            resultCards.forEach(card => {
-                const type = card.getAttribute('data-type');
-                const section = card.getAttribute('data-section');
-                
-                // Check if the card matches the selected filters
-                const matchesType = selectedTypes.includes('all') || selectedTypes.includes(type);
-                const matchesSection = selectedSections.includes('all') || selectedSections.includes(section);
-                
-                // Show or hide the card
-                if (matchesType && matchesSection) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
+            suggestions.forEach(suggestion => {
+                suggestionsHTML += `
+                    <li><a href="#" onclick="quickSearch('${suggestion}'); return false;">${suggestion}</a></li>
+                `;
             });
+            
+            suggestionsHTML += '</ul>';
+            suggestionsContainer.innerHTML = suggestionsHTML;
+        }
+        
+        // Function to navigate between pages
+        function navigateToPage(page) {
+            // Get current URL and update page parameter
+            const url = new URL(window.location);
+            const currentQuery = url.searchParams.get('q') || '';
+            const currentSortBy = url.searchParams.get('sortBy') || 'relevance';
+            
+            // Update URL
+            url.searchParams.set('page', page);
+            window.history.pushState({}, '', url);
+            
+            // Create filters object from URL parameters
+            const filters = {};
+            const typeFilter = url.searchParams.get('type');
+            const sectionFilter = url.searchParams.get('section');
+            
+            if (typeFilter) filters.type = typeFilter;
+            if (sectionFilter) filters.section = sectionFilter;
+            
+            // Perform search with new page
+            performSearch(currentQuery, page, currentSortBy, filters);
+            
+            // Scroll to top of results
+            document.querySelector('.search-container').scrollIntoView({ behavior: 'smooth' });
         }
         
         // Quick search function for suggested searches
         function quickSearch(query) {
-            window.location.href = `/pls/cautare?q=${encodeURIComponent(query)}`;
+            // Update URL
+            const url = new URL(window.location);
+            url.searchParams.set('q', query);
+            url.searchParams.set('page', 1);
+            window.history.pushState({}, '', url);
+            
+            // Create filters object from URL parameters
+            const filters = {};
+            const typeFilter = url.searchParams.get('type');
+            const sectionFilter = url.searchParams.get('section');
+            
+            if (typeFilter) filters.type = typeFilter;
+            if (sectionFilter) filters.section = sectionFilter;
+            
+            // Update search input
+            document.getElementById('search-input').value = query;
+            
+            // Perform search
+            performSearch(query, 1, url.searchParams.get('sortBy') || 'relevance', filters);
         }
         
         // Function to share a search result
