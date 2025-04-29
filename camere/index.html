@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camere Publice - Poliția Locală Slobozia</title>
+    <!-- Added Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+            --header-height: 140px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+            padding-top: var(--header-height);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+        
+        /* Material Icons styling */
+        .material-icons {
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-light);
+        }
+        
+        /* Header Container (will be loaded via components.js) */
+        .header-container {
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-fast);
+            top: 0;
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 4rem 3rem;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0; 
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .page-title-left {
+            max-width: 800px;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            opacity: 0.5;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 3rem;
+            background-color: white;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Camera Container Styling */
+        .camera-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-medium);
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .camera-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .camera-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        .camera-intro {
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+        
+        .camera-intro p {
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-text {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        /* Camera Feeds */
+        .camera-feeds {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .camera-feed {
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-small);
+            transition: var(--transition-medium);
+        }
+        
+        .camera-feed:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .camera-feed-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .camera-feed-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            margin: 0;
+        }
+        
+        .camera-feed-title i {
+            margin-right: 0.7rem;
+            font-size: 1.3rem;
+        }
+        
+        .camera-feed-status {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            background-color: var(--success-color);
+            box-shadow: 0 0 0 2px rgba(67, 160, 71, 0.2);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(67, 160, 71, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(67, 160, 71, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(67, 160, 71, 0);
+            }
+        }
+        
+        .camera-feed-content {
+            width: 100%;
+            position: relative;
+        }
+        
+        .embed-container {
+            position: relative; 
+            padding-bottom: 56.25%; 
+            padding-top: 30px; 
+            height: 0; 
+            overflow: hidden;
+        }
+        
+        .embed-container iframe, 
+        .embed-container object, 
+        .embed-container embed { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            border: none;
+        }
+        
+        .camera-feed-footer {
+            padding: 1rem 1.5rem;
+            background-color: white;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .camera-feed-updated {
+            display: flex;
+            align-items: center;
+        }
+        
+        .camera-feed-updated i {
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+
+        /* Camera Controls */
+        .camera-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem 0;
+            background-color: var(--background-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius-medium);
+        }
+        
+        .camera-control-btn {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            background-color: white;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--border-radius-small);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .camera-control-btn i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+        
+        .camera-control-btn:hover {
+            background-color: var(--secondary-light);
+            color: white;
+            border-color: var(--secondary-light);
+            transform: translateY(-2px);
+        }
+        
+        .camera-control-btn:hover i {
+            color: white;
+        }
+        
+        .camera-control-active {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+        
+        .camera-control-active i {
+            color: white;
+        }
+        
+        /* Information Cards */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            transition: var(--transition-medium);
+            border-left: 4px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .info-card-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-card-title i {
+            margin-right: 0.7rem;
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+        }
+        
+        .info-card-content {
+            margin-top: 0.5rem;
+            line-height: 1.6;
+        }
+        
+        .info-card-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Related Resources */
+        .related-resources {
+            margin-top: 4rem;
+            padding: 3rem;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-large);
+        }
+        
+        .related-heading {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .related-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 1.5px;
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-medium);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .resource-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+        }
+        
+        .resource-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            align-self: flex-start;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link i {
+            margin-left: 0.3rem;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .resource-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .resource-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            margin-top: 5rem;
+            padding: 4rem 0;
+            background-color: var(--primary-color);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/1920/300');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .cta-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius-medium);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .btn i {
+            margin-left: 0.8rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .page-title-section {
+                padding: 4rem 2rem 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .content-section {
+                padding: 4rem 2rem;
+            }
+            
+            .camera-container {
+                padding: 2rem;
+            }
+            
+            .camera-feeds {
+                grid-template-columns: 1fr;
+            }
+            
+            .related-resources {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+                position: relative;
+                z-index: 2;
+                margin-top: 0;
+                background: white;
+            }
+            
+            .camera-container {
+                padding: 1.5rem;
+            }
+            
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-container {
+                padding: 0 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg"></div>
+        <div class="page-title-content">
+            <div class="page-title-left">
+                <div class="page-title-badge">Supraveghere publică</div>
+                <h1 class="page-title">Camere publice</h1>
+                <p class="page-description">Transmisiuni video în timp real din punctele cheie ale orașului, monitorizate de Poliția Locală Slobozia pentru siguranța cetățenilor.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="https://pcslobozia.ro/">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Camere publice</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="content-container">
+            <!-- Main Camera Container -->
+            <div class="camera-container">
+                <h2 class="camera-heading">Transmisiune în direct</h2>
+                
+                <div class="camera-intro">
+                    <p>Poliția Locală Slobozia pune la dispoziția cetățenilor imagini în timp real din punctele cheie ale orașului, pentru o mai bună transparență și siguranță publică. Imaginile sunt transmise în conformitate cu <a href="https://pcslobozia.ro/gdpr/" class="highlight-text">reglementările GDPR</a> privind protecția datelor cu caracter personal.</p>
+                    <p>Aceste camere sunt monitorizate permanent de personalul Poliției Locale, pentru a asigura intervenția rapidă în caz de necesitate și a preveni infracțiunile în zonele publice.</p>
+                </div>
+                
+                <!-- Camera Controls Section -->
+                <div class="camera-controls">
+                    <button class="camera-control-btn camera-control-active" id="all-cameras">
+                        <i class="material-icons">grid_view</i> Toate camerele
+                    </button>
+                    <button class="camera-control-btn" id="downtown-cameras">
+                        <i class="material-icons">location_city</i> Centrul orașului
+                    </button>
+                    <button class="camera-control-btn" id="park-cameras">
+                        <i class="material-icons">park</i> Parcuri și zone de agrement
+                    </button>
+                    <button class="camera-control-btn" id="traffic-cameras">
+                        <i class="material-icons">traffic</i> Trafic rutier
+                    </button>
+                </div>
+                
+                <!-- Camera Feeds -->
+                <div class="camera-feeds">
+                    <!-- Camera Feed 1 -->
+                    <div class="camera-feed">
+                        <div class="camera-feed-header">
+                            <h3 class="camera-feed-title">
+                                <i class="material-icons">videocam</i>
+                                Camera 1 - Primăria Slobozia
+                            </h3>
+                            <div class="camera-feed-status">
+                                <span class="status-indicator"></span>
+                                Transmisie live
+                            </div>
+                        </div>
+                        <div class="camera-feed-content">
+                            <div class="embed-container">
+                                <iframe src="https://rtsp.me/embed/DFybQQh7/" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+                            </div>
+                        </div>
+                        <div class="camera-feed-footer">
+                            <div class="camera-feed-updated">
+                                <i class="material-icons">update</i>
+                                Ultima actualizare: 29 aprilie 2025, 10:30
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Camera Feed 2 -->
+                    <div class="camera-feed">
+                        <div class="camera-feed-header">
+                            <h3 class="camera-feed-title">
+                                <i class="material-icons">videocam</i>
+                                Camera 2 - Piața Centrală
+                            </h3>
+                            <div class="camera-feed-status">
+                                <span class="status-indicator"></span>
+                                Transmisie live
+                            </div>
+                        </div>
+                        <div class="camera-feed-content">
+                            <div class="embed-container">
+                                <iframe src="https://rtsp.me/embed/t7seaQEQ/" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+                            </div>
+                        </div>
+                        <div class="camera-feed-footer">
+                            <div class="camera-feed-updated">
+                                <i class="material-icons">update</i>
+                                Ultima actualizare: 29 aprilie 2025, 10:30
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Information Cards -->
+                <div class="info-cards">
+                    <!-- Card 1: Scope -->
+                    <div class="info-card">
+                        <h3 class="info-card-title">
+                            <i class="material-icons">visibility</i>
+                            Scopul supravegherii
+                        </h3>
+                        <div class="info-card-content">
+                            <p>Sistemul de supraveghere video din spațiile publice are ca scop:</p>
+                            <ul style="padding-left: 1.5rem; margin-top: 0.5rem;">
+                                <li>Prevenirea și combaterea infracțiunilor</li>
+                                <li>Monitorizarea traficului rutier</li>
+                                <li>Asigurarea securității bunurilor și persoanelor</li>
+                                <li>Intervenția rapidă în situații de urgență</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 2: Legal Base -->
+                    <div class="info-card">
+                        <h3 class="info-card-title">
+                            <i class="material-icons">gavel</i>
+                            Baza legală
+                        </h3>
+                        <div class="info-card-content">
+                            <p>Sistemul de supraveghere funcționează în conformitate cu:</p>
+                            <ul style="padding-left: 1.5rem; margin-top: 0.5rem;">
+                                <li>Legea nr. 333/2003 privind paza obiectivelor</li>
+                                <li>Regulamentul General privind Protecția Datelor (GDPR)</li>
+                                <li>Legea Poliției Locale nr. 155/2010</li>
+                                <li>HCL Slobozia nr. 102/2018</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 3: Privacy -->
+                    <div class="info-card">
+                        <h3 class="info-card-title">
+                            <i class="material-icons">security</i>
+                            Protecția datelor
+                        </h3>
+                        <div class="info-card-content">
+                            <p>În conformitate cu GDPR, vă informăm că:</p>
+                            <ul style="padding-left: 1.5rem; margin-top: 0.5rem;">
+                                <li>Imaginile sunt stocate pentru o perioadă de 20-30 zile</li>
+                                <li>Accesul la înregistrări este strict limitat</li>
+                                <li>Imaginile pot fi furnizate autorităților competente conform legii</li>
+                                <li>Pentru mai multe informații, consultați <a href="https://pcslobozia.ro/gdpr/" class="highlight-text">pagina GDPR</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Resources Section -->
+            <div class="related-resources">
+                <h3 class="related-heading">Resurse conexe</h3>
+                <div class="resources-grid">
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">movie</i></div>
+                        <h4 class="resource-title">Reportaje și înregistrări</h4>
+                        <p class="resource-description">Accesați arhiva de reportaje și înregistrări video realizate de Poliția Locală Slobozia.</p>
+                        <a href="https://pcslobozia.ro/reportaje-si-inregistrari-video/" class="resource-link">Vizualizați arhiva <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">description</i></div>
+                        <h4 class="resource-title">GDPR</h4>
+                        <p class="resource-description">Informații despre modul în care Poliția Locală Slobozia prelucrează datele cu caracter personal.</p>
+                        <a href="https://pcslobozia.ro/gdpr/" class="resource-link">Citește mai mult <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">article</i></div>
+                        <h4 class="resource-title">Buletin informativ</h4>
+                        <p class="resource-description">Informații de interes public furnizate de Poliția Locală Slobozia.</p>
+                        <a href="https://pcslobozia.ro/buletin-informativ/" class="resource-link">Consultă buletinul <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">help_outline</i></div>
+                        <h4 class="resource-title">Întrebări frecvente</h4>
+                        <p class="resource-description">Răspunsuri la cele mai frecvente întrebări despre sistemul de supraveghere video.</p>
+                        <a href="#" class="resource-link">Citește FAQ <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <div class="cta-bg"></div>
+                <div class="cta-container">
+                    <h2 class="cta-title">Ați observat o situație de urgență?</h2>
+                    <p class="cta-description">Dacă ați observat un incident care necesită intervenția Poliției Locale Slobozia, nu ezitați să ne contactați. Operatorii noștri sunt disponibili non-stop pentru a răspunde apelurilor dumneavoastră.</p>
+                    <div class="cta-buttons">
+                        <a href="tel:0243955" class="btn btn-primary">Apelați acum: 0243 955 <i class="material-icons">call</i></a>
+                        <a href="https://pcslobozia.ro/petitii/" class="btn btn-secondary">Formular de sesizare <i class="material-icons">description</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Include components.js to load header and footer -->
+    <script src="../components.js"></script>
+    
+    <!-- Page Specific JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Camera controls functionality
+            const cameraControls = document.querySelectorAll('.camera-control-btn');
+            
+            cameraControls.forEach(control => {
+                control.addEventListener('click', function() {
+                    // Remove active class from all controls
+                    cameraControls.forEach(c => c.classList.remove('camera-control-active'));
+                    
+                    // Add active class to clicked control
+                    this.classList.add('camera-control-active');
+                    
+                    // Filter camera feeds based on selected control
+                    // Note: In a real implementation, this would filter the camera feeds
+                    // For demo purposes, we're just changing the active state
+                    
+                    console.log('Selected camera filter:', this.id);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
