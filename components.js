@@ -1225,9 +1225,8 @@ const FOOTER_HTML = `
                 </div>
                 <p class="footer-description">Servim comunitatea noastră cu integritate, profesionalism și dedicare față de siguranța publică. Misiunea noastră este să lucrăm în parteneriat cu comunitatea noastră pentru a proteja viața și proprietatea, a rezolva probleme și a îmbunătăți calitatea vieții.</p>
                 <div class="footer-social">
-                    <a href="/pls/social/facebook" class="social-icon"><i class="material-icons">facebook</i></a>
-                    <a href="/pls/contact" class="social-icon"><i class="material-icons">alternate_email</i></a>
-                    <a href="/pls/galerie" class="social-icon"><i class="material-icons">photo_camera</i></a>
+                    <a href="https://www.facebook.com/sloboziapolloc/" class="social-icon"><i class="material-icons">facebook</i></a>
+                    <a href="/pls/relatii-cu-publicul" class="social-icon"><i class="material-icons">alternate_email</i></a>
                     <a href="/pls/reportaj" class="social-icon"><i class="material-icons">play_circle_filled</i></a>
                 </div>
             </div>
