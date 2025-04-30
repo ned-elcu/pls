@@ -1603,6 +1603,7 @@
             return new Promise((resolve, reject) => {
                 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
                 
+                // Create chat document
                 db.collection('chats').add({
                     userId: currentUser.uid,
                     userName: name,
@@ -1625,6 +1626,13 @@
                     }
                 }).then(docRef => {
                     currentChatId = docRef.id;
+                    
+                    // Store the encryption key in a separate collection for security
+                    return db.collection('chatKeys').doc(currentChatId).set({
+                        key: chatSessionKey,
+                        createdAt: timestamp
+                    });
+                }).then(() => {
                     resolve();
                 }).catch(error => {
                     reject(error);
@@ -1808,7 +1816,7 @@
                         // Update the chat's last activity timestamp
                         return db.collection('chats').doc(currentChatId).update({
                             updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            lastMessage: messageObj.content || '[Mesaj gol]',
+                            lastMessage: messageObj.encrypted ? "[Encrypted message]" : (messageObj.content || '[Mesaj gol]'),
                             lastMessageSender: 'user'
                         });
                     })
@@ -2287,10 +2295,13 @@
             // Reset buttons
             btnSendMessage.disabled = false;
             btnShareLocation.disabled = false;
-            
-            // Reset form fields
+
+        // Reset form fields
             document.getElementById('chat-subject').value = '';
             document.getElementById('chat-location').value = '';
+            mapPreview.style.display = 'none';
+            document.getElementById('privacy-check').checked = false;
+            document.getElementById('recording-check').checked = false;
             
             // Hide all sections except emergency check
             chatEnd.style.display = 'none';
@@ -2305,6 +2316,9 @@
             
             // Generate a new encryption key
             chatSessionKey = generateEncryptionKey();
+            
+            // Clean up chat listeners
+            cleanupChatListeners();
         }
         
         // Display local time
