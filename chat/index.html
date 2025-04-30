@@ -15,6 +15,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-firestore-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-storage-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-functions-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-database-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     
@@ -1165,6 +1166,8 @@
     <script src="../chat/js/firebase-config.js"></script>
     
     <script>
+        // Define session timeout ID variable 
+        let sessionTimeoutId = null;
         
         // References to Firebase services
         const auth = firebase.auth();
@@ -1301,25 +1304,36 @@
         // Monitor connection status
         function setupConnectionMonitoring() {
             // Set up Firebase connection state monitoring
-            const connectedRef = firebase.database().ref('.info/connected');
-            connectedRef.on('value', (snap) => {
-                if (snap.val() === true) {
-                    updateConnectionStatus('Online');
-                    
-                    if (offlineTimeout) {
-                        clearTimeout(offlineTimeout);
-                        offlineTimeout = null;
+            // Modified to use Firebase database correctly and handle potential errors
+            try {
+                const connectedRef = firebase.database().ref('.info/connected');
+                connectedRef.on('value', (snap) => {
+                    if (snap && snap.val() === true) {
+                        updateConnectionStatus('Online');
+                        
+                        if (offlineTimeout) {
+                            clearTimeout(offlineTimeout);
+                            offlineTimeout = null;
+                        }
+                    } else {
+                        // Set a timeout to show offline only after a delay
+                        // to avoid flickering during brief connection issues
+                        if (!offlineTimeout) {
+                            offlineTimeout = setTimeout(() => {
+                                updateConnectionStatus('Offline');
+                            }, 5000);
+                        }
                     }
-                } else {
-                    // Set a timeout to show offline only after a delay
-                    // to avoid flickering during brief connection issues
-                    if (!offlineTimeout) {
-                        offlineTimeout = setTimeout(() => {
-                            updateConnectionStatus('Offline');
-                        }, 5000);
-                    }
-                }
-            });
+                }, (error) => {
+                    console.error('Error monitoring connection status:', error);
+                    // Fall back to window online/offline events
+                    updateConnectionStatus(navigator.onLine ? 'Online' : 'Offline');
+                });
+            } catch (error) {
+                console.error('Error setting up connection monitoring:', error);
+                // Fall back to window online/offline events only
+                updateConnectionStatus(navigator.onLine ? 'Online' : 'Offline');
+            }
             
             // Also monitor window online/offline events as a backup
             window.addEventListener('online', () => {
@@ -1449,6 +1463,8 @@
         
         // Initialize chat
         function initializeChat() {
+            console.log('Initializing chat application...');
+            
             // Set up connection monitoring
             setupConnectionMonitoring();
             
@@ -1468,8 +1484,28 @@
         
         // Set up all event listeners
         function setupEventListeners() {
-            btnEmergency.addEventListener('click', handleEmergency);
-            btnNonemergency.addEventListener('click', showDepartmentSelection);
+            console.log('Setting up event listeners...');
+            
+            // Direct event attachment to emergency buttons
+            btnEmergency.addEventListener('click', function(e) {
+                console.log('Emergency button clicked');
+                handleEmergency();
+            });
+            
+            btnNonemergency.addEventListener('click', function(e) {
+                console.log('Non-emergency button clicked');
+                showDepartmentSelection();
+            });
+            
+            // Department selection buttons - add direct click handlers
+            departmentItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    console.log('Department item clicked:', item.dataset.id);
+                    selectDepartment(item.dataset.id);
+                });
+            });
+            
+            // Other buttons
             btnStartChat.addEventListener('click', handleStartChat);
             btnSendMessage.addEventListener('click', sendMessage);
             messageInput.addEventListener('keypress', handleEnterPress);
@@ -1484,11 +1520,6 @@
             
             // Input typing detection
             messageInput.addEventListener('input', handleTypingStart);
-            
-            // Department selection
-            departmentItems.forEach(item => {
-                item.addEventListener('click', () => selectDepartment(item.dataset.id));
-            });
         }
         
         // =============================================
@@ -1497,6 +1528,8 @@
         
         // Handle emergency button click
         function handleEmergency() {
+            console.log('Handle emergency function called');
+            
             // Log the emergency (useful for statistics and monitoring)
             logEmergencyRequest();
             
@@ -1522,12 +1555,14 @@
         
         // Show department selection
         function showDepartmentSelection() {
+            console.log('Showing department selection');
             emergencyCheck.style.display = 'none';
             departmentSelect.style.display = 'flex';
         }
         
         // Select department
         function selectDepartment(departmentId) {
+            console.log('Department selected:', departmentId);
             selectedDepartment = departmentId;
             departmentSelect.style.display = 'none';
             chatForm.style.display = 'block';
@@ -2394,251 +2429,250 @@
         function endChat() {
             chatEnded = true;
             
-            // Update chat status in Firestore
-            db.collection('chats').doc(currentChatId).update({
-                status: 'closed',
-                endedBy: 'user',
-                endedAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                handleChatEnded();
-            }).catch(error => {
-                console.error('Error ending chat:', error);
-                showNotice(errorNotice, 'Eroare la închiderea conversației. Vă rugăm să încercați din nou.');
-            });
-        }
-        
-        // Request transcript
-        function requestTranscript() {
-            const email = document.getElementById('chat-email').value;
-            
-            if (!email || !email.includes('@')) {
-                showNotice(errorNotice, 'Vă rugăm să introduceți o adresă de email validă.');
-                return;
-            }
-            
-            // Show loading state
-            btnRequestTranscript.disabled = true;
-            btnRequestTranscript.textContent = 'Se trimite...';
-            
-// Call Cloud Function to send transcript
-            // In a real implementation, this would be a Firebase Cloud Function
-            const sendTranscriptFunction = firebase.functions().httpsCallable('sendChatTranscript');
-            sendTranscriptFunction({ chatId: currentChatId, email: email })
-                .then(result => {
-                    showNotice(successNotice, 'Transcriptul a fost trimis la adresa de email specificată.');
-                    btnRequestTranscript.textContent = 'Transcript trimis ✓';
-                })
-                .catch(error => {
-                    console.error('Error requesting transcript:', error);
-                    showNotice(errorNotice, 'Eroare la trimiterea transcriptului. Vă rugăm să încercați din nou.');
-                    btnRequestTranscript.disabled = false;
-                    btnRequestTranscript.textContent = 'Primește transcript';
-                });
-        }
-        
-        // Reset chat and start a new one
-        function resetChat() {
-            // Sign out current user if any
-            if (currentUser) {
-                auth.signOut().catch(error => {
-                    console.error('Error signing out:', error);
-                });
-            }
-            
-            // Reset all variables
-            currentUser = null;
-            currentChatId = null;
-            selectedFile = null;
-            selectedDepartment = null;
-            chatSessionKey = null;
-            agentPublicKey = null;
-            chatEnded = false;
-            isTyping = false;
-            
-            if (typingTimeout) {
-                clearTimeout(typingTimeout);
-                typingTimeout = null;
-            }
-            
-            // Clear message queue
-            messageQueue = [];
-            localStorage.removeItem('messageQueue_' + currentChatId);
-            
-            // Reset rate limiting
-            rateLimitConfig.sentMessages = [];
-            rateLimitConfig.isLimited = false;
-            
-            // Clear chat messages
-            chatMessages.innerHTML = '';
-            
-// Reset all notices
-            errorNotice.style.display = 'none';
-            successNotice.style.display = 'none';
-            formErrorNotice.style.display = 'none';
-            
-            // Reset file input
-            clearFilePreview();
-            fileInput.value = '';
-            
-            // Reset message input
-            messageInput.value = '';
-            messageInput.disabled = false;
-            
-            // Reset buttons
-            btnSendMessage.disabled = false;
-            btnAttachFile.disabled = false;
-            btnSendPhoto.disabled = false;
-            btnShareLocation.disabled = false;
-            
-            // Reset form fields
-            document.getElementById('chat-subject').value = '';
-            document.getElementById('chat-location').value = '';
-            
-            // Hide all sections except emergency check
-            chatEnd.style.display = 'none';
-            chatMessages.style.display = 'none';
-            chatInput.style.display = 'none';
-            chatForm.style.display = 'none';
-            departmentSelect.style.display = 'none';
-            loadingState.style.display = 'none';
-            
-            // Show emergency check
-            emergencyCheck.style.display = 'block';
-            
-            // Generate a new encryption key
-            chatSessionKey = generateEncryptionKey();
-        }
-        
-        // Display local time
-        function formatLocalTime(timestamp) {
-            if (!timestamp) return 'Acum';
-            
-            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-        
-        // Format date for display
-        function formatDate(timestamp) {
-            if (!timestamp) return '';
-            
-            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-            return date.toLocaleDateString();
-        }
-        
-        // Detect if the device is mobile
-        function isMobileDevice() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-        
-        // Setup session timeout
-        function setupSessionTimeout() {
-            // Reset any existing timeout
-            if (sessionTimeoutId) {
-                clearTimeout(sessionTimeoutId);
-            }
-            
-            // Set timeout to 30 minutes
-            const sessionTimeout = 30 * 60 * 1000; // 30 minutes
-            
-            sessionTimeoutId = setTimeout(() => {
-                // End chat due to inactivity
-                if (!chatEnded) {
-                    addSystemMessage('Conversația a fost închisă automat datorită inactivității.');
-                    endChat();
-                }
-            }, sessionTimeout);
-        }
-        
-        // Reset session timeout on activity
-        function resetSessionTimeout() {
-            if (sessionTimeoutId) {
-                clearTimeout(sessionTimeoutId);
-                setupSessionTimeout();
-            }
-        }
-        
-        // User activity events
-        document.addEventListener('click', resetSessionTimeout);
-        document.addEventListener('keypress', resetSessionTimeout);
-        document.addEventListener('mousemove', resetSessionTimeout);
-        document.addEventListener('touchstart', resetSessionTimeout);
-        
-        // Visibility change handling
-        document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'hidden') {
-                // User switched away, might need to handle this
-            } else {
-                // User returned, update read status
-                updateReadStatus();
-            }
+// Update chat status in Firestore
+db.collection('chats').doc(currentChatId).update({
+    status: 'closed',
+    endedBy: 'user',
+    endedAt: firebase.firestore.FieldValue.serverTimestamp()
+}).then(() => {
+    handleChatEnded();
+}).catch(error => {
+    console.error('Error ending chat:', error);
+    showNotice(errorNotice, 'Eroare la închiderea conversației. Vă rugăm să încercați din nou.');
+});
+}
+
+// Request transcript
+function requestTranscript() {
+    const email = document.getElementById('chat-email').value;
+    
+    if (!email || !email.includes('@')) {
+        showNotice(errorNotice, 'Vă rugăm să introduceți o adresă de email validă.');
+        return;
+    }
+    
+    // Show loading state
+    btnRequestTranscript.disabled = true;
+    btnRequestTranscript.textContent = 'Se trimite...';
+    
+    // Call Cloud Function to send transcript
+    // In a real implementation, this would be a Firebase Cloud Function
+    const sendTranscriptFunction = firebase.functions().httpsCallable('sendChatTranscript');
+    sendTranscriptFunction({ chatId: currentChatId, email: email })
+        .then(result => {
+            showNotice(successNotice, 'Transcriptul a fost trimis la adresa de email specificată.');
+            btnRequestTranscript.textContent = 'Transcript trimis ✓';
+        })
+        .catch(error => {
+            console.error('Error requesting transcript:', error);
+            showNotice(errorNotice, 'Eroare la trimiterea transcriptului. Vă rugăm să încercați din nou.');
+            btnRequestTranscript.disabled = false;
+            btnRequestTranscript.textContent = 'Primește transcript';
         });
-        
-        // Before unload warning
-        window.addEventListener('beforeunload', function(e) {
-            if (!chatEnded && currentChatId) {
-                const message = 'Aveți o conversație activă. Dacă părăsiți pagina, conversația va fi întreruptă.';
-                e.returnValue = message;
-                return message;
-            }
+}
+
+// Reset chat and start a new one
+function resetChat() {
+    // Sign out current user if any
+    if (currentUser) {
+        auth.signOut().catch(error => {
+            console.error('Error signing out:', error);
         });
-        
-        // =============================================
-        // Automated Debugging Code
-        // =============================================
-        
-        // Add automated debugging that runs when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM fully loaded - Automated debugging started');
-            
-            // Check if Firebase is properly initialized
-            console.log('Checking Firebase initialization...');
-            try {
-                console.log('Firebase available:', typeof firebase !== 'undefined');
-                if (typeof firebase !== 'undefined') {
-                    console.log('Auth available:', typeof firebase.auth === 'function');
-                    console.log('Firestore available:', typeof firebase.firestore === 'function');
-                    console.log('Storage available:', typeof firebase.storage === 'function');
-                    console.log('Functions available:', typeof firebase.functions === 'function');
-                }
-            } catch (e) {
-                console.error('Error checking Firebase:', e);
-            }
-            
-            // Check if emergency buttons exist and have event listeners
-            console.log('Checking emergency buttons...');
-            console.log('btnEmergency exists:', !!btnEmergency);
-            console.log('btnNonemergency exists:', !!btnNonemergency);
-            
-            // Ensure emergency buttons have click handlers
-            if (btnEmergency) {
-                console.log('Adding additional click handler to emergency button for reliability');
-                btnEmergency.addEventListener('click', function() {
-                    console.log('Emergency button clicked');
-                    handleEmergency();
-                });
-            }
-            
-            if (btnNonemergency) {
-                console.log('Adding additional click handler to non-emergency button for reliability');
-                btnNonemergency.addEventListener('click', function() {
-                    console.log('Non-emergency button clicked');
-                    showDepartmentSelection();
-                });
-            }
-            
-            // Test click events on buttons to verify they're properly configured
-            console.log('Emergency button onclick attribute:', btnEmergency ? btnEmergency.onclick : 'button not found');
-            console.log('Non-emergency button onclick attribute:', btnNonemergency ? btnNonemergency.onclick : 'button not found');
-            
-            console.log('Automated debugging completed');
+    }
+    
+    // Reset all variables
+    currentUser = null;
+    currentChatId = null;
+    selectedFile = null;
+    selectedDepartment = null;
+    chatSessionKey = null;
+    agentPublicKey = null;
+    chatEnded = false;
+    isTyping = false;
+    
+    if (typingTimeout) {
+        clearTimeout(typingTimeout);
+        typingTimeout = null;
+    }
+    
+    // Clear message queue
+    messageQueue = [];
+    localStorage.removeItem('messageQueue_' + currentChatId);
+    
+    // Reset rate limiting
+    rateLimitConfig.sentMessages = [];
+    rateLimitConfig.isLimited = false;
+    
+    // Clear chat messages
+    chatMessages.innerHTML = '';
+    
+    // Reset all notices
+    errorNotice.style.display = 'none';
+    successNotice.style.display = 'none';
+    formErrorNotice.style.display = 'none';
+    
+    // Reset file input
+    clearFilePreview();
+    fileInput.value = '';
+    
+    // Reset message input
+    messageInput.value = '';
+    messageInput.disabled = false;
+    
+    // Reset buttons
+    btnSendMessage.disabled = false;
+    btnAttachFile.disabled = false;
+    btnSendPhoto.disabled = false;
+    btnShareLocation.disabled = false;
+    
+    // Reset form fields
+    document.getElementById('chat-subject').value = '';
+    document.getElementById('chat-location').value = '';
+    
+    // Hide all sections except emergency check
+    chatEnd.style.display = 'none';
+    chatMessages.style.display = 'none';
+    chatInput.style.display = 'none';
+    chatForm.style.display = 'none';
+    departmentSelect.style.display = 'none';
+    loadingState.style.display = 'none';
+    
+    // Show emergency check
+    emergencyCheck.style.display = 'block';
+    
+    // Generate a new encryption key
+    chatSessionKey = generateEncryptionKey();
+}
+
+// Display local time
+function formatLocalTime(timestamp) {
+    if (!timestamp) return 'Acum';
+    
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+// Format date for display
+function formatDate(timestamp) {
+    if (!timestamp) return '';
+    
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return date.toLocaleDateString();
+}
+
+// Detect if the device is mobile
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Setup session timeout
+function setupSessionTimeout() {
+    // Reset any existing timeout
+    if (sessionTimeoutId) {
+        clearTimeout(sessionTimeoutId);
+    }
+    
+    // Set timeout to 30 minutes
+    const sessionTimeout = 30 * 60 * 1000; // 30 minutes
+    
+    sessionTimeoutId = setTimeout(() => {
+        // End chat due to inactivity
+        if (!chatEnded) {
+            addSystemMessage('Conversația a fost închisă automat datorită inactivității.');
+            endChat();
+        }
+    }, sessionTimeout);
+}
+
+// Reset session timeout on activity
+function resetSessionTimeout() {
+    if (sessionTimeoutId) {
+        clearTimeout(sessionTimeoutId);
+        setupSessionTimeout();
+    }
+}
+
+// User activity events
+document.addEventListener('click', resetSessionTimeout);
+document.addEventListener('keypress', resetSessionTimeout);
+document.addEventListener('mousemove', resetSessionTimeout);
+document.addEventListener('touchstart', resetSessionTimeout);
+
+// Visibility change handling
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+        // User switched away, might need to handle this
+    } else {
+        // User returned, update read status
+        updateReadStatus();
+    }
+});
+
+// Before unload warning
+window.addEventListener('beforeunload', function(e) {
+    if (!chatEnded && currentChatId) {
+        const message = 'Aveți o conversație activă. Dacă părăsiți pagina, conversația va fi întreruptă.';
+        e.returnValue = message;
+        return message;
+    }
+});
+
+// =============================================
+// Automated Debugging Code
+// =============================================
+
+// Add automated debugging that runs when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded - Automated debugging started');
+    
+    // Check if Firebase is properly initialized
+    console.log('Checking Firebase initialization...');
+    try {
+        console.log('Firebase available:', typeof firebase !== 'undefined');
+        if (typeof firebase !== 'undefined') {
+            console.log('Auth available:', typeof firebase.auth === 'function');
+            console.log('Firestore available:', typeof firebase.firestore === 'function');
+            console.log('Storage available:', typeof firebase.storage === 'function');
+            console.log('Functions available:', typeof firebase.functions === 'function');
+            console.log('Database available:', typeof firebase.database === 'function');
+        }
+    } catch (e) {
+        console.error('Error checking Firebase:', e);
+    }
+    
+    // Check if emergency buttons exist and have event listeners
+    console.log('Checking emergency buttons...');
+    console.log('btnEmergency exists:', !!btnEmergency);
+    console.log('btnNonemergency exists:', !!btnNonemergency);
+    
+    // Log department items
+    console.log('Number of department items:', departmentItems.length);
+    departmentItems.forEach((item, index) => {
+        console.log(`Department ${index + 1}:`, item.dataset.id);
+    });
+    
+    // Ensure department items have click handlers
+    departmentItems.forEach((item, index) => {
+        console.log(`Adding direct event listener to department ${item.dataset.id}`);
+        item.addEventListener('click', function(e) {
+            console.log(`Department item clicked:`, item.dataset.id);
+            selectDepartment(item.dataset.id);
         });
-        
-        // =============================================
-        // Initialization Call
-        // =============================================
-        
-        // Initialize the chat
-        initializeChat();
-    </script>
+    });
+    
+    // Test click events on buttons to verify they're properly configured
+    console.log('Emergency button onclick attribute:', btnEmergency ? btnEmergency.onclick : 'button not found');
+    console.log('Non-emergency button onclick attribute:', btnNonemergency ? btnNonemergency.onclick : 'button not found');
+    
+    console.log('Automated debugging completed');
+});
+
+// =============================================
+// Initialization Call
+// =============================================
+
+// Initialize the chat
+initializeChat();
+</script>
 </body>
 </html>
