@@ -6,8 +6,8 @@ const firebaseConfig = {
   messagingSenderId: "257223618239",
   appId: "1:257223618239:web:802d4c3320c4fceb07200a",
   measurementId: "G-1N5R5HFQ01",
-  databaseURL: "https://pls-chat-default-rtdb.europe-west1.firebasedatabase.app",
-  storageBucket: "pls-chat.appspot.com" // Added storage bucket based on project ID
+  databaseURL: "https://pls-chat-default-rtdb.europe-west1.firebasedatabase.app"
+  // Removed storageBucket since storage isn't being used
 };
 
 // Initialize Firebase
@@ -16,11 +16,11 @@ firebase.initializeApp(firebaseConfig);
 // Export auth and db
 window.auth = firebase.auth();
 window.db = firebase.firestore();
-window.storage = firebase.storage();
 window.functions = firebase.functions();
-window.database = firebase.database(); // Add database reference
+window.database = firebase.database();
+// Removed storage initialization
 
-// ONLY ADDITION: Set persistence based on page (to prevent admin logout issue)
+// Set persistence based on page (to prevent admin logout issue)
 if (window.location.pathname.includes('/admin')) {
   window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 } else {
