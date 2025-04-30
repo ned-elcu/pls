@@ -1637,8 +1637,13 @@
             return new Promise((resolve, reject) => {
                 try {
                     // Listen for chat status changes (e.g., agent joined, priority changed)
-                    db.collection('chats').doc(currentChatId)
+                    const chatDocListener = db.collection('chats').doc(currentChatId)
                         .onSnapshot(doc => {
+                            if (!doc.exists) {
+                                console.error('Chat document does not exist');
+                                return;
+                            }
+                            
                             const chatData = doc.data();
                             
                             // Check if an agent was assigned
@@ -1654,15 +1659,19 @@
                             if (chatData.status === 'closed' && !chatEnded) {
                                 handleChatEnded();
                             }
+                        }, error => {
+                            console.error('Error in chat document listener:', error);
                         });
                     
                     // Listen for messages
-                    db.collection('chats').doc(currentChatId).collection('messages')
+                    const messagesListener = db.collection('chats').doc(currentChatId).collection('messages')
                         .orderBy('timestamp', 'asc')
                         .onSnapshot(snapshot => {
                             snapshot.docChanges().forEach(change => {
                                 if (change.type === 'added') {
                                     const message = change.doc.data();
+                                    // Add the message ID to the message object
+                                    message.id = change.doc.id;
                                     
                                     // If the message has encrypted content, decrypt it
                                     if (message.encrypted && message.content) {
@@ -1680,10 +1689,12 @@
                             
                             // Scroll to bottom
                             scrollToBottom();
+                        }, error => {
+                            console.error('Error in messages listener:', error);
                         });
                     
                     // Listen for typing indicators
-                    db.collection('chats').doc(currentChatId).collection('typing')
+                    const typingListener = db.collection('chats').doc(currentChatId).collection('typing')
                         .doc('agent')
                         .onSnapshot(doc => {
                             if (doc.exists && doc.data().isTyping) {
@@ -1691,13 +1702,23 @@
                             } else {
                                 hideTypingIndicator();
                             }
+                        }, error => {
+                            console.error('Error in typing indicator listener:', error);
                         });
                     
                     // Load queued messages if any
                     loadMessageQueue();
                     
+                    // Store listeners for cleanup
+                    window.chatListeners = {
+                        chatDoc: chatDocListener,
+                        messages: messagesListener,
+                        typing: typingListener
+                    };
+                    
                     resolve();
                 } catch (error) {
+                    console.error('Error setting up chat listeners:', error);
                     reject(error);
                 }
             });
@@ -1781,13 +1802,13 @@
         // Send a message to Firestore
         function sendMessageToFirestore(messageObj) {
             return new Promise((resolve, reject) => {
-                // Add message to Firestore
+                // Add message to Firestore 
                 db.collection('chats').doc(currentChatId).collection('messages').add(messageObj)
                     .then(messageRef => {
                         // Update the chat's last activity timestamp
                         return db.collection('chats').doc(currentChatId).update({
                             updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            lastMessageContent: messageObj.encrypted ? '[Mesaj criptat]' : (messageObj.content || '[Mesaj gol]'),
+                            lastMessage: messageObj.content || '[Mesaj gol]',
                             lastMessageSender: 'user'
                         });
                     })
@@ -1795,6 +1816,7 @@
                         resolve();
                     })
                     .catch(error => {
+                        console.error('Error details:', error);
                         reject(error);
                     });
             });
@@ -2033,9 +2055,11 @@
                     .doc('user')
                     .set({
                         isTyping: true,
+                        userId: currentUser.uid, // Add userId explicitly for permission check
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     }).catch(error => {
                         console.error('Error updating typing status:', error);
+                        // Don't show error to user as this is non-critical
                     });
             }
             
@@ -2057,9 +2081,11 @@
                     .doc('user')
                     .set({
                         isTyping: false,
+                        userId: currentUser.uid, // Add userId explicitly for permission check
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     }).catch(error => {
                         console.error('Error updating typing status:', error);
+                        // Don't show error to user as this is non-critical
                     });
             }
             
@@ -2355,61 +2381,25 @@
         });
         
         // =============================================
-        // Automated Debugging Code
+        // Cleanup function for listeners when chat ends
         // =============================================
-        
-        // Add automated debugging that runs when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM fully loaded - Automated debugging started');
-            
-            // Check if Firebase is properly initialized
-            console.log('Checking Firebase initialization...');
-            try {
-                console.log('Firebase available:', typeof firebase !== 'undefined');
-                if (typeof firebase !== 'undefined') {
-                    console.log('Auth available:', typeof firebase.auth === 'function');
-                    console.log('Firestore available:', typeof firebase.firestore === 'function');
-                    console.log('Functions available:', typeof firebase.functions === 'function');
-                    console.log('Database available:', typeof firebase.database === 'function');
+        function cleanupChatListeners() {
+            if (window.chatListeners) {
+                if (window.chatListeners.chatDoc) {
+                    window.chatListeners.chatDoc();
                 }
-            } catch (e) {
-                console.error('Error checking Firebase:', e);
+                if (window.chatListeners.messages) {
+                    window.chatListeners.messages();
+                }
+                if (window.chatListeners.typing) {
+                    window.chatListeners.typing();
+                }
+                window.chatListeners = null;
             }
-            
-            // Check if emergency buttons exist and have event listeners
-            console.log('Checking emergency buttons...');
-            console.log('btnEmergency exists:', !!btnEmergency);
-            console.log('btnNonemergency exists:', !!btnNonemergency);
-            
-            // Log department items
-            console.log('Number of department items:', departmentItems.length);
-            departmentItems.forEach((item, index) => {
-                console.log(`Department ${index + 1}:`, item.dataset.id);
-            });
-            
-            // Ensure department items have click handlers
-            departmentItems.forEach((item, index) => {
-                console.log(`Adding direct event listener to department ${item.dataset.id}`);
-                item.addEventListener('click', function(e) {
-                    console.log(`Department item clicked:`, item.dataset.id);
-                    selectDepartment(item.dataset.id);
-                });
-            });
-            
-            // Test click events on buttons to verify they're properly configured
-            console.log('Emergency button onclick attribute:', btnEmergency ? btnEmergency.onclick : 'button not found');
-            console.log('Non-emergency button onclick attribute:', btnNonemergency ? btnNonemergency.onclick : 'button not found');
-            
-            console.log('Automated debugging completed');
-        });
-        
-        // =============================================
-        // Initialization Call
-        // =============================================
+        }
         
         // Initialize the chat
         initializeChat();
     </script>
 </body>
 </html>
-
