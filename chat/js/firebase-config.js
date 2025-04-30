@@ -10,35 +10,27 @@ const firebaseConfig = {
   storageBucket: "pls-chat.appspot.com"
 };
 
-// Initialize Firebase once
-try {
-  // Check if Firebase is already initialized to avoid errors
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-  
-  // Set global references to Firebase services
-  window.auth = firebase.auth();
-  window.db = firebase.firestore();
-  window.functions = firebase.functions();
-  window.database = firebase.database();
-  window.storage = firebase.storage ? firebase.storage() : null;
-  
-  // Set the appropriate persistence based on the page
-  if (window.location.pathname.includes('/admin')) {
-    // For admin page - use LOCAL persistence to keep admin logged in
-    window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-      .catch(error => {
-        console.error("Error setting persistence for admin:", error);
-      });
-  } else {
-    // For chat page - use SESSION persistence (only for current tab)
-    // This prevents the anonymous auth from affecting other tabs
-    window.auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
-      .catch(error => {
-        console.error("Error setting persistence for chat:", error);
-      });
-  }
-} catch (error) {
-  console.error("Firebase initialization error:", error);
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Set global references
+window.auth = firebase.auth();
+window.db = firebase.firestore();
+window.functions = firebase.functions();
+window.database = firebase.database();
+window.storage = firebase.storage();
+
+// Set persistence based on page
+if (window.location.pathname.includes('/admin')) {
+  // For admin page - use LOCAL persistence
+  window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .catch(function(error) {
+      console.error("Error setting persistence for admin:", error);
+    });
+} else {
+  // For chat page - use SESSION persistence
+  window.auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    .catch(function(error) {
+      console.error("Error setting persistence for chat:", error);
+    });
 }
