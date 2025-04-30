@@ -1046,6 +1046,11 @@
             color: var(--secondary-color);
         }
         
+        .chat-input-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         .chat-input-action-send {
             width: auto;
             padding: 0 1.5rem;
@@ -2281,6 +2286,85 @@
         const functions = firebase.functions();
         
         // =============================================
+        // Decryption Functions
+        // =============================================
+
+        // Decrypt a message
+        function decryptMessage(encryptedMessage, key) {
+            try {
+                if (!key || !encryptedMessage) return encryptedMessage; // Fallback if key or message is missing
+                const bytes = CryptoJS.AES.decrypt(encryptedMessage, key);
+                return bytes.toString(CryptoJS.enc.Utf8);
+            } catch (error) {
+                console.error('Decryption error:', error);
+                return `[Encrypted message - Decryption failed: ${error.message}]`; // Show decryption failure
+            }
+        }
+
+        // Get encryption key for a chat
+        async function getChatEncryptionKey(chatId) {
+            try {
+                // First try to get the key from the chat document itself
+                const chatDoc = await db.collection('chats').doc(chatId).get();
+                if (chatDoc.exists) {
+                    const chatData = chatDoc.data();
+                    if (chatData.encryptionKey) {
+                        return chatData.encryptionKey;
+                    }
+                }
+                
+                // If not in chat document, try the dedicated keys collection
+                const keyDoc = await db.collection('chatKeys').doc(chatId).get();
+                if (keyDoc.exists) {
+                    return keyDoc.data().key;
+                }
+                
+                // Return null if no key is found
+                console.warn(`No encryption key found for chat ${chatId}`);
+                return null;
+            } catch (error) {
+                console.error('Error retrieving encryption key:', error);
+                return null;
+            }
+        }
+
+        // Get a cache for encryption keys to avoid repeated DB queries
+        const encryptionKeyCache = new Map();
+
+        // Process messages for decryption
+        async function decryptChatMessages(chatData) {
+            // Get encryption key for this chat
+            let encryptionKey = encryptionKeyCache.get(chatData.id);
+            
+            if (!encryptionKey) {
+                encryptionKey = await getChatEncryptionKey(chatData.id);
+                if (encryptionKey) {
+                    encryptionKeyCache.set(chatData.id, encryptionKey);
+                }
+            }
+            
+            // Process each message
+            if (chatData.messages && chatData.messages.length > 0) {
+                for (let message of chatData.messages) {
+                    // Check if message is encrypted
+                    if (message.encrypted && message.content) {
+                        try {
+                            // Decrypt the message
+                            message.content = decryptMessage(message.content, encryptionKey);
+                            // Add a visual indicator that this was an encrypted message
+                            message._wasEncrypted = true;
+                        } catch (error) {
+                            console.error(`Failed to decrypt message ${message.id}:`, error);
+                            message.content = `[Encrypted message - Could not decrypt]`;
+                        }
+                    }
+                }
+            }
+            
+            return chatData;
+        }
+        
+        // =============================================
         // DOM References
         // =============================================
         
@@ -2324,58 +2408,58 @@
         const templatesView = document.getElementById('templatesView');
         const settingsView = document.getElementById('settingsView');
         const usersView = document.getElementById('usersView');
-        
+
         // Dashboard elements
-        const statActiveChats = document.getElementById('statActiveChats');
-        const statWaitingChats = document.getElementById('statWaitingChats');
-        const statResolvedChats = document.getElementById('statResolvedChats');
-        const statAvgResponseTime = document.getElementById('statAvgResponseTime');
-        const statActiveChatsTrend = document.getElementById('statActiveChatsTrend');
-        const statWaitingChatsTrend = document.getElementById('statWaitingChatsTrend');
-        const statResolvedChatsTrend = document.getElementById('statResolvedChatsTrend');
-        const statAvgResponseTimeTrend = document.getElementById('statAvgResponseTimeTrend');
-        const recentChats = document.getElementById('recentChats');
-        const btnRefreshDashboard = document.getElementById('btnRefreshDashboard');
-        
-        // Chats view elements
-        const chatListContent = document.getElementById('chatListContent');
-        const chatListTabs = document.querySelectorAll('.chat-list-tab');
-        const chatInterface = document.getElementById('chatInterface');
-        const departmentFilter = document.getElementById('departmentFilter');
-        const btnRefreshChats = document.getElementById('btnRefreshChats');
-        
-        // Template elements
-        const templatesGrid = document.getElementById('templatesGrid');
-        const templateSearch = document.getElementById('templateSearch');
-        const templateCategoryFilter = document.getElementById('templateCategoryFilter');
-        const btnNewTemplate = document.getElementById('btnNewTemplate');
-        const templateModal = document.getElementById('templateModal');
-        const templateModalTitle = document.getElementById('templateModalTitle');
-        const templateForm = document.getElementById('templateForm');
-        const templateTitle = document.getElementById('templateTitle');
-        const templateCategory = document.getElementById('templateCategory');
-        const templateContent = document.getElementById('templateContent');
-        const templateModalClose = document.getElementById('templateModalClose');
-        const templateModalCancel = document.getElementById('templateModalCancel');
-        const templateModalSave = document.getElementById('templateModalSave');
-        
-        // User management elements
-        const usersTable = document.getElementById('usersTable');
-        const userSearch = document.getElementById('userSearch');
-        const userRoleFilter = document.getElementById('userRoleFilter');
-        const btnAddUser = document.getElementById('btnAddUser');
-        const userModal = document.getElementById('userModal');
-        const userModalTitle = document.getElementById('userModalTitle');
-        const userForm = document.getElementById('userForm');
-        const userModalClose = document.getElementById('userModalClose');
-        const userModalCancel = document.getElementById('userModalCancel');
-        const userModalSave = document.getElementById('userModalSave');
-        
-        // Analytics elements
-        const timeRangeFilter = document.getElementById('timeRangeFilter');
-        const btnExportAnalytics = document.getElementById('btnExportAnalytics');
-        const btnPrintAnalytics = document.getElementById('btnPrintAnalytics');
-        const agentStatsTable = document.getElementById('agentStatsTable');
+const statActiveChats = document.getElementById('statActiveChats');
+const statWaitingChats = document.getElementById('statWaitingChats');
+const statResolvedChats = document.getElementById('statResolvedChats');
+const statAvgResponseTime = document.getElementById('statAvgResponseTime');
+const statActiveChatsTrend = document.getElementById('statActiveChatsTrend');
+const statWaitingChatsTrend = document.getElementById('statWaitingChatsTrend');
+const statResolvedChatsTrend = document.getElementById('statResolvedChatsTrend');
+const statAvgResponseTimeTrend = document.getElementById('statAvgResponseTimeTrend');
+const recentChats = document.getElementById('recentChats');
+const btnRefreshDashboard = document.getElementById('btnRefreshDashboard');
+
+// Chats view elements
+const chatListContent = document.getElementById('chatListContent');
+const chatListTabs = document.querySelectorAll('.chat-list-tab');
+const chatInterface = document.getElementById('chatInterface');
+const departmentFilter = document.getElementById('departmentFilter');
+const btnRefreshChats = document.getElementById('btnRefreshChats');
+
+// Template elements
+const templatesGrid = document.getElementById('templatesGrid');
+const templateSearch = document.getElementById('templateSearch');
+const templateCategoryFilter = document.getElementById('templateCategoryFilter');
+const btnNewTemplate = document.getElementById('btnNewTemplate');
+const templateModal = document.getElementById('templateModal');
+const templateModalTitle = document.getElementById('templateModalTitle');
+const templateForm = document.getElementById('templateForm');
+const templateTitle = document.getElementById('templateTitle');
+const templateCategory = document.getElementById('templateCategory');
+const templateContent = document.getElementById('templateContent');
+const templateModalClose = document.getElementById('templateModalClose');
+const templateModalCancel = document.getElementById('templateModalCancel');
+const templateModalSave = document.getElementById('templateModalSave');
+
+// User management elements
+const usersTable = document.getElementById('usersTable');
+const userSearch = document.getElementById('userSearch');
+const userRoleFilter = document.getElementById('userRoleFilter');
+const btnAddUser = document.getElementById('btnAddUser');
+const userModal = document.getElementById('userModal');
+const userModalTitle = document.getElementById('userModalTitle');
+const userForm = document.getElementById('userForm');
+const userModalClose = document.getElementById('userModalClose');
+const userModalCancel = document.getElementById('userModalCancel');
+const userModalSave = document.getElementById('userModalSave');
+
+// Analytics elements
+const timeRangeFilter = document.getElementById('timeRangeFilter');
+const btnExportAnalytics = document.getElementById('btnExportAnalytics');
+const btnPrintAnalytics = document.getElementById('btnPrintAnalytics');
+const agentStatsTable = document.getElementById('agentStatsTable');
 
 // Settings elements
 const settingBrowserNotifications = document.getElementById('settingBrowserNotifications');
@@ -2819,428 +2903,11 @@ function showView(viewName) {
     currentView = viewName;
 }
 
-// Set up dashboard events
-function setupDashboardEvents() {
-    // User dropdown toggle
-    userDropdown.addEventListener('click', function() {
-        userDropdownMenu.classList.toggle('show');
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!userDropdown.contains(e.target) && userDropdownMenu.classList.contains('show')) {
-            userDropdownMenu.classList.remove('show');
-        }
-    });
-    
-    // Navigation items
-    navItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const viewName = this.getAttribute('href').substring(1);
-            showView(viewName);
-        });
-    });
-    
-    // Chat list tabs
-    chatListTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            chatListTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            
-            currentChatTab = this.dataset.tab;
-            loadChatList(currentChatTab);
-        });
-    });
-    
-    // Department filter
-    departmentFilter.addEventListener('change', function() {
-        loadChatList(currentChatTab);
-    });
-    
-    // Refresh buttons
-    btnRefreshDashboard.addEventListener('click', loadDashboardData);
-    btnRefreshChats.addEventListener('click', () => loadChatList(currentChatTab));
-    
-    // Template actions
-    btnNewTemplate.addEventListener('click', showNewTemplateModal);
-    templateModalClose.addEventListener('click', hideTemplateModal);
-    templateModalCancel.addEventListener('click', hideTemplateModal);
-    templateModalSave.addEventListener('click', saveTemplate);
-    templateSearch.addEventListener('input', filterTemplates);
-    templateCategoryFilter.addEventListener('change', filterTemplates);
-    
-    // User management actions
-    btnAddUser.addEventListener('click', showNewUserModal);
-    userModalClose.addEventListener('click', hideUserModal);
-    userModalCancel.addEventListener('click', hideUserModal);
-    userModalSave.addEventListener('click', saveUser);
-    userSearch.addEventListener('input', filterUsers);
-    userRoleFilter.addEventListener('change', filterUsers);
-    
-    // Analytics filters and buttons
-    timeRangeFilter.addEventListener('change', loadAnalyticsData);
-    btnExportAnalytics.addEventListener('click', exportAnalytics);
-    btnPrintAnalytics.addEventListener('click', printAnalytics);
-    
-    // Settings
-    btnSaveSettings.addEventListener('click', saveSettings);
-}
-
-// Setup session timeout
-function setupSessionTimeout() {
-    // Get timeout duration from settings
-    const timeoutDuration = parseInt(settingSessionTimeout.value, 10) * 60 * 1000;
-    
-    // Clear any existing timeout
-    if (sessionTimeoutId) {
-        clearTimeout(sessionTimeoutId);
-    }
-    
-    // Set new timeout
-    sessionTimeoutId = setTimeout(() => {
-        // Log out the user
-        alert('Sesiunea dvs. a expirat din motive de securitate. Vă rugăm să vă autentificați din nou.');
-        auth.signOut().then(() => {
-            showLoginScreen();
-        });
-    }, timeoutDuration);
-}
-
-// Reset session timeout on user activity
-function resetSessionTimeout() {
-    if (sessionTimeoutId) {
-        clearTimeout(sessionTimeoutId);
-        setupSessionTimeout();
-    }
-}
-
 // =============================================
-// Dashboard Data Loading
+// Chat Management with Encryption Support
 // =============================================
 
-// Load dashboard data
-function loadDashboardData() {
-    showLoading();
-    
-    // Get current date for queries
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    // Create promises for dashboard data
-    const activeChatsPromise = db.collection('chats')
-        .where('status', '==', 'active')
-        .get();
-    
-    const waitingChatsPromise = db.collection('chats')
-        .where('status', '==', 'waiting')
-        .get();
-    
-    const todayResolvedPromise = db.collection('chats')
-        .where('status', '==', 'closed')
-        .where('closedAt', '>=', today)
-        .get();
-    
-    const yesterdayResolvedPromise = db.collection('chats')
-        .where('status', '==', 'closed')
-        .where('closedAt', '>=', yesterday)
-        .where('closedAt', '<', today)
-        .get();
-    
-    const responseTimePromise = db.collection('chatStats')
-        .doc('responseTime')
-        .get();
-    
-    // Execute all promises
-    Promise.all([
-        activeChatsPromise,
-        waitingChatsPromise,
-        todayResolvedPromise,
-        yesterdayResolvedPromise,
-        responseTimePromise
-    ])
-    .then(([activeResults, waitingResults, todayResolvedResults, yesterdayResolvedResults, responseTimeDoc]) => {
-        // Process results
-        const activeChatsCount = activeResults.size;
-        const waitingChatsCount = waitingResults.size;
-        const resolvedChatsCount = todayResolvedResults.size;
-        
-        // Calculate trends
-        const yesterdayResolvedCount = yesterdayResolvedResults.size;
-        const resolvedTrend = yesterdayResolvedCount > 0 ? 
-            Math.round((resolvedChatsCount - yesterdayResolvedCount) / yesterdayResolvedCount * 100) : 0;
-        
-        // Get average response time
-        let avgResponseTime = 0;
-        let avgResponseTimeTrend = 0;
-        
-        if (responseTimeDoc.exists) {
-            const responseTimeData = responseTimeDoc.data();
-            avgResponseTime = responseTimeData.currentAvg || 0;
-            const previousAvg = responseTimeData.previousAvg || 0;
-            
-            if (previousAvg > 0) {
-                avgResponseTimeTrend = Math.round((avgResponseTime - previousAvg) / previousAvg * 100);
-            }
-        }
-        
-        // For active and waiting trends, we don't have historical data in this implementation
-        // In a real application, you would store and retrieve historical data
-        const activeChatsTrend = Math.floor(Math.random() * 30) - 10;
-        const waitingChatsTrend = Math.floor(Math.random() * 50) - 20;
-        
-        // Update the stats
-        statActiveChats.textContent = activeChatsCount;
-        statWaitingChats.textContent = waitingChatsCount;
-        statResolvedChats.textContent = resolvedChatsCount;
-        statAvgResponseTime.textContent = `${avgResponseTime}m`;
-        
-        // Update trends
-        statActiveChatsTrend.textContent = `${Math.abs(activeChatsTrend)}%`;
-        statWaitingChatsTrend.textContent = `${Math.abs(waitingChatsTrend)}%`;
-        statResolvedChatsTrend.textContent = `${Math.abs(resolvedTrend)}%`;
-        statAvgResponseTimeTrend.textContent = `${Math.abs(avgResponseTimeTrend)}%`;
-        
-        // Update trend icons and classes
-        updateTrendIndicator(statActiveChatsTrend.parentElement, activeChatsTrend);
-        updateTrendIndicator(statWaitingChatsTrend.parentElement, waitingChatsTrend);
-        updateTrendIndicator(statResolvedChatsTrend.parentElement, resolvedTrend);
-        
-        // For avgResponseTime, down is good (less time), up is bad (more time)
-        updateTrendIndicator(statAvgResponseTimeTrend.parentElement, -avgResponseTimeTrend);
-        
-        // Load recent chats
-        loadRecentChats();
-        
-        hideLoading();
-    })
-    .catch(error => {
-        console.error('Error loading dashboard data:', error);
-        hideLoading();
-        alert('Eroare la încărcarea datelor. Vă rugăm să încercați din nou.');
-    });
-}
-
-// Update trend indicator
-function updateTrendIndicator(element, trendValue) {
-    element.classList.remove('stat-change-up', 'stat-change-down');
-    
-    const iconElement = element.querySelector('i');
-    
-    if (trendValue >= 0) {
-        element.classList.add('stat-change-up');
-        iconElement.textContent = 'arrow_upward';
-    } else {
-        element.classList.add('stat-change-down');
-        iconElement.textContent = 'arrow_downward';
-    }
-}
-
-// Load recent chats
-function loadRecentChats() {
-    // Clear existing chats
-    recentChats.innerHTML = '';
-    
-    // Add loading indicator
-    recentChats.innerHTML = `
-        <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
-            <i class="material-icons" style="font-size: 3rem; opacity: 0.3;">chat</i>
-            <p>Se încarcă conversațiile recente...</p>
-        </div>
-    `;
-    
-    // Query for recent chats
-    db.collection('chats')
-        .orderBy('updatedAt', 'desc')
-        .limit(5)
-        .get()
-        .then(snapshot => {
-            // Clear loading indicator
-            recentChats.innerHTML = '';
-            
-            if (snapshot.empty) {
-                recentChats.innerHTML = `
-                    <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
-                        <p>Nu există conversații recente.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Process chat data
-            snapshot.forEach(doc => {
-                const chat = doc.data();
-                const chatId = doc.id;
-                
-                const chatItem = document.createElement('div');
-                chatItem.className = 'chat-item';
-                chatItem.dataset.id = chatId;
-                
-                // Format timestamp
-                const timeString = formatTime(chat.updatedAt.toDate());
-                
-                // Set status class
-                if (chat.status === 'waiting') {
-                    chatItem.classList.add('unread');
-                }
-                
-                // Create chat content
-                chatItem.innerHTML = `
-                    <div class="chat-item-user">
-                        ${chat.userName}
-                        <span class="chat-time">${timeString}</span>
-                    </div>
-                    <div class="chat-item-message">${chat.lastMessage}</div>
-                    <div class="chat-item-info">
-                        <span class="chat-item-department">${getDepartmentName(chat.department)}</span>
-                        <span>${chat.agentName ? `Agent: ${chat.agentName}` : 'În așteptare'}</span>
-                    </div>
-                `;
-                
-                // Add click handler
-                chatItem.addEventListener('click', () => {
-                    // Navigate to chats view and load the selected chat
-                    showView('chats');
-                    loadChat(chatId);
-                });
-                
-                recentChats.appendChild(chatItem);
-            });
-        })
-        .catch(error => {
-            console.error('Error loading recent chats:', error);
-            recentChats.innerHTML = `
-                <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
-                    <p>Eroare la încărcarea conversațiilor. Încercați din nou.</p>
-                </div>
-            `;
-        });
-}
-
-// =============================================
-// Chats Management
-// =============================================
-
-// Load chats data
-function loadChatsData() {
-    // Load the current chat list tab
-    loadChatList(currentChatTab);
-}
-
-// Load chat list
-function loadChatList(tabName) {
-    // Clear existing chats
-    chatListContent.innerHTML = '';
-    
-    // Show loading indicator
-    chatListContent.innerHTML = `
-        <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
-            <div class="loading-spinner"></div>
-            <p>Se încarcă conversațiile...</p>
-        </div>
-    `;
-    
-    // Get department filter
-    const department = departmentFilter.value;
-    
-    // Create base query
-    let query = db.collection('chats')
-        .where('status', '==', tabName === 'closed' ? 'closed' : (tabName === 'active' ? 'active' : 'waiting'))
-        .orderBy('updatedAt', 'desc');
-    
-    // Apply department filter if not "all"
-    if (department !== 'all') {
-        query = query.where('department', '==', department);
-    }
-    
-    // Execute query
-    query.get()
-        .then(snapshot => {
-            // Clear loading indicator
-            chatListContent.innerHTML = '';
-            
-            if (snapshot.empty) {
-                chatListContent.innerHTML = `
-                    <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
-                        <p>Nu există conversații în această categorie.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Process chat data
-            snapshot.forEach(doc => {
-                const chat = doc.data();
-                const chatId = doc.id;
-                
-                const chatItem = document.createElement('div');
-                chatItem.className = 'chat-item';
-                chatItem.dataset.id = chatId;
-                
-                // Format timestamp
-                const timeString = formatTime(chat.updatedAt.toDate());
-                
-                // Set status classes
-                if (chat.unread) {
-                    chatItem.classList.add('unread');
-                }
-                
-                if (chat.priority === 'high') {
-                    chatItem.classList.add('high-priority');
-                }
-                
-                if (chatId === currentChatId) {
-                    chatItem.classList.add('active');
-                }
-                
-                // Create badges
-                const badges = `
-                    <div class="chat-item-badges">
-                        ${chat.unread ? '<span class="chat-badge chat-badge-new">1</span>' : ''}
-                        ${chat.priority === 'high' ? '<span class="chat-badge chat-badge-priority">!</span>' : ''}
-                    </div>
-                `;
-                
-                // Create chat content
-                chatItem.innerHTML = `
-                    <div class="chat-item-user">
-                        ${chat.userName}
-                        <span class="chat-time">${timeString}</span>
-                    </div>
-                    <div class="chat-item-message">${chat.lastMessage}</div>
-                    <div class="chat-item-info">
-                        <span class="chat-item-department">${getDepartmentName(chat.department)}</span>
-                        ${badges}
-                    </div>
-                `;
-                
-                // Add click handler
-                chatItem.addEventListener('click', () => {
-                    // Set as active
-                    document.querySelectorAll('.chat-item.active').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                    chatItem.classList.add('active');
-                    
-                    // Load the chat
-                    loadChat(chatId);
-                });
-                
-                chatListContent.appendChild(chatItem);
-            });
-        })
-        .catch(error => {
-            console.error('Error loading chat list:', error);
-            chatListContent.innerHTML = `
-                <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
-                    <p>Eroare la încărcarea conversațiilor. Încercați din nou.</p>
-                </div>
-            `;
-        });
-}
-
-// Load a specific chat
+// Load a specific chat - Updated with decryption capabilities
 function loadChat(chatId) {
     // Set current chat
     currentChatId = chatId;
@@ -3281,6 +2948,10 @@ function loadChat(chatId) {
                         messages: messages
                     };
                 });
+        })
+        .then(chatData => {
+            // Decrypt messages before displaying
+            return decryptChatMessages(chatData);
         })
         .then(chatData => {
             // Clone the chat interface template
@@ -3341,7 +3012,7 @@ function loadChat(chatId) {
                         if (message.content) {
                             messageContent += `
                                 <div class="message-content">
-                                    <div class="message-sender">${chatData.userName}</div>
+                                    <div class="message-sender">${chatData.userName}${message._wasEncrypted ? ' <small style="color: var(--secondary-color);">[Encrypted]</small>' : ''}</div>
                                     ${message.content}
                                 </div>
                             `;
@@ -3378,7 +3049,7 @@ function loadChat(chatId) {
                         if (message.content) {
                             messageContent += `
                                 <div class="message-content">
-                                    <div class="message-sender">${message.sender}</div>
+                                    <div class="message-sender">${message.sender}${message._wasEncrypted ? ' <small style="color: var(--secondary-color);">[Encrypted]</small>' : ''}</div>
                                     ${message.content}
                                 </div>
                             `;
@@ -3442,42 +3113,197 @@ function loadChat(chatId) {
         });
 }
 
-// Load quick responses
-function loadQuickResponses(container) {
-    // Clear existing responses
-    container.innerHTML = '';
+// Send chat message - Updated with encryption support
+function sendChatMessage(inputField, messagesContainer, chatId, chatData) {
+    const message = inputField.value.trim();
+    const fileInput = document.querySelector('#chatFileInput');
+    const file = fileInput.files[0];
     
-    // Query for quick responses
-    db.collection('templates')
-        .where('category', 'in', ['greeting', 'info', 'closing'])
-        .limit(5)
-        .get()
-        .then(snapshot => {
-            if (snapshot.empty) {
-                container.innerHTML = '<p>Nu există răspunsuri rapide disponibile.</p>';
-                return;
+    if (!message && !file) return;
+    
+    // Disable input while sending
+    inputField.disabled = true;
+    
+    // Get encryption key for this chat if available
+    let encryptionKey = encryptionKeyCache.get(chatId);
+    const encryptMessage = async (content) => {
+        // If we don't have the key in cache, try to get it
+        if (!encryptionKey) {
+            encryptionKey = await getChatEncryptionKey(chatId);
+            if (encryptionKey) {
+                encryptionKeyCache.set(chatId, encryptionKey);
             }
-            
-            snapshot.forEach(doc => {
-                const template = doc.data();
-                
-                const quickResponse = document.createElement('div');
-                quickResponse.className = 'quick-response';
-                quickResponse.textContent = template.content.length > 100 ? 
-                    template.content.substring(0, 100) + '...' : template.content;
-                
-                quickResponse.addEventListener('click', () => {
-                    const chatInput = document.querySelector('.chat-input');
-                    chatInput.value = template.content;
-                    chatInput.focus();
+        }
+        
+        // Only encrypt if we have a key
+        if (encryptionKey) {
+            try {
+                return {
+                    content: CryptoJS.AES.encrypt(content, encryptionKey).toString(),
+                    encrypted: true
+                };
+            } catch (error) {
+                console.error('Error encrypting message:', error);
+                // Return original content if encryption fails
+                return { content, encrypted: false };
+            }
+        }
+        
+        // Return original content if no key
+        return { content, encrypted: false };
+    };
+    
+    // Prepare message data
+    const prepareMessageData = async () => {
+        let messageData = {
+            type: 'agent',
+            sender: currentUserData.displayName,
+            senderId: currentUser.uid,
+            content: message,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            read: false
+        };
+        
+        // Encrypt the message content if encryption key is available
+        if (message) {
+            const encryptedResult = await encryptMessage(message);
+            messageData.content = encryptedResult.content;
+            if (encryptedResult.encrypted) {
+                messageData.encrypted = true;
+            }
+        }
+        
+        return messageData;
+    };
+    
+    // Process file if exists
+    let uploadTask = null;
+    
+    if (file) {
+        // Create storage reference
+        const storageRef = storage.ref();
+        const fileRef = storageRef.child(`chat_files/${chatId}/${Date.now()}_${file.name}`);
+        
+        // Upload file
+        uploadTask = fileRef.put(file);
+        
+        uploadTask.on('state_changed', 
+            (snapshot) => {
+                // Handle progress
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+            },
+            (error) => {
+                // Handle error
+                console.error('Error uploading file:', error);
+                alert('Eroare la încărcarea fișierului. Vă rugăm să încercați din nou.');
+                inputField.disabled = false;
+            },
+            async () => {
+                // Handle success
+                uploadTask.snapshot.ref.getDownloadURL().then(async (downloadURL) => {
+                    // Get message data with encryption
+                    const messageData = await prepareMessageData();
+                    
+                    // Add file info to message
+                    messageData.fileUrl = downloadURL;
+                    messageData.fileName = file.name;
+                    messageData.fileType = file.type;
+                    
+                    // Send message
+                    sendMessageToFirestore(messageData, inputField, messagesContainer, chatId, chatData);
                 });
-                
-                container.appendChild(quickResponse);
+            }
+        );
+    } else {
+        // Send message without file
+        prepareMessageData().then(messageData => {
+            sendMessageToFirestore(messageData, inputField, messagesContainer, chatId, chatData);
+        });
+    }
+}
+
+// Send message to Firestore
+function sendMessageToFirestore(messageData, inputField, messagesContainer, chatId, chatData) {
+    // Add message to collection
+    db.collection('chats').doc(chatId).collection('messages').add(messageData)
+        .then(docRef => {
+            // Update chat document
+            return db.collection('chats').doc(chatId).update({
+                lastMessage: messageData.encrypted ? "[Encrypted message]" : (messageData.content || 'Fișier atașat'),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                status: chatData.status === 'waiting' ? 'active' : chatData.status,
+                agentId: currentUser.uid,
+                agentName: currentUserData.displayName
             });
         })
+        .then(() => {
+            // Clear input
+            inputField.value = '';
+            inputField.disabled = false;
+            
+            // Clear file input
+            const fileInput = document.querySelector('#chatFileInput');
+            fileInput.value = '';
+            const filePreviewArea = document.querySelector('#filePreviewArea');
+            if (filePreviewArea) {
+                filePreviewArea.innerHTML = '';
+            }
+            
+            // Add message to UI - use the original unencrypted message for display
+            const displayContent = messageData.encrypted ? 
+                decryptMessage(messageData.content, encryptionKeyCache.get(chatId)) : 
+                messageData.content;
+            
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message message-sent';
+            
+            let messageContent = '';
+            
+            if (messageData.fileUrl) {
+                if (messageData.fileType && messageData.fileType.startsWith('image/')) {
+                    messageContent += `<img src="${messageData.fileUrl}" alt="Imagine atașată" style="max-width: 100%; border-radius: var(--border-radius-small); margin-bottom: 0.5rem;">`;
+                } else {
+                    messageContent += `
+                        <div style="background-color: rgba(0,0,0,0.05); display: inline-flex; padding: 0.5rem 1rem; border-radius: 1rem; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <i class="material-icons" style="color: var(--text-secondary); font-size: 1.5rem;">insert_drive_file</i>
+                            <div>
+                                <div style="font-weight: 500;">${messageData.fileName || 'Fișier'}</div>
+                                <a href="${messageData.fileUrl}" target="_blank" style="font-size: 0.8rem; color: var(--secondary-color);">Descarcă</a>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            
+            if (displayContent) {
+                messageContent += `
+                    <div class="message-content">
+                        <div class="message-sender">${messageData.sender}${messageData.encrypted ? ' <small style="color: var(--secondary-color);">[Encrypted]</small>' : ''}</div>
+                        ${displayContent}
+                    </div>
+                `;
+            }
+            
+            messageContent += `
+                <div class="message-meta">
+                    <span class="message-time">${formatTime(new Date())}</span>
+                    <span class="message-status">
+                        <i class="material-icons">done_all</i>
+                    </span>
+                </div>
+            `;
+            
+            messageElement.innerHTML = messageContent;
+            messagesContainer.appendChild(messageElement);
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        })
         .catch(error => {
-            console.error('Error loading quick responses:', error);
-            container.innerHTML = '<p>Eroare la încărcarea răspunsurilor rapide.</p>';
+            console.error('Error sending message:', error);
+            alert('Eroare la trimiterea mesajului. Vă rugăm să încercați din nou.');
+            inputField.disabled = false;
         });
 }
 
@@ -3544,6 +3370,7 @@ function setupChatSendFunctionality(template, chatId, chatData) {
         }
     });
 }
+
 
 // Send chat message
 function sendChatMessage(inputField, messagesContainer, chatId, chatData) {
