@@ -5,8 +5,7 @@ const firebaseConfig = {
   projectId: "pls-chat",
   messagingSenderId: "257223618239",
   appId: "1:257223618239:web:802d4c3320c4fceb07200a",
-  measurementId: "G-1N5R5HFQ01",
-  databaseURL: "https://pls-chat-default-rtdb.europe-west1.firebasedatabase.app"
+  measurementId: "G-1N5R5HFQ01"
 };
 
 // Initialize Firebase based on which page we're on
@@ -18,7 +17,6 @@ if (window.location.pathname.includes('/admin')) {
   window.auth = firebase.auth();
   window.db = firebase.firestore();
   window.functions = firebase.functions();
-  window.database = firebase.database();
   window.storage = firebase.storage();
   
   // Use LOCAL persistence for admin
@@ -32,8 +30,7 @@ else {
   window.auth = firebase.auth();
   window.db = firebase.firestore();
   window.functions = firebase.functions();
-  window.database = firebase.database();
-  // No storage initialization
+  // No realtime storage initialization
   
   // Use SESSION persistence for chat
   window.auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
