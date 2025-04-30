@@ -9,23 +9,32 @@ const firebaseConfig = {
   databaseURL: "https://pls-chat-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Export auth and db
-window.auth = firebase.auth();
-window.db = firebase.firestore();
-window.functions = firebase.functions();
-window.database = firebase.database();
-
-// Only set storage if it's available and we're on the admin page
-if (window.location.pathname.includes('/admin') && typeof firebase.storage === 'function') {
-  window.storage = firebase.storage();
-}
-
-// Set persistence based on page (to prevent admin logout issue)
+// Initialize Firebase based on which page we're on
 if (window.location.pathname.includes('/admin')) {
+  // We're on the admin page
+  firebase.initializeApp(firebaseConfig);
+  
+  // Set global references - with storage for admin
+  window.auth = firebase.auth();
+  window.db = firebase.firestore();
+  window.functions = firebase.functions();
+  window.database = firebase.database();
+  window.storage = firebase.storage();
+  
+  // Use LOCAL persistence for admin
   window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-} else {
+} 
+else {
+  // We're on the chat page - no storage
+  firebase.initializeApp(firebaseConfig);
+  
+  // Set global references - WITHOUT storage
+  window.auth = firebase.auth();
+  window.db = firebase.firestore();
+  window.functions = firebase.functions();
+  window.database = firebase.database();
+  // No storage initialization
+  
+  // Use SESSION persistence for chat
   window.auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
 }
