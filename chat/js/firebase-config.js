@@ -7,39 +7,38 @@ const firebaseConfig = {
   appId: "1:257223618239:web:802d4c3320c4fceb07200a",
   measurementId: "G-1N5R5HFQ01",
   databaseURL: "https://pls-chat-default-rtdb.europe-west1.firebasedatabase.app",
-  storageBucket: "pls-chat.appspot.com" // Added storage bucket based on project ID
+  storageBucket: "pls-chat.appspot.com"
 };
 
-// Initialize Firebase based on which page we're on
-if (window.location.pathname.includes('/admin')) {
-  // Initialize Admin Firebase app for admin.html
-  const adminFirebaseApp = firebase.initializeApp(firebaseConfig, "adminApp");
+// Initialize Firebase once
+try {
+  // Check if Firebase is already initialized to avoid errors
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
   
-  // Export auth and db for admin - using namespaced exports
-  window.auth = adminFirebaseApp.auth();
-  window.db = adminFirebaseApp.firestore();
-  window.storage = adminFirebaseApp.storage();
-  window.functions = adminFirebaseApp.functions();
-  window.database = adminFirebaseApp.database();
+  // Set global references to Firebase services
+  window.auth = firebase.auth();
+  window.db = firebase.firestore();
+  window.functions = firebase.functions();
+  window.database = firebase.database();
+  window.storage = firebase.storage ? firebase.storage() : null;
   
-  // Use LOCAL persistence (stays logged in across browser sessions)
-  window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-    .catch(error => {
-      console.error("Error setting persistence for admin:", error);
-    });
-} 
-else {
-  // Initialize Chat Firebase app for index.html
-  const chatFirebaseApp = firebase.initializeApp(firebaseConfig, "chatApp");
-  
-  // Export auth and db for chat
-  window.auth = chatFirebaseApp.auth();
-  window.db = chatFirebaseApp.firestore();
-  window.functions = chatFirebaseApp.functions();
-  window.database = chatFirebaseApp.database();
-  
-  // Use SESSION persistence (only for current tab)
-  window.auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
-    .catch(error => {
-      console.error("Error setting persistence for chat:", error);
-    });
+  // Set the appropriate persistence based on the page
+  if (window.location.pathname.includes('/admin')) {
+    // For admin page - use LOCAL persistence to keep admin logged in
+    window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .catch(error => {
+        console.error("Error setting persistence for admin:", error);
+      });
+  } else {
+    // For chat page - use SESSION persistence (only for current tab)
+    // This prevents the anonymous auth from affecting other tabs
+    window.auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .catch(error => {
+        console.error("Error setting persistence for chat:", error);
+      });
+  }
+} catch (error) {
+  console.error("Firebase initialization error:", error);
+}
