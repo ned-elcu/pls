@@ -2471,7 +2471,7 @@
             // Clear chat messages
             chatMessages.innerHTML = '';
             
-            // Reset all notices
+// Reset all notices
             errorNotice.style.display = 'none';
             successNotice.style.display = 'none';
             formErrorNotice.style.display = 'none';
@@ -2583,8 +2583,62 @@
         });
         
         // =============================================
+        // Automated Debugging Code
+        // =============================================
+        
+        // Add automated debugging that runs when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded - Automated debugging started');
+            
+            // Check if Firebase is properly initialized
+            console.log('Checking Firebase initialization...');
+            try {
+                console.log('Firebase available:', typeof firebase !== 'undefined');
+                if (typeof firebase !== 'undefined') {
+                    console.log('Auth available:', typeof firebase.auth === 'function');
+                    console.log('Firestore available:', typeof firebase.firestore === 'function');
+                    console.log('Storage available:', typeof firebase.storage === 'function');
+                    console.log('Functions available:', typeof firebase.functions === 'function');
+                }
+            } catch (e) {
+                console.error('Error checking Firebase:', e);
+            }
+            
+            // Check if emergency buttons exist and have event listeners
+            console.log('Checking emergency buttons...');
+            console.log('btnEmergency exists:', !!btnEmergency);
+            console.log('btnNonemergency exists:', !!btnNonemergency);
+            
+            // Ensure emergency buttons have click handlers
+            if (btnEmergency) {
+                console.log('Adding additional click handler to emergency button for reliability');
+                btnEmergency.addEventListener('click', function() {
+                    console.log('Emergency button clicked');
+                    handleEmergency();
+                });
+            }
+            
+            if (btnNonemergency) {
+                console.log('Adding additional click handler to non-emergency button for reliability');
+                btnNonemergency.addEventListener('click', function() {
+                    console.log('Non-emergency button clicked');
+                    showDepartmentSelection();
+                });
+            }
+            
+            // Test click events on buttons to verify they're properly configured
+            console.log('Emergency button onclick attribute:', btnEmergency ? btnEmergency.onclick : 'button not found');
+            console.log('Non-emergency button onclick attribute:', btnNonemergency ? btnNonemergency.onclick : 'button not found');
+            
+            console.log('Automated debugging completed');
+        });
+        
+        // =============================================
         // Initialization Call
         // =============================================
         
         // Initialize the chat
         initializeChat();
+    </script>
+</body>
+</html>
