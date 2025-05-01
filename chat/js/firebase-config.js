@@ -18,7 +18,7 @@ if (window.location.pathname.includes('/admin')) {
   window.db = firebase.firestore();
   window.functions = firebase.functions();
   window.storage = firebase.storage();
-  window.rtdb = firebase.database(); // Added realtime database reference
+  window.rtdb = firebase.database(); // Make sure database module is imported
   
   // Use LOCAL persistence for admin
   window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
@@ -31,7 +31,7 @@ else {
   window.auth = firebase.auth();
   window.db = firebase.firestore();
   window.functions = firebase.functions();
-  window.rtdb = firebase.database(); // Added realtime database reference
+  window.rtdb = firebase.database(); // Make sure database module is imported
   // No realtime storage initialization
   
   // Use SESSION persistence for chat
