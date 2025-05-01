@@ -2313,118 +2313,127 @@
             });
         }
         
-        // ===========================
-        // Chat functions
-        // ===========================
-        
-        // Select a chat
-        function selectChat(chatId) {
-            // If already selected, do nothing
-            if (currentChatId === chatId) {
-                return;
-            }
-            
-            // Clean up previous chat listeners
-            cleanupChatListeners();
-            
-            // Update current chat ID
-            currentChatId = chatId;
-            
-            // Update UI - highlight selected chat
-            const chatItems = document.querySelectorAll('.chat-item');
-            chatItems.forEach(item => {
-                if (item.dataset.id === chatId) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-            
-            // Show chat interface, hide empty state
-            emptyState.style.display = 'none';
-            chatInterface.style.display = 'flex';
-            
-            // Clear messages
-            chatMessages.innerHTML = '';
-            
-            // Get chat data
-            firebase.firestore().collection('chats').doc(chatId).get()
-                .then(doc => {
-                    if (doc.exists) {
-                        currentChat = {
-                            id: doc.id,
-                            ...doc.data()
-                        };
-                        
-                        // Update chat header
-                        updateChatHeader(currentChat);
-                        
-                        // Update user info panel
-                        updateUserInfoPanel(currentChat);
-                        
-                        // Load chat messages
-                        loadChatMessages(chatId);
-                        
-                        // Set up typing indicator
-                        setupTypingIndicator(chatId);
-                        
-                        // Update the UI based on chat status
-                        updateUIForChatStatus(currentChat.status);
-                        
-                        // Mark as read
-                        markChatAsRead(chatId);
-                    } else {
-                        console.error('Chat document does not exist');
-                        showToast('error', 'Eroare', 'Conversația nu a fost găsită.');
-                        
-                        // Reset
-                        currentChatId = null;
-                        currentChat = null;
-                        
-                        // Show empty state
-                        emptyState.style.display = 'flex';
-                        chatInterface.style.display = 'none';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error getting chat document:', error);
-                    showToast('error', 'Eroare', 'Nu s-a putut încărca conversația.');
-                });
+// ===========================
+// Chat functions
+// ===========================
+
+// Select a chat
+function selectChat(chatId) {
+    // If already selected, do nothing
+    if (currentChatId === chatId) {
+        return;
+    }
+    
+    // Clean up previous chat listeners
+    cleanupChatListeners();
+    
+    // Update current chat ID
+    currentChatId = chatId;
+    
+    // Update UI - highlight selected chat
+    const chatItems = document.querySelectorAll('.chat-item');
+    chatItems.forEach(item => {
+        if (item.dataset.id === chatId) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
         }
-        
-        // Update chat header
-        function updateChatHeader(chat) {
-            // Set user name
-            chatUserName.textContent = chat.userName || 'Anonim';
-            
-            // Set user initials
-            chatUserInitials.textContent = getInitials(chat.userName || 'Anonim');
-            
-            // Set user status
-            switch (chat.status) {
-                case 'waiting':
-                    chatUserStatus.textContent = 'În așteptare';
-                    chatUserStatusIndicator.className = 'status-indicator status-waiting';
-                    break;
-                case 'active':
-                    chatUserStatus.textContent = 'Activ';
-                    chatUserStatusIndicator.className = 'status-indicator status-active';
-                    break;
-                case 'closed':
-                    chatUserStatus.textContent = 'Închis';
-                    chatUserStatusIndicator.className = 'status-indicator status-closed';
-                    break;
+    });
+    
+    // Show chat interface, hide empty state
+    emptyState.style.display = 'none';
+    chatInterface.style.display = 'flex';
+    
+    // Clear messages
+    chatMessages.innerHTML = '';
+    
+    // Get chat data
+    firebase.firestore().collection('chats').doc(chatId).get()
+        .then(doc => {
+            if (doc.exists) {
+                currentChat = {
+                    id: doc.id,
+                    ...doc.data()
+                };
+                
+                // Fetch the encryption key - THIS IS THE FIX
+                return firebase.firestore().collection('chatKeys').doc(chatId).get()
+                    .then(keyDoc => {
+                        if (keyDoc.exists) {
+                            currentChat.key = keyDoc.data().key;
+                        }
+                        return currentChat;
+                    });
+            } else {
+                throw new Error('Chat document does not exist');
             }
+        })
+        .then(chat => {
+            // Update chat header
+            updateChatHeader(chat);
             
-            // Set chat subject
-            chatSubject.textContent = chat.subject || 'Fără subiect';
+            // Update user info panel
+            updateUserInfoPanel(chat);
             
-            // Set chat department
-            chatDepartment.textContent = getDepartmentName(chat.department);
+            // Load chat messages
+            loadChatMessages(chatId);
             
-            // Set chat creation time
-            chatCreatedAt.textContent = formatDateTime(chat.createdAt);
-        }
+            // Set up typing indicator
+            setupTypingIndicator(chatId);
+            
+            // Update the UI based on chat status
+            updateUIForChatStatus(chat.status);
+            
+            // Mark as read
+            markChatAsRead(chatId);
+        })
+        .catch(error => {
+            console.error('Error getting chat document:', error);
+            showToast('error', 'Eroare', 'Nu s-a putut încărca conversația.');
+            
+            // Reset
+            currentChatId = null;
+            currentChat = null;
+            
+            // Show empty state
+            emptyState.style.display = 'flex';
+            chatInterface.style.display = 'none';
+        });
+}
+
+// Update chat header
+function updateChatHeader(chat) {
+    // Set user name
+    chatUserName.textContent = chat.userName || 'Anonim';
+    
+    // Set user initials
+    chatUserInitials.textContent = getInitials(chat.userName || 'Anonim');
+    
+    // Set user status
+    switch (chat.status) {
+        case 'waiting':
+            chatUserStatus.textContent = 'În așteptare';
+            chatUserStatusIndicator.className = 'status-indicator status-waiting';
+            break;
+        case 'active':
+            chatUserStatus.textContent = 'Activ';
+            chatUserStatusIndicator.className = 'status-indicator status-active';
+            break;
+        case 'closed':
+            chatUserStatus.textContent = 'Închis';
+            chatUserStatusIndicator.className = 'status-indicator status-closed';
+            break;
+    }
+    
+    // Set chat subject
+    chatSubject.textContent = chat.subject || 'Fără subiect';
+    
+    // Set chat department
+    chatDepartment.textContent = getDepartmentName(chat.department);
+    
+    // Set chat creation time
+    chatCreatedAt.textContent = formatDateTime(chat.createdAt);
+}
         
         // Update user info panel
         function updateUserInfoPanel(chat) {
