@@ -2866,7 +2866,250 @@ function showDashboard() {
     // Start session timeout
     setupSessionTimeout();
 }
-
+// Load dashboard data
+function loadDashboardData() {
+    showLoading();
+    
+    // Get current date
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    // Convert to Firestore timestamps
+    const todayStart = firebase.firestore.Timestamp.fromDate(
+        new Date(now.setHours(0, 0, 0, 0))
+    );
+    const yesterdayStart = firebase.firestore.Timestamp.fromDate(
+        new Date(yesterday.setHours(0, 0, 0, 0))
+    );
+    
+    // Get statistics for active chats
+    db.collection('chats')
+        .where('status', '==', 'active')
+        .get()
+        .then(activeSnapshot => {
+            // Update active chats counter
+            statActiveChats.textContent = activeSnapshot.size;
+            
+            // Get yesterday's count for comparison
+            return db.collection('chats')
+                .where('status', '==', 'active')
+                .where('createdAt', '>=', yesterdayStart)
+                .where('createdAt', '<', todayStart)
+                .get()
+                .then(yesterdayActiveSnapshot => {
+                    // Calculate trend
+                    const yesterdayCount = yesterdayActiveSnapshot.size;
+                    const change = yesterdayCount > 0 ? 
+                        Math.round((activeSnapshot.size - yesterdayCount) / yesterdayCount * 100) : 0;
+                    
+                    statActiveChatsTrend.textContent = `${change}%`;
+                    
+                    // Update trend arrow
+                    const trendArrow = statActiveChatsTrend.previousElementSibling;
+                    if (change >= 0) {
+                        trendArrow.textContent = 'arrow_upward';
+                        trendArrow.parentElement.className = 'stat-change stat-change-up';
+                    } else {
+                        trendArrow.textContent = 'arrow_downward';
+                        trendArrow.parentElement.className = 'stat-change stat-change-down';
+                    }
+                });
+        })
+        .then(() => {
+            // Get statistics for waiting chats
+            return db.collection('chats')
+                .where('status', '==', 'waiting')
+                .get()
+                .then(waitingSnapshot => {
+                    // Update waiting chats counter
+                    statWaitingChats.textContent = waitingSnapshot.size;
+                    
+                    // Get yesterday's count for comparison
+                    return db.collection('chats')
+                        .where('status', '==', 'waiting')
+                        .where('createdAt', '>=', yesterdayStart)
+                        .where('createdAt', '<', todayStart)
+                        .get()
+                        .then(yesterdayWaitingSnapshot => {
+                            // Calculate trend
+                            const yesterdayCount = yesterdayWaitingSnapshot.size;
+                            const change = yesterdayCount > 0 ? 
+                                Math.round((waitingSnapshot.size - yesterdayCount) / yesterdayCount * 100) : 0;
+                            
+                            statWaitingChatsTrend.textContent = `${change}%`;
+                            
+                            // Update trend arrow
+                            const trendArrow = statWaitingChatsTrend.previousElementSibling;
+                            if (change >= 0) {
+                                trendArrow.textContent = 'arrow_upward';
+                                trendArrow.parentElement.className = 'stat-change stat-change-up';
+                            } else {
+                                trendArrow.textContent = 'arrow_downward';
+                                trendArrow.parentElement.className = 'stat-change stat-change-down';
+                            }
+                        });
+                });
+        })
+        .then(() => {
+            // Get statistics for resolved chats
+            return db.collection('chats')
+                .where('status', '==', 'closed')
+                .where('closedAt', '>=', todayStart)
+                .get()
+                .then(resolvedSnapshot => {
+                    // Update resolved chats counter
+                    statResolvedChats.textContent = resolvedSnapshot.size;
+                    
+                    // Get yesterday's count for comparison
+                    return db.collection('chats')
+                        .where('status', '==', 'closed')
+                        .where('closedAt', '>=', yesterdayStart)
+                        .where('closedAt', '<', todayStart)
+                        .get()
+                        .then(yesterdayResolvedSnapshot => {
+                            // Calculate trend
+                            const yesterdayCount = yesterdayResolvedSnapshot.size;
+                            const change = yesterdayCount > 0 ? 
+                                Math.round((resolvedSnapshot.size - yesterdayCount) / yesterdayCount * 100) : 0;
+                            
+                            statResolvedChatsTrend.textContent = `${change}%`;
+                            
+                            // Update trend arrow
+                            const trendArrow = statResolvedChatsTrend.previousElementSibling;
+                            if (change >= 0) {
+                                trendArrow.textContent = 'arrow_upward';
+                                trendArrow.parentElement.className = 'stat-change stat-change-up';
+                            } else {
+                                trendArrow.textContent = 'arrow_downward';
+                                trendArrow.parentElement.className = 'stat-change stat-change-down';
+                            }
+                        });
+                });
+        })
+        .then(() => {
+            // Get average response time stats
+            return db.collection('responseTimeStats')
+                .orderBy('date', 'desc')
+                .limit(1)
+                .get()
+                .then(snapshot => {
+                    if (!snapshot.empty) {
+                        const statDoc = snapshot.docs[0].data();
+                        const avgTime = statDoc.avgResponseTime || 0;
+                        
+                        // Format time (minutes)
+                        statAvgResponseTime.textContent = `${Math.round(avgTime)}m`;
+                        
+                        // Get previous day's stat for comparison
+                        return db.collection('responseTimeStats')
+                            .orderBy('date', 'desc')
+                            .limit(2)
+                            .get()
+                            .then(compSnapshot => {
+                                if (compSnapshot.size > 1) {
+                                    const prevStatDoc = compSnapshot.docs[1].data();
+                                    const prevAvgTime = prevStatDoc.avgResponseTime || 0;
+                                    
+                                    // Calculate trend (for response time, down is better)
+                                    const change = prevAvgTime > 0 ? 
+                                        Math.round((avgTime - prevAvgTime) / prevAvgTime * 100) : 0;
+                                    
+                                    statAvgResponseTimeTrend.textContent = `${Math.abs(change)}%`;
+                                    
+                                    // Update trend arrow (note: for response time, down is good)
+                                    const trendArrow = statAvgResponseTimeTrend.previousElementSibling;
+                                    if (change <= 0) {
+                                        trendArrow.textContent = 'arrow_downward';
+                                        trendArrow.parentElement.className = 'stat-change stat-change-down';
+                                    } else {
+                                        trendArrow.textContent = 'arrow_upward';
+                                        trendArrow.parentElement.className = 'stat-change stat-change-up';
+                                    }
+                                }
+                            });
+                    }
+                });
+        })
+        .then(() => {
+            // Load recent chats
+            return db.collection('chats')
+                .orderBy('updatedAt', 'desc')
+                .limit(5)
+                .get()
+                .then(snapshot => {
+                    // Clear container
+                    recentChats.innerHTML = '';
+                    
+                    if (snapshot.empty) {
+                        recentChats.innerHTML = `
+                            <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">
+                                <p>Nu există conversații recente.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    // Add chats to list
+                    snapshot.forEach(doc => {
+                        const chat = doc.data();
+                        const chatId = doc.id;
+                        
+                        const chatItem = document.createElement('div');
+                        chatItem.className = 'chat-item';
+                        if (chat.unread) {
+                            chatItem.classList.add('unread');
+                        }
+                        if (chat.priority === 'high') {
+                            chatItem.classList.add('high-priority');
+                        }
+                        
+                        chatItem.innerHTML = `
+                            <div class="chat-item-user">
+                                ${chat.userName}
+                                <span class="chat-time">${formatTime(chat.updatedAt.toDate())}</span>
+                            </div>
+                            <div class="chat-item-message">${chat.lastMessage || 'Conversație nouă'}</div>
+                            <div class="chat-item-info">
+                                <span class="chat-item-department">${getDepartmentName(chat.department)}</span>
+                                <div class="chat-item-badges">
+                                    ${chat.unread ? '<span class="chat-badge chat-badge-new">N</span>' : ''}
+                                    ${chat.priority === 'high' ? '<span class="chat-badge chat-badge-priority">!</span>' : ''}
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Add click event to open chat
+                        chatItem.addEventListener('click', () => {
+                            // Change view to chats
+                            showView('chats');
+                            
+                            // Set active tab based on chat status
+                            chatListTabs.forEach(tab => {
+                                tab.classList.remove('active');
+                                if (tab.dataset.tab === chat.status) {
+                                    tab.classList.add('active');
+                                }
+                            });
+                            
+                            // Load chat list for this status
+                            loadChatList(chat.status);
+                            
+                            // Load the chat
+                            loadChat(chatId);
+                        });
+                        
+                        recentChats.appendChild(chatItem);
+                    });
+                });
+        })
+        .catch(error => {
+            console.error('Error loading dashboard data:', error);
+        })
+        .finally(() => {
+            hideLoading();
+        });
+}
 // Show a specific view
 function showView(viewName) {
     // Hide all views
