@@ -7,6 +7,71 @@
  */
 
 // =============================================
+// General Helper Functions
+// =============================================
+
+// Show a specific view
+function showView(viewName) {
+    // Hide all views
+    const views = document.querySelectorAll('.dashboard-view');
+    views.forEach(view => {
+        view.style.display = 'none';
+    });
+    
+    // Show selected view
+    document.getElementById(`${viewName}View`).style.display = 'block';
+    
+    // Update navigation
+    navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.id === `nav${viewName.charAt(0).toUpperCase() + viewName.slice(1)}`) {
+            item.classList.add('active');
+        }
+    });
+    
+    // Load view-specific data
+    if (viewName === 'dashboard') {
+        loadDashboardData();
+    } else if (viewName === 'chats') {
+        loadChatsData();
+    } else if (viewName === 'analytics') {
+        loadAnalyticsData();
+    } else if (viewName === 'templates') {
+        loadTemplatesData();
+    } else if (viewName === 'settings') {
+        loadSettingsData();
+    } else if (viewName === 'users') {
+        loadUsersData();
+    }
+    
+    // Update current view
+    currentView = viewName;
+}
+
+// Load chats data
+function loadChatsData() {
+    // Set the current tab as active
+    chatListTabs.forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.tab === currentChatTab) {
+            tab.classList.add('active');
+        }
+    });
+    
+    // Load the chat list for the current tab
+    loadChatList(currentChatTab);
+    
+    // Clear the chat interface
+    chatInterface.innerHTML = `
+        <div class="chat-interface-placeholder">
+            <i class="material-icons">chat</i>
+            <h3>Selectați o conversație pentru a începe</h3>
+            <p>Alegeți o conversație din lista din stânga pentru a răspunde cetățenilor.</p>
+        </div>
+    `;
+}
+
+// =============================================
 // Template Management Functions
 // =============================================
 
@@ -1273,6 +1338,12 @@ window.loadSettingsData = loadSettingsData;
 window.saveSettings = saveSettings;
 window.setupSessionTimeout = setupSessionTimeout;
 window.resetSessionTimeout = resetSessionTimeout;
+
+window.showView = showView;
+window.loadChatsData = loadChatsData;
+
+// For debugging
+console.log('Admin functions loaded successfully!');
 
 // For debugging
 console.log('Admin functions loaded successfully!');
