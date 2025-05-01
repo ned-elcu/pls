@@ -1128,6 +1128,56 @@ function printAnalytics() {
 }
 
 // =============================================
+// Session Management Functions
+// =============================================
+
+// Set up session timeout
+function setupSessionTimeout() {
+    // Clear existing timeout
+    if (sessionTimeoutId) {
+        clearTimeout(sessionTimeoutId);
+    }
+    
+    // Get timeout duration from settings (in minutes), default to 30 minutes
+    const timeoutMinutes = currentUserData && 
+                        currentUserData.settings && 
+                        currentUserData.settings.sessionTimeout ? 
+                        parseInt(currentUserData.settings.sessionTimeout) : 30;
+    
+    // Convert to milliseconds
+    const timeoutMs = timeoutMinutes * 60 * 1000;
+    
+    // Set new timeout
+    sessionTimeoutId = setTimeout(() => {
+        // Timeout reached, log user out
+        console.log('Session timeout reached. Logging out...');
+        auth.signOut()
+            .then(() => {
+                // Clear session data
+                currentUser = null;
+                currentUserData = null;
+                
+                // Show login screen
+                showLoginScreen();
+                
+                // Show message
+                alert('Ați fost deconectat automat din cauza inactivității. Vă rugăm să vă conectați din nou.');
+            })
+            .catch(error => {
+                console.error('Error signing out:', error);
+            });
+    }, timeoutMs);
+}
+
+// Reset session timeout on user activity
+function resetSessionTimeout() {
+    if (sessionTimeoutId) {
+        clearTimeout(sessionTimeoutId);
+        setupSessionTimeout();
+    }
+}
+
+// =============================================
 // Settings Functions
 // =============================================
 
@@ -1221,6 +1271,8 @@ window.createOrUpdateCharts = createOrUpdateCharts;
 
 window.loadSettingsData = loadSettingsData;
 window.saveSettings = saveSettings;
+window.setupSessionTimeout = setupSessionTimeout;
+window.resetSessionTimeout = resetSessionTimeout;
 
 // For debugging
 console.log('Admin functions loaded successfully!');
