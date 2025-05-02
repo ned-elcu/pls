@@ -1,8 +1,8 @@
 /**
- * chatStateVisualizer.js - Fixed Version
+ * Enhanced chatStateVisualizer.js
  * 
- * Enhanced visual design system for chat states in the Poliția Locală Slobozia admin panel
- * Modified to work correctly with the dynamic DOM structure
+ * Visual design system for chat states in the Poliția Locală Slobozia admin panel
+ * Modified to replace user initials with Material Icons representing chat status
  */
 
 (function() {
@@ -25,6 +25,13 @@
         secondary: 'rgba(232, 245, 233, 0.7)',  // Soft green background
         accent: '#388E3C',        // Darker green for accents
       }
+    },
+    
+    // Status icons - Material Icons
+    icons: {
+      waiting: 'schedule',        // Hourglass/clock icon for waiting
+      active: 'forum',            // Chat icon for active conversations
+      closed: 'check_circle'      // Checkmark for completed chats
     },
     
     // Animation Timings
@@ -84,14 +91,22 @@
       /* Status indicators */
       .chat-list .chat-item[data-status="waiting"] .chat-avatar {
         border: 2px solid ${DESIGN.colors.waiting.primary} !important;
+        color: ${DESIGN.colors.waiting.primary} !important;
       }
       
       .chat-list .chat-item[data-status="active"] .chat-avatar {
         border: 2px solid ${DESIGN.colors.active.primary} !important;
+        color: ${DESIGN.colors.active.primary} !important;
       }
       
       .chat-list .chat-item[data-status="closed"] .chat-avatar {
         border: 2px solid ${DESIGN.colors.closed.primary} !important;
+        color: ${DESIGN.colors.closed.primary} !important;
+      }
+      
+      /* Chat avatar icon styling */
+      .chat-list .chat-avatar .material-icons {
+        font-size: 24px !important;
       }
       
       /* Enhanced filter buttons */
@@ -172,6 +187,53 @@
     console.log('Chat visualizer styles injected successfully');
   }
   
+  // Replace initials with status icons in chat avatars
+  function replaceInitialsWithIcons() {
+    // Get all chat avatars
+    const chatAvatars = document.querySelectorAll('.chat-list .chat-item .chat-avatar');
+    
+    chatAvatars.forEach(avatar => {
+      try {
+        // Get parent chat item to determine status
+        const chatItem = avatar.closest('.chat-item');
+        if (!chatItem) return;
+        
+        // Determine status
+        let status = chatItem.getAttribute('data-status');
+        if (!status) {
+          // Try to determine status from classes
+          if (avatar.classList.contains('status-waiting')) {
+            status = 'waiting';
+          } else if (avatar.classList.contains('status-active')) {
+            status = 'active';
+          } else if (avatar.classList.contains('status-closed')) {
+            status = 'closed';
+          } else {
+            // Default to active if can't determine
+            status = 'active';
+          }
+          chatItem.setAttribute('data-status', status);
+        }
+        
+        // Skip if already has an icon
+        if (avatar.querySelector('.material-icons')) return;
+        
+        // Get icon based on status
+        const iconName = DESIGN.icons[status] || DESIGN.icons.active;
+        
+        // Save original content (initials) as data attribute
+        if (!avatar.hasAttribute('data-initials')) {
+          avatar.setAttribute('data-initials', avatar.textContent);
+        }
+        
+        // Replace content with icon
+        avatar.innerHTML = `<i class="material-icons">${iconName}</i>`;
+      } catch (error) {
+        console.error('Error replacing initials with icons:', error);
+      }
+    });
+  }
+  
   // Apply status to chat items based on their actual status class
   function applyStatusToChatItems() {
     // Get all chat items
@@ -212,6 +274,9 @@
     });
     
     console.log(`Applied status styling to ${processedCount} chat items`);
+    
+    // Replace initials with icons
+    replaceInitialsWithIcons();
   }
   
   // Helper function to get current filter
@@ -278,32 +343,43 @@
     }
   }
   
+  // Override the updateChatList function to inject our icons
+  function overrideUpdateChatList() {
+    // Wait for the original function to be available
+    if (typeof window.updateChatList === 'function') {
+      const originalUpdateChatList = window.updateChatList;
+      window.updateChatList = function() {
+        // Call original function
+        originalUpdateChatList.apply(this, arguments);
+        
+        // Then apply our styling and icon replacement
+        setTimeout(() => {
+          applyStatusToChatItems();
+          replaceInitialsWithIcons();
+        }, 50);
+      };
+      console.log('Hooked into updateChatList function');
+    } else {
+      // If not available yet, try again later
+      setTimeout(overrideUpdateChatList, 500);
+    }
+  }
+  
   // Add listeners for Firebase data changes
   function listenForDataChanges() {
     // Watch for the userChats array being updated
     // We need to use a trick since we don't have direct access to the internal variables
-    // This uses the defineProperty method to detect when the array is updated
     
     // First wait for the app to be initialized
     const checkForApp = setInterval(() => {
       if (document.getElementById('appScreen').style.display !== 'none') {
         clearInterval(checkForApp);
         
-        // App is loaded, now hook into the updateChatList function
-        if (typeof window.updateChatList === 'function') {
-          const originalUpdateChatList = window.updateChatList;
-          window.updateChatList = function() {
-            // Call original function
-            originalUpdateChatList.apply(this, arguments);
-            
-            // Then apply our styling
-            setTimeout(applyStatusToChatItems, 50);
-          };
-          console.log('Hooked into updateChatList function');
-        } else {
-          // If updateChatList isn't accessible, use a mutation observer
-          setupMutationObserver();
-        }
+        // Try to override updateChatList
+        overrideUpdateChatList();
+        
+        // Also set up mutation observer as backup
+        setupMutationObserver();
       }
     }, 500);
   }
@@ -317,6 +393,7 @@
         // Let the original handler process the click first
         setTimeout(() => {
           applyStatusToChatItems();
+          replaceInitialsWithIcons();
         }, 50);
       }
     });
@@ -336,21 +413,26 @@
     // Add global refresh function
     window.refreshChatStyles = function() {
       applyStatusToChatItems();
-      console.log('Chat styles refreshed');
+      replaceInitialsWithIcons();
+      console.log('Chat styles refreshed with status icons');
     };
     
     // Initial application (might not work until data loads)
-    setTimeout(applyStatusToChatItems, 1000);
+    setTimeout(() => {
+      applyStatusToChatItems();
+      replaceInitialsWithIcons();
+    }, 1000);
     
     // Also check periodically during first 10 seconds
     let checkCount = 0;
     const periodicCheck = setInterval(() => {
       applyStatusToChatItems();
+      replaceInitialsWithIcons();
       checkCount++;
       if (checkCount >= 10) clearInterval(periodicCheck);
     }, 1000);
     
-    console.log('Chat state visualizer initialized');
+    console.log('Enhanced chat state visualizer initialized with status icons');
   }
   
   // Check if already initialized
@@ -367,6 +449,9 @@
   
   // Also run on window load
   window.addEventListener('load', function() {
-    setTimeout(applyStatusToChatItems, 500);
+    setTimeout(() => {
+      applyStatusToChatItems();
+      replaceInitialsWithIcons();
+    }, 500);
   });
 })();
