@@ -75,8 +75,8 @@
         html, body {
             height: 100%;
             width: 100%;
-            overflow: hidden;
-            position: fixed;
+            overflow: auto; /* Changed from hidden to auto */
+            position: relative; /* Changed from fixed to relative */
             -webkit-overflow-scrolling: touch;
         }
         
@@ -157,7 +157,7 @@
             justify-content: space-between;
             box-shadow: var(--shadow-medium);
             z-index: 10;
-            height: 80px;
+            height: 70px; /* Reduced from 80px for mobile */
             flex-shrink: 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -168,14 +168,14 @@
         }
         
         .header-logo {
-            width: 48px;
-            height: 48px;
+            width: 40px; /* Reduced from 48px for mobile */
+            height: 40px; /* Reduced from 48px for mobile */
             background-color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: var(--spacing-md);
+            margin-right: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
             flex-shrink: 0;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             transition: var(--transition-fast);
@@ -186,18 +186,18 @@
         }
         
         .header-logo img {
-            width: 36px;
-            height: 36px;
+            width: 32px; /* Reduced from 36px for mobile */
+            height: 32px; /* Reduced from 36px for mobile */
         }
         
         .header-title {
-            font-size: var(--font-size-xl);
+            font-size: var(--font-size-large); /* Reduced from var(--font-size-xl) for mobile */
             font-weight: 600;
             letter-spacing: 0.3px;
         }
         
         .header-status {
-            font-size: calc(var(--font-size-base) - 1px);
+            font-size: calc(var(--font-size-base) - 2px); /* Reduced for mobile */
             opacity: 0.9;
             margin-top: -2px;
             display: flex;
@@ -239,14 +239,12 @@
         }
         
         .header-button-with-text {
-            min-width: 42px;
-            height: 42px;
+            min-width: 36px; /* Reduced from 42px for mobile */
+            height: 36px; /* Reduced from 42px for mobile */
         }
         
         .header-button-with-text span {
-            margin-left: 6px;
-            font-size: 14px;
-            font-weight: 500;
+            display: none; /* Hide text on mobile */
         }
         
         .header-actions button:hover {
@@ -270,7 +268,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: var(--spacing-xl);
+            padding: var(--spacing-lg) var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
             height: 100%;
             background: linear-gradient(to bottom, rgba(26, 47, 95, 0.92) 0%, rgba(26, 47, 95, 0.85) 100%), url('https://images4.imagebam.com/c0/05/ef/ME11M3FT_o.png');
             background-size: cover;
@@ -279,39 +277,39 @@
         }
         
         .welcome-title {
-            font-size: 32px;
+            font-size: 26px; /* Reduced from 32px for mobile */
             font-weight: 700;
-            margin-bottom: var(--spacing-lg);
+            margin-bottom: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
             letter-spacing: 0.5px;
         }
         
         .welcome-description {
-            font-size: var(--font-size-large);
-            margin-bottom: var(--spacing-xl);
+            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
+            margin-bottom: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
             max-width: 600px;
             line-height: 1.7;
         }
         
         .welcome-logo {
-            width: 100px;
-            height: 100px;
+            width: 80px; /* Reduced from 100px for mobile */
+            height: 80px; /* Reduced from 100px for mobile */
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
             box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
         }
         
         .welcome-logo img {
-            width: 76px;
-            height: 76px;
+            width: 60px; /* Reduced from 76px for mobile */
+            height: 60px; /* Reduced from 76px for mobile */
         }
         
         /* Emergency Check */
         .emergency-check {
-            padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
+            padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg); /* Reduced padding for mobile */
             background-color: white;
             height: 100%;
             display: flex;
@@ -323,9 +321,9 @@
         }
         
         .emergency-title {
-            font-size: var(--font-size-xxl);
+            font-size: var(--font-size-xl); /* Reduced from var(--font-size-xxl) for mobile */
             color: var(--danger-color);
-            margin-bottom: var(--spacing-lg);
+            margin-bottom: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
             display: flex;
             align-items: center;
         }
@@ -335,8 +333,8 @@
         }
         
         .emergency-text {
-            font-size: var(--font-size-large);
-            margin-bottom: var(--spacing-xl);
+            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
+            margin-bottom: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
             color: var(--text-primary);
             line-height: 1.7;
         }
@@ -349,7 +347,7 @@
         
         /* Department Selection */
         .department-select {
-            padding: var(--spacing-lg) var(--spacing-xl);
+            padding: var(--spacing-md) var(--spacing-lg); /* Reduced from var(--spacing-lg) var(--spacing-xl) for mobile */
             height: 100%;
             overflow-y: auto;
             display: none;
@@ -361,8 +359,8 @@
         }
         
         .department-title {
-            font-size: var(--font-size-xl);
-            margin-bottom: var(--spacing-xl);
+            font-size: var(--font-size-large); /* Reduced from var(--font-size-xl) for mobile */
+            margin-bottom: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
             text-align: center;
             color: var(--primary-color);
         }
@@ -370,11 +368,11 @@
         .department-list {
             display: flex;
             flex-direction: column;
-            gap: var(--spacing-lg);
+            gap: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
         }
         
         .department-item {
-            padding: var(--spacing-lg);
+            padding: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
             border-radius: var(--border-radius-medium);
             background-color: var(--background-light);
             box-shadow: var(--shadow-small);
@@ -396,14 +394,14 @@
         }
         
         .department-icon {
-            width: 64px;
-            height: 64px;
+            width: 56px; /* Reduced from 64px for mobile */
+            height: 56px; /* Reduced from 64px for mobile */
             background-color: var(--secondary-light);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: var(--spacing-md);
+            margin-right: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
             color: var(--secondary-color);
             flex-shrink: 0;
             transition: var(--transition-fast);
@@ -415,7 +413,7 @@
         }
         
         .department-icon i {
-            font-size: 32px;
+            font-size: 28px; /* Reduced from 32px for mobile */
         }
         
         .department-info {
@@ -424,17 +422,18 @@
         
         .department-name {
             font-weight: 600;
-            font-size: var(--font-size-large);
+            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
             margin-bottom: 4px;
         }
         
         .department-description {
             color: var(--text-secondary);
+            font-size: 14px; /* Added for mobile */
         }
         
         /* Pre-Chat Form */
         .chat-form {
-            padding: var(--spacing-xl);
+            padding: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
             overflow-y: auto;
             height: 100%;
             display: none;
@@ -446,14 +445,14 @@
         }
         
         .form-title {
-            font-size: var(--font-size-xl);
+            font-size: var(--font-size-large); /* Reduced from var(--font-size-xl) for mobile */
             color: var(--primary-color);
-            margin-bottom: var(--spacing-lg);
+            margin-bottom: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
             text-align: center;
         }
         
         .form-group {
-            margin-bottom: var(--spacing-lg);
+            margin-bottom: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
         }
         
         .form-label {
@@ -466,12 +465,12 @@
         
         .form-control {
             width: 100%;
-            padding: var(--spacing-md);
+            padding: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
             border-radius: var(--border-radius-small);
             border: 1px solid rgba(0, 0, 0, 0.1);
             background-color: var(--background-light);
             transition: var(--transition-fast);
-            font-size: var(--font-size-large);
+            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         
@@ -497,7 +496,7 @@
         }
         
         .form-check-label {
-            font-size: var(--font-size-base);
+            font-size: 14px; /* Reduced from var(--font-size-base) for mobile */
             color: var(--text-secondary);
             line-height: 1.5;
             flex: 1; /* Allow label to take remaining space */
@@ -515,10 +514,10 @@
         
         .gdpr-info {
             margin-top: var(--spacing-md);
-            font-size: 14px;
+            font-size: 13px; /* Reduced from 14px for mobile */
             color: var(--text-secondary);
             background-color: rgba(0, 0, 0, 0.03);
-            padding: var(--spacing-md);
+            padding: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
             border-radius: var(--border-radius-small);
             line-height: 1.5;
         }
@@ -534,7 +533,7 @@
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: var(--spacing-md) var(--spacing-lg);
+            padding: var(--spacing-sm) var(--spacing-md); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
             background-color: var(--background-light);
             display: flex;
             flex-direction: column;
@@ -542,8 +541,8 @@
         }
         
         .message {
-            margin-bottom: var(--spacing-md);
-            max-width: 75%;
+            margin-bottom: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
+            max-width: 85%; /* Increased from 75% for mobile */
             animation: fadeIn 0.3s ease-out;
         }
         
@@ -561,10 +560,10 @@
         }
         
         .message-content {
-            padding: var(--spacing-md) var(--spacing-lg);
+            padding: var(--spacing-sm) var(--spacing-md); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
             border-radius: var(--border-radius-medium);
             position: relative;
-            font-size: var(--font-size-large);
+            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
             box-shadow: var(--shadow-small);
             line-height: 1.6;
             transition: transform 0.2s ease;
@@ -589,8 +588,8 @@
         .message-meta {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
-            margin-top: 4px;
+            font-size: 11px; /* Reduced from 12px for mobile */
+            margin-top: 2px; /* Reduced from 4px for mobile */
             padding: 0 var(--spacing-xs);
         }
         
@@ -605,7 +604,7 @@
         }
         
         .message-status i {
-            font-size: 14px;
+            font-size: 12px; /* Reduced from 14px for mobile */
             margin-left: 4px;
         }
         
@@ -613,16 +612,16 @@
             align-self: center;
             max-width: 90%;
             background-color: rgba(0,0,0,0.05);
-            padding: var(--spacing-sm) var(--spacing-md);
+            padding: var(--spacing-xs) var(--spacing-sm); /* Reduced from var(--spacing-sm) var(--spacing-md) for mobile */
             border-radius: var(--border-radius-small);
-            margin-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
             text-align: center;
-            font-size: 14px;
+            font-size: 13px; /* Reduced from 14px for mobile */
             color: var(--text-secondary);
         }
         
         .chat-input {
-            padding: var(--spacing-md) var(--spacing-lg);
+            padding: var(--spacing-xs) var(--spacing-sm); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
             background-color: white;
             border-top: 1px solid rgba(0, 0, 0, 0.1);
             display: flex;
@@ -632,14 +631,14 @@
         
         .chat-input-field {
             flex: 1;
-            padding: var(--spacing-md) var(--spacing-lg);
+            padding: var(--spacing-sm); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 28px;
             background-color: var(--background-light);
             transition: var(--transition-fast);
-            font-size: var(--font-size-large);
+            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-            min-height: 54px;
+            min-height: 46px; /* Reduced from 54px for mobile */
             resize: none;
         }
         
@@ -655,8 +654,8 @@
         }
         
         .chat-action {
-            width: 54px;
-            height: 54px;
+            width: 46px; /* Reduced from 54px for mobile */
+            height: 46px; /* Reduced from 54px for mobile */
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -676,7 +675,7 @@
         }
         
         .chat-action i {
-            font-size: 24px;
+            font-size: 22px; /* Reduced from 24px for mobile */
         }
         
         .chat-action:disabled {
@@ -697,7 +696,7 @@
         
         /* Chat End */
         .chat-end {
-            padding: var(--spacing-xl);
+            padding: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
             display: none;
             flex-direction: column;
             align-items: center;
@@ -707,9 +706,9 @@
         }
         
         .chat-end-icon {
-            font-size: 56px;
+            font-size: 48px; /* Reduced from 56px for mobile */
             color: var(--success-color);
-            margin-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
             animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
@@ -719,15 +718,15 @@
         }
         
         .chat-end-title {
-            font-size: var(--font-size-xxl);
+            font-size: var(--font-size-xl); /* Reduced from var(--font-size-xxl) for mobile */
             color: var(--primary-color);
-            margin-bottom: var(--spacing-md);
+            margin-bottom: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
         }
         
         .chat-end-text {
-            margin-bottom: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
             color: var(--text-secondary);
-            font-size: var(--font-size-large);
+            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
             max-width: 600px;
         }
         
@@ -739,14 +738,14 @@
             justify-content: center;
             height: 100%;
             color: var(--text-secondary);
-            gap: var(--spacing-lg);
+            gap: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
         }
         
         .loading-spinner {
             display: inline-block;
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 50px; /* Reduced from 60px for mobile */
+            height: 50px; /* Reduced from 60px for mobile */
+            border: 3px solid rgba(0, 0, 0, 0.1); /* Reduced from 4px for mobile */
             border-radius: 50%;
             border-top-color: var(--secondary-color);
             animation: spin 1s ease-in-out infinite;
@@ -759,10 +758,10 @@
         
         /* Notices */
         .notice {
-            padding: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
+            margin-bottom: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
             border-radius: var(--border-radius-small);
-            font-size: var(--font-size-base);
+            font-size: 14px; /* Reduced from var(--font-size-base) for mobile */
             display: none;
             box-shadow: var(--shadow-small);
             animation: slideDown 0.3s ease-out;
@@ -795,17 +794,17 @@
         .typing-indicator {
             display: flex;
             align-items: center;
-            margin: 10px 0;
+            margin: 8px 0; /* Reduced from 10px for mobile */
             align-self: flex-start;
             background: white;
-            padding: 12px 16px;
+            padding: 10px 14px; /* Reduced from 12px 16px for mobile */
             border-radius: var(--border-radius-medium);
             box-shadow: var(--shadow-small);
         }
         
         .typing-dot {
-            height: 10px;
-            width: 10px;
+            height: 8px; /* Reduced from 10px for mobile */
+            width: 8px; /* Reduced from 10px for mobile */
             margin: 0 2px;
             background-color: var(--secondary-color);
             border-radius: 50%;
@@ -826,17 +825,17 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: var(--spacing-md) var(--spacing-lg);
+            padding: var(--spacing-sm) var(--spacing-md); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
             border-radius: var(--border-radius-medium);
             font-weight: 600;
             text-decoration: none;
             transition: var(--transition-fast);
-            font-size: var(--font-size-large);
+            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
             border: none;
             cursor: pointer;
-            min-height: 56px;
+            min-height: 48px; /* Reduced from 56px for mobile */
             width: 100%;
-            max-width: 400px;
+            max-width: 280px; /* Reduced from 400px for mobile */
             letter-spacing: 0.5px;
             position: relative;
             overflow: hidden;
@@ -911,12 +910,12 @@
         
         .btn i {
             margin-right: var(--spacing-sm);
-            font-size: 24px;
+            font-size: 22px; /* Reduced from 24px for mobile */
         }
         
         /* Welcome Screen Button */
         .welcome-btn {
-            max-width: 280px;
+            max-width: 250px; /* Reduced from 280px for mobile */
             margin-top: var(--spacing-md);
         }
         
@@ -924,6 +923,13 @@
         #btnStartChat {
             margin-left: auto;
             margin-right: auto;
+        }
+        
+        /* Form Submit Button */
+        .form-submit-btn {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
         }
         
         /* Accessibility */
@@ -957,7 +963,7 @@
             right: 0;
             background-image: var(--primary-gradient);
             color: white;
-            padding: var(--spacing-md) var(--spacing-lg);
+            padding: var(--spacing-sm) var(--spacing-md); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -973,26 +979,28 @@
         
         .pwa-message {
             flex: 1;
-            margin-right: var(--spacing-md);
+            margin-right: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
         }
         
         .pwa-title {
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 2px; /* Reduced from 4px for mobile */
+            font-size: 14px; /* Added for mobile */
         }
         
         .pwa-buttons {
             display: flex;
-            gap: var(--spacing-sm);
+            gap: var(--spacing-xs);
         }
         
         .pwa-btn {
-            padding: var(--spacing-sm) var(--spacing-md);
+            padding: var(--spacing-xs) var(--spacing-sm); /* Reduced from var(--spacing-sm) var(--spacing-md) for mobile */
             border-radius: var(--border-radius-small);
             font-weight: 600;
             border: none;
             cursor: pointer;
             transition: var(--transition-fast);
+            font-size: 14px; /* Added for mobile */
         }
         
         .pwa-btn-install {
@@ -1037,17 +1045,69 @@
                 transition: all 0.3s ease;
             }
             
+            .app-header {
+                height: 80px; /* Restore desktop height */
+                padding: var(--spacing-md) var(--spacing-lg);
+            }
+            
+            .header-logo {
+                width: 48px; /* Restore desktop size */
+                height: 48px;
+                margin-right: var(--spacing-md); /* Restore desktop spacing */
+            }
+            
+            .header-logo img {
+                width: 36px; /* Restore desktop size */
+                height: 36px;
+            }
+            
+            .header-title {
+                font-size: var(--font-size-xl); /* Restore desktop font size */
+            }
+            
+            .header-status {
+                font-size: calc(var(--font-size-base) - 1px); /* Restore desktop font size */
+            }
+            
+            .header-button-with-text {
+                min-width: 42px; /* Restore desktop size */
+                height: 42px;
+            }
+            
+            .header-button-with-text span {
+                display: inline-block; /* Show text on desktop */
+                margin-left: 6px;
+                font-size: 14px;
+                font-weight: 500;
+            }
+            
             .chat-messages {
                 padding: var(--spacing-lg) var(--spacing-xl);
             }
             
             .message {
                 max-width: 65%;
+                margin-bottom: var(--spacing-md);
             }
             
             .message-content {
                 padding: var(--spacing-md) var(--spacing-lg);
                 font-size: var(--font-size-large);
+            }
+            
+            .message-meta {
+                font-size: 12px;
+                margin-top: 4px;
+            }
+            
+            .message-status i {
+                font-size: 14px;
+            }
+            
+            .message-system {
+                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: 14px;
+                margin-bottom: var(--spacing-md);
             }
             
             .chat-input {
@@ -1057,6 +1117,16 @@
             .chat-input-field {
                 min-height: 60px;
                 font-size: var(--font-size-large);
+                padding: var(--spacing-md) var(--spacing-lg);
+            }
+            
+            .chat-action {
+                width: 54px;
+                height: 54px;
+            }
+            
+            .chat-action i {
+                font-size: 24px;
             }
             
             .emergency-buttons {
@@ -1068,6 +1138,13 @@
             .btn {
                 width: auto;
                 padding: var(--spacing-md) var(--spacing-xl);
+                font-size: var(--font-size-large);
+                min-height: 56px;
+                max-width: 400px;
+            }
+            
+            .btn i {
+                font-size: 24px;
             }
             
             .welcome-screen {
@@ -1076,11 +1153,28 @@
             
             .welcome-title {
                 font-size: 36px;
+                margin-bottom: var(--spacing-lg);
             }
             
             .welcome-description {
                 font-size: 20px;
+                margin-bottom: var(--spacing-xl);
                 max-width: 700px;
+            }
+            
+            .welcome-logo {
+                width: 100px;
+                height: 100px;
+                margin-bottom: var(--spacing-xl);
+            }
+            
+            .welcome-logo img {
+                width: 76px;
+                height: 76px;
+            }
+            
+            .welcome-btn {
+                max-width: 280px;
             }
             
             .department-list {
@@ -1091,6 +1185,138 @@
             
             .department-item {
                 height: 100%;
+                padding: var(--spacing-lg);
+            }
+            
+            .department-icon {
+                width: 64px;
+                height: 64px;
+                margin-right: var(--spacing-md);
+            }
+            
+            .department-icon i {
+                font-size: 32px;
+            }
+            
+            .department-name {
+                font-size: var(--font-size-large);
+            }
+            
+            .department-description {
+                font-size: inherit;
+            }
+            
+            .department-title {
+                font-size: var(--font-size-xl);
+                margin-bottom: var(--spacing-xl);
+            }
+            
+            .department-select {
+                padding: var(--spacing-lg) var(--spacing-xl);
+            }
+            
+            .form-title {
+                font-size: var(--font-size-xl);
+                margin-bottom: var(--spacing-lg);
+            }
+            
+            .form-control {
+                padding: var(--spacing-md);
+                font-size: var(--font-size-large);
+            }
+            
+            .form-check-label {
+                font-size: var(--font-size-base);
+            }
+            
+            .gdpr-info {
+                font-size: 14px;
+                padding: var(--spacing-md);
+            }
+            
+            .chat-form {
+                padding: var(--spacing-xl);
+            }
+            
+            .form-group {
+                margin-bottom: var(--spacing-lg);
+            }
+            
+            .emergency-title {
+                font-size: var(--font-size-xxl);
+                margin-bottom: var(--spacing-lg);
+            }
+            
+            .emergency-text {
+                font-size: var(--font-size-large);
+                margin-bottom: var(--spacing-xl);
+            }
+            
+            .emergency-check {
+                padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
+            }
+            
+            .chat-end {
+                padding: var(--spacing-xl);
+            }
+            
+            .chat-end-icon {
+                font-size: 56px;
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .chat-end-title {
+                font-size: var(--font-size-xxl);
+                margin-bottom: var(--spacing-md);
+            }
+            
+            .chat-end-text {
+                font-size: var(--font-size-large);
+                margin-bottom: var(--spacing-xl);
+            }
+            
+            .loading-spinner {
+                width: 60px;
+                height: 60px;
+                border-width: 4px;
+            }
+            
+            .loading-container {
+                gap: var(--spacing-lg);
+            }
+            
+            .notice {
+                padding: var(--spacing-md);
+                margin-bottom: var(--spacing-md);
+                font-size: var(--font-size-base);
+            }
+            
+            .typing-indicator {
+                margin: 10px 0;
+                padding: 12px 16px;
+            }
+            
+            .typing-dot {
+                height: 10px;
+                width: 10px;
+            }
+            
+            .pwa-banner {
+                padding: var(--spacing-md) var(--spacing-lg);
+            }
+            
+            .pwa-message {
+                margin-right: var(--spacing-md);
+            }
+            
+            .pwa-title {
+                margin-bottom: 4px;
+                font-size: inherit;
+            }
+            
+            .pwa-btn {
+                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: inherit;
             }
             
             /* Desktop hover effects */
@@ -1303,7 +1529,7 @@
                     <p>Datele dumneavoastră sunt protejate în conformitate cu Regulamentul General privind Protecția Datelor (GDPR).</p>
                 </div>
                 
-                <div class="form-submit-btn" style="margin-top: 30px; display: flex; justify-content: center;">
+                <div class="form-submit-btn">
                     <button id="btnStartChat" class="btn btn-primary">
                         <i class="material-icons">chat</i> Începe Chat
                     </button>
@@ -2239,353 +2465,353 @@
             scrollToBottom();
         }
         
-        // Display a local message (for offline support)
-        function displayLocalMessage(message) {
-            // Clone the message object to avoid modifying the original
-            const localMessage = { ...message };
-            
-            // Add a local ID
-            localMessage.id = 'local-' + Date.now();
-            
-            // Add pending status indicator
-            localMessage.status = 'pending';
-            
-            // Display with "pending" styling
-            displayMessage(localMessage);
-            
-            // Update the message element to show it's queued
-            const messageElement = document.querySelector(`[data-message-id="${localMessage.id}"]`);
-            if (messageElement) {
-                const statusSpan = messageElement.querySelector('.message-status');
-                if (statusSpan) {
-                    statusSpan.innerHTML = '<i class="material-icons" style="color: var(--warning-color);">schedule</i>';
-                }
-            }
+// Display a local message (for offline support)
+function displayLocalMessage(message) {
+    // Clone the message object to avoid modifying the original
+    const localMessage = { ...message };
+    
+    // Add a local ID
+    localMessage.id = 'local-' + Date.now();
+    
+    // Add pending status indicator
+    localMessage.status = 'pending';
+    
+    // Display with "pending" styling
+    displayMessage(localMessage);
+    
+    // Update the message element to show it's queued
+    const messageElement = document.querySelector(`[data-message-id="${localMessage.id}"]`);
+    if (messageElement) {
+        const statusSpan = messageElement.querySelector('.message-status');
+        if (statusSpan) {
+            statusSpan.innerHTML = '<i class="material-icons" style="color: var(--warning-color);">schedule</i>';
         }
-        
-        // Add a system message
-        function addSystemMessage(text) {
-            // Create a temporary ID to prevent duplication
-            const tempId = 'local-system-' + Date.now();
-            
-            // First add to UI immediately with the temp ID
-            const systemMessage = {
-                type: 'system',
-                content: text,
-                timestamp: new Date(),
-                id: tempId // Temporary ID to prevent duplication
-            };
-            
-            displayMessage(systemMessage);
-            
-            // Then add to Firestore, but don't display it again when it comes back
-            db.collection('chats').doc(currentChatId).collection('messages').add({
-                type: 'system',
-                content: text,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                clientGeneratedId: tempId // Track that this was generated by the client
-            }).catch(error => {
-                console.error('Error adding system message:', error);
-            });
-        }
-        
-        // Scroll chat to bottom
-        function scrollToBottom() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            setTimeout(() => {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 50);
-        }
-        
-        // =============================================
-        // Typing Indicators
-        // =============================================
-        
-        // Handle user typing start
-        function handleTypingStart() {
-            if (!isTyping) {
-                isTyping = true;
-                
-                // Notify the server that the user is typing
-                db.collection('chats').doc(currentChatId).collection('typing')
-                    .doc('user')
-                    .set({
-                        isTyping: true,
-                        userId: currentUser.uid,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    }).catch(error => {
-                        console.error('Error updating typing status:', error);
-                    });
-            }
-            
-            // Reset the typing timeout
-            if (typingTimeout) {
-                clearTimeout(typingTimeout);
-            }
-            
-            typingTimeout = setTimeout(resetTypingIndicator, 3000);
-        }
-        
-        // Reset typing indicator
-        function resetTypingIndicator() {
-            if (isTyping) {
-                isTyping = false;
-                
-                // Notify the server that the user stopped typing
-                db.collection('chats').doc(currentChatId).collection('typing')
-                    .doc('user')
-                    .set({
-                        isTyping: false,
-                        userId: currentUser.uid,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    }).catch(error => {
-                        console.error('Error updating typing status:', error);
-                    });
-            }
-            
-            if (typingTimeout) {
-                clearTimeout(typingTimeout);
-                typingTimeout = null;
-            }
-        }
-        
-        // Show agent typing indicator
-        function showTypingIndicator() {
-            // Check if typing indicator already exists
-            let typingIndicator = document.querySelector('.typing-indicator');
-            
-            if (!typingIndicator) {
-                typingIndicator = document.createElement('div');
-                typingIndicator.className = 'typing-indicator';
-                typingIndicator.setAttribute('aria-label', 'Agentul scrie un mesaj');
-                
-                for (let i = 0; i < 3; i++) {
-                    const dot = document.createElement('span');
-                    dot.className = 'typing-dot';
-                    typingIndicator.appendChild(dot);
-                }
-                
-                chatMessages.appendChild(typingIndicator);
-                scrollToBottom();
-            }
-        }
-        
-        // Hide agent typing indicator
-        function hideTypingIndicator() {
-            const typingIndicator = document.querySelector('.typing-indicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-        
-        // =============================================
-        // Read Receipts
-        // =============================================
-        
-        // Set up read receipts
-        function setupReadReceipts() {
-            // Update read status when the chat is visible
-            document.addEventListener('visibilitychange', updateReadStatus);
-            chatMessages.addEventListener('scroll', updateReadStatus);
-            
-            // Initial update
-            updateReadStatus();
-        }
-        
-        // Update read status for all messages
-        function updateReadStatus() {
-            if (document.visibilityState === 'visible' && !chatEnded) {
-                // Find the latest agent message
-                const agentMessages = document.querySelectorAll('.message-received');
-                if (agentMessages.length > 0) {
-                    const lastAgentMessage = agentMessages[agentMessages.length - 1];
-                    const messageId = lastAgentMessage.dataset.messageId;
-                    
-                    if (messageId && !messageId.startsWith('local-')) {
-                        updateMessageReadStatus(messageId);
-                    }
-                }
-            }
-        }
-        
-        // Update a specific message's read status
-        function updateMessageReadStatus(messageId) {
-            db.collection('chats').doc(currentChatId).collection('messages').doc(messageId)
-                .update({
-                    readAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).catch(error => {
-                    console.error('Error updating read status:', error);
-                });
-        }
-        
-        // =============================================
-        // Chat Conclusion
-        // =============================================
-        
-        // Handle chat ended
-        function handleChatEnded() {
-            chatEnded = true;
-            
-            // Add system message
-            addSystemMessage('Conversația a fost încheiată.');
-            
-            // Disable input
-            messageInput.disabled = true;
-            btnSendMessage.disabled = true;
-            
-            // Show end screen after a delay
-            setTimeout(() => {
-                chatArea.style.display = 'none';
-                chatEnd.style.display = 'flex';
-            }, 3000);
-        }
-        
-        // Confirm end chat
-        function confirmEndChat() {
-            if (confirm('Sigur doriți să încheiați această conversație?')) {
-                endChat();
-            }
-        }
-        
-        // End chat
-        function endChat() {
-            chatEnded = true;
-            
-            // Update chat status in Firestore
-            db.collection('chats').doc(currentChatId).update({
-                status: 'closed',
-                endedBy: 'user',
-                endedAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                handleChatEnded();
-            }).catch(error => {
-                console.error('Error ending chat:', error);
-                showNotice(errorNotice, 'Eroare la închiderea conversației. Vă rugăm să încercați din nou.');
-            });
-        }
-        
-        // Request transcript
-        function requestTranscript() {
-            const email = document.getElementById('chat-email').value;
-            
-            if (!email || !email.includes('@')) {
-                showNotice(errorNotice, 'Vă rugăm să introduceți o adresă de email validă.');
-                return;
-            }
-            
-            // Show loading state
-            btnRequestTranscript.disabled = true;
-            btnRequestTranscript.textContent = 'Se trimite...';
-            
-            // Call Cloud Function to send transcript
-            const sendTranscriptFunction = firebase.functions().httpsCallable('sendChatTranscript');
-            sendTranscriptFunction({ chatId: currentChatId, email: email })
-                .then(result => {
-                    showNotice(successNotice, 'Transcriptul a fost trimis la adresa de email specificată.');
-                    btnRequestTranscript.textContent = 'Transcript trimis ✓';
-                })
-                .catch(error => {
-                    console.error('Error requesting transcript:', error);
-                    showNotice(errorNotice, 'Eroare la trimiterea transcriptului. Vă rugăm să încercați din nou.');
-                    btnRequestTranscript.disabled = false;
-                    btnRequestTranscript.textContent = 'Primește transcript';
-                });
-        }
-        
-        // Reset chat and start a new one
-        function resetChat() {
-            // Sign out current user if any
-            if (currentUser) {
-                auth.signOut().catch(error => {
-                    console.error('Error signing out:', error);
-                });
-            }
-            
-            // Reset all variables
-            currentUser = null;
-            currentChatId = null;
-            selectedDepartment = null;
-            chatSessionKey = null;
-            agentPublicKey = null;
-            chatEnded = false;
-            isTyping = false;
-            agentJoinedFlag = false;
-            
-            if (typingTimeout) {
-                clearTimeout(typingTimeout);
-                typingTimeout = null;
-            }
-            
-            // Clear message queue
-            messageQueue = [];
-            localStorage.removeItem('messageQueue_' + currentChatId);
-            
-            // Reset rate limiting
-            rateLimitConfig.sentMessages = [];
-            rateLimitConfig.isLimited = false;
-            
-            // Clear chat messages
-            chatMessages.innerHTML = '';
-            
-            // Reset all notices
-            errorNotice.style.display = 'none';
-            successNotice.style.display = 'none';
-            formErrorNotice.style.display = 'none';
-            
-            // Reset message input
-            messageInput.value = '';
-            messageInput.disabled = false;
-            
-            // Reset buttons
-            btnSendMessage.disabled = false;
+    }
+}
 
-            // Reset form fields
-            document.getElementById('chat-subject').value = '';
-            document.getElementById('chat-email').value = '';
-            document.getElementById('chat-phone').value = '';
-            document.getElementById('privacy-check').checked = false;
-            document.getElementById('recording-check').checked = false;
-            
-            // Hide all sections except welcome screen
-            chatEnd.style.display = 'none';
-            chatArea.style.display = 'none';
-            chatForm.style.display = 'none';
-            departmentSelect.style.display = 'none';
-            loadingState.style.display = 'none';
-            emergencyCheck.style.display = 'none';
-            
-            // Show welcome screen
-            welcomeScreen.style.display = 'flex';
-            
-            // Generate a new encryption key
-            chatSessionKey = generateEncryptionKey();
-            
-            // Clean up chat listeners
-            cleanupChatListeners();
+// Add a system message
+function addSystemMessage(text) {
+    // Create a temporary ID to prevent duplication
+    const tempId = 'local-system-' + Date.now();
+    
+    // First add to UI immediately with the temp ID
+    const systemMessage = {
+        type: 'system',
+        content: text,
+        timestamp: new Date(),
+        id: tempId // Temporary ID to prevent duplication
+    };
+    
+    displayMessage(systemMessage);
+    
+    // Then add to Firestore, but don't display it again when it comes back
+    db.collection('chats').doc(currentChatId).collection('messages').add({
+        type: 'system',
+        content: text,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        clientGeneratedId: tempId // Track that this was generated by the client
+    }).catch(error => {
+        console.error('Error adding system message:', error);
+    });
+}
+
+// Scroll chat to bottom
+function scrollToBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    setTimeout(() => {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 50);
+}
+
+// =============================================
+// Typing Indicators
+// =============================================
+
+// Handle user typing start
+function handleTypingStart() {
+    if (!isTyping) {
+        isTyping = true;
+        
+        // Notify the server that the user is typing
+        db.collection('chats').doc(currentChatId).collection('typing')
+            .doc('user')
+            .set({
+                isTyping: true,
+                userId: currentUser.uid,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(error => {
+                console.error('Error updating typing status:', error);
+            });
+    }
+    
+    // Reset the typing timeout
+    if (typingTimeout) {
+        clearTimeout(typingTimeout);
+    }
+    
+    typingTimeout = setTimeout(resetTypingIndicator, 3000);
+}
+
+// Reset typing indicator
+function resetTypingIndicator() {
+    if (isTyping) {
+        isTyping = false;
+        
+        // Notify the server that the user stopped typing
+        db.collection('chats').doc(currentChatId).collection('typing')
+            .doc('user')
+            .set({
+                isTyping: false,
+                userId: currentUser.uid,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(error => {
+                console.error('Error updating typing status:', error);
+            });
+    }
+    
+    if (typingTimeout) {
+        clearTimeout(typingTimeout);
+        typingTimeout = null;
+    }
+}
+
+// Show agent typing indicator
+function showTypingIndicator() {
+    // Check if typing indicator already exists
+    let typingIndicator = document.querySelector('.typing-indicator');
+    
+    if (!typingIndicator) {
+        typingIndicator = document.createElement('div');
+        typingIndicator.className = 'typing-indicator';
+        typingIndicator.setAttribute('aria-label', 'Agentul scrie un mesaj');
+        
+        for (let i = 0; i < 3; i++) {
+            const dot = document.createElement('span');
+            dot.className = 'typing-dot';
+            typingIndicator.appendChild(dot);
         }
         
-        // =============================================
-        // Cleanup function for listeners when chat ends
-        // =============================================
-        function cleanupChatListeners() {
-            if (window.chatListeners) {
-                if (window.chatListeners.chatDoc) {
-                    window.chatListeners.chatDoc();
-                }
-                if (window.chatListeners.messages) {
-                    window.chatListeners.messages();
-                }
-                if (window.chatListeners.typing) {
-                    window.chatListeners.typing();
-                }
-                window.chatListeners = null;
+        chatMessages.appendChild(typingIndicator);
+        scrollToBottom();
+    }
+}
+
+// Hide agent typing indicator
+function hideTypingIndicator() {
+    const typingIndicator = document.querySelector('.typing-indicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
+}
+
+// =============================================
+// Read Receipts
+// =============================================
+
+// Set up read receipts
+function setupReadReceipts() {
+    // Update read status when the chat is visible
+    document.addEventListener('visibilitychange', updateReadStatus);
+    chatMessages.addEventListener('scroll', updateReadStatus);
+    
+    // Initial update
+    updateReadStatus();
+}
+
+// Update read status for all messages
+function updateReadStatus() {
+    if (document.visibilityState === 'visible' && !chatEnded) {
+        // Find the latest agent message
+        const agentMessages = document.querySelectorAll('.message-received');
+        if (agentMessages.length > 0) {
+            const lastAgentMessage = agentMessages[agentMessages.length - 1];
+            const messageId = lastAgentMessage.dataset.messageId;
+            
+            if (messageId && !messageId.startsWith('local-')) {
+                updateMessageReadStatus(messageId);
             }
         }
-        
-        // Initialize the chat
-        initializeChat();
-        
-    </script>
+    }
+}
+
+// Update a specific message's read status
+function updateMessageReadStatus(messageId) {
+    db.collection('chats').doc(currentChatId).collection('messages').doc(messageId)
+        .update({
+            readAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(error => {
+            console.error('Error updating read status:', error);
+        });
+}
+
+// =============================================
+// Chat Conclusion
+// =============================================
+
+// Handle chat ended
+function handleChatEnded() {
+    chatEnded = true;
+    
+    // Add system message
+    addSystemMessage('Conversația a fost încheiată.');
+    
+    // Disable input
+    messageInput.disabled = true;
+    btnSendMessage.disabled = true;
+    
+    // Show end screen after a delay
+    setTimeout(() => {
+        chatArea.style.display = 'none';
+        chatEnd.style.display = 'flex';
+    }, 3000);
+}
+
+// Confirm end chat
+function confirmEndChat() {
+    if (confirm('Sigur doriți să încheiați această conversație?')) {
+        endChat();
+    }
+}
+
+// End chat
+function endChat() {
+    chatEnded = true;
+    
+    // Update chat status in Firestore
+    db.collection('chats').doc(currentChatId).update({
+        status: 'closed',
+        endedBy: 'user',
+        endedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        handleChatEnded();
+    }).catch(error => {
+        console.error('Error ending chat:', error);
+        showNotice(errorNotice, 'Eroare la închiderea conversației. Vă rugăm să încercați din nou.');
+    });
+}
+
+// Request transcript
+function requestTranscript() {
+    const email = document.getElementById('chat-email').value;
+    
+    if (!email || !email.includes('@')) {
+        showNotice(errorNotice, 'Vă rugăm să introduceți o adresă de email validă.');
+        return;
+    }
+    
+    // Show loading state
+    btnRequestTranscript.disabled = true;
+    btnRequestTranscript.textContent = 'Se trimite...';
+    
+    // Call Cloud Function to send transcript
+    const sendTranscriptFunction = firebase.functions().httpsCallable('sendChatTranscript');
+    sendTranscriptFunction({ chatId: currentChatId, email: email })
+        .then(result => {
+            showNotice(successNotice, 'Transcriptul a fost trimis la adresa de email specificată.');
+            btnRequestTranscript.textContent = 'Transcript trimis ✓';
+        })
+        .catch(error => {
+            console.error('Error requesting transcript:', error);
+            showNotice(errorNotice, 'Eroare la trimiterea transcriptului. Vă rugăm să încercați din nou.');
+            btnRequestTranscript.disabled = false;
+            btnRequestTranscript.textContent = 'Primește transcript';
+        });
+}
+
+// Reset chat and start a new one
+function resetChat() {
+    // Sign out current user if any
+    if (currentUser) {
+        auth.signOut().catch(error => {
+            console.error('Error signing out:', error);
+        });
+    }
+    
+    // Reset all variables
+    currentUser = null;
+    currentChatId = null;
+    selectedDepartment = null;
+    chatSessionKey = null;
+    agentPublicKey = null;
+    chatEnded = false;
+    isTyping = false;
+    agentJoinedFlag = false;
+    
+    if (typingTimeout) {
+        clearTimeout(typingTimeout);
+        typingTimeout = null;
+    }
+    
+    // Clear message queue
+    messageQueue = [];
+    localStorage.removeItem('messageQueue_' + currentChatId);
+    
+    // Reset rate limiting
+    rateLimitConfig.sentMessages = [];
+    rateLimitConfig.isLimited = false;
+    
+    // Clear chat messages
+    chatMessages.innerHTML = '';
+    
+    // Reset all notices
+    errorNotice.style.display = 'none';
+    successNotice.style.display = 'none';
+    formErrorNotice.style.display = 'none';
+    
+    // Reset message input
+    messageInput.value = '';
+    messageInput.disabled = false;
+    
+    // Reset buttons
+    btnSendMessage.disabled = false;
+
+    // Reset form fields
+    document.getElementById('chat-subject').value = '';
+    document.getElementById('chat-email').value = '';
+    document.getElementById('chat-phone').value = '';
+    document.getElementById('privacy-check').checked = false;
+    document.getElementById('recording-check').checked = false;
+    
+    // Hide all sections except welcome screen
+    chatEnd.style.display = 'none';
+    chatArea.style.display = 'none';
+    chatForm.style.display = 'none';
+    departmentSelect.style.display = 'none';
+    loadingState.style.display = 'none';
+    emergencyCheck.style.display = 'none';
+    
+    // Show welcome screen
+    welcomeScreen.style.display = 'flex';
+    
+    // Generate a new encryption key
+    chatSessionKey = generateEncryptionKey();
+    
+    // Clean up chat listeners
+    cleanupChatListeners();
+}
+
+// =============================================
+// Cleanup function for listeners when chat ends
+// =============================================
+function cleanupChatListeners() {
+    if (window.chatListeners) {
+        if (window.chatListeners.chatDoc) {
+            window.chatListeners.chatDoc();
+        }
+        if (window.chatListeners.messages) {
+            window.chatListeners.messages();
+        }
+        if (window.chatListeners.typing) {
+            window.chatListeners.typing();
+        }
+        window.chatListeners = null;
+    }
+}
+
+// Initialize the chat
+initializeChat();
+
+</script>
 </body>
-</html>        
+</html>
