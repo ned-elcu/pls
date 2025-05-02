@@ -208,14 +208,23 @@
             color: white;
             font-size: var(--font-size-xl);
             cursor: pointer;
-            padding: var(--spacing-xs);
-            border-radius: 50%;
-            width: 42px;
-            height: 42px;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition-fast);
+        }
+        
+        .header-button-with-text {
+            min-width: 42px;
+            height: 42px;
+        }
+        
+        .header-button-with-text span {
+            margin-left: 6px;
+            font-size: 14px;
+            font-weight: 500;
         }
         
         .header-actions button:hover {
@@ -1122,14 +1131,16 @@
                 </div>
             </div>
             <div class="header-actions">
-                <!-- Added Home Button -->
+                <!-- Added Home Button with Text -->
                 <a href="/" aria-label="Pagina principală">
-                    <button id="btnHome" aria-label="Pagina principală">
+                    <button id="btnHome" aria-label="Pagina principală" class="header-button-with-text">
                         <i class="material-icons">home</i>
+                        <span>Acasă</span>
                     </button>
                 </a>
-                <button id="btnCloseChat" aria-label="Închide chat">
+                <button id="btnCloseChat" aria-label="Închide chat" class="header-button-with-text">
                     <i class="material-icons">close</i>
+                    <span>Închide</span>
                 </button>
             </div>
         </header>
@@ -1270,9 +1281,11 @@
                     <p>Datele dumneavoastră sunt protejate în conformitate cu Regulamentul General privind Protecția Datelor (GDPR).</p>
                 </div>
                 
-                <button id="btnStartChat" class="btn btn-primary">
-                    <i class="material-icons">chat</i> Începe Chat
-                </button>
+                <div class="form-submit-btn" style="margin-top: 30px;">
+                    <button id="btnStartChat" class="btn btn-primary">
+                        <i class="material-icons">chat</i> Începe Chat
+                    </button>
+                </div>
             </div>
             
             <!-- Loading State -->
@@ -2550,6 +2563,7 @@
         
         // Initialize the chat
         initializeChat();
+        
     </script>
 </body>
 </html>
