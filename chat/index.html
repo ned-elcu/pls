@@ -1659,6 +1659,7 @@
         let messageQueue = []; // For offline message queuing
         let agentJoinedFlag = false; // Flag to track if agent has already joined
         let deferredPrompt = null; // For PWA installation
+        let deviceFingerprint = null; // Device fingerprint for rate limiting
         
         // Rate limiting
         const rateLimitConfig = {
@@ -1667,6 +1668,148 @@
             sentMessages: [],
             isLimited: false
         };
+        
+        // =============================================
+        // Device Fingerprinting
+        // =============================================
+        
+        // Generate device fingerprint
+        function generateDeviceFingerprint() {
+            return new Promise((resolve) => {
+                try {
+                    // Collect browser information
+                    const components = [
+                        navigator.userAgent,
+                        navigator.language,
+                        navigator.platform,
+                        navigator.vendor,
+                        screen.colorDepth,
+                        screen.width + 'x' + screen.height,
+                        new Date().getTimezoneOffset(),
+                        !!window.sessionStorage,
+                        !!window.localStorage,
+                        !!window.indexedDB
+                    ];
+
+                    // Check for available plugins
+                    if (navigator.plugins) {
+                        const pluginsStr = Array.from(navigator.plugins)
+                            .map(p => p.name + p.filename + p.description)
+                            .join('');
+                        components.push(pluginsStr);
+                    }
+
+                    // Create canvas fingerprint
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = 200;
+                        canvas.height = 50;
+
+                        // Add text with different styles
+                        ctx.textBaseline = 'top';
+                        ctx.font = '16px Arial';
+                        ctx.fillStyle = '#F72585';
+                        ctx.fillText('Fingerprint', 0, 10);
+                        ctx.fillStyle = '#4361EE';
+                        ctx.font = 'bold 14px Times New Roman';
+                        ctx.fillText('Canvas', 100, 25);
+
+                        // Add shapes
+                        ctx.beginPath();
+                        ctx.moveTo(10, 40);
+                        ctx.bezierCurveTo(30, 30, 60, 50, 90, 35);
+                        ctx.strokeStyle = '#7209B7';
+                        ctx.stroke();
+
+                        // Get canvas data
+                        const canvasData = canvas.toDataURL();
+                        components.push(canvasData);
+                    } catch (e) {
+                        components.push('canvas-not-supported');
+                    }
+
+                    // Check for localStorage fingerprint
+                    const storedFingerprint = localStorage.getItem('deviceIdentifier');
+                    if (storedFingerprint) {
+                        components.push(storedFingerprint);
+                    }
+
+                    // Combine and hash components
+                    const componentsStr = components.join('###');
+                    const fingerprint = CryptoJS.SHA256(componentsStr).toString();
+
+                    // Cache in localStorage for persistence
+                    localStorage.setItem('deviceIdentifier', fingerprint);
+
+                    resolve(fingerprint);
+                } catch (error) {
+                    console.error('Error generating device fingerprint:', error);
+                    // Fallback to a simpler fingerprint
+                    const fallbackFingerprint = CryptoJS.SHA256(
+                        navigator.userAgent + screen.width + screen.height + navigator.language
+                    ).toString();
+                    localStorage.setItem('deviceIdentifier', fallbackFingerprint);
+                    resolve(fallbackFingerprint);
+                }
+            });
+        }
+
+        // Register or update device fingerprint in Firestore
+        function registerDeviceFingerprint(fingerprint) {
+            return new Promise((resolve, reject) => {
+                if (!fingerprint) {
+                    reject(new Error('No device fingerprint provided'));
+                    return;
+                }
+
+                // Create a fingerprint hash for the document ID
+                const fingerprintHash = CryptoJS.SHA256(fingerprint).toString();
+
+                // Check if this fingerprint already exists
+                db.collection('deviceFingerprints')
+                    .doc(fingerprintHash)
+                    .get()
+                    .then((doc) => {
+                        const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+                        const deviceData = {
+                            fingerprintHash: fingerprintHash,
+                            lastSeen: timestamp,
+                            userAgent: navigator.userAgent
+                        };
+
+                        if (doc.exists) {
+                            // Update existing fingerprint
+                            return db.collection('deviceFingerprints')
+                                .doc(fingerprintHash)
+                                .update({
+                                    lastSeen: timestamp,
+                                    userAgent: navigator.userAgent,
+                                    // If user is authenticated, associate fingerprint with user
+                                    ...(currentUser ? { userId: currentUser.uid } : {})
+                                });
+                        } else {
+                            // Create new fingerprint record
+                            return db.collection('deviceFingerprints')
+                                .doc(fingerprintHash)
+                                .set({
+                                    ...deviceData,
+                                    createdAt: timestamp,
+                                    // If user is authenticated, associate fingerprint with user
+                                    ...(currentUser ? { userId: currentUser.uid } : {})
+                                });
+                        }
+                    })
+                    .then(() => {
+                        console.log('Device fingerprint registered successfully');
+                        resolve(fingerprintHash);
+                    })
+                    .catch((error) => {
+                        console.error('Error registering device fingerprint:', error);
+                        reject(error);
+                    });
+            });
+        }
         
         // =============================================
         // Security and Encryption Functions
@@ -1891,19 +2034,51 @@
         function initializeChat() {
             console.log('Initializing chat application...');
             
+            // Override Firebase Auth persistence to LOCAL
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+                .then(() => {
+                    console.log('Firebase Auth persistence set to LOCAL');
+                })
+                .catch((error) => {
+                    console.error('Error setting persistence:', error);
+                });
+            
             // Set up connection monitoring
             setupConnectionMonitoring();
             
             // Generate a unique session key for this page load
             chatSessionKey = generateEncryptionKey();
             
-            // Check if user is already logged in
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    currentUser = user;
-                    console.log('User already logged in:', user.uid);
-                }
-            });
+            // Generate device fingerprint
+            generateDeviceFingerprint()
+                .then(fingerprint => {
+                    deviceFingerprint = fingerprint;
+                    console.log('Device fingerprint generated');
+                    
+                    // Check if user is already logged in
+                    return auth.onAuthStateChanged(user => {
+                        if (user) {
+                            currentUser = user;
+                            console.log('User already logged in:', user.uid);
+                            
+                            // Update device fingerprint with user ID
+                            registerDeviceFingerprint(deviceFingerprint)
+                                .then(fingerprintHash => {
+                                    console.log('Device fingerprint registered with user ID');
+                                })
+                                .catch(error => {
+                                    console.error('Error registering device fingerprint with user ID:', error);
+                                });
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error in device fingerprinting:', error);
+                    // Generate a fallback fingerprint
+                    deviceFingerprint = CryptoJS.SHA256(
+                        navigator.userAgent + screen.width + screen.height + Date.now()
+                    ).toString();
+                });
             
             // Set up event listeners
             setupEventListeners();
@@ -1911,7 +2086,7 @@
             // Set up PWA
             setupPwa();
         }
-        
+
         // Set up all event listeners
         function setupEventListeners() {
             // Welcome screen
@@ -2017,6 +2192,7 @@
                 db.collection('emergency_logs').add({
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     userAgent: navigator.userAgent,
+                    deviceFingerprint: deviceFingerprint,
                     ipAddress: '', // This would be populated by a Cloud Function
                     location: '' // This would be populated by a Cloud Function if available
                 });
@@ -2071,8 +2247,25 @@
             loadingState.style.display = 'flex';
             loadingText.textContent = 'Se inițializează conexiunea securizată...';
             
-            // Start authentication process
-            authenticateAnonymously();
+            // Ensure device fingerprint is generated
+            if (!deviceFingerprint) {
+                generateDeviceFingerprint()
+                    .then((fingerprint) => {
+                        deviceFingerprint = fingerprint;
+                        authenticateAnonymously();
+                    })
+                    .catch((error) => {
+                        console.error('Error generating device fingerprint:', error);
+                        // Use a fallback fingerprint
+                        deviceFingerprint = CryptoJS.SHA256(
+                            navigator.userAgent + screen.width + screen.height + Date.now()
+                        ).toString();
+                        authenticateAnonymously();
+                    });
+            } else {
+                // Start authentication process
+                authenticateAnonymously();
+            }
         }
         
         // Authenticate anonymously
@@ -2080,6 +2273,12 @@
             auth.signInAnonymously()
                 .then(userCredential => {
                     currentUser = userCredential.user;
+                    loadingText.textContent = 'Se înregistrează dispozitivul...';
+                    
+                    // Register device fingerprint with user ID
+                    return registerDeviceFingerprint(deviceFingerprint);
+                })
+                .then(fingerprintHash => {
                     loadingText.textContent = 'Se creează sesiunea de chat...';
                     
                     // Get user info from form
@@ -2089,7 +2288,7 @@
                     const chatPhone = document.getElementById('chat-phone').value;
                     
                     // Create chat session
-                    return createChatSession(chatSubject, chatName, chatEmail, chatPhone);
+                    return createChatSession(chatSubject, chatName, chatEmail, chatPhone, deviceFingerprint);
                 })
                 .then(() => {
                     loadingText.textContent = 'Se conectează la departamentul relevant...';
@@ -2118,8 +2317,13 @@
         }
         
         // Create a new chat session
-        function createChatSession(subject, name, email, phone) {
+        function createChatSession(subject, name, email, phone, deviceFingerprint) {
             return new Promise((resolve, reject) => {
+                if (!deviceFingerprint) {
+                    reject(new Error('Device fingerprint not available'));
+                    return;
+                }
+                
                 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
                 
                 // Create chat document
@@ -2136,6 +2340,7 @@
                     updatedAt: timestamp,
                     agentId: null,
                     agentName: null,
+                    deviceFingerprint: deviceFingerprint, // Include device fingerprint
                     conversationData: {
                         clientPlatform: navigator.platform,
                         clientBrowser: navigator.userAgent,
@@ -2465,353 +2670,354 @@
             scrollToBottom();
         }
         
-// Display a local message (for offline support)
-function displayLocalMessage(message) {
-    // Clone the message object to avoid modifying the original
-    const localMessage = { ...message };
-    
-    // Add a local ID
-    localMessage.id = 'local-' + Date.now();
-    
-    // Add pending status indicator
-    localMessage.status = 'pending';
-    
-    // Display with "pending" styling
-    displayMessage(localMessage);
-    
-    // Update the message element to show it's queued
-    const messageElement = document.querySelector(`[data-message-id="${localMessage.id}"]`);
-    if (messageElement) {
-        const statusSpan = messageElement.querySelector('.message-status');
-        if (statusSpan) {
-            statusSpan.innerHTML = '<i class="material-icons" style="color: var(--warning-color);">schedule</i>';
-        }
-    }
-}
-
-// Add a system message
-function addSystemMessage(text) {
-    // Create a temporary ID to prevent duplication
-    const tempId = 'local-system-' + Date.now();
-    
-    // First add to UI immediately with the temp ID
-    const systemMessage = {
-        type: 'system',
-        content: text,
-        timestamp: new Date(),
-        id: tempId // Temporary ID to prevent duplication
-    };
-    
-    displayMessage(systemMessage);
-    
-    // Then add to Firestore, but don't display it again when it comes back
-    db.collection('chats').doc(currentChatId).collection('messages').add({
-        type: 'system',
-        content: text,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        clientGeneratedId: tempId // Track that this was generated by the client
-    }).catch(error => {
-        console.error('Error adding system message:', error);
-    });
-}
-
-// Scroll chat to bottom
-function scrollToBottom() {
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    
-    setTimeout(() => {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }, 50);
-}
-
-// =============================================
-// Typing Indicators
-// =============================================
-
-// Handle user typing start
-function handleTypingStart() {
-    if (!isTyping) {
-        isTyping = true;
-        
-        // Notify the server that the user is typing
-        db.collection('chats').doc(currentChatId).collection('typing')
-            .doc('user')
-            .set({
-                isTyping: true,
-                userId: currentUser.uid,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).catch(error => {
-                console.error('Error updating typing status:', error);
-            });
-    }
-    
-    // Reset the typing timeout
-    if (typingTimeout) {
-        clearTimeout(typingTimeout);
-    }
-    
-    typingTimeout = setTimeout(resetTypingIndicator, 3000);
-}
-
-// Reset typing indicator
-function resetTypingIndicator() {
-    if (isTyping) {
-        isTyping = false;
-        
-        // Notify the server that the user stopped typing
-        db.collection('chats').doc(currentChatId).collection('typing')
-            .doc('user')
-            .set({
-                isTyping: false,
-                userId: currentUser.uid,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).catch(error => {
-                console.error('Error updating typing status:', error);
-            });
-    }
-    
-    if (typingTimeout) {
-        clearTimeout(typingTimeout);
-        typingTimeout = null;
-    }
-}
-
-// Show agent typing indicator
-function showTypingIndicator() {
-    // Check if typing indicator already exists
-    let typingIndicator = document.querySelector('.typing-indicator');
-    
-    if (!typingIndicator) {
-        typingIndicator = document.createElement('div');
-        typingIndicator.className = 'typing-indicator';
-        typingIndicator.setAttribute('aria-label', 'Agentul scrie un mesaj');
-        
-        for (let i = 0; i < 3; i++) {
-            const dot = document.createElement('span');
-            dot.className = 'typing-dot';
-            typingIndicator.appendChild(dot);
-        }
-        
-        chatMessages.appendChild(typingIndicator);
-        scrollToBottom();
-    }
-}
-
-// Hide agent typing indicator
-function hideTypingIndicator() {
-    const typingIndicator = document.querySelector('.typing-indicator');
-    if (typingIndicator) {
-        typingIndicator.remove();
-    }
-}
-
-// =============================================
-// Read Receipts
-// =============================================
-
-// Set up read receipts
-function setupReadReceipts() {
-    // Update read status when the chat is visible
-    document.addEventListener('visibilitychange', updateReadStatus);
-    chatMessages.addEventListener('scroll', updateReadStatus);
-    
-    // Initial update
-    updateReadStatus();
-}
-
-// Update read status for all messages
-function updateReadStatus() {
-    if (document.visibilityState === 'visible' && !chatEnded) {
-        // Find the latest agent message
-        const agentMessages = document.querySelectorAll('.message-received');
-        if (agentMessages.length > 0) {
-            const lastAgentMessage = agentMessages[agentMessages.length - 1];
-            const messageId = lastAgentMessage.dataset.messageId;
+        // Display a local message (for offline support)
+        function displayLocalMessage(message) {
+            // Clone the message object to avoid modifying the original
+            const localMessage = { ...message };
             
-            if (messageId && !messageId.startsWith('local-')) {
-                updateMessageReadStatus(messageId);
+            // Add a local ID
+            localMessage.id = 'local-' + Date.now();
+            
+            // Add pending status indicator
+            localMessage.status = 'pending';
+            
+            // Display with "pending" styling
+            displayMessage(localMessage);
+            
+            // Update the message element to show it's queued
+            const messageElement = document.querySelector(`[data-message-id="${localMessage.id}"]`);
+            if (messageElement) {
+                const statusSpan = messageElement.querySelector('.message-status');
+                if (statusSpan) {
+                    statusSpan.innerHTML = '<i class="material-icons" style="color: var(--warning-color);">schedule</i>';
+                }
             }
         }
-    }
-}
-
-// Update a specific message's read status
-function updateMessageReadStatus(messageId) {
-    db.collection('chats').doc(currentChatId).collection('messages').doc(messageId)
-        .update({
-            readAt: firebase.firestore.FieldValue.serverTimestamp()
-        }).catch(error => {
-            console.error('Error updating read status:', error);
-        });
-}
-
-// =============================================
-// Chat Conclusion
-// =============================================
-
-// Handle chat ended
-function handleChatEnded() {
-    chatEnded = true;
-    
-    // Add system message
-    addSystemMessage('Conversația a fost încheiată.');
-    
-    // Disable input
-    messageInput.disabled = true;
-    btnSendMessage.disabled = true;
-    
-    // Show end screen after a delay
-    setTimeout(() => {
-        chatArea.style.display = 'none';
-        chatEnd.style.display = 'flex';
-    }, 3000);
-}
-
-// Confirm end chat
-function confirmEndChat() {
-    if (confirm('Sigur doriți să încheiați această conversație?')) {
-        endChat();
-    }
-}
-
-// End chat
-function endChat() {
-    chatEnded = true;
-    
-    // Update chat status in Firestore
-    db.collection('chats').doc(currentChatId).update({
-        status: 'closed',
-        endedBy: 'user',
-        endedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-        handleChatEnded();
-    }).catch(error => {
-        console.error('Error ending chat:', error);
-        showNotice(errorNotice, 'Eroare la închiderea conversației. Vă rugăm să încercați din nou.');
-    });
-}
-
-// Request transcript
-function requestTranscript() {
-    const email = document.getElementById('chat-email').value;
-    
-    if (!email || !email.includes('@')) {
-        showNotice(errorNotice, 'Vă rugăm să introduceți o adresă de email validă.');
-        return;
-    }
-    
-    // Show loading state
-    btnRequestTranscript.disabled = true;
-    btnRequestTranscript.textContent = 'Se trimite...';
-    
-    // Call Cloud Function to send transcript
-    const sendTranscriptFunction = firebase.functions().httpsCallable('sendChatTranscript');
-    sendTranscriptFunction({ chatId: currentChatId, email: email })
-        .then(result => {
-            showNotice(successNotice, 'Transcriptul a fost trimis la adresa de email specificată.');
-            btnRequestTranscript.textContent = 'Transcript trimis ✓';
-        })
-        .catch(error => {
-            console.error('Error requesting transcript:', error);
-            showNotice(errorNotice, 'Eroare la trimiterea transcriptului. Vă rugăm să încercați din nou.');
+        
+        // Add a system message
+        function addSystemMessage(text) {
+            // Create a temporary ID to prevent duplication
+            const tempId = 'local-system-' + Date.now();
+            
+            // First add to UI immediately with the temp ID
+            const systemMessage = {
+                type: 'system',
+                content: text,
+                timestamp: new Date(),
+                id: tempId // Temporary ID to prevent duplication
+            };
+            
+            displayMessage(systemMessage);
+            
+            // Then add to Firestore, but don't display it again when it comes back
+            db.collection('chats').doc(currentChatId).collection('messages').add({
+                type: 'system',
+                content: text,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                clientGeneratedId: tempId // Track that this was generated by the client
+            }).catch(error => {
+                console.error('Error adding system message:', error);
+            });
+        }
+        
+        // Scroll chat to bottom
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            setTimeout(() => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 50);
+        }
+        
+        // =============================================
+        // Typing Indicators
+        // =============================================
+        
+        // Handle user typing start
+        function handleTypingStart() {
+            if (!isTyping) {
+                isTyping = true;
+                
+                // Notify the server that the user is typing
+                db.collection('chats').doc(currentChatId).collection('typing')
+                    .doc('user')
+                    .set({
+                        isTyping: true,
+                        userId: currentUser.uid,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).catch(error => {
+                        console.error('Error updating typing status:', error);
+                    });
+            }
+            
+            // Reset the typing timeout
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+            }
+            
+            typingTimeout = setTimeout(resetTypingIndicator, 3000);
+        }
+        
+        // Reset typing indicator
+        function resetTypingIndicator() {
+            if (isTyping) {
+                isTyping = false;
+                
+                // Notify the server that the user stopped typing
+                db.collection('chats').doc(currentChatId).collection('typing')
+                    .doc('user')
+                    .set({
+                        isTyping: false,
+                        userId: currentUser.uid,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).catch(error => {
+                        console.error('Error updating typing status:', error);
+                    });
+            }
+            
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+                typingTimeout = null;
+            }
+        }
+        
+        // Show agent typing indicator
+        function showTypingIndicator() {
+            // Check if typing indicator already exists
+            let typingIndicator = document.querySelector('.typing-indicator');
+            
+            if (!typingIndicator) {
+                typingIndicator = document.createElement('div');
+                typingIndicator.className = 'typing-indicator';
+                typingIndicator.setAttribute('aria-label', 'Agentul scrie un mesaj');
+                
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('span');
+                    dot.className = 'typing-dot';
+                    typingIndicator.appendChild(dot);
+                }
+                
+                chatMessages.appendChild(typingIndicator);
+                scrollToBottom();
+            }
+        }
+        
+        // Hide agent typing indicator
+        function hideTypingIndicator() {
+            const typingIndicator = document.querySelector('.typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        // =============================================
+        // Read Receipts
+        // =============================================
+        
+        // Set up read receipts
+        function setupReadReceipts() {
+            // Update read status when the chat is visible
+            document.addEventListener('visibilitychange', updateReadStatus);
+            chatMessages.addEventListener('scroll', updateReadStatus);
+            
+            // Initial update
+            updateReadStatus();
+        }
+        
+        // Update read status for all messages
+        function updateReadStatus() {
+            if (document.visibilityState === 'visible' && !chatEnded) {
+                // Find the latest agent message
+                const agentMessages = document.querySelectorAll('.message-received');
+                if (agentMessages.length > 0) {
+                    const lastAgentMessage = agentMessages[agentMessages.length - 1];
+                    const messageId = lastAgentMessage.dataset.messageId;
+                    
+                    if (messageId && !messageId.startsWith('local-')) {
+                        updateMessageReadStatus(messageId);
+                    }
+                }
+            }
+        }
+        
+        // Update a specific message's read status
+        function updateMessageReadStatus(messageId) {
+            db.collection('chats').doc(currentChatId).collection('messages').doc(messageId)
+                .update({
+                    readAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(error => {
+                    console.error('Error updating read status:', error);
+                });
+        }
+        
+        // =============================================
+        // Chat Conclusion
+        // =============================================
+        
+        // Handle chat ended
+        function handleChatEnded() {
+            chatEnded = true;
+            
+            // Add system message
+            addSystemMessage('Conversația a fost încheiată.');
+            
+            // Disable input
+            messageInput.disabled = true;
+            btnSendMessage.disabled = true;
+            
+            // Show end screen after a delay
+            setTimeout(() => {
+                chatArea.style.display = 'none';
+                chatEnd.style.display = 'flex';
+            }, 3000);
+        }
+        
+        // Confirm end chat
+        function confirmEndChat() {
+            if (confirm('Sigur doriți să încheiați această conversație?')) {
+                endChat();
+            }
+        }
+        
+        // End chat
+        function endChat() {
+            chatEnded = true;
+            
+            // Update chat status in Firestore
+            db.collection('chats').doc(currentChatId).update({
+                status: 'closed',
+                endedBy: 'user',
+                endedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                handleChatEnded();
+            }).catch(error => {
+                console.error('Error ending chat:', error);
+                showNotice(errorNotice, 'Eroare la închiderea conversației. Vă rugăm să încercați din nou.');
+            });
+        }
+        
+        // Request transcript
+        function requestTranscript() {
+            const email = document.getElementById('chat-email').value;
+            
+            if (!email || !email.includes('@')) {
+                showNotice(errorNotice, 'Vă rugăm să introduceți o adresă de email validă.');
+                return;
+            }
+            
+            // Show loading state
+            btnRequestTranscript.disabled = true;
+            btnRequestTranscript.textContent = 'Se trimite...';
+            
+            // Call Cloud Function to send transcript
+            const sendTranscriptFunction = firebase.functions().httpsCallable('sendChatTranscript');
+            sendTranscriptFunction({ chatId: currentChatId, email: email })
+                .then(result => {
+                    showNotice(successNotice, 'Transcriptul a fost trimis la adresa de email specificată.');
+                    btnRequestTranscript.textContent = 'Transcript trimis ✓';
+                })
+                .catch(error => {
+                    console.error('Error requesting transcript:', error);
+                    showNotice(errorNotice, 'Eroare la trimiterea transcriptului. Vă rugăm să încercați din nou.');
+                    btnRequestTranscript.disabled = false;
+                    btnRequestTranscript.textContent = 'Primește transcript';
+                });
+        }
+        
+        // Reset chat and start a new one
+        function resetChat() {
+            // Sign out current user if any
+            if (currentUser) {
+                auth.signOut().catch(error => {
+                    console.error('Error signing out:', error);
+                });
+            }
+            
+            // Reset all variables
+            currentUser = null;
+            currentChatId = null;
+            selectedDepartment = null;
+            chatSessionKey = null;
+            agentPublicKey = null;
+            chatEnded = false;
+            isTyping = false;
+            agentJoinedFlag = false;
+            
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+                typingTimeout = null;
+            }
+            
+            // Clear message queue
+            messageQueue = [];
+            localStorage.removeItem('messageQueue_' + currentChatId);
+            
+            // Reset rate limiting
+            rateLimitConfig.sentMessages = [];
+            rateLimitConfig.isLimited = false;
+            
+            // Clear chat messages
+            chatMessages.innerHTML = '';
+            
+            // Reset all notices
+            errorNotice.style.display = 'none';
+            successNotice.style.display = 'none';
+            formErrorNotice.style.display = 'none';
+            
+            // Reset message input
+            messageInput.value = '';
+            messageInput.disabled = false;
+            
+            // Reset buttons
+            btnSendMessage.disabled = false;
             btnRequestTranscript.disabled = false;
             btnRequestTranscript.textContent = 'Primește transcript';
-        });
-}
 
-// Reset chat and start a new one
-function resetChat() {
-    // Sign out current user if any
-    if (currentUser) {
-        auth.signOut().catch(error => {
-            console.error('Error signing out:', error);
-        });
-    }
-    
-    // Reset all variables
-    currentUser = null;
-    currentChatId = null;
-    selectedDepartment = null;
-    chatSessionKey = null;
-    agentPublicKey = null;
-    chatEnded = false;
-    isTyping = false;
-    agentJoinedFlag = false;
-    
-    if (typingTimeout) {
-        clearTimeout(typingTimeout);
-        typingTimeout = null;
-    }
-    
-    // Clear message queue
-    messageQueue = [];
-    localStorage.removeItem('messageQueue_' + currentChatId);
-    
-    // Reset rate limiting
-    rateLimitConfig.sentMessages = [];
-    rateLimitConfig.isLimited = false;
-    
-    // Clear chat messages
-    chatMessages.innerHTML = '';
-    
-    // Reset all notices
-    errorNotice.style.display = 'none';
-    successNotice.style.display = 'none';
-    formErrorNotice.style.display = 'none';
-    
-    // Reset message input
-    messageInput.value = '';
-    messageInput.disabled = false;
-    
-    // Reset buttons
-    btnSendMessage.disabled = false;
-
-    // Reset form fields
-    document.getElementById('chat-subject').value = '';
-    document.getElementById('chat-email').value = '';
-    document.getElementById('chat-phone').value = '';
-    document.getElementById('privacy-check').checked = false;
-    document.getElementById('recording-check').checked = false;
-    
-    // Hide all sections except welcome screen
-    chatEnd.style.display = 'none';
-    chatArea.style.display = 'none';
-    chatForm.style.display = 'none';
-    departmentSelect.style.display = 'none';
-    loadingState.style.display = 'none';
-    emergencyCheck.style.display = 'none';
-    
-    // Show welcome screen
-    welcomeScreen.style.display = 'flex';
-    
-    // Generate a new encryption key
-    chatSessionKey = generateEncryptionKey();
-    
-    // Clean up chat listeners
-    cleanupChatListeners();
-}
-
-// =============================================
-// Cleanup function for listeners when chat ends
-// =============================================
-function cleanupChatListeners() {
-    if (window.chatListeners) {
-        if (window.chatListeners.chatDoc) {
-            window.chatListeners.chatDoc();
+            // Reset form fields
+            document.getElementById('chat-subject').value = '';
+            document.getElementById('chat-email').value = '';
+            document.getElementById('chat-phone').value = '';
+            document.getElementById('privacy-check').checked = false;
+            document.getElementById('recording-check').checked = false;
+            
+            // Hide all sections except welcome screen
+            chatEnd.style.display = 'none';
+            chatArea.style.display = 'none';
+            chatForm.style.display = 'none';
+            departmentSelect.style.display = 'none';
+            loadingState.style.display = 'none';
+            emergencyCheck.style.display = 'none';
+            
+            // Show welcome screen
+            welcomeScreen.style.display = 'flex';
+            
+            // Generate a new encryption key
+            chatSessionKey = generateEncryptionKey();
+            
+            // Clean up chat listeners
+            cleanupChatListeners();
         }
-        if (window.chatListeners.messages) {
-            window.chatListeners.messages();
+        
+        // =============================================
+        // Cleanup function for listeners when chat ends
+        // =============================================
+        function cleanupChatListeners() {
+            if (window.chatListeners) {
+                if (window.chatListeners.chatDoc) {
+                    window.chatListeners.chatDoc();
+                }
+                if (window.chatListeners.messages) {
+                    window.chatListeners.messages();
+                }
+                if (window.chatListeners.typing) {
+                    window.chatListeners.typing();
+                }
+                window.chatListeners = null;
+            }
         }
-        if (window.chatListeners.typing) {
-            window.chatListeners.typing();
-        }
-        window.chatListeners = null;
-    }
-}
 
-// Initialize the chat
-initializeChat();
-
-</script>
+        // Initialize the chat
+        initializeChat();
+    </script>
 </body>
 </html>
