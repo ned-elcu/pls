@@ -1,4 +1,32 @@
-/**
+// Create Material Icon Badge
+  function createMaterialIconBadge(status) {
+    const badge = document.createElement('div');
+    badge.className = `status-badge ${status}`;
+    
+    const icon = document.createElement('span');
+    icon.className = 'material-icons';
+    icon.textContent = DESIGN.icons[status];
+    icon.style.marginRight = '8px';
+    
+    const label = document.createElement('span');
+    label.className = 'label';
+    label.textContent = statusLabels[status];
+    
+    const count = document.createElement('span');
+    count.className = 'count';
+    count.textContent = '0';
+    
+    badge.appendChild(icon);
+    badge.appendChild(label);
+    badge.appendChild(count);
+    
+    // Add click event to filter chats
+    badge.addEventListener('click', () => {
+      filterChatsByStatus(status);
+    });
+    
+    return badge;
+  }/**
  * chatStateVisualizer.js
  * 
  * A comprehensive visual design system for chat states in the admin panel
@@ -56,33 +84,49 @@
       large: '12px'
     },
     
-    // Icons - Using Unicode characters for simplicity
-    // Production version should use proper icon font or SVGs
+    // Icons - Using Material Icons
     icons: {
-      waiting: '⏳',
-      taken: '👤',
-      resolved: '✓'
+      waiting: 'schedule',      // Hour glass/clock icon for waiting
+      taken: 'person',          // Person icon for taken chats
+      resolved: 'check_circle'  // Check icon for resolved chats
     }
   };
   
-  // Helper function to inject CSS
+  // Helper function to inject CSS with high priority
   function injectStyles(css) {
     const style = document.createElement('style');
     style.textContent = css;
+    // Append to end of head to ensure our styles have higher precedence
     document.head.appendChild(style);
+    
+    // For extra safety, we can also try to load after a slight delay
+    // to ensure our styles come after any async-loaded stylesheets
+    setTimeout(() => {
+      const reinforcementStyle = document.createElement('style');
+      reinforcementStyle.textContent = css;
+      document.head.appendChild(reinforcementStyle);
+    }, 500);
   }
   
-  // Base styles for all chat items
+  // Reset and enhanced specificity styles for all chat items
   const baseStyles = `
-    .chat-item {
-      margin: 12px 0;
-      padding: 16px;
-      border-radius: ${DESIGN.borderRadius.standard};
-      transition: all ${DESIGN.animation.standard};
-      position: relative;
-      overflow: hidden;
-      box-shadow: ${DESIGN.shadows.light};
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    /* Reset key visual properties to ensure our styles take precedence */
+    .chat-item,
+    div.chat-item,
+    body .chat-container .chat-item,
+    #chats .chat-item,
+    .chats-list .chat-item {
+      background: none;
+      border: none !important;
+      box-shadow: none;
+      margin: 12px 0 !important;
+      padding: 16px !important;
+      border-radius: ${DESIGN.borderRadius.standard} !important;
+      transition: all ${DESIGN.animation.standard} !important;
+      position: relative !important;
+      overflow: hidden !important;
+      box-shadow: ${DESIGN.shadows.light} !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
     }
     
     .chat-item:hover {
@@ -97,6 +141,18 @@
       top: 16px;
       left: 16px;
       opacity: 0.9;
+      font-family: 'Material Icons' !important;
+      font-weight: normal;
+      font-style: normal;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
     }
     
     .chat-item .chat-time {
@@ -160,17 +216,27 @@
     }
   `;
   
-  // Status-specific styles
+  // Status-specific styles with increased specificity and !important
   const waitingStyles = `
-    .chat-item.waiting {
-      background-color: ${DESIGN.colors.waiting.secondary};
-      border: 1px solid ${DESIGN.colors.waiting.border};
-      color: ${DESIGN.colors.waiting.text};
+    /* High specificity selectors to override existing styles */
+    .chat-item.waiting,
+    div.chat-item.waiting,
+    body .chat-container .chat-item.waiting,
+    #chats .chat-item.waiting,
+    .chats-list .chat-item.waiting {
+      background-color: ${DESIGN.colors.waiting.secondary} !important;
+      border: 1px solid ${DESIGN.colors.waiting.border} !important;
+      color: ${DESIGN.colors.waiting.text} !important;
     }
     
-    .chat-item.waiting::before {
-      content: '${DESIGN.icons.waiting}';
-      color: ${DESIGN.colors.waiting.icon};
+    /* High specificity selectors to override existing styles */
+    .chat-item.waiting::before,
+    div.chat-item.waiting::before,
+    body .chat-container .chat-item.waiting::before,
+    #chats .chat-item.waiting::before,
+    .chats-list .chat-item.waiting::before {
+      content: '${DESIGN.icons.waiting}' !important;
+      color: ${DESIGN.colors.waiting.icon} !important;
     }
     
     .chat-item.waiting::after {
@@ -202,15 +268,24 @@
   `;
   
   const takenStyles = `
-    .chat-item.taken {
-      background-color: ${DESIGN.colors.taken.secondary};
-      border: 1px solid ${DESIGN.colors.taken.border};
-      color: ${DESIGN.colors.taken.text};
+    /* High specificity selectors for taken status */
+    .chat-item.taken,
+    div.chat-item.taken,
+    body .chat-container .chat-item.taken,
+    #chats .chat-item.taken,
+    .chats-list .chat-item.taken {
+      background-color: ${DESIGN.colors.taken.secondary} !important;
+      border: 1px solid ${DESIGN.colors.taken.border} !important;
+      color: ${DESIGN.colors.taken.text} !important;
     }
     
-    .chat-item.taken::before {
-      content: '${DESIGN.icons.taken}';
-      color: ${DESIGN.colors.taken.icon};
+    .chat-item.taken::before,
+    div.chat-item.taken::before,
+    body .chat-container .chat-item.taken::before,
+    #chats .chat-item.taken::before,
+    .chats-list .chat-item.taken::before {
+      content: '${DESIGN.icons.taken}' !important;
+      color: ${DESIGN.colors.taken.icon} !important;
     }
     
     .chat-item.taken::after {
@@ -244,15 +319,24 @@
   `;
   
   const resolvedStyles = `
-    .chat-item.resolved {
-      background-color: ${DESIGN.colors.resolved.secondary};
-      border: 1px solid ${DESIGN.colors.resolved.border};
-      color: ${DESIGN.colors.resolved.text};
+    /* High specificity selectors for resolved status */
+    .chat-item.resolved,
+    div.chat-item.resolved,
+    body .chat-container .chat-item.resolved,
+    #chats .chat-item.resolved,
+    .chats-list .chat-item.resolved {
+      background-color: ${DESIGN.colors.resolved.secondary} !important;
+      border: 1px solid ${DESIGN.colors.resolved.border} !important;
+      color: ${DESIGN.colors.resolved.text} !important;
     }
     
-    .chat-item.resolved::before {
-      content: '${DESIGN.icons.resolved}';
-      color: ${DESIGN.colors.resolved.icon};
+    .chat-item.resolved::before,
+    div.chat-item.resolved::before,
+    body .chat-container .chat-item.resolved::before,
+    #chats .chat-item.resolved::before,
+    .chats-list .chat-item.resolved::before {
+      content: '${DESIGN.icons.resolved}' !important;
+      color: ${DESIGN.colors.resolved.icon} !important;
     }
     
     .chat-item.resolved::after {
@@ -479,25 +563,8 @@
     };
     
     statuses.forEach(status => {
-      const badge = document.createElement('div');
-      badge.className = `status-badge ${status}`;
-      
-      const label = document.createElement('span');
-      label.className = 'label';
-      label.textContent = statusLabels[status];
-      
-      const count = document.createElement('span');
-      count.className = 'count';
-      count.textContent = '0';
-      
-      badge.appendChild(label);
-      badge.appendChild(count);
+      const badge = createMaterialIconBadge(status);
       badgeContainer.appendChild(badge);
-      
-      // Add click event to filter chats
-      badge.addEventListener('click', () => {
-        filterChatsByStatus(status);
-      });
     });
     
     // Find chat container and insert badges before it
@@ -612,10 +679,50 @@
     }
   }
   
+  // Add style priority ensurance function
+  function ensureStylePriority() {
+    // Force recalculation of styles by triggering a reflow
+    document.querySelectorAll('.chat-item').forEach(item => {
+      item.style.display = item.style.display;
+    });
+    
+    // Check if our styles have been applied, and if not, try again with higher specificity
+    const waitingItem = document.querySelector('.chat-item.waiting');
+    if (waitingItem && getComputedStyle(waitingItem).backgroundColor !== DESIGN.colors.waiting.secondary) {
+      console.log('Styles were overridden - applying emergency override');
+      
+      // Create an emergency style with the highest possible specificity
+      const emergencyStyle = document.createElement('style');
+      emergencyStyle.textContent = `
+        /* Maximum specificity override */
+        html body div[class] .chat-item.waiting {
+          background-color: ${DESIGN.colors.waiting.secondary} !important;
+          border: 2px solid ${DESIGN.colors.waiting.border} !important;
+        }
+        
+        html body div[class] .chat-item.taken {
+          background-color: ${DESIGN.colors.taken.secondary} !important;
+          border: 2px solid ${DESIGN.colors.taken.border} !important;
+        }
+        
+        html body div[class] .chat-item.resolved {
+          background-color: ${DESIGN.colors.resolved.secondary} !important;
+          border: 2px solid ${DESIGN.colors.resolved.border} !important;
+        }
+      `;
+      document.head.appendChild(emergencyStyle);
+    }
+  }
+  
   // Run the enhancement when DOM is ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', applyEnhancedChatStyles);
+    document.addEventListener('DOMContentLoaded', () => {
+      applyEnhancedChatStyles();
+      // Ensure styles are applied even after any async loads
+      setTimeout(ensureStylePriority, 1000);
+    });
   } else {
     applyEnhancedChatStyles();
+    setTimeout(ensureStylePriority, 1000);
   }
 })();
