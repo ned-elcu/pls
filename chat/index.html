@@ -2,14 +2,14 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Chat online cu Poliția Locală Slobozia pentru raportarea problemelor non-urgente">
-    <title>Chat Online - Poliția Locală Slobozia</title>
+    <meta name="theme-color" content="#1A2F5F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Chat - Poliția Locală Slobozia</title>
     
-    <!-- Include components.js for shared styles -->
-    <script src="../components.js"></script>
-    
-    <!-- Firebase SDK - Removed Storage -->
+    <!-- Firebase SDK - Optimized version -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-firestore-compat.min.js"></script>
@@ -17,36 +17,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-database-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
-    
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
-    <!-- Page-specific styles -->
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Import fonts to match main site */
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
-        
+        /* Reset & Base Styles */
         :root {
             --primary-color: #1A2F5F;
+            --primary-dark: #0F1B38;
             --secondary-color: #1E88E5;
             --secondary-light: rgba(30, 136, 229, 0.2);
             --accent-color: #FFCA28;
             --accent-dark: #FFC107;
             --text-primary: #333333;
             --text-secondary: #666666;
+            --text-light: #FFFFFF;
             --background-light: #F5F7FA;
             --background-dark: #172B4D;
             --success-color: #4CAF50;
             --warning-color: #FF9800;
             --danger-color: #F44336;
-            --border-radius-small: 6px;
-            --border-radius-medium: 10px;
-            --border-radius-large: 15px;
-            --shadow-small: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.1);
-            --shadow-large: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --border-radius-small: 12px;
+            --border-radius-medium: 16px;
+            --border-radius-large: 22px;
+            --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.15);
+            --shadow-large: 0 10px 30px rgba(0, 0, 0, 0.2);
             --transition-fast: all 0.3s ease;
             --transition-medium: all 0.5s ease;
+            --font-size-base: 16px;
+            --font-size-large: 18px;
+            --font-size-xl: 20px;
+            --font-size-xxl: 24px;
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
         }
         
         * {
@@ -55,21 +65,36 @@
             box-sizing: border-box;
         }
         
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: fixed;
+            -webkit-overflow-scrolling: touch;
+        }
+        
         body {
             font-family: 'Poppins', sans-serif;
+            font-size: var(--font-size-base);
+            line-height: 1.6;
             color: var(--text-primary);
-            overflow-x: hidden;
             background-color: var(--background-light);
+            -webkit-tap-highlight-color: transparent;
         }
         
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
         }
         
         a:focus, button:focus, input:focus, select:focus, textarea:focus {
             outline: 3px solid var(--secondary-light);
             outline-offset: 2px;
+        }
+        
+        button, input, textarea {
+            font-family: inherit;
+            font-size: inherit;
         }
         
         .sr-only {
@@ -84,191 +109,37 @@
             border-width: 0;
         }
         
-        /* Hero Section */
-        .hero-section {
-            position: relative;
-            background: linear-gradient(to right, rgba(26, 47, 95, 0.9) 0%, rgba(26, 47, 95, 0.7) 100%), url('https://images4.imagebam.com/c0/05/ef/ME11M3FT_o.png');
-            background-size: cover;
-            background-position: center;
-            padding: 4rem 2rem 3rem;
-            color: white;
-            text-align: center;
-        }
-        
-        .hero-badge {
-            display: inline-block;
-            background-color: var(--accent-color);
-            color: var(--text-primary);
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            margin-bottom: 1.5rem;
-        }
-        
-        .hero-title {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .hero-title span {
-            color: var(--accent-color);
-            position: relative;
-        }
-        
-        .hero-title span::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 8px;
-            background-color: var(--accent-color);
-            opacity: 0.3;
-            border-radius: 4px;
-        }
-        
-        .hero-description {
-            max-width: 700px;
-            margin: 0 auto 2rem;
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-        
-        .hero-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1.2rem;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem 2rem;
-            border-radius: var(--border-radius-medium);
-            font-weight: 600;
-            text-decoration: none;
-            transition: var(--transition-fast);
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-        
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.5s ease;
-            z-index: -1;
-        }
-        
-        .btn:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
-        }
-        
-        .btn i {
-            margin-left: 0.8rem;
-            transition: var(--transition-fast);
-        }
-        
-        .btn:hover i {
-            transform: translateX(5px);
-        }
-        
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: var(--text-primary);
-            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--accent-dark);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
-        }
-        
-        .btn-secondary {
-            background-color: transparent;
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .btn-secondary:hover {
-            border-color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Chat Section */
-        .chat-section {
-            padding: 3rem 2rem;
-            background-color: var(--background-light);
-            position: relative;
-        }
-        
-        .chat-bg-pattern {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 10% 10%, rgba(30, 136, 229, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 90% 90%, rgba(255, 202, 40, 0.05) 0%, transparent 50%);
-            z-index: 0;
-        }
-        
-        .chat-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Chat Widget */
-        .chat-widget {
-            background-color: white;
-            border-radius: var(--border-radius-large);
-            box-shadow: var(--shadow-large);
-            overflow: hidden;
-            max-width: 500px;
-            margin: 0 auto;
-            height: 600px;
+        /* App Layout */
+        .app-container {
             display: flex;
             flex-direction: column;
-            position: relative; /* Ensures proper stacking context */
-            contain: content; /* Performance optimization for scrolling */
+            height: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            background-color: white;
         }
         
-        .chat-header {
+        /* Header */
+        .app-header {
             background-color: var(--primary-color);
             color: white;
-            padding: 1.2rem;
+            padding: var(--spacing-md);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            box-shadow: var(--shadow-small);
+            z-index: 10;
+            height: 70px;
             flex-shrink: 0;
         }
         
-        .chat-header-left {
+        .header-left {
             display: flex;
             align-items: center;
         }
         
-        .chat-header-logo {
+        .header-logo {
             width: 40px;
             height: 40px;
             background-color: white;
@@ -276,139 +147,236 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 1rem;
+            margin-right: var(--spacing-md);
+            flex-shrink: 0;
         }
         
-        .chat-header-logo img {
+        .header-logo img {
             width: 30px;
             height: 30px;
         }
         
-        .chat-header-title {
-            font-size: 1.1rem;
+        .header-title {
+            font-size: var(--font-size-large);
             font-weight: 600;
         }
         
-        .chat-header-status {
-            font-size: 0.8rem;
-            opacity: 0.8;
+        .header-status {
+            font-size: calc(var(--font-size-base) - 2px);
+            opacity: 0.9;
+            margin-top: -4px;
         }
         
-        .chat-controls i {
+        .header-actions button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: var(--font-size-xl);
             cursor: pointer;
-            margin-left: 0.8rem;
-            font-size: 1.2rem;
+            padding: var(--spacing-xs);
             transition: var(--transition-fast);
         }
         
-        .chat-controls i:hover {
+        .header-actions button:hover {
             color: var(--accent-color);
         }
         
-        .chat-emergency {
-            padding: 1.5rem;
-            background-color: rgba(244, 67, 54, 0.1);
-            border-left: 4px solid var(--danger-color);
-            margin-bottom: 1px;
-            flex-shrink: 0;
+        /* Main Content Area */
+        .app-content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Welcome Screen */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--spacing-xl);
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(26, 47, 95, 0.9) 0%, rgba(26, 47, 95, 0.7) 100%), url('https://images4.imagebam.com/c0/05/ef/ME11M3FT_o.png');
+            background-size: cover;
+            background-position: center;
+            color: var(--text-light);
+        }
+        
+        .welcome-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .welcome-description {
+            font-size: var(--font-size-large);
+            margin-bottom: var(--spacing-xl);
+            max-width: 600px;
+        }
+        
+        .welcome-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .welcome-logo img {
+            width: 60px;
+            height: 60px;
+        }
+        
+        /* Emergency Check */
+        .emergency-check {
+            padding: var(--spacing-xl);
+            background-color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .emergency-title {
-            font-size: 1.1rem;
+            font-size: var(--font-size-xxl);
             color: var(--danger-color);
-            margin-bottom: 0.5rem;
+            margin-bottom: var(--spacing-lg);
             display: flex;
             align-items: center;
         }
         
         .emergency-title i {
-            margin-right: 0.5rem;
+            margin-right: var(--spacing-sm);
         }
         
         .emergency-text {
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
+            font-size: var(--font-size-large);
+            margin-bottom: var(--spacing-xl);
             color: var(--text-primary);
         }
         
         .emergency-buttons {
             display: flex;
-            gap: 1rem;
+            flex-direction: column;
+            gap: var(--spacing-md);
         }
         
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: var(--border-radius-medium);
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-fast);
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn-danger:hover {
-            background-color: #d32f2f;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
-        }
-        
-        .btn-safe {
-            background-color: var(--success-color);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: var(--border-radius-medium);
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-fast);
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn-safe:hover {
-            background-color: #43a047;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
-        }
-        
-        .chat-form {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        /* Department Selection */
+        .department-select {
+            padding: var(--spacing-lg);
+            height: 100%;
             overflow-y: auto;
+            display: none;
+            flex-direction: column;
+            background-color: white;
+        }
+        
+        .department-title {
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+            color: var(--primary-color);
+        }
+        
+        .department-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        
+        .department-item {
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-medium);
+            background-color: var(--background-light);
+            box-shadow: var(--shadow-small);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+        }
+        
+        .department-item:active {
+            transform: scale(0.98);
+        }
+        
+        .department-item:hover {
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-2px);
+        }
+        
+        .department-icon {
+            width: 56px;
+            height: 56px;
+            background-color: var(--secondary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--spacing-md);
+            color: var(--secondary-color);
+            flex-shrink: 0;
+        }
+        
+        .department-icon i {
+            font-size: 28px;
+        }
+        
+        .department-info {
             flex: 1;
         }
         
+        .department-name {
+            font-weight: 600;
+            font-size: var(--font-size-large);
+            margin-bottom: 4px;
+        }
+        
+        .department-description {
+            color: var(--text-secondary);
+        }
+        
+        /* Pre-Chat Form */
+        .chat-form {
+            padding: var(--spacing-lg);
+            overflow-y: auto;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            background-color: white;
+        }
+        
         .form-title {
-            font-size: 1.1rem;
+            font-size: var(--font-size-xl);
             color: var(--primary-color);
-            margin-bottom: 1rem;
+            margin-bottom: var(--spacing-lg);
         }
         
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: var(--spacing-lg);
         }
         
         .form-label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: var(--spacing-xs);
             font-weight: 500;
             color: var(--text-primary);
+            font-size: var(--font-size-base);
         }
         
         .form-control {
             width: 100%;
-            padding: 0.8rem 1rem;
+            padding: var(--spacing-md);
             border-radius: var(--border-radius-small);
             border: 1px solid rgba(0, 0, 0, 0.1);
-            background-color: #f9f9f9;
+            background-color: var(--background-light);
             transition: var(--transition-fast);
+            font-size: var(--font-size-large);
         }
         
         .form-control:focus {
@@ -417,95 +385,65 @@
             box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
         }
         
-        .form-select {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border-radius: var(--border-radius-small);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            background-color: #f9f9f9;
-            transition: var(--transition-fast);
-            -webkit-appearance: none;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1.5rem;
-        }
-        
-        .form-select:focus {
-            outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
-        }
-        
         .form-check {
             display: flex;
-            align-items: center;
-            margin-bottom: 0.8rem;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-md);
         }
         
         .form-check-input {
-            margin-right: 0.5rem;
-            width: 18px;
-            height: 18px;
+            margin-right: var(--spacing-sm);
+            margin-top: 4px;
+            width: 20px;
+            height: 20px;
         }
         
         .form-check-label {
-            font-size: 0.9rem;
+            font-size: var(--font-size-base);
             color: var(--text-secondary);
         }
         
-        .btn-submit {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: var(--border-radius-medium);
-            font-weight: 600;
+        .form-check-label a {
+            color: var(--secondary-color);
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-fast);
-            border: none;
-            cursor: pointer;
-            width: 100%;
         }
         
-        .btn-submit:hover {
-            background-color: #1976d2;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
+        .gdpr-info {
+            margin-top: var(--spacing-md);
+            font-size: 14px;
+            color: var(--text-secondary);
+            background-color: rgba(0, 0, 0, 0.03);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-small);
         }
         
-        .btn-submit:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .btn-submit i {
-            margin-left: 0.5rem;
+        /* Chat Area */
+        .chat-area {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            display: none;
         }
         
         .chat-messages {
-            padding: 1.5rem;
+            flex: 1;
             overflow-y: auto;
-            flex: 1 1 auto;
+            padding: var(--spacing-md);
+            background-color: var(--background-light);
             display: flex;
             flex-direction: column;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            background-color: #f9f9f9;
-            height: 0; /* Important for flex to work properly */
-            min-height: 0; /* Also important for flex containers */
-            position: relative; /* Helps with scrolling in some browsers */
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            -webkit-overflow-scrolling: touch;
         }
         
         .message {
-            margin-bottom: 1rem;
-            max-width: 80%;
+            margin-bottom: var(--spacing-md);
+            max-width: 85%;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .message-received {
@@ -517,28 +455,30 @@
         }
         
         .message-content {
-            padding: 1rem;
+            padding: var(--spacing-md);
             border-radius: var(--border-radius-medium);
             position: relative;
+            font-size: var(--font-size-large);
+            box-shadow: var(--shadow-small);
         }
         
         .message-received .message-content {
             background-color: white;
-            border-bottom-left-radius: 0;
-            box-shadow: var(--shadow-small);
+            border-bottom-left-radius: 4px;
         }
         
         .message-sent .message-content {
-            background-color: var(--secondary-light);
-            color: var(--primary-color);
-            border-bottom-right-radius: 0;
+            background-color: var(--secondary-color);
+            color: white;
+            border-bottom-right-radius: 4px;
         }
         
         .message-meta {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
+            font-size: 12px;
+            margin-top: 4px;
+            padding: 0 var(--spacing-xs);
         }
         
         .message-time {
@@ -552,38 +492,39 @@
         }
         
         .message-status i {
-            font-size: 1rem;
-            margin-left: 0.3rem;
+            font-size: 14px;
+            margin-left: 4px;
         }
         
         .message-system {
             align-self: center;
             max-width: 90%;
             background-color: rgba(0,0,0,0.05);
-            padding: 0.5rem 1rem;
+            padding: var(--spacing-sm) var(--spacing-md);
             border-radius: var(--border-radius-small);
-            margin-bottom: 1rem;
+            margin-bottom: var(--spacing-md);
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 14px;
             color: var(--text-secondary);
         }
         
         .chat-input {
-            padding: 1rem;
+            padding: var(--spacing-md);
+            background-color: white;
             border-top: 1px solid rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
-            background-color: white;
-            flex-shrink: 0;
+            gap: var(--spacing-sm);
         }
         
         .chat-input-field {
             flex: 1;
-            padding: 0.8rem;
+            padding: var(--spacing-md);
             border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: var(--border-radius-medium);
-            margin-right: 0.5rem;
+            border-radius: 24px;
+            background-color: var(--background-light);
             transition: var(--transition-fast);
+            font-size: var(--font-size-large);
         }
         
         .chat-input-field:focus {
@@ -594,26 +535,30 @@
         
         .chat-actions {
             display: flex;
-            gap: 0.5rem;
+            gap: var(--spacing-xs);
         }
         
         .chat-action {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f1f1f1;
-            color: var(--text-secondary);
+            background-color: var(--secondary-light);
+            color: var(--secondary-color);
             border: none;
             cursor: pointer;
             transition: var(--transition-fast);
         }
         
-        .chat-action:hover {
-            background-color: var(--secondary-light);
-            color: var(--secondary-color);
+        .chat-action:hover, .chat-action:active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .chat-action i {
+            font-size: 24px;
         }
         
         .chat-action:disabled {
@@ -626,12 +571,83 @@
             color: white;
         }
         
-        .chat-action-send:hover {
-            background-color: #1976d2;
-            color: white;
+        /* Chat End */
+        .chat-end {
+            padding: var(--spacing-xl);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
         }
         
-        /* Typing animation for the agent */
+        .chat-end-icon {
+            font-size: 48px;
+            color: var(--success-color);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .chat-end-title {
+            font-size: var(--font-size-xxl);
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .chat-end-text {
+            margin-bottom: var(--spacing-xl);
+            color: var(--text-secondary);
+            font-size: var(--font-size-large);
+        }
+        
+        /* Loading State */
+        .loading-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            gap: var(--spacing-lg);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--secondary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Notices */
+        .notice {
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-radius: var(--border-radius-small);
+            font-size: var(--font-size-base);
+            display: none;
+        }
+        
+        .error-notice {
+            background-color: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid var(--danger-color);
+            color: var(--danger-color);
+        }
+        
+        .success-notice {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid var(--success-color);
+            color: var(--success-color);
+        }
+        
+        /* Typing Animation */
         @keyframes typingAnimation {
             0% { opacity: 0.3; }
             50% { opacity: 1; }
@@ -643,12 +659,16 @@
             align-items: center;
             margin: 10px 0;
             align-self: flex-start;
+            background: white;
+            padding: 12px 16px;
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
         }
         
         .typing-dot {
-            height: 8px;
-            width: 8px;
-            margin: 0 1px;
+            height: 10px;
+            width: 10px;
+            margin: 0 2px;
             background-color: var(--secondary-color);
             border-radius: 50%;
             display: inline-block;
@@ -663,480 +683,415 @@
             animation-delay: 0.4s;
         }
         
-        /* Loading spinner */
-        .loading-spinner {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(0, 0, 0, 0.1);
-            border-radius: 50%;
-            border-top-color: var(--secondary-color);
-            animation: spin 1s ease-in-out infinite;
-            margin: 0 auto;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .loading-container {
-            display: flex;
-            flex-direction: column;
+        /* Buttons */
+        .btn {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            color: var(--text-secondary);
-            gap: 1rem;
-        }
-        
-        /* Chat end */
-        .chat-end {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            height: 100%;
-        }
-        
-        .chat-end-icon {
-            font-size: 3rem;
-            color: var(--secondary-color);
-            margin-bottom: 1rem;
-        }
-        
-        .chat-end-title {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-        
-        .chat-end-text {
-            margin-bottom: 1.5rem;
-            color: var(--text-secondary);
-        }
-        
-        .chat-end-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .btn-outlined {
-            background-color: transparent;
-            border: 1px solid var(--secondary-color);
-            color: var(--secondary-color);
-        }
-        
-        .btn-outlined:hover {
-            background-color: var(--secondary-light);
-        }
-        
-        /* Department selection */
-        .department-select {
-            padding: 1.5rem;
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            overflow-y: auto;
-            flex: 1;
-        }
-        
-        .department-title {
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-        
-        .department-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .department-item {
-            padding: 1rem;
+            padding: var(--spacing-md) var(--spacing-lg);
             border-radius: var(--border-radius-medium);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-        }
-        
-        .department-item:hover {
-            border-color: var(--secondary-color);
-            box-shadow: var(--shadow-small);
-            transform: translateY(-2px);
-        }
-        
-        .department-icon {
-            width: 40px;
-            height: 40px;
-            background-color: var(--secondary-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            color: var(--secondary-color);
-        }
-        
-        .department-info {
-            flex: 1;
-        }
-        
-        .department-name {
             font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-        
-        .department-description {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        
-        /* Map preview */
-        .map-preview {
+            text-decoration: none;
+            transition: var(--transition-fast);
+            font-size: var(--font-size-large);
+            border: none;
+            cursor: pointer;
+            min-height: 56px;
             width: 100%;
-            height: 200px;
-            border-radius: var(--border-radius-medium);
-            margin-bottom: 0.5rem;
+            max-width: 400px;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+            box-shadow: var(--shadow-small);
+        }
+        
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #1976d2;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .btn-secondary {
+            background-color: var(--background-light);
+            color: var(--text-primary);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary:hover, .btn-secondary:focus {
             background-color: #e9e9e9;
         }
         
-        /* Security indicators */
-        .security-info {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            margin-top: auto;
-            padding-top: 1rem;
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+            box-shadow: var(--shadow-small);
         }
         
-        .security-info i {
-            color: var(--success-color);
-            font-size: 1rem;
+        .btn-danger:hover, .btn-danger:focus {
+            background-color: #d32f2f;
+            box-shadow: var(--shadow-medium);
         }
         
-        /* GDPR compliance info */
-        .gdpr-info {
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            background-color: rgba(0, 0, 0, 0.03);
-            padding: 0.8rem;
-            border-radius: var(--border-radius-small);
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+            box-shadow: var(--shadow-small);
         }
         
-        .gdpr-info a {
-            color: var(--secondary-color);
-            text-decoration: none;
+        .btn-success:hover, .btn-success:focus {
+            background-color: #43a047;
+            box-shadow: var(--shadow-medium);
         }
         
-        .gdpr-info a:hover {
-            text-decoration: underline;
+        .btn i {
+            margin-right: var(--spacing-sm);
+            font-size: 24px;
         }
         
-        /* Error notice */
-        .error-notice {
-            background-color: rgba(244, 67, 54, 0.1);
-            border-left: 4px solid var(--danger-color);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            color: var(--danger-color);
-            font-size: 0.9rem;
-            display: none;
+        /* Welcome Screen Button */
+        .welcome-btn {
+            max-width: 280px;
+            margin-top: var(--spacing-md);
         }
         
-        /* Success notice */
-        .success-notice {
-            background-color: rgba(76, 175, 80, 0.1);
-            border-left: 4px solid var(--success-color);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            color: var(--success-color);
-            font-size: 0.9rem;
-            display: none;
-        }
-        
-        /* Media queries */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2rem;
-            }
-            
-            .chat-widget {
-                height: 80vh;
-                min-height: 530px;
-                max-height: 600px;
-            }
-            
-            .emergency-buttons {
-                flex-direction: column;
-            }
-            
-            .department-item {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .department-icon {
-                margin-right: 0;
-                margin-bottom: 0.5rem;
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            .message,
+            .btn:hover,
+            .department-item:hover,
+            .loading-spinner,
+            .typing-dot {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
             }
         }
         
-        /* High contrast mode enhancements */
+        /* High contrast mode */
         @media (forced-colors: active) {
-            .btn, 
+            .btn,
             .chat-action,
             .form-control,
-            .form-select {
-                border: 1px solid currentColor;
-            }
-            
             .message-content {
                 border: 1px solid currentColor;
             }
         }
+        
+        /* Responsive */
+        @media (min-width: 768px) {
+            .app-container {
+                max-width: 500px;
+                height: 100%;
+                box-shadow: var(--shadow-large);
+            }
+            
+            .emergency-buttons {
+                flex-direction: row;
+                justify-content: center;
+            }
+            
+            .btn {
+                width: auto;
+            }
+        }
+        
+        /* PWA Installation Banner */
+        .pwa-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--primary-color);
+            color: white;
+            padding: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 999;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .pwa-banner.show {
+            transform: translateY(0);
+        }
+        
+        .pwa-message {
+            flex: 1;
+            margin-right: var(--spacing-md);
+        }
+        
+        .pwa-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .pwa-buttons {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .pwa-btn {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius-small);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .pwa-btn-install {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+        }
+        
+        .pwa-btn-dismiss {
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
     </style>
 </head>
 <body>
-    <!-- Header container - will be populated by components.js -->
-    <div id="header-container"></div>
-
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-badge">Serviciu Nou</div>
-        <h1 class="hero-title">Chat <span>Online</span> cu Poliția Locală</h1>
-        <p class="hero-description">Comunicarea rapidă și eficientă cu Poliția Locală Slobozia este acum mai ușoară ca niciodată. Serviciul nostru de chat online vă permite să raportați probleme non-urgente și să primiți asistență în timp real.</p>
-        <div class="hero-buttons">
-            <a href="#chat-section" class="btn btn-primary">Începe Chat <i class="material-icons">message</i></a>
-        </div>
-    </section>
-
-    <!-- Chat Section -->
-    <section id="chat-section" class="chat-section">
-        <div class="chat-bg-pattern"></div>
-        <div class="chat-container">
-            <!-- Chat Widget -->
-            <div class="chat-widget" role="application" aria-label="Chat cu Poliția Locală">
-                <div class="chat-header" role="banner">
-                    <div class="chat-header-left">
-                        <div class="chat-header-logo">
-                            <img src="https://images4.imagebam.com/d3/36/5c/ME11M3EE_o.png" alt="Logo Poliția Locală">
-                        </div>
-                        <div>
-                            <div class="chat-header-title">Poliția Locală Slobozia</div>
-                            <div class="chat-header-status" aria-live="polite">
-                                <span id="connectionStatus">Online</span> • 
-                                <span id="securityStatus">Chat Securizat</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-controls">
-                        <button class="chat-control-button" aria-label="Închide chat" id="btnCloseChat"><i class="material-icons">close</i></button>
-                    </div>
+    <div class="app-container">
+        <!-- App Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="header-logo">
+                    <img src="https://images4.imagebam.com/d3/36/5c/ME11M3EE_o.png" alt="Logo Poliția Locală">
                 </div>
-                
-                <!-- Error Notice -->
-                <div id="errorNotice" class="error-notice" role="alert">
-                    A apărut o eroare. Vă rugăm să încercați din nou.
-                </div>
-                
-                <!-- Success Notice -->
-                <div id="successNotice" class="success-notice" role="status">
-                    Operație efectuată cu succes!
-                </div>
-                
-                <!-- Emergency Check -->
-                <div id="emergencyCheck" class="chat-emergency" role="alertdialog" aria-labelledby="emergency-title" aria-describedby="emergency-text">
-                    <h4 id="emergency-title" class="emergency-title"><i class="material-icons" aria-hidden="true">warning</i> Verificare Urgență</h4>
-                    <p id="emergency-text" class="emergency-text">Vă aflați într-o situație de urgență care necesită asistență imediată?</p>
-                    <div class="emergency-buttons">
-                        <button id="btnEmergency" class="btn-danger" aria-label="Da, sunt într-o situație de urgență">Da, am nevoie de ajutor acum</button>
-                        <button id="btnNonemergency" class="btn-safe" aria-label="Nu, este o situație non-urgentă">Nu, este o situație non-urgentă</button>
-                    </div>
-                </div>
-                
-                <!-- Department Selection -->
-                <div id="departmentSelect" class="department-select">
-                    <h3 class="department-title">Selectați departamentul care vă poate ajuta cel mai bine</h3>
-                    
-                    <div class="department-list">
-                        <div class="department-item" data-id="traffic">
-                            <div class="department-icon">
-                                <i class="material-icons">directions_car</i>
-                            </div>
-                            <div class="department-info">
-                                <div class="department-name">Circulație Rutieră</div>
-                                <div class="department-description">Probleme legate de trafic, parcare sau semaforizare</div>
-                            </div>
-                        </div>
-                        
-                        <div class="department-item" data-id="public-order">
-                            <div class="department-icon">
-                                <i class="material-icons">public</i>
-                            </div>
-                            <div class="department-info">
-                                <div class="department-name">Ordine Publică</div>
-                                <div class="department-description">Tulburarea liniștii publice, comportament necorespunzător</div>
-                            </div>
-                        </div>
-                        
-                        <div class="department-item" data-id="environment">
-                            <div class="department-icon">
-                                <i class="material-icons">nature</i>
-                            </div>
-                            <div class="department-info">
-                                <div class="department-name">Protecția Mediului</div>
-                                <div class="department-description">Depozitarea deșeurilor, poluare, animale abandonate</div>
-                            </div>
-                        </div>
-                        
-                        <div class="department-item" data-id="commerce">
-                            <div class="department-icon">
-                                <i class="material-icons">store</i>
-                            </div>
-                            <div class="department-info">
-                                <div class="department-name">Control Comercial</div>
-                                <div class="department-description">Comerț ilegal, nereguli în activități comerciale</div>
-                            </div>
-                        </div>
-                        
-                        <div class="department-item" data-id="general">
-                            <div class="department-icon">
-                                <i class="material-icons">help_outline</i>
-                            </div>
-                            <div class="department-info">
-                                <div class="department-name">Informații Generale</div>
-                                <div class="department-description">Întrebări generale, informații despre serviciile poliției</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Pre-Chat Form -->
-                <div id="chatForm" class="chat-form" style="display:none;" role="form" aria-labelledby="form-title">
-                    <h4 id="form-title" class="form-title">Înainte de a începe</h4>
-                    
-                    <div class="error-notice" id="formErrorNotice" style="display:none;">
-                        Vă rugăm să completați toate câmpurile obligatorii.
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="chat-subject">Subiect:</label>
-                        <input type="text" id="chat-subject" class="form-control" placeholder="Descrieți pe scurt problema" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="chat-name">Numele dumneavoastră:</label>
-                        <input type="text" id="chat-name" class="form-control" placeholder="Nume și prenume" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="chat-email">Email (pentru transcriere):</label>
-                        <input type="email" id="chat-email" class="form-control" placeholder="adresa@email.ro">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="chat-phone">Telefon:</label>
-                        <input type="tel" id="chat-phone" class="form-control" placeholder="Număr de telefon">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="chat-location">Locația (opțional):</label>
-                        <div class="input-group" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-                            <input type="text" id="chat-location" class="form-control" placeholder="Introduceți adresa sau folosiți locația curentă" style="flex: 1;">
-                            <button id="btnDetectLocation" type="button" class="chat-action" style="flex-shrink: 0;">
-                                <i class="material-icons">my_location</i>
-                            </button>
-                        </div>
-                        <div id="mapPreview" class="map-preview" style="display: none;"></div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="privacy-check" required>
-                            <label class="form-check-label" for="privacy-check">Am citit și accept <a href="/privacy-policy" target="_blank">politica de confidențialitate</a>.</label>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="recording-check" required>
-                            <label class="form-check-label" for="recording-check">Înțeleg că această conversație poate fi înregistrată pentru îmbunătățirea serviciilor.</label>
-                        </div>
-                    </div>
-                    
-                    <div class="gdpr-info">
-                        <p>Datele dumneavoastră sunt protejate în conformitate cu Regulamentul General privind Protecția Datelor (GDPR). <a href="/gdpr" target="_blank">Aflați mai multe</a></p>
-                    </div>
-                    
-                    <button id="btnStartChat" class="btn-submit" aria-label="Începe conversația">
-                        Începe Chat <i class="material-icons" aria-hidden="true">arrow_forward</i>
-                    </button>
-                </div>
-                
-                <!-- Loading State -->
-                <div id="loadingState" class="loading-container" style="display:none;">
-                    <div class="loading-spinner"></div>
-                    <p id="loadingText">Se conectează la chat...</p>
-                </div>
-                
-                <!-- Chat Messages -->
-                <div id="chatMessages" class="chat-messages" style="display:none;" role="log" aria-label="Istoric conversație" aria-live="polite">
-                    <!-- Messages will be added here dynamically -->
-                </div>
-                
-                <!-- Chat Input -->
-                <div id="chatInput" class="chat-input" style="display:none;" role="form" aria-label="Trimitere mesaj">
-                    <input type="text" class="chat-input-field" id="messageInput" placeholder="Scrieți mesajul aici..." aria-label="Scrieți mesajul">
-                    <div class="chat-actions">
-                        <button id="btnShareLocation" class="chat-action" aria-label="Partajează locația">
-                            <i class="material-icons" aria-hidden="true">my_location</i>
-                        </button>
-                        <button id="btnSendMessage" class="chat-action chat-action-send" aria-label="Trimite mesaj">
-                            <i class="material-icons" aria-hidden="true">send</i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Chat End -->
-                <div id="chatEnd" class="chat-end" style="display:none;">
-                    <i class="material-icons chat-end-icon">check_circle</i>
-                    <h3 class="chat-end-title">Conversație încheiată</h3>
-                    <p class="chat-end-text">Vă mulțumim pentru că ați contactat Poliția Locală Slobozia. Puteți primi transcriptul conversației pe email sau puteți începe o nouă conversație.</p>
-                    <div class="chat-end-buttons">
-                        <button id="btnRequestTranscript" class="btn btn-outlined">
-                            <i class="material-icons">description</i> Primește transcript
-                        </button>
-                        <button id="btnStartNewChat" class="btn btn-primary">
-                            <i class="material-icons">chat</i> Conversație nouă
-                        </button>
-                    </div>
-                    <div class="security-info">
-                        <i class="material-icons">security</i> Conversație securizată și criptată end-to-end
+                <div>
+                    <div class="header-title">Poliția Locală Slobozia</div>
+                    <div class="header-status">
+                        <span id="connectionStatus">Online</span> • 
+                        <span id="securityStatus">Chat Securizat</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Footer container - will be populated by components.js -->
-    <div id="footer-container"></div>
-    
-    <!-- Firebase configuration and chat functionality -->
-    <script src="../chat/js/firebase-config.js"></script>
-    
-    <script>
-        // Define session timeout ID variable 
-        let sessionTimeoutId = null;
+            <div class="header-actions">
+                <button id="btnCloseChat" aria-label="Închide chat">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
+        </header>
         
-        // References to Firebase services
+        <!-- Main App Content -->
+        <main class="app-content">
+            <!-- Welcome Screen -->
+            <div id="welcomeScreen" class="welcome-screen">
+                <div class="welcome-logo">
+                    <img src="https://images4.imagebam.com/d3/36/5c/ME11M3EE_o.png" alt="Logo Poliția Locală">
+                </div>
+                <h1 class="welcome-title">Chat Online cu Poliția Locală</h1>
+                <p class="welcome-description">Raportați probleme non-urgente și primiți asistență în timp real de la agenții Poliției Locale Slobozia.</p>
+                <button id="btnStartWelcome" class="btn btn-primary welcome-btn">
+                    <i class="material-icons">message</i> Începe Chat
+                </button>
+            </div>
+            
+            <!-- Error Notice -->
+            <div id="errorNotice" class="notice error-notice" role="alert"></div>
+            
+            <!-- Success Notice -->
+            <div id="successNotice" class="notice success-notice" role="status"></div>
+            
+            <!-- Emergency Check -->
+            <div id="emergencyCheck" class="emergency-check" style="display:none;">
+                <h2 class="emergency-title">
+                    <i class="material-icons">warning</i>Verificare Urgență
+                </h2>
+                <p class="emergency-text">Vă aflați într-o situație de urgență care necesită asistență imediată?</p>
+                <div class="emergency-buttons">
+                    <button id="btnEmergency" class="btn btn-danger">
+                        <i class="material-icons">call</i> Da, am nevoie de ajutor acum
+                    </button>
+                    <button id="btnNonemergency" class="btn btn-success">
+                        <i class="material-icons">check_circle</i> Nu, este o situație non-urgentă
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Department Selection -->
+            <div id="departmentSelect" class="department-select">
+                <h2 class="department-title">Selectați departamentul care vă poate ajuta</h2>
+                
+                <div class="department-list">
+                    <div class="department-item" data-id="traffic">
+                        <div class="department-icon">
+                            <i class="material-icons">directions_car</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Circulație Rutieră</div>
+                            <div class="department-description">Probleme legate de trafic, parcare sau semaforizare</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-item" data-id="public-order">
+                        <div class="department-icon">
+                            <i class="material-icons">public</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Ordine Publică</div>
+                            <div class="department-description">Tulburarea liniștii publice, comportament necorespunzător</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-item" data-id="environment">
+                        <div class="department-icon">
+                            <i class="material-icons">nature</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Protecția Mediului</div>
+                            <div class="department-description">Depozitarea deșeurilor, poluare, animale abandonate</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-item" data-id="commerce">
+                        <div class="department-icon">
+                            <i class="material-icons">store</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Control Comercial</div>
+                            <div class="department-description">Comerț ilegal, nereguli în activități comerciale</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-item" data-id="general">
+                        <div class="department-icon">
+                            <i class="material-icons">help_outline</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Informații Generale</div>
+                            <div class="department-description">Întrebări generale, informații despre serviciile poliției</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pre-Chat Form -->
+            <div id="chatForm" class="chat-form">
+                <div class="notice error-notice" id="formErrorNotice" style="display:none;">
+                    Vă rugăm să completați toate câmpurile obligatorii.
+                </div>
+                
+                <h2 class="form-title">Înainte de a începe</h2>
+                
+                <div class="form-group">
+                    <label class="form-label" for="chat-subject">Subiect:</label>
+                    <input type="text" id="chat-subject" class="form-control" placeholder="Descrieți pe scurt problema" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="chat-name">Numele dumneavoastră:</label>
+                    <input type="text" id="chat-name" class="form-control" placeholder="Nume și prenume" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="chat-email">Email (pentru transcriere):</label>
+                    <input type="email" id="chat-email" class="form-control" placeholder="adresa@email.ro">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="chat-phone">Telefon:</label>
+                    <input type="tel" id="chat-phone" class="form-control" placeholder="Număr de telefon">
+                </div>
+                
+                <div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="privacy-check" required>
+                        <label class="form-check-label" for="privacy-check">Am citit și accept <a href="/privacy-policy" target="_blank">politica de confidențialitate</a>.</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="recording-check" required>
+                        <label class="form-check-label" for="recording-check">Înțeleg că această conversație poate fi înregistrată pentru îmbunătățirea serviciilor.</label>
+                    </div>
+                </div>
+                
+                <div class="gdpr-info">
+                    <p>Datele dumneavoastră sunt protejate în conformitate cu Regulamentul General privind Protecția Datelor (GDPR).</p>
+                </div>
+                
+                <button id="btnStartChat" class="btn btn-primary">
+                    <i class="material-icons">chat</i> Începe Chat
+                </button>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p id="loadingText">Se conectează la chat...</p>
+            </div>
+            
+            <!-- Chat Area -->
+            <div id="chatArea" class="chat-area">
+                <!-- Chat Messages -->
+                <div id="chatMessages" class="chat-messages"></div>
+                
+                <!-- Chat Input -->
+                <div id="chatInput" class="chat-input">
+                    <input type="text" class="chat-input-field" id="messageInput" placeholder="Scrieți mesajul aici..." aria-label="Scrieți mesajul">
+                    <div class="chat-actions">
+                        <button id="btnShareLocation" class="chat-action" aria-label="Partajează locația">
+                            <i class="material-icons">my_location</i>
+                        </button>
+                        <button id="btnSendMessage" class="chat-action chat-action-send" aria-label="Trimite mesaj">
+                            <i class="material-icons">send</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chat End -->
+            <div id="chatEnd" class="chat-end">
+                <i class="material-icons chat-end-icon">check_circle</i>
+                <h2 class="chat-end-title">Conversație încheiată</h2>
+                <p class="chat-end-text">Vă mulțumim pentru că ați contactat Poliția Locală Slobozia. Puteți primi transcriptul conversației pe email sau puteți începe o nouă conversație.</p>
+                <button id="btnRequestTranscript" class="btn btn-secondary">
+                    <i class="material-icons">description</i> Primește transcript
+                </button>
+                <button id="btnStartNewChat" class="btn btn-primary" style="margin-top: var(--spacing-md);">
+                    <i class="material-icons">chat</i> Conversație nouă
+                </button>
+            </div>
+        </main>
+        
+        <!-- PWA Installation Banner -->
+        <div id="pwaBanner" class="pwa-banner">
+            <div class="pwa-message">
+                <div class="pwa-title">Instalează aplicația</div>
+                <div class="pwa-description">Adaugă pe ecranul principal pentru acces rapid</div>
+            </div>
+            <div class="pwa-buttons">
+                <button id="btnDismissPwa" class="pwa-btn pwa-btn-dismiss">Nu acum</button>
+                <button id="btnInstallPwa" class="pwa-btn pwa-btn-install">Instalează</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase configuration -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        // =============================================
+        // Firebase Services
+        // =============================================
         const auth = firebase.auth();
         const db = firebase.firestore();
         const functions = firebase.functions();
@@ -1144,25 +1099,32 @@
         // =============================================
         // DOM Elements
         // =============================================
+        // Screens
+        const welcomeScreen = document.getElementById('welcomeScreen');
         const emergencyCheck = document.getElementById('emergencyCheck');
         const departmentSelect = document.getElementById('departmentSelect');
         const chatForm = document.getElementById('chatForm');
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
         const loadingState = document.getElementById('loadingState');
+        const chatArea = document.getElementById('chatArea');
         const chatEnd = document.getElementById('chatEnd');
+        
+        // Notices
         const errorNotice = document.getElementById('errorNotice');
         const successNotice = document.getElementById('successNotice');
         const formErrorNotice = document.getElementById('formErrorNotice');
-        const mapPreview = document.getElementById('mapPreview');
+        
+        // Chat Elements
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const messageInput = document.getElementById('messageInput');
         
         // Buttons
+        const btnStartWelcome = document.getElementById('btnStartWelcome');
         const btnEmergency = document.getElementById('btnEmergency');
         const btnNonemergency = document.getElementById('btnNonemergency');
         const btnStartChat = document.getElementById('btnStartChat');
         const btnSendMessage = document.getElementById('btnSendMessage');
         const btnShareLocation = document.getElementById('btnShareLocation');
-        const btnDetectLocation = document.getElementById('btnDetectLocation');
         const btnCloseChat = document.getElementById('btnCloseChat');
         const btnRequestTranscript = document.getElementById('btnRequestTranscript');
         const btnStartNewChat = document.getElementById('btnStartNewChat');
@@ -1171,10 +1133,14 @@
         const departmentItems = document.querySelectorAll('.department-item');
         
         // Other elements
-        const messageInput = document.getElementById('messageInput');
         const connectionStatus = document.getElementById('connectionStatus');
         const securityStatus = document.getElementById('securityStatus');
         const loadingText = document.getElementById('loadingText');
+        
+        // PWA Banner
+        const pwaBanner = document.getElementById('pwaBanner');
+        const btnDismissPwa = document.getElementById('btnDismissPwa');
+        const btnInstallPwa = document.getElementById('btnInstallPwa');
         
         // =============================================
         // State Variables
@@ -1192,6 +1158,7 @@
         let offlineTimeout = null;
         let messageQueue = []; // For offline message queuing
         let agentJoinedFlag = false; // Flag to track if agent has already joined
+        let deferredPrompt = null; // For PWA installation
         
         // Rate limiting
         const rateLimitConfig = {
@@ -1216,7 +1183,7 @@
         // Encrypt a message
         function encryptMessage(message, key) {
             try {
-                if (!key) return message; // Fallback for demo
+                if (!key) return message; // Fallback
                 return CryptoJS.AES.encrypt(message, key).toString();
             } catch (error) {
                 console.error('Encryption error:', error);
@@ -1227,7 +1194,7 @@
         // Decrypt a message
         function decryptMessage(encryptedMessage, key) {
             try {
-                if (!key) return encryptedMessage; // Fallback for demo
+                if (!key) return encryptedMessage; // Fallback
                 const bytes = CryptoJS.AES.decrypt(encryptedMessage, key);
                 return bytes.toString(CryptoJS.enc.Utf8);
             } catch (error) {
@@ -1248,7 +1215,7 @@
                 connectionStatus.style.color = 'var(--danger-color)';
                 
                 // Queue up messages when offline
-                if (!chatEnded) {
+                if (!chatEnded && chatArea.style.display !== 'none') {
                     showNotice(errorNotice, 'Conexiune pierdută. Mesajele vor fi trimise când conexiunea va fi restabilită.');
                 }
             } else if (status === 'Connecting...') {
@@ -1267,7 +1234,6 @@
         // Monitor connection status
         function setupConnectionMonitoring() {
             // Set up Firebase connection state monitoring
-            // Modified to use Firebase database correctly and handle potential errors
             try {
                 const connectedRef = firebase.database().ref('.info/connected');
                 connectedRef.on('value', (snap) => {
@@ -1280,7 +1246,6 @@
                         }
                     } else {
                         // Set a timeout to show offline only after a delay
-                        // to avoid flickering during brief connection issues
                         if (!offlineTimeout) {
                             offlineTimeout = setTimeout(() => {
                                 updateConnectionStatus('Offline');
@@ -1289,12 +1254,10 @@
                     }
                 }, (error) => {
                     console.error('Error monitoring connection status:', error);
-                    // Fall back to window online/offline events
                     updateConnectionStatus(navigator.onLine ? 'Online' : 'Offline');
                 });
             } catch (error) {
                 console.error('Error setting up connection monitoring:', error);
-                // Fall back to window online/offline events only
                 updateConnectionStatus(navigator.onLine ? 'Online' : 'Offline');
             }
             
@@ -1438,48 +1401,100 @@
             auth.onAuthStateChanged(user => {
                 if (user) {
                     currentUser = user;
+                    console.log('User already logged in:', user.uid);
                 }
             });
             
             // Set up event listeners
             setupEventListeners();
+            
+            // Set up PWA
+            setupPwa();
         }
         
         // Set up all event listeners
         function setupEventListeners() {
-            console.log('Setting up event listeners...');
-            
-            // Direct event attachment to emergency buttons
-            btnEmergency.addEventListener('click', function(e) {
-                console.log('Emergency button clicked');
-                handleEmergency();
+            // Welcome screen
+            btnStartWelcome.addEventListener('click', function() {
+                welcomeScreen.style.display = 'none';
+                emergencyCheck.style.display = 'flex';
             });
             
-            btnNonemergency.addEventListener('click', function(e) {
-                console.log('Non-emergency button clicked');
-                showDepartmentSelection();
-            });
+            // Emergency check
+            btnEmergency.addEventListener('click', handleEmergency);
+            btnNonemergency.addEventListener('click', showDepartmentSelection);
             
-            // Department selection buttons - add direct click handlers
+            // Department selection
             departmentItems.forEach(item => {
                 item.addEventListener('click', function(e) {
-                    console.log('Department item clicked:', item.dataset.id);
                     selectDepartment(item.dataset.id);
                 });
             });
             
-            // Other buttons
+            // Chat form
             btnStartChat.addEventListener('click', handleStartChat);
+            
+            // Chat functionality
             btnSendMessage.addEventListener('click', sendMessage);
             messageInput.addEventListener('keypress', handleEnterPress);
             btnShareLocation.addEventListener('click', shareLocation);
-            btnDetectLocation.addEventListener('click', detectLocation);
+            
+            // Chat management
             btnCloseChat.addEventListener('click', confirmEndChat);
             btnRequestTranscript.addEventListener('click', requestTranscript);
             btnStartNewChat.addEventListener('click', resetChat);
             
             // Input typing detection
             messageInput.addEventListener('input', handleTypingStart);
+            
+            // PWA installation
+            btnDismissPwa.addEventListener('click', () => {
+                pwaBanner.classList.remove('show');
+                localStorage.setItem('pwa_dismissed', Date.now());
+            });
+            
+            btnInstallPwa.addEventListener('click', () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        } else {
+                            console.log('User dismissed the install prompt');
+                        }
+                        deferredPrompt = null;
+                        pwaBanner.classList.remove('show');
+                    });
+                }
+            });
+        }
+        
+        // =============================================
+        // PWA Setup
+        // =============================================
+        
+        function setupPwa() {
+            // PWA installation
+            window.addEventListener('beforeinstallprompt', (e) => {
+                // Prevent Chrome 67+ from automatically showing the prompt
+                e.preventDefault();
+                // Stash the event so it can be triggered later
+                deferredPrompt = e;
+                
+                // Show the banner if not dismissed recently
+                const lastDismissed = localStorage.getItem('pwa_dismissed');
+                if (!lastDismissed || Date.now() - lastDismissed > 7 * 24 * 60 * 60 * 1000) { // 7 days
+                    setTimeout(() => {
+                        pwaBanner.classList.add('show');
+                    }, 5000);
+                }
+            });
+            
+            // When the PWA is installed
+            window.addEventListener('appinstalled', (evt) => {
+                pwaBanner.classList.remove('show');
+                console.log('App was installed');
+            });
         }
         
         // =============================================
@@ -1488,8 +1503,6 @@
         
         // Handle emergency button click
         function handleEmergency() {
-            console.log('Handle emergency function called');
-            
             // Log the emergency (useful for statistics and monitoring)
             logEmergencyRequest();
             
@@ -1515,17 +1528,15 @@
         
         // Show department selection
         function showDepartmentSelection() {
-            console.log('Showing department selection');
             emergencyCheck.style.display = 'none';
             departmentSelect.style.display = 'flex';
         }
         
         // Select department
         function selectDepartment(departmentId) {
-            console.log('Department selected:', departmentId);
             selectedDepartment = departmentId;
             departmentSelect.style.display = 'none';
-            chatForm.style.display = 'block';
+            chatForm.style.display = 'flex';
             
             // Pre-fill subject based on department
             const subjectMap = {
@@ -1577,10 +1588,9 @@
                     const chatName = document.getElementById('chat-name').value;
                     const chatEmail = document.getElementById('chat-email').value;
                     const chatPhone = document.getElementById('chat-phone').value;
-                    const chatLocation = document.getElementById('chat-location').value;
                     
                     // Create chat session
-                    return createChatSession(chatSubject, chatName, chatEmail, chatPhone, chatLocation);
+                    return createChatSession(chatSubject, chatName, chatEmail, chatPhone);
                 })
                 .then(() => {
                     loadingText.textContent = 'Se conectează la departamentul relevant...';
@@ -1589,8 +1599,7 @@
                 .then(() => {
                     // Show chat interface
                     loadingState.style.display = 'none';
-                    chatMessages.style.display = 'flex';
-                    chatInput.style.display = 'flex';
+                    chatArea.style.display = 'flex';
                     
                     // Add welcome message
                     addSystemMessage('Conectat la Poliția Locală Slobozia. Un agent va răspunde în curând.');
@@ -1604,13 +1613,13 @@
                 .catch(error => {
                     console.error('Error starting chat:', error);
                     loadingState.style.display = 'none';
-                    chatForm.style.display = 'block';
+                    chatForm.style.display = 'flex';
                     showNotice(errorNotice, 'Eroare la inițierea conversației. Vă rugăm să încercați din nou.');
                 });
         }
         
         // Create a new chat session
-        function createChatSession(subject, name, email, phone, location) {
+        function createChatSession(subject, name, email, phone) {
             return new Promise((resolve, reject) => {
                 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
                 
@@ -1620,7 +1629,6 @@
                     userName: name,
                     userEmail: email || '',
                     userPhone: phone || '',
-                    userLocation: location || '',
                     subject: subject,
                     department: selectedDepartment,
                     status: 'waiting',
@@ -1672,9 +1680,6 @@
                                 
                                 // Store agent public key for encryption if available
                                 agentPublicKey = chatData.agentPublicKey || null;
-                                
-                                // NOTE: We do NOT add a system message here anymore
-                                // The agent side will handle adding the system message
                             }
                             
                             // Check if chat was ended by the agent
@@ -1701,7 +1706,6 @@
                                     }
                                     
                                     // Check for duplicate message before displaying
-                                    // Also check if this is a system message that was generated by the client
                                     if (!document.querySelector(`[data-message-id="${message.id}"]`) && 
                                         !(message.type === 'system' && message.clientGeneratedId && 
                                           document.querySelector(`[data-message-id="${message.clientGeneratedId}"]`))) {
@@ -1883,43 +1887,6 @@
             }
         }
         
-        // Detect location for the form
-        function detectLocation() {
-            if (navigator.geolocation) {
-                showNotice(loadingState, 'Se determină locația...');
-                chatForm.style.display = 'none';
-                loadingState.style.display = 'flex';
-                
-                navigator.geolocation.getCurrentPosition(
-                    position => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        
-                        // In a real app, you would do reverse geocoding
-                        // For now, just use the coordinates
-                        document.getElementById('chat-location').value = `${lat}, ${lng}`;
-                        
-                        // Show map preview (simulated)
-                        mapPreview.style.display = 'block';
-                        mapPreview.style.backgroundImage = `url('https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=15&size=400x200&markers=color:red%7C${lat},${lng}&key=YOUR_GOOGLE_MAPS_API_KEY')`;
-                        
-                        // Hide loading and show form
-                        loadingState.style.display = 'none';
-                        chatForm.style.display = 'block';
-                    },
-                    error => {
-                        console.error('Geolocation error:', error);
-                        loadingState.style.display = 'none';
-                        chatForm.style.display = 'block';
-                        showNotice(errorNotice, 'Nu am putut obține locația. Vă rugăm să introduceți manual.');
-                    },
-                    { timeout: 10000 }
-                );
-            } else {
-                showNotice(errorNotice, 'Browserul dvs. nu suportă geolocalizarea.');
-            }
-        }
-        
         // =============================================
         // Message Display Functions
         // =============================================
@@ -2063,7 +2030,6 @@
             displayMessage(systemMessage);
             
             // Then add to Firestore, but don't display it again when it comes back
-            // from the messages listener - the displayMessage function will check for duplicates
             db.collection('chats').doc(currentChatId).collection('messages').add({
                 type: 'system',
                 content: text,
@@ -2076,18 +2042,11 @@
         
         // Scroll chat to bottom
         function scrollToBottom() {
-            // First approach with immediate scroll
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
-            // Then use a timeout to ensure DOM updates have completed
             setTimeout(() => {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 10);
-            
-            // And one more delayed scroll for any slower updates
-            setTimeout(() => {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 100);
+            }, 50);
         }
         
         // =============================================
@@ -2104,11 +2063,10 @@
                     .doc('user')
                     .set({
                         isTyping: true,
-                        userId: currentUser.uid, // Add userId explicitly for permission check
+                        userId: currentUser.uid,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     }).catch(error => {
                         console.error('Error updating typing status:', error);
-                        // Don't show error to user as this is non-critical
                     });
             }
             
@@ -2130,11 +2088,10 @@
                     .doc('user')
                     .set({
                         isTyping: false,
-                        userId: currentUser.uid, // Add userId explicitly for permission check
+                        userId: currentUser.uid,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     }).catch(error => {
                         console.error('Error updating typing status:', error);
-                        // Don't show error to user as this is non-critical
                     });
             }
             
@@ -2231,8 +2188,7 @@
             
             // Show end screen after a delay
             setTimeout(() => {
-                chatMessages.style.display = 'none';
-                chatInput.style.display = 'none';
+                chatArea.style.display = 'none';
                 chatEnd.style.display = 'flex';
             }, 3000);
         }
@@ -2275,7 +2231,6 @@
             btnRequestTranscript.textContent = 'Se trimite...';
             
             // Call Cloud Function to send transcript
-            // In a real implementation, this would be a Firebase Cloud Function
             const sendTranscriptFunction = firebase.functions().httpsCallable('sendChatTranscript');
             sendTranscriptFunction({ chatId: currentChatId, email: email })
                 .then(result => {
@@ -2340,21 +2295,21 @@
 
             // Reset form fields
             document.getElementById('chat-subject').value = '';
-            document.getElementById('chat-location').value = '';
-            mapPreview.style.display = 'none';
+            document.getElementById('chat-email').value = '';
+            document.getElementById('chat-phone').value = '';
             document.getElementById('privacy-check').checked = false;
             document.getElementById('recording-check').checked = false;
             
-            // Hide all sections except emergency check
+            // Hide all sections except welcome screen
             chatEnd.style.display = 'none';
-            chatMessages.style.display = 'none';
-            chatInput.style.display = 'none';
+            chatArea.style.display = 'none';
             chatForm.style.display = 'none';
             departmentSelect.style.display = 'none';
             loadingState.style.display = 'none';
+            emergencyCheck.style.display = 'none';
             
-            // Show emergency check
-            emergencyCheck.style.display = 'block';
+            // Show welcome screen
+            welcomeScreen.style.display = 'flex';
             
             // Generate a new encryption key
             chatSessionKey = generateEncryptionKey();
@@ -2362,79 +2317,6 @@
             // Clean up chat listeners
             cleanupChatListeners();
         }
-        
-        // Display local time
-        function formatLocalTime(timestamp) {
-            if (!timestamp) return 'Acum';
-            
-            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-        
-        // Format date for display
-        function formatDate(timestamp) {
-            if (!timestamp) return '';
-            
-            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-            return date.toLocaleDateString();
-        }
-        
-        // Detect if the device is mobile
-        function isMobileDevice() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
-        
-        // Setup session timeout
-        function setupSessionTimeout() {
-            // Reset any existing timeout
-            if (sessionTimeoutId) {
-                clearTimeout(sessionTimeoutId);
-            }
-            
-            // Set timeout to 30 minutes
-            const sessionTimeout = 30 * 60 * 1000; // 30 minutes
-            
-            sessionTimeoutId = setTimeout(() => {
-                // End chat due to inactivity
-                if (!chatEnded) {
-                    addSystemMessage('Conversația a fost închisă automat datorită inactivității.');
-                    endChat();
-                }
-            }, sessionTimeout);
-        }
-        
-        // Reset session timeout on activity
-        function resetSessionTimeout() {
-            if (sessionTimeoutId) {
-                clearTimeout(sessionTimeoutId);
-                setupSessionTimeout();
-            }
-        }
-        
-        // User activity events
-        document.addEventListener('click', resetSessionTimeout);
-        document.addEventListener('keypress', resetSessionTimeout);
-        document.addEventListener('mousemove', resetSessionTimeout);
-        document.addEventListener('touchstart', resetSessionTimeout);
-        
-        // Visibility change handling
-        document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'hidden') {
-                // User switched away, might need to handle this
-            } else {
-                // User returned, update read status
-                updateReadStatus();
-            }
-        });
-        
-        // Before unload warning
-        window.addEventListener('beforeunload', function(e) {
-            if (!chatEnded && currentChatId) {
-                const message = 'Aveți o conversație activă. Dacă părăsiți pagina, conversația va fi întreruptă.';
-                e.returnValue = message;
-                return message;
-            }
-        });
         
         // =============================================
         // Cleanup function for listeners when chat ends
