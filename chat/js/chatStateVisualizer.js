@@ -3,10 +3,6 @@
  * 
  * Enhanced visual design system for chat states in the Poliția Locală Slobozia admin panel
  * Modified to work with the actual DOM structure of admin.html
- * 
- * Version: 1.0.0
- * Author: Claude AI
- * Last Updated: May 2, 2025
  */
 
 (function() {
