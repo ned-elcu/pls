@@ -258,6 +258,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-shrink: 0;
         }
         
         .chat-header-left {
@@ -307,6 +308,7 @@
             background-color: rgba(244, 67, 54, 0.1);
             border-left: 4px solid var(--danger-color);
             margin-bottom: 1px;
+            flex-shrink: 0;
         }
         
         .emergency-title {
@@ -378,6 +380,7 @@
             padding: 1.5rem;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             overflow-y: auto;
+            flex: 1;
         }
         
         .form-title {
@@ -486,12 +489,14 @@
         .chat-messages {
             padding: 1.5rem;
             overflow-y: auto;
+            flex: 1;
             display: flex;
             flex-direction: column;
-            flex: 1;
             font-size: 1.1rem;
             line-height: 1.6;
             background-color: #f9f9f9;
+            height: 0; /* Important for flex to work properly */
+            min-height: 0; /* Also important for flex containers */
         }
         
         .message {
@@ -565,6 +570,7 @@
             display: flex;
             align-items: center;
             background-color: white;
+            flex-shrink: 0;
         }
         
         .chat-input-field {
@@ -731,6 +737,7 @@
             flex-direction: column;
             height: 100%;
             overflow-y: auto;
+            flex: 1;
         }
         
         .department-title {
@@ -1119,7 +1126,6 @@
     <div id="footer-container"></div>
     
     <!-- Firebase configuration and chat functionality -->
-
     <script src="../chat/js/firebase-config.js"></script>
     
     <script>
@@ -1181,6 +1187,7 @@
         let unreadCount = 0;
         let offlineTimeout = null;
         let messageQueue = []; // For offline message queuing
+        let agentJoinedFlag = false; // Flag to track if agent has already joined
         
         // Rate limiting
         const rateLimitConfig = {
@@ -1655,12 +1662,15 @@
                             const chatData = doc.data();
                             
                             // Check if an agent was assigned
-                            if (chatData.agentId && chatData.status === 'active' && !agentPublicKey) {
-                                // An agent has joined
-                                addSystemMessage(`Agent ${chatData.agentName} s-a alăturat conversației.`);
+                            if (chatData.agentId && chatData.status === 'active' && !agentJoinedFlag) {
+                                // An agent has joined - mark the flag so we don't trigger this again
+                                agentJoinedFlag = true;
                                 
-                                // Get the agent's public key for encryption (in a real app)
+                                // Store agent public key for encryption if available
                                 agentPublicKey = chatData.agentPublicKey || null;
+                                
+                                // NOTE: We do NOT add a system message here anymore
+                                // The agent side will handle adding the system message
                             }
                             
                             // Check if chat was ended by the agent
@@ -1686,11 +1696,14 @@
                                         message.content = decryptMessage(message.content, chatSessionKey);
                                     }
                                     
-                                    displayMessage(message);
-                                    
-                                    // Update read status for agent messages
-                                    if (message.type === 'agent') {
-                                        updateMessageReadStatus(change.doc.id);
+                                    // Check for duplicate message before displaying
+                                    if (!document.querySelector(`[data-message-id="${message.id}"]`)) {
+                                        displayMessage(message);
+                                        
+                                        // Update read status for agent messages
+                                        if (message.type === 'agent') {
+                                            updateMessageReadStatus(change.doc.id);
+                                        }
                                     }
                                 }
                             });
@@ -1970,6 +1983,9 @@
                 // Agent message
                 messageElement.classList.add('message-received');
                 
+                // Hide typing indicator when receiving agent message
+                hideTypingIndicator();
+                
                 // Create HTML for the message
                 let messageHtml = '';
                 
@@ -2046,7 +2062,10 @@
         
         // Scroll chat to bottom
         function scrollToBottom() {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            // Use a timeout to ensure DOM updates have completed
+            setTimeout(() => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 10);
         }
         
         // =============================================
@@ -2266,6 +2285,7 @@
             agentPublicKey = null;
             chatEnded = false;
             isTyping = false;
+            agentJoinedFlag = false;
             
             if (typingTimeout) {
                 clearTimeout(typingTimeout);
@@ -2296,7 +2316,7 @@
             btnSendMessage.disabled = false;
             btnShareLocation.disabled = false;
 
-        // Reset form fields
+            // Reset form fields
             document.getElementById('chat-subject').value = '';
             document.getElementById('chat-location').value = '';
             mapPreview.style.display = 'none';
