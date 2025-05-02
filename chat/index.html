@@ -9,6 +9,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Chat - Poliția Locală Slobozia</title>
     
+    <!-- Include components.js for shared styles -->
+    <script src="../components.js"></script>
+    
     <!-- Firebase SDK - Optimized version -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-auth-compat.min.js"></script>
@@ -881,6 +884,12 @@
         
         <!-- Main App Content -->
         <main class="app-content">
+            <!-- Error Notice -->
+            <div id="errorNotice" class="notice error-notice" role="alert"></div>
+            
+            <!-- Success Notice -->
+            <div id="successNotice" class="notice success-notice" role="status"></div>
+            
             <!-- Welcome Screen -->
             <div id="welcomeScreen" class="welcome-screen">
                 <div class="welcome-logo">
@@ -892,12 +901,6 @@
                     <i class="material-icons">message</i> Începe Chat
                 </button>
             </div>
-            
-            <!-- Error Notice -->
-            <div id="errorNotice" class="notice error-notice" role="alert"></div>
-            
-            <!-- Success Notice -->
-            <div id="successNotice" class="notice success-notice" role="status"></div>
             
             <!-- Emergency Check -->
             <div id="emergencyCheck" class="emergency-check" style="display:none;">
@@ -1073,22 +1076,9 @@
     </div>
     
     <!-- Firebase configuration -->
+    <script src="../chat/js/firebase-config.js"></script>
+    
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-        
-        // Initialize Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        
         // =============================================
         // Firebase Services
         // =============================================
@@ -1426,7 +1416,7 @@
             
             // Department selection
             departmentItems.forEach(item => {
-                item.addEventListener('click', function(e) {
+                item.addEventListener('click', function() {
                     selectDepartment(item.dataset.id);
                 });
             });
