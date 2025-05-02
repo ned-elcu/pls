@@ -1,13 +1,11 @@
 /**
- * chatStateVisualizer.js - Production Version
+ * chatStateVisualizer.js - Fixed Version
  * 
  * Enhanced visual design system for chat states in the Poliția Locală Slobozia admin panel
- * Modified to work with the actual DOM structure of admin.html
+ * Modified to work correctly with the dynamic DOM structure
  */
 
 (function() {
-  // Check if the script has already been initialized to prevent duplicate initialization
-  if (window.chatVisualizerInitialized) return;
   // Configuration - Visual Design System
   const DESIGN = {
     // Color Palette - Designed for Romanian interface
@@ -37,208 +35,171 @@
     
     // Shadows
     shadows: {
-      hover: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'
+      hover: '0 6px 12px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.1)'
     }
   };
 
   // Helper function to inject CSS with high specificity
   function injectStyles() {
-    try {
-      // Check if styles are already injected
-      if (document.getElementById('chat-visualizer-styles')) {
-        console.log('Chat visualizer styles already injected');
-        return;
+    // Check if styles are already injected
+    if (document.getElementById('chat-visualizer-styles')) {
+      console.log('Chat visualizer styles already injected');
+      return;
+    }
+    
+    const css = `
+      /* Base styles for chat items */
+      .chat-list .chat-item {
+        transition: all ${DESIGN.animation.standard} !important;
+        position: relative !important;
       }
       
-      const css = `
-        /* Base styles for chat items */
+      /* Hover effect */
+      .chat-list .chat-item:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: ${DESIGN.shadows.hover} !important;
+      }
+      
+      /* Status-specific styling */
+      .chat-list .chat-item[data-status="waiting"] {
+        background-color: ${DESIGN.colors.waiting.secondary} !important;
+        border-left: 5px solid ${DESIGN.colors.waiting.primary} !important;
+      }
+      
+      .chat-list .chat-item[data-status="active"] {
+        background-color: ${DESIGN.colors.active.secondary} !important;
+        border-left: 5px solid ${DESIGN.colors.active.primary} !important;
+      }
+      
+      .chat-list .chat-item[data-status="closed"] {
+        background-color: ${DESIGN.colors.closed.secondary} !important;
+        border-left: 5px solid ${DESIGN.colors.closed.primary} !important;
+        opacity: 0.85 !important;
+      }
+      
+      .chat-list .chat-item[data-status="closed"]:hover {
+        opacity: 1 !important;
+      }
+      
+      /* Status indicators */
+      .chat-list .chat-item[data-status="waiting"] .chat-avatar {
+        border: 2px solid ${DESIGN.colors.waiting.primary} !important;
+      }
+      
+      .chat-list .chat-item[data-status="active"] .chat-avatar {
+        border: 2px solid ${DESIGN.colors.active.primary} !important;
+      }
+      
+      .chat-list .chat-item[data-status="closed"] .chat-avatar {
+        border: 2px solid ${DESIGN.colors.closed.primary} !important;
+      }
+      
+      /* Enhanced filter buttons */
+      .chat-filter .filter-btn[data-filter="waiting"] {
+        border: 1px solid ${DESIGN.colors.waiting.primary} !important;
+        color: ${DESIGN.colors.waiting.accent} !important;
+      }
+      
+      .chat-filter .filter-btn[data-filter="active"] {
+        border: 1px solid ${DESIGN.colors.active.primary} !important;
+        color: ${DESIGN.colors.active.accent} !important;
+      }
+      
+      .chat-filter .filter-btn[data-filter="closed"] {
+        border: 1px solid ${DESIGN.colors.closed.primary} !important;
+        color: ${DESIGN.colors.closed.accent} !important;
+      }
+      
+      .chat-filter .filter-btn.active[data-filter="waiting"] {
+        background-color: ${DESIGN.colors.waiting.primary} !important;
+        color: white !important;
+      }
+      
+      .chat-filter .filter-btn.active[data-filter="active"] {
+        background-color: ${DESIGN.colors.active.primary} !important;
+        color: white !important;
+      }
+      
+      .chat-filter .filter-btn.active[data-filter="closed"] {
+        background-color: ${DESIGN.colors.closed.primary} !important;
+        color: white !important;
+      }
+      
+      /* Subtle animation for waiting items to draw attention */
+      @keyframes pulseWaiting {
+        0% { border-left-color: ${DESIGN.colors.waiting.primary}; }
+        50% { border-left-color: ${DESIGN.colors.waiting.accent}; }
+        100% { border-left-color: ${DESIGN.colors.waiting.primary}; }
+      }
+      
+      .chat-list .chat-item[data-status="waiting"] {
+        animation: pulseWaiting 2s infinite;
+      }
+      
+      /* Accessibility styles */
+      @media (prefers-reduced-motion: reduce) {
+        *, .chat-item {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+      
+      /* High contrast mode support */
+      @media (forced-colors: active) {
         .chat-item {
-          transition: all ${DESIGN.animation.standard} !important;
-          position: relative !important;
+          border-width: 2px !important;
         }
         
-        /* Hover effect */
-        .chat-item:hover {
-          transform: translateY(-2px) !important;
-          box-shadow: ${DESIGN.shadows.hover} !important;
-        }
-        
-        /* Status-specific styling */
         .chat-item[data-status="waiting"] {
-          background-color: ${DESIGN.colors.waiting.secondary} !important;
-          border-left: 5px solid ${DESIGN.colors.waiting.primary} !important;
+          border-left-width: 5px !important;
         }
         
         .chat-item[data-status="active"] {
-          background-color: ${DESIGN.colors.active.secondary} !important;
-          border-left: 5px solid ${DESIGN.colors.active.primary} !important;
+          border-left-width: 5px !important;
         }
         
         .chat-item[data-status="closed"] {
-          background-color: ${DESIGN.colors.closed.secondary} !important;
-          border-left: 5px solid ${DESIGN.colors.closed.primary} !important;
-          opacity: 0.85 !important;
+          border-left-width: 5px !important;
         }
-        
-        .chat-item[data-status="closed"]:hover {
-          opacity: 1 !important;
-        }
-        
-        /* Status indicators */
-        .chat-item[data-status="waiting"] .chat-avatar {
-          border: 2px solid ${DESIGN.colors.waiting.primary} !important;
-        }
-        
-        .chat-item[data-status="active"] .chat-avatar {
-          border: 2px solid ${DESIGN.colors.active.primary} !important;
-        }
-        
-        .chat-item[data-status="closed"] .chat-avatar {
-          border: 2px solid ${DESIGN.colors.closed.primary} !important;
-        }
-        
-        /* Enhanced filter buttons */
-        .filter-btn[data-filter="waiting"] {
-          border: 1px solid ${DESIGN.colors.waiting.primary} !important;
-          color: ${DESIGN.colors.waiting.accent} !important;
-        }
-        
-        .filter-btn[data-filter="active"] {
-          border: 1px solid ${DESIGN.colors.active.primary} !important;
-          color: ${DESIGN.colors.active.accent} !important;
-        }
-        
-        .filter-btn[data-filter="closed"] {
-          border: 1px solid ${DESIGN.colors.closed.primary} !important;
-          color: ${DESIGN.colors.closed.accent} !important;
-        }
-        
-        .filter-btn.active[data-filter="waiting"] {
-          background-color: ${DESIGN.colors.waiting.primary} !important;
-          color: white !important;
-        }
-        
-        .filter-btn.active[data-filter="active"] {
-          background-color: ${DESIGN.colors.active.primary} !important;
-          color: white !important;
-        }
-        
-        .filter-btn.active[data-filter="closed"] {
-          background-color: ${DESIGN.colors.closed.primary} !important;
-          color: white !important;
-        }
-        
-        /* Subtle animation for waiting items to draw attention */
-        @keyframes pulseWaiting {
-          0% { border-left-color: ${DESIGN.colors.waiting.primary}; }
-          50% { border-left-color: ${DESIGN.colors.waiting.accent}; }
-          100% { border-left-color: ${DESIGN.colors.waiting.primary}; }
-        }
-        
-        .chat-item[data-status="waiting"] {
-          animation: pulseWaiting 2s infinite;
-        }
-        
-        /* Accessibility styles */
-        @media (prefers-reduced-motion: reduce) {
-          *, .chat-item {
-            animation: none !important;
-            transition: none !important;
-          }
-        }
-        
-        /* High contrast mode support */
-        @media (forced-colors: active) {
-          .chat-item {
-            border-width: 2px !important;
-          }
-          
-          .chat-item[data-status="waiting"] {
-            border-left-width: 5px !important;
-          }
-          
-          .chat-item[data-status="active"] {
-            border-left-width: 5px !important;
-          }
-          
-          .chat-item[data-status="closed"] {
-            border-left-width: 5px !important;
-          }
-        }
-      `;
-      
-      const style = document.createElement('style');
-      style.id = 'chat-visualizer-styles';
-      style.textContent = css;
-      document.head.appendChild(style);
-      
-      console.log('Chat visualizer styles injected successfully');
-    } catch (error) {
-      console.error('Failed to inject styles:', error);
-    }
+      }
+    `;
+    
+    const style = document.createElement('style');
+    style.id = 'chat-visualizer-styles';
+    style.textContent = css;
+    document.head.appendChild(style);
+    
+    console.log('Chat visualizer styles injected successfully');
   }
   
-  // Apply status to chat items
+  // Apply status to chat items based on their actual status class
   function applyStatusToChatItems() {
-    // Get all chat items, return if none found
-    const chatItems = document.querySelectorAll('.chat-item');
+    // Get all chat items
+    const chatItems = document.querySelectorAll('.chat-list .chat-item');
     if (!chatItems || chatItems.length === 0) {
       console.log('No chat items found to style');
       return;
     }
     
-    // Count of processed items
     let processedCount = 0;
     
     chatItems.forEach(item => {
       try {
-        // Skip already processed items unless they're from the current filter
-        const currentStatus = item.getAttribute('data-status');
-        const currentFilter = getCurrentFilter();
+        // Determine status from chat item structure
+        let status = 'active'; // Default
         
-        if (currentStatus && currentFilter !== 'all' && currentStatus !== currentFilter) {
-          // Update to match current filter if needed
-          item.setAttribute('data-status', currentFilter);
-          processedCount++;
-          return;
-        }
-        
-        // First check for status indicators in the DOM
-        let status = null;
-        
-        // Look for status indicator elements
-        if (item.querySelector('.status-waiting')) {
+        // First, check for elements with specific status classes
+        if (item.querySelector('.status-waiting') || item.querySelector('.chat-avatar.status-waiting')) {
           status = 'waiting';
-        } else if (item.querySelector('.status-active')) {
+        } else if (item.querySelector('.status-active') || item.querySelector('.chat-avatar.status-active')) {
           status = 'active';
-        } else if (item.querySelector('.status-closed')) {
+        } else if (item.querySelector('.status-closed') || item.querySelector('.chat-avatar.status-closed')) {
           status = 'closed';
-        }
-        
-        // If no status found via DOM elements, try to infer from content
-        if (!status) {
-          const content = item.textContent.toLowerCase();
-          
-          // Check for status keywords
-          if (content.includes('conversație nouă') || content.includes('în așteptare')) {
-            status = 'waiting';
-          } else if (content.includes('rezolvate') || content.includes('încheiată') || content.includes('închis')) {
-            status = 'closed';
-          } else if (content.includes('activ') || content.includes('preluat')) {
-            status = 'active';
-          } else {
-            // Last resort - check for patterns indicating recent vs old conversations
-            if (content.includes('acum') && 
-               (content.includes('minute') || content.includes('ore'))) {
-              // More recent conversations are likely to be in waiting status
-              status = 'waiting';
-            } else if (content.includes('zile') || content.includes('săptămâni')) {
-              // Older conversations are often resolved
-              status = 'closed';
-            } else {
-              // Default to active as a middle ground
-              status = 'active';
-            }
+        } else {
+          // Check current filter - if view is filtered, items should match that status
+          const currentFilter = getCurrentFilter();
+          if (currentFilter !== 'all') {
+            status = currentFilter;
           }
         }
         
@@ -259,167 +220,153 @@
     return activeFilterBtn ? activeFilterBtn.getAttribute('data-filter') : 'all';
   }
   
-  // Set up filter button handler
-  function setupFilterHandlers() {
-    try {
-      const filterButtons = document.querySelectorAll('.filter-btn');
-      
-      if (!filterButtons || filterButtons.length === 0) {
-        console.warn('No filter buttons found to attach handlers');
-        return;
-      }
-      
-      // Remove any existing event handlers by cloning and replacing
-      filterButtons.forEach(button => {
-        const newButton = button.cloneNode(true);
-        
-        // Get original filter value
-        const filter = button.getAttribute('data-filter');
-        
-        // Add new click event handler
-        newButton.addEventListener('click', () => {
-          // Log which filter was clicked
-          console.log(`Filter clicked: ${filter}`);
-          
-          // The existing click handler in admin.html handles the actual filtering
-          // We just need to add our visual enhancements after a short delay
-          // to ensure the DOM has been updated
-          setTimeout(() => {
-            try {
-              applyStatusToChatItems();
-            } catch (error) {
-              console.error('Error applying styles after filter change:', error);
-            }
-          }, 150);
-        });
-        
-        // Replace the original button
-        if (button.parentNode) {
-          button.parentNode.replaceChild(newButton, button);
-        }
-      });
-      
-      console.log(`Initialized ${filterButtons.length} filter button handlers`);
-    } catch (error) {
-      console.error('Failed to set up filter handlers:', error);
-    }
-  }
-  
-  // Set up MutationObserver to detect new chat items
+  // Set up MutationObserver to detect new chat items and changes
   function setupMutationObserver() {
-    try {
-      // Create the observer with a debounced callback to avoid excessive updates
-      let updateTimeout = null;
-      const observer = new MutationObserver(mutations => {
-        let shouldUpdate = false;
-        
-        mutations.forEach(mutation => {
-          // Handle added nodes
-          if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-            // Check if any chat items were added
-            Array.from(mutation.addedNodes).forEach(node => {
-              if (node.classList && node.classList.contains('chat-item')) {
+    // Create the observer with a debounced callback
+    let updateTimeout = null;
+    const observer = new MutationObserver(mutations => {
+      let shouldUpdate = false;
+      
+      mutations.forEach(mutation => {
+        // Check for added nodes (new chat items)
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          Array.from(mutation.addedNodes).forEach(node => {
+            if (node.classList && node.classList.contains('chat-item')) {
+              shouldUpdate = true;
+            }
+            
+            // Check for container with chat items
+            if (node.querySelectorAll) {
+              const items = node.querySelectorAll('.chat-item');
+              if (items.length > 0) {
                 shouldUpdate = true;
               }
-              
-              // Check for container with chat items
-              if (node.querySelectorAll) {
-                const items = node.querySelectorAll('.chat-item');
-                if (items.length > 0) {
-                  shouldUpdate = true;
-                }
-              }
-            });
-          }
-          
-          // Also check if class changes happened (like active status changes)
-          if (mutation.type === 'attributes' && 
-              mutation.attributeName === 'class' && 
-              mutation.target.classList.contains('chat-item')) {
-            shouldUpdate = true;
-          }
-        });
+            }
+          });
+        }
         
-        // Debounce updates to avoid performance issues with rapid changes
-        if (shouldUpdate) {
-          clearTimeout(updateTimeout);
-          updateTimeout = setTimeout(() => {
-            applyStatusToChatItems();
-          }, 100); // Wait 100ms before applying updates
+        // Also check for attribute changes that might indicate status update
+        if (mutation.type === 'attributes' && 
+            (mutation.attributeName === 'class' || mutation.attributeName === 'style')) {
+          shouldUpdate = true;
         }
       });
       
-      // Start observing the chat list with appropriate options
-      const chatList = document.getElementById('chatList');
-      if (chatList) {
-        observer.observe(chatList, {
-          childList: true,  // Watch for added/removed nodes
-          subtree: true,    // Watch all descendants
-          attributes: true, // Watch for attribute changes
-          attributeFilter: ['class'] // Only care about class changes
-        });
-        
-        // Store observer reference for potential cleanup
-        window.chatVisualizerObserver = observer;
-        console.log('Chat list observer initialized');
-      } else {
-        console.warn('Chat list element not found for observer');
-      }
-    } catch (error) {
-      console.error('Failed to set up mutation observer:', error);
-    }
-  }
-  
-  // Initialize the enhancement
-  function initialize() {
-    try {
-      // Mark as initialized
-      window.chatVisualizerInitialized = true;
-      
-      // Inject styles
-      injectStyles();
-      
-      // Apply status to existing chat items
-      applyStatusToChatItems();
-      
-      // Set up filter button handlers
-      setupFilterHandlers();
-      
-      // Set up observer for dynamic content
-      setupMutationObserver();
-      
-      // Add global function to force re-application
-      window.refreshChatStyles = function() {
-        try {
+      // Debounce updates
+      if (shouldUpdate) {
+        clearTimeout(updateTimeout);
+        updateTimeout = setTimeout(() => {
           applyStatusToChatItems();
-          console.log('Chat styles refreshed successfully');
-        } catch (error) {
-          console.error('Error refreshing chat styles:', error);
-        }
-      };
+        }, 100);
+      }
+    });
+    
+    // Observe the chat list
+    const chatList = document.getElementById('chatList');
+    if (chatList) {
+      observer.observe(chatList, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class', 'style']
+      });
       
-      console.log('Chat state visualizer initialized successfully');
-    } catch (error) {
-      console.error('Failed to initialize chat state visualizer:', error);
+      window.chatVisualizerObserver = observer;
+      console.log('Chat list observer initialized');
+    } else {
+      console.warn('Chat list element not found for observer');
     }
   }
   
-  // Run on DOMContentLoaded for early initialization
+  // Add listeners for Firebase data changes
+  function listenForDataChanges() {
+    // Watch for the userChats array being updated
+    // We need to use a trick since we don't have direct access to the internal variables
+    // This uses the defineProperty method to detect when the array is updated
+    
+    // First wait for the app to be initialized
+    const checkForApp = setInterval(() => {
+      if (document.getElementById('appScreen').style.display !== 'none') {
+        clearInterval(checkForApp);
+        
+        // App is loaded, now hook into the updateChatList function
+        if (typeof window.updateChatList === 'function') {
+          const originalUpdateChatList = window.updateChatList;
+          window.updateChatList = function() {
+            // Call original function
+            originalUpdateChatList.apply(this, arguments);
+            
+            // Then apply our styling
+            setTimeout(applyStatusToChatItems, 50);
+          };
+          console.log('Hooked into updateChatList function');
+        } else {
+          // If updateChatList isn't accessible, use a mutation observer
+          setupMutationObserver();
+        }
+      }
+    }, 500);
+  }
+  
+  // Setup event listeners
+  function setupEventListeners() {
+    // Listen for filter button clicks
+    document.addEventListener('click', function(e) {
+      const filterBtn = e.target.closest('.filter-btn');
+      if (filterBtn) {
+        // Let the original handler process the click first
+        setTimeout(() => {
+          applyStatusToChatItems();
+        }, 50);
+      }
+    });
+  }
+  
+  // Initialize the visualizer
+  function initialize() {
+    // Inject our CSS
+    injectStyles();
+    
+    // Set up events and listeners
+    setupEventListeners();
+    
+    // Listen for Firebase data changes
+    listenForDataChanges();
+    
+    // Add global refresh function
+    window.refreshChatStyles = function() {
+      applyStatusToChatItems();
+      console.log('Chat styles refreshed');
+    };
+    
+    // Initial application (might not work until data loads)
+    setTimeout(applyStatusToChatItems, 1000);
+    
+    // Also check periodically during first 10 seconds
+    let checkCount = 0;
+    const periodicCheck = setInterval(() => {
+      applyStatusToChatItems();
+      checkCount++;
+      if (checkCount >= 10) clearInterval(periodicCheck);
+    }, 1000);
+    
+    console.log('Chat state visualizer initialized');
+  }
+  
+  // Check if already initialized
+  if (window.chatVisualizerInitialized) return;
+  window.chatVisualizerInitialized = true;
+  
+  // Run when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initialize);
   } else {
-    // If already loaded, run now with a small delay to ensure DOM is fully ready
-    setTimeout(initialize, 100);
+    // If already loaded, run now
+    initialize();
   }
   
-  // Also run on window load to catch late-loaded content
+  // Also run on window load
   window.addEventListener('load', function() {
-    // If not already initialized, do it now
-    if (!window.chatVisualizerInitialized) {
-      initialize();
-    } else {
-      // Refresh styles to catch any content loaded after initial initialization
-      window.refreshChatStyles();
-    }
+    setTimeout(applyStatusToChatItems, 500);
   });
 })();
