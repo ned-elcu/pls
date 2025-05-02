@@ -21,7 +21,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         /* Reset & Base Styles */
@@ -32,7 +32,6 @@
             --secondary-light: rgba(30, 136, 229, 0.2);
             --accent-color: #FFCA28;
             --accent-dark: #FFC107;
-            --accent-light: rgba(255, 202, 40, 0.15);
             --text-primary: #333333;
             --text-secondary: #666666;
             --text-light: #FFFFFF;
@@ -58,7 +57,6 @@
             --spacing-md: 16px;
             --spacing-lg: 24px;
             --spacing-xl: 32px;
-            --spacing-xxl: 48px;
         }
         
         * {
@@ -197,179 +195,6 @@
             flex-direction: column;
         }
         
-        /* Two-column Layout for Desktop */
-        @media (min-width: 992px) {
-            .app-content {
-                flex-direction: row;
-            }
-            
-            .app-sidebar {
-                width: 40%;
-                border-right: 1px solid rgba(0, 0, 0, 0.1);
-                overflow-y: auto;
-                display: flex;
-                flex-direction: column;
-            }
-            
-            .app-main {
-                width: 60%;
-                display: flex;
-                flex-direction: column;
-                position: relative;
-            }
-            
-            .welcome-screen, .emergency-check, .department-select, 
-            .chat-form, .chat-area, .chat-end, .loading-container {
-                height: 100%;
-            }
-        }
-        
-        /* App Sidebar for Desktop */
-        .app-sidebar {
-            display: none;
-            background-color: var(--background-light);
-        }
-        
-        @media (min-width: 992px) {
-            .app-sidebar {
-                display: flex;
-            }
-        }
-        
-        .sidebar-content {
-            padding: var(--spacing-lg);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: var(--spacing-xl);
-        }
-        
-        .sidebar-logo {
-            width: 64px;
-            height: 64px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: var(--shadow-small);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: var(--spacing-md);
-        }
-        
-        .sidebar-logo img {
-            width: 48px;
-            height: 48px;
-        }
-        
-        .sidebar-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-        
-        .sidebar-section {
-            margin-bottom: var(--spacing-xl);
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        .sidebar-section-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: var(--spacing-sm);
-            display: flex;
-            align-items: center;
-        }
-        
-        .sidebar-section-title i {
-            margin-right: var(--spacing-xs);
-            color: var(--secondary-color);
-        }
-        
-        .sidebar-section-content {
-            background: white;
-            border-radius: var(--border-radius-medium);
-            padding: var(--spacing-md);
-            box-shadow: var(--shadow-small);
-        }
-        
-        .sidebar-info-list {
-            list-style: none;
-        }
-        
-        .sidebar-info-item {
-            display: flex;
-            margin-bottom: var(--spacing-sm);
-            align-items: flex-start;
-        }
-        
-        .sidebar-info-item i {
-            color: var(--secondary-color);
-            margin-right: var(--spacing-sm);
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-        
-        .sidebar-info-text {
-            flex: 1;
-        }
-        
-        .sidebar-info-label {
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-        
-        .sidebar-department-info {
-            display: none;
-        }
-        
-        .sidebar-quick-links {
-            margin-top: auto;
-            padding-top: var(--spacing-lg);
-        }
-        
-        .quick-links-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--spacing-sm);
-        }
-        
-        .quick-link {
-            background-color: white;
-            border-radius: var(--border-radius-small);
-            padding: var(--spacing-xs) var(--spacing-md);
-            text-decoration: none;
-            color: var(--primary-color);
-            font-weight: 600;
-            font-size: 14px;
-            box-shadow: var(--shadow-small);
-            transition: var(--transition-fast);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        
-        .quick-link:hover {
-            background-color: var(--primary-color);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        /* App Main Content */
-        .app-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        
         /* Welcome Screen */
         .welcome-screen {
             display: flex;
@@ -386,7 +211,6 @@
         }
         
         .welcome-title {
-            font-family: 'Montserrat', sans-serif;
             font-size: 28px;
             font-weight: 700;
             margin-bottom: var(--spacing-lg);
@@ -407,7 +231,6 @@
             align-items: center;
             justify-content: center;
             margin-bottom: var(--spacing-xl);
-            box-shadow: var(--shadow-medium);
         }
         
         .welcome-logo img {
@@ -460,7 +283,6 @@
         }
         
         .department-title {
-            font-family: 'Montserrat', sans-serif;
             font-size: var(--font-size-xl);
             margin-bottom: var(--spacing-xl);
             text-align: center;
@@ -535,7 +357,6 @@
         }
         
         .form-title {
-            font-family: 'Montserrat', sans-serif;
             font-size: var(--font-size-xl);
             color: var(--primary-color);
             margin-bottom: var(--spacing-lg);
@@ -777,7 +598,6 @@
         }
         
         .chat-end-title {
-            font-family: 'Montserrat', sans-serif;
             font-size: var(--font-size-xxl);
             color: var(--primary-color);
             margin-bottom: var(--spacing-md);
@@ -960,8 +780,7 @@
             .btn:hover,
             .department-item:hover,
             .loading-spinner,
-            .typing-dot,
-            .sidebar-section {
+            .typing-dot {
                 animation: none !important;
                 transition: none !important;
                 transform: none !important;
@@ -978,8 +797,15 @@
             }
         }
         
-        /* Responsive Adjustments */
+        /* Responsive */
         @media (min-width: 768px) {
+            .app-container {
+                /* Changed from fixed width to full width for desktop */
+                width: 99%;
+                height: 99%;
+                box-shadow: none;
+            }
+            
             .emergency-buttons {
                 flex-direction: row;
                 justify-content: center;
@@ -987,42 +813,6 @@
             
             .btn {
                 width: auto;
-            }
-        }
-        
-        /* Desktop-specific improvements */
-        @media (min-width: 992px) {
-            .welcome-screen {
-                background-position: left center;
-            }
-            
-            .department-list {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: var(--spacing-md);
-            }
-            
-            .welcome-btn {
-                max-width: 320px;
-            }
-            
-            .chat-messages {
-                padding: var(--spacing-lg);
-            }
-            
-            .message-content {
-                padding: var(--spacing-md) var(--spacing-lg);
-            }
-            
-            .chat-form {
-                padding: var(--spacing-xl);
-                max-width: 800px;
-                margin: 0 auto;
-                width: 100%;
-            }
-            
-            .chat-end {
-                padding: var(--spacing-xxl);
             }
         }
         
@@ -1113,272 +903,179 @@
         
         <!-- Main App Content -->
         <main class="app-content">
-            <!-- Sidebar for Desktop -->
-            <aside class="app-sidebar">
-                <div class="sidebar-content">
-                    <div class="sidebar-header">
-                        <div class="sidebar-logo">
-                            <img src="https://images4.imagebam.com/16/bf/9a/ME11NRG3_o.png" alt="Logo Poliția Locală">
-                        </div>
-                        <div>
-                            <h2 class="sidebar-title">Poliția Locală Slobozia</h2>
-                        </div>
-                    </div>
-                    
-                    <div class="sidebar-section">
-                        <h3 class="sidebar-section-title">
-                            <i class="material-icons">info</i>
-                            Despre serviciul de chat
-                        </h3>
-                        <div class="sidebar-section-content">
-                            <p>Serviciul de chat online al Poliției Locale Slobozia vă permite să raportați probleme non-urgente și să obțineți asistență în timp real de la agenții noștri.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="sidebar-section">
-                        <h3 class="sidebar-section-title">
-                            <i class="material-icons">contact_phone</i>
-                            Informații de contact
-                        </h3>
-                        <div class="sidebar-section-content">
-                            <ul class="sidebar-info-list">
-                                <li class="sidebar-info-item">
-                                    <i class="material-icons">location_on</i>
-                                    <div class="sidebar-info-text">
-                                        <div class="sidebar-info-label">Adresă:</div>
-                                        <div>Str. Răzoare, nr. 3, Slobozia, Ialomița</div>
-                                    </div>
-                                </li>
-                                <li class="sidebar-info-item">
-                                    <i class="material-icons">phone</i>
-                                    <div class="sidebar-info-text">
-                                        <div class="sidebar-info-label">Dispecerat:</div>
-                                        <div>0243 955</div>
-                                    </div>
-                                </li>
-                                <li class="sidebar-info-item">
-                                    <i class="material-icons">email</i>
-                                    <div class="sidebar-info-text">
-                                        <div class="sidebar-info-label">Email:</div>
-                                        <div>politia.locala@sloboziail.ro</div>
-                                    </div>
-                                </li>
-                                <li class="sidebar-info-item">
-                                    <i class="material-icons">schedule</i>
-                                    <div class="sidebar-info-text">
-                                        <div class="sidebar-info-label">Program de lucru:</div>
-                                        <div>Luni - Vineri: 08:00 - 16:00</div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <!-- Dynamic Department Information (shows when department selected) -->
-                    <div id="sidebarDepartmentInfo" class="sidebar-section sidebar-department-info">
-                        <h3 class="sidebar-section-title">
-                            <i class="material-icons">business</i>
-                            <span id="sidebarDepartmentTitle">Informații departament</span>
-                        </h3>
-                        <div class="sidebar-section-content">
-                            <div id="sidebarDepartmentContent">
-                                <!-- Content populated by JS when department selected -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="sidebar-section sidebar-quick-links">
-                        <h3 class="sidebar-section-title">
-                            <i class="material-icons">link</i>
-                            Linkuri utile
-                        </h3>
-                        <div class="sidebar-section-content">
-                            <div class="quick-links-list">
-                                <a href="https://www.sloboziail.ro" target="_blank" class="quick-link">Primăria Slobozia</a>
-                                <a href="/faq" class="quick-link">Întrebări frecvente</a>
-                                <a href="/servicii" class="quick-link">Servicii</a>
-                                <a href="/legislatie" class="quick-link">Legislație</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </aside>
+            <!-- Error Notice -->
+            <div id="errorNotice" class="notice error-notice" role="alert"></div>
             
-            <!-- Main Content Area -->
-            <div class="app-main">
-                <!-- Error Notice -->
-                <div id="errorNotice" class="notice error-notice" role="alert"></div>
-                
-                <!-- Success Notice -->
-                <div id="successNotice" class="notice success-notice" role="status"></div>
-                
-                <!-- Welcome Screen -->
-                <div id="welcomeScreen" class="welcome-screen">
-                    <div class="welcome-logo">
-                        <img src="https://images4.imagebam.com/16/bf/9a/ME11NRG3_o.png" alt="Logo Poliția Locală">
-                    </div>
-                    <h1 class="welcome-title">Chat Online cu Poliția Locală</h1>
-                    <p class="welcome-description">Raportați probleme non-urgente și primiți asistență în timp real de la agenții Poliției Locale Slobozia.</p>
-                    <button id="btnStartWelcome" class="btn btn-primary welcome-btn">
-                        <i class="material-icons">message</i> Începe Chat
+            <!-- Success Notice -->
+            <div id="successNotice" class="notice success-notice" role="status"></div>
+            
+            <!-- Welcome Screen -->
+            <div id="welcomeScreen" class="welcome-screen">
+                <div class="welcome-logo">
+                    <img src="https://images4.imagebam.com/16/bf/9a/ME11NRG3_o.png" alt="Logo Poliția Locală">
+                </div>
+                <h1 class="welcome-title">Chat Online cu Poliția Locală</h1>
+                <p class="welcome-description">Raportați probleme non-urgente și primiți asistență în timp real de la agenții Poliției Locale Slobozia.</p>
+                <button id="btnStartWelcome" class="btn btn-primary welcome-btn">
+                    <i class="material-icons">message</i> Începe Chat
+                </button>
+            </div>
+            
+            <!-- Emergency Check -->
+            <div id="emergencyCheck" class="emergency-check" style="display:none;">
+                <h2 class="emergency-title">
+                    <i class="material-icons">warning</i>Verificare Urgență
+                </h2>
+                <p class="emergency-text">Vă aflați într-o situație de urgență care necesită asistență imediată?</p>
+                <div class="emergency-buttons">
+                    <button id="btnEmergency" class="btn btn-danger">
+                        <i class="material-icons">call</i> Da, am nevoie de ajutor acum
+                    </button>
+                    <button id="btnNonemergency" class="btn btn-success">
+                        <i class="material-icons">check_circle</i> Nu, este o situație non-urgentă
                     </button>
                 </div>
+            </div>
+            
+            <!-- Department Selection -->
+            <div id="departmentSelect" class="department-select">
+                <h2 class="department-title">Selectați departamentul care vă poate ajuta</h2>
                 
-                <!-- Emergency Check -->
-                <div id="emergencyCheck" class="emergency-check" style="display:none;">
-                    <h2 class="emergency-title">
-                        <i class="material-icons">warning</i>Verificare Urgență
-                    </h2>
-                    <p class="emergency-text">Vă aflați într-o situație de urgență care necesită asistență imediată?</p>
-                    <div class="emergency-buttons">
-                        <button id="btnEmergency" class="btn btn-danger">
-                            <i class="material-icons">call</i> Da, am nevoie de ajutor acum
+                <div class="department-list">
+                    <div class="department-item" data-id="traffic">
+                        <div class="department-icon">
+                            <i class="material-icons">directions_car</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Circulație Rutieră</div>
+                            <div class="department-description">Probleme legate de trafic, parcare sau semaforizare</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-item" data-id="public-order">
+                        <div class="department-icon">
+                            <i class="material-icons">public</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Ordine Publică</div>
+                            <div class="department-description">Tulburarea liniștii publice, comportament necorespunzător</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-item" data-id="environment">
+                        <div class="department-icon">
+                            <i class="material-icons">nature</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Protecția Mediului</div>
+                            <div class="department-description">Depozitarea deșeurilor, poluare, animale abandonate</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-item" data-id="commerce">
+                        <div class="department-icon">
+                            <i class="material-icons">store</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Control Comercial</div>
+                            <div class="department-description">Comerț ilegal, nereguli în activități comerciale</div>
+                        </div>
+                    </div>
+                    
+                    <div class="department-item" data-id="general">
+                        <div class="department-icon">
+                            <i class="material-icons">help_outline</i>
+                        </div>
+                        <div class="department-info">
+                            <div class="department-name">Informații Generale</div>
+                            <div class="department-description">Întrebări generale, informații despre serviciile poliției</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pre-Chat Form -->
+            <div id="chatForm" class="chat-form">
+                <div class="notice error-notice" id="formErrorNotice" style="display:none;">
+                    Vă rugăm să completați toate câmpurile obligatorii.
+                </div>
+                
+                <h2 class="form-title">Înainte de a începe</h2>
+                
+                <div class="form-group">
+                    <label class="form-label" for="chat-subject">Subiect:</label>
+                    <input type="text" id="chat-subject" class="form-control" placeholder="Descrieți pe scurt problema" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="chat-name">Numele dumneavoastră:</label>
+                    <input type="text" id="chat-name" class="form-control" placeholder="Nume și prenume" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="chat-email">Email (pentru transcriere):</label>
+                    <input type="email" id="chat-email" class="form-control" placeholder="adresa@email.ro">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="chat-phone">Telefon:</label>
+                    <input type="tel" id="chat-phone" class="form-control" placeholder="Număr de telefon">
+                </div>
+                
+                <div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="privacy-check" required>
+                        <label class="form-check-label" for="privacy-check">Am citit și accept <a href="/privacy-policy" target="_blank">politica de confidențialitate</a>.</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="recording-check" required>
+                        <label class="form-check-label" for="recording-check">Înțeleg că această conversație poate fi înregistrată pentru îmbunătățirea serviciilor.</label>
+                    </div>
+                </div>
+                
+                <div class="gdpr-info">
+                    <p>Datele dumneavoastră sunt protejate în conformitate cu Regulamentul General privind Protecția Datelor (GDPR).</p>
+                </div>
+                
+                <button id="btnStartChat" class="btn btn-primary">
+                    <i class="material-icons">chat</i> Începe Chat
+                </button>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p id="loadingText">Se conectează la chat...</p>
+            </div>
+            
+            <!-- Chat Area -->
+            <div id="chatArea" class="chat-area">
+                <!-- Chat Messages -->
+                <div id="chatMessages" class="chat-messages"></div>
+                
+                <!-- Chat Input -->
+                <div id="chatInput" class="chat-input">
+                    <input type="text" class="chat-input-field" id="messageInput" placeholder="Scrieți mesajul aici..." aria-label="Scrieți mesajul">
+                    <div class="chat-actions">
+                        <!-- Location sharing button removed -->
+                        <button id="btnSendMessage" class="chat-action chat-action-send" aria-label="Trimite mesaj">
+                            <i class="material-icons">send</i>
                         </button>
-                        <button id="btnNonemergency" class="btn btn-success">
-                            <i class="material-icons">check_circle</i> Nu, este o situație non-urgentă
-                        </button>
                     </div>
                 </div>
-                
-                <!-- Department Selection -->
-                <div id="departmentSelect" class="department-select">
-                    <h2 class="department-title">Selectați departamentul care vă poate ajuta</h2>
-                    
-                    <div class="department-list">
-                        <div class="department-item" data-id="traffic">
-                            <div class="department-icon">
-                                <i class="material-icons">directions_car</i>
-                            </div>
-                            <div class="department-info">
-                                <div class="department-name">Circulație Rutieră</div>
-                                <div class="department-description">Probleme legate de trafic, parcare sau semaforizare</div>
-                            </div>
-                        </div>
-                        
-                        <div class="department-item" data-id="public-order">
-                            <div class="department-icon">
-                                <i class="material-icons">public</i>
-                            </div>
-                            <div class="department-info">
-                                <div class="department-name">Ordine Publică</div>
-                                <div class="department-description">Tulburarea liniștii publice, comportament necorespunzător</div>
-                            </div>
-                        </div>
-                        
-                        <div class="department-item" data-id="environment">
-                            <div class="department-icon">
-                                <i class="material-icons">nature</i>
-                            </div>
-                            <div class="department-info">
-                                <div class="department-name">Protecția Mediului</div>
-                                <div class="department-description">Depozitarea deșeurilor, poluare, animale abandonate</div>
-                            </div>
-                        </div>
-                        
-                        <div class="department-item" data-id="commerce">
-                            <div class="department-icon">
-                                <i class="material-icons">store</i>
-                            </div>
-                            <div class="department-info">
-                                <div class="department-name">Control Comercial</div>
-                                <div class="department-description">Comerț ilegal, nereguli în activități comerciale</div>
-                            </div>
-                        </div>
-                        
-                        <div class="department-item" data-id="general">
-                            <div class="department-icon">
-                                <i class="material-icons">help_outline</i>
-                            </div>
-                            <div class="department-info">
-                                <div class="department-name">Informații Generale</div>
-                                <div class="department-description">Întrebări generale, informații despre serviciile poliției</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Pre-Chat Form -->
-                <div id="chatForm" class="chat-form">
-                    <div class="notice error-notice" id="formErrorNotice" style="display:none;">
-                        Vă rugăm să completați toate câmpurile obligatorii.
-                    </div>
-                    
-                    <h2 class="form-title">Înainte de a începe</h2>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="chat-subject">Subiect:</label>
-                        <input type="text" id="chat-subject" class="form-control" placeholder="Descrieți pe scurt problema" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="chat-name">Numele dumneavoastră:</label>
-                        <input type="text" id="chat-name" class="form-control" placeholder="Nume și prenume" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="chat-email">Email (pentru transcriere):</label>
-                        <input type="email" id="chat-email" class="form-control" placeholder="adresa@email.ro">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="chat-phone">Telefon:</label>
-                        <input type="tel" id="chat-phone" class="form-control" placeholder="Număr de telefon">
-                    </div>
-                    
-                    <div class="form-group">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="privacy-check" required>
-                            <label class="form-check-label" for="privacy-check">Am citit și accept <a href="/privacy-policy" target="_blank">politica de confidențialitate</a>.</label>
-                        </div>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="recording-check" required>
-                            <label class="form-check-label" for="recording-check">Înțeleg că această conversație poate fi înregistrată pentru îmbunătățirea serviciilor.</label>
-                        </div>
-                    </div>
-                    
-                    <div class="gdpr-info">
-                        <p>Datele dumneavoastră sunt protejate în conformitate cu Regulamentul General privind Protecția Datelor (GDPR).</p>
-                    </div>
-                    
-                    <button id="btnStartChat" class="btn btn-primary">
-                        <i class="material-icons">chat</i> Începe Chat
-                    </button>
-                </div>
-                
-                <!-- Loading State -->
-                <div id="loadingState" class="loading-container">
-                    <div class="loading-spinner"></div>
-                    <p id="loadingText">Se conectează la chat...</p>
-                </div>
-                
-                <!-- Chat Area -->
-                <div id="chatArea" class="chat-area">
-                    <!-- Chat Messages -->
-                    <div id="chatMessages" class="chat-messages"></div>
-                    
-                    <!-- Chat Input -->
-                    <div id="chatInput" class="chat-input">
-                        <input type="text" class="chat-input-field" id="messageInput" placeholder="Scrieți mesajul aici..." aria-label="Scrieți mesajul">
-                        <div class="chat-actions">
-                            <button id="btnSendMessage" class="chat-action chat-action-send" aria-label="Trimite mesaj">
-                                <i class="material-icons">send</i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Chat End -->
-                <div id="chatEnd" class="chat-end">
-                    <i class="material-icons chat-end-icon">check_circle</i>
-                    <h2 class="chat-end-title">Conversație încheiată</h2>
-                    <p class="chat-end-text">Vă mulțumim pentru că ați contactat Poliția Locală Slobozia. Puteți primi transcriptul conversației pe email sau puteți începe o nouă conversație.</p>
-                    <button id="btnRequestTranscript" class="btn btn-secondary">
-                        <i class="material-icons">description</i> Primește transcript
-                    </button>
-                    <button id="btnStartNewChat" class="btn btn-primary" style="margin-top: var(--spacing-md);">
-                        <i class="material-icons">chat</i> Conversație nouă
-                    </button>
-                </div>
+            </div>
+            
+            <!-- Chat End -->
+            <div id="chatEnd" class="chat-end">
+                <i class="material-icons chat-end-icon">check_circle</i>
+                <h2 class="chat-end-title">Conversație încheiată</h2>
+                <p class="chat-end-text">Vă mulțumim pentru că ați contactat Poliția Locală Slobozia. Puteți primi transcriptul conversației pe email sau puteți începe o nouă conversație.</p>
+                <button id="btnRequestTranscript" class="btn btn-secondary">
+                    <i class="material-icons">description</i> Primește transcript
+                </button>
+                <button id="btnStartNewChat" class="btn btn-primary" style="margin-top: var(--spacing-md);">
+                    <i class="material-icons">chat</i> Conversație nouă
+                </button>
             </div>
         </main>
         
@@ -1441,11 +1138,6 @@
         // Department selection
         const departmentItems = document.querySelectorAll('.department-item');
         
-        // Sidebar elements
-        const sidebarDepartmentInfo = document.getElementById('sidebarDepartmentInfo');
-        const sidebarDepartmentTitle = document.getElementById('sidebarDepartmentTitle');
-        const sidebarDepartmentContent = document.getElementById('sidebarDepartmentContent');
-        
         // Other elements
         const connectionStatus = document.getElementById('connectionStatus');
         const securityStatus = document.getElementById('securityStatus');
@@ -1473,80 +1165,6 @@
         let messageQueue = []; // For offline message queuing
         let agentJoinedFlag = false; // Flag to track if agent has already joined
         let deferredPrompt = null; // For PWA installation
-        
-        // Department info for sidebar
-        const departmentInfoMap = {
-            'traffic': {
-                title: 'Circulație Rutieră',
-                icon: 'directions_car',
-                content: `
-                    <p>Departamentul de Circulație Rutieră se ocupă cu:</p>
-                    <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                        <li style="margin-bottom: 8px;">• Monitorizarea traficului rutier</li>
-                        <li style="margin-bottom: 8px;">• Sancționarea parcărilor neregulamentare</li>
-                        <li style="margin-bottom: 8px;">• Coordonarea în zone cu trafic intens</li>
-                        <li style="margin-bottom: 8px;">• Verificarea autorizațiilor de parcare</li>
-                    </ul>
-                    <p style="margin-top: 15px;"><strong>Program patrulare:</strong> Zilnic, 07:00 - 22:00</p>
-                `
-            },
-            'public-order': {
-                title: 'Ordine Publică',
-                icon: 'public',
-                content: `
-                    <p>Departamentul de Ordine Publică se ocupă cu:</p>
-                    <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                        <li style="margin-bottom: 8px;">• Asigurarea ordinii și liniștii publice</li>
-                        <li style="margin-bottom: 8px;">• Intervenții la reclamații și sesizări</li>
-                        <li style="margin-bottom: 8px;">• Patrulări în zone publice și parcuri</li>
-                        <li style="margin-bottom: 8px;">• Combaterea faptelor antisociale</li>
-                    </ul>
-                    <p style="margin-top: 15px;"><strong>Program intervenție:</strong> Non-stop</p>
-                `
-            },
-            'environment': {
-                title: 'Protecția Mediului',
-                icon: 'nature',
-                content: `
-                    <p>Departamentul de Protecția Mediului se ocupă cu:</p>
-                    <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                        <li style="margin-bottom: 8px;">• Monitorizarea depozitării deșeurilor</li>
-                        <li style="margin-bottom: 8px;">• Verificări privind curățenia spațiilor publice</li>
-                        <li style="margin-bottom: 8px;">• Intervenții pentru animale abandonate</li>
-                        <li style="margin-bottom: 8px;">• Sancționarea poluării fonice și a aerului</li>
-                    </ul>
-                    <p style="margin-top: 15px;"><strong>Program funcționare:</strong> Luni - Vineri, 08:00 - 16:00</p>
-                `
-            },
-            'commerce': {
-                title: 'Control Comercial',
-                icon: 'store',
-                content: `
-                    <p>Departamentul de Control Comercial se ocupă cu:</p>
-                    <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                        <li style="margin-bottom: 8px;">• Verificarea autorizațiilor comerciale</li>
-                        <li style="margin-bottom: 8px;">• Controlul comerțului stradal</li>
-                        <li style="margin-bottom: 8px;">• Monitorizarea piețelor și târgurilor</li>
-                        <li style="margin-bottom: 8px;">• Sancționarea activităților comerciale ilegale</li>
-                    </ul>
-                    <p style="margin-top: 15px;"><strong>Program control:</strong> Luni - Sâmbătă, 08:00 - 20:00</p>
-                `
-            },
-            'general': {
-                title: 'Informații Generale',
-                icon: 'help_outline',
-                content: `
-                    <p>Serviciul de Informații Generale oferă:</p>
-                    <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                        <li style="margin-bottom: 8px;">• Îndrumări privind serviciile Poliției Locale</li>
-                        <li style="margin-bottom: 8px;">• Informații despre depunerea petițiilor</li>
-                        <li style="margin-bottom: 8px;">• Consiliere pentru diverse situații</li>
-                        <li style="margin-bottom: 8px;">• Redirectare către departamentele competente</li>
-                    </ul>
-                    <p style="margin-top: 15px;"><strong>Program relații publice:</strong> Luni - Vineri, 08:00 - 16:00</p>
-                `
-            }
-        };
         
         // Rate limiting
         const rateLimitConfig = {
@@ -1935,23 +1553,6 @@
             };
             
             document.getElementById('chat-subject').value = subjectMap[departmentId] || '';
-            
-            // Update sidebar department info on desktop
-            if (window.innerWidth >= 992) {
-                updateSidebarDepartmentInfo(departmentId);
-            }
-        }
-        
-        // Update sidebar department info
-        function updateSidebarDepartmentInfo(departmentId) {
-            const deptInfo = departmentInfoMap[departmentId];
-            if (deptInfo) {
-                sidebarDepartmentInfo.style.display = 'block';
-                sidebarDepartmentTitle.textContent = deptInfo.title;
-                sidebarDepartmentContent.innerHTML = deptInfo.content;
-            } else {
-                sidebarDepartmentInfo.style.display = 'none';
-            }
         }
         
         // Handle start chat button click
@@ -2494,3 +2095,228 @@
                 for (let i = 0; i < 3; i++) {
                     const dot = document.createElement('span');
                     dot.className = 'typing-dot';
+                    typingIndicator.appendChild(dot);
+                }
+                
+                chatMessages.appendChild(typingIndicator);
+                scrollToBottom();
+            }
+        }
+        
+        // Hide agent typing indicator
+        function hideTypingIndicator() {
+            const typingIndicator = document.querySelector('.typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        // =============================================
+        // Read Receipts
+        // =============================================
+        
+        // Set up read receipts
+        function setupReadReceipts() {
+            // Update read status when the chat is visible
+            document.addEventListener('visibilitychange', updateReadStatus);
+            chatMessages.addEventListener('scroll', updateReadStatus);
+            
+            // Initial update
+            updateReadStatus();
+        }
+        
+        // Update read status for all messages
+        function updateReadStatus() {
+            if (document.visibilityState === 'visible' && !chatEnded) {
+                // Find the latest agent message
+                const agentMessages = document.querySelectorAll('.message-received');
+                if (agentMessages.length > 0) {
+                    const lastAgentMessage = agentMessages[agentMessages.length - 1];
+                    const messageId = lastAgentMessage.dataset.messageId;
+                    
+                    if (messageId && !messageId.startsWith('local-')) {
+                        updateMessageReadStatus(messageId);
+                    }
+                }
+            }
+        }
+        
+        // Update a specific message's read status
+        function updateMessageReadStatus(messageId) {
+            db.collection('chats').doc(currentChatId).collection('messages').doc(messageId)
+                .update({
+                    readAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(error => {
+                    console.error('Error updating read status:', error);
+                });
+        }
+        
+        // =============================================
+        // Chat Conclusion
+        // =============================================
+        
+        // Handle chat ended
+        function handleChatEnded() {
+            chatEnded = true;
+            
+            // Add system message
+            addSystemMessage('Conversația a fost încheiată.');
+            
+            // Disable input
+            messageInput.disabled = true;
+            btnSendMessage.disabled = true;
+            
+            // Show end screen after a delay
+            setTimeout(() => {
+                chatArea.style.display = 'none';
+                chatEnd.style.display = 'flex';
+            }, 3000);
+        }
+        
+        // Confirm end chat
+        function confirmEndChat() {
+            if (confirm('Sigur doriți să încheiați această conversație?')) {
+                endChat();
+            }
+        }
+        
+        // End chat
+        function endChat() {
+            chatEnded = true;
+            
+            // Update chat status in Firestore
+            db.collection('chats').doc(currentChatId).update({
+                status: 'closed',
+                endedBy: 'user',
+                endedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                handleChatEnded();
+            }).catch(error => {
+                console.error('Error ending chat:', error);
+                showNotice(errorNotice, 'Eroare la închiderea conversației. Vă rugăm să încercați din nou.');
+            });
+        }
+        
+        // Request transcript
+        function requestTranscript() {
+            const email = document.getElementById('chat-email').value;
+            
+            if (!email || !email.includes('@')) {
+                showNotice(errorNotice, 'Vă rugăm să introduceți o adresă de email validă.');
+                return;
+            }
+            
+            // Show loading state
+            btnRequestTranscript.disabled = true;
+            btnRequestTranscript.textContent = 'Se trimite...';
+            
+            // Call Cloud Function to send transcript
+            const sendTranscriptFunction = firebase.functions().httpsCallable('sendChatTranscript');
+            sendTranscriptFunction({ chatId: currentChatId, email: email })
+                .then(result => {
+                    showNotice(successNotice, 'Transcriptul a fost trimis la adresa de email specificată.');
+                    btnRequestTranscript.textContent = 'Transcript trimis ✓';
+                })
+                .catch(error => {
+                    console.error('Error requesting transcript:', error);
+                    showNotice(errorNotice, 'Eroare la trimiterea transcriptului. Vă rugăm să încercați din nou.');
+                    btnRequestTranscript.disabled = false;
+                    btnRequestTranscript.textContent = 'Primește transcript';
+                });
+        }
+        
+        // Reset chat and start a new one
+        function resetChat() {
+            // Sign out current user if any
+            if (currentUser) {
+                auth.signOut().catch(error => {
+                    console.error('Error signing out:', error);
+                });
+            }
+            
+            // Reset all variables
+            currentUser = null;
+            currentChatId = null;
+            selectedDepartment = null;
+            chatSessionKey = null;
+            agentPublicKey = null;
+            chatEnded = false;
+            isTyping = false;
+            agentJoinedFlag = false;
+            
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+                typingTimeout = null;
+            }
+            
+            // Clear message queue
+            messageQueue = [];
+            localStorage.removeItem('messageQueue_' + currentChatId);
+            
+            // Reset rate limiting
+            rateLimitConfig.sentMessages = [];
+            rateLimitConfig.isLimited = false;
+            
+            // Clear chat messages
+            chatMessages.innerHTML = '';
+            
+            // Reset all notices
+            errorNotice.style.display = 'none';
+            successNotice.style.display = 'none';
+            formErrorNotice.style.display = 'none';
+            
+            // Reset message input
+            messageInput.value = '';
+            messageInput.disabled = false;
+            
+            // Reset buttons
+            btnSendMessage.disabled = false;
+
+            // Reset form fields
+            document.getElementById('chat-subject').value = '';
+            document.getElementById('chat-email').value = '';
+            document.getElementById('chat-phone').value = '';
+            document.getElementById('privacy-check').checked = false;
+            document.getElementById('recording-check').checked = false;
+            
+            // Hide all sections except welcome screen
+            chatEnd.style.display = 'none';
+            chatArea.style.display = 'none';
+            chatForm.style.display = 'none';
+            departmentSelect.style.display = 'none';
+            loadingState.style.display = 'none';
+            emergencyCheck.style.display = 'none';
+            
+            // Show welcome screen
+            welcomeScreen.style.display = 'flex';
+            
+            // Generate a new encryption key
+            chatSessionKey = generateEncryptionKey();
+            
+            // Clean up chat listeners
+            cleanupChatListeners();
+        }
+        
+        // =============================================
+        // Cleanup function for listeners when chat ends
+        // =============================================
+        function cleanupChatListeners() {
+            if (window.chatListeners) {
+                if (window.chatListeners.chatDoc) {
+                    window.chatListeners.chatDoc();
+                }
+                if (window.chatListeners.messages) {
+                    window.chatListeners.messages();
+                }
+                if (window.chatListeners.typing) {
+                    window.chatListeners.typing();
+                }
+                window.chatListeners = null;
+            }
+        }
+        
+        // Initialize the chat
+        initializeChat();
+    </script>
+</body>
+</html>
