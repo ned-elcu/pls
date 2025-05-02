@@ -250,8 +250,11 @@
     const tabText = activeTab.textContent.trim();
     const status = TAB_MAP[tabText] || 'waiting';
     
-    // We don't want to apply a specific status when "All" tab is active
-    if (status === 'all') return;
+    // Special handling for "All" tab - use individual detection
+    if (status === 'all') {
+      detectIndividualCardStatus();
+      return;
+    }
     
     // Get all conversation cards
     const cards = document.querySelectorAll('.card, .list-group-item, .list-group > *, [class*="conversation"]');
@@ -287,10 +290,20 @@
       // Default to waiting
       let status = 'waiting';
       
-      // Check for status text indicators
+      // Try to detect status from text content
       if (cardText.includes('preluat') || cardText.includes('în lucru')) {
         status = 'taken';
       } else if (cardText.includes('rezolvat') || cardText.includes('închis')) {
+        status = 'resolved';
+      }
+      
+      // Alternative detection based on time patterns
+      // This is based on observation that different timeframes might indicate different statuses
+      if (cardText.includes('minute') || cardText.includes('ore') && !cardText.includes('zile')) {
+        // Recent conversations (minutes or hours) are often in waiting status
+        status = 'waiting';
+      } else if (cardText.includes('zile') || cardText.includes('săptămâni')) {
+        // Older conversations (days or weeks) are more likely to be resolved
         status = 'resolved';
       }
       
@@ -471,10 +484,26 @@
     // Then, apply force method after a slight delay
     setTimeout(forceStyleApplication, 100);
     
+    // Check if we're on "Toate" tab initially
+    const allTab = Array.from(document.querySelectorAll('button, .nav-link, .tab')).find(el => 
+      el.textContent.trim() === 'Toate' && (el.classList.contains('active') || el.getAttribute('aria-selected') === 'true')
+    );
+    
+    if (allTab) {
+      // If we're on the "Toate" tab, explicitly call individual detection
+      setTimeout(detectIndividualCardStatus, 200);
+    }
+    
     // Add a global function to force re-application (for debugging)
     window.reapplyChatStyles = () => {
       applyEnhancedChatStyles();
       forceStyleApplication();
+      
+      // Also check active tab and apply appropriate method
+      const activeTab = document.querySelector('.nav-link.active, .tab.active, button.active');
+      if (activeTab && activeTab.textContent.trim() === 'Toate') {
+        detectIndividualCardStatus();
+      }
     };
   }
   
