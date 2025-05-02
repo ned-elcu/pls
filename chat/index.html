@@ -167,6 +167,11 @@
             margin-top: -4px;
         }
         
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+        
         .header-actions button {
             background: none;
             border: none;
@@ -389,6 +394,7 @@
             display: flex;
             align-items: flex-start;
             margin-bottom: var(--spacing-md);
+            min-height: 36px; /* Ensure both checkboxes have same height */
         }
         
         .form-check-input {
@@ -396,11 +402,14 @@
             margin-top: 4px;
             width: 20px;
             height: 20px;
+            flex-shrink: 0; /* Prevent checkbox from shrinking */
         }
         
         .form-check-label {
             font-size: var(--font-size-base);
             color: var(--text-secondary);
+            line-height: 1.5;
+            flex: 1; /* Allow label to take remaining space */
         }
         
         .form-check-label a {
@@ -759,6 +768,12 @@
             margin-top: var(--spacing-md);
         }
         
+        /* Center the start chat button */
+        #btnStartChat {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
         /* Accessibility */
         @media (prefers-reduced-motion: reduce) {
             .message,
@@ -785,9 +800,10 @@
         /* Responsive */
         @media (min-width: 768px) {
             .app-container {
-                max-width: 500px;
+                /* Changed from fixed width to full width for desktop */
+                width: 100%;
                 height: 100%;
-                box-shadow: var(--shadow-large);
+                box-shadow: none;
             }
             
             .emergency-buttons {
@@ -873,6 +889,12 @@
                 </div>
             </div>
             <div class="header-actions">
+                <!-- Added Home Button -->
+                <a href="/" aria-label="Pagina principală">
+                    <button id="btnHome" aria-label="Pagina principală">
+                        <i class="material-icons">home</i>
+                    </button>
+                </a>
                 <button id="btnCloseChat" aria-label="Închide chat">
                     <i class="material-icons">close</i>
                 </button>
@@ -1035,9 +1057,7 @@
                 <div id="chatInput" class="chat-input">
                     <input type="text" class="chat-input-field" id="messageInput" placeholder="Scrieți mesajul aici..." aria-label="Scrieți mesajul">
                     <div class="chat-actions">
-                        <button id="btnShareLocation" class="chat-action" aria-label="Partajează locația">
-                            <i class="material-icons">my_location</i>
-                        </button>
+                        <!-- Location sharing button removed -->
                         <button id="btnSendMessage" class="chat-action chat-action-send" aria-label="Trimite mesaj">
                             <i class="material-icons">send</i>
                         </button>
@@ -1111,7 +1131,6 @@
         const btnNonemergency = document.getElementById('btnNonemergency');
         const btnStartChat = document.getElementById('btnStartChat');
         const btnSendMessage = document.getElementById('btnSendMessage');
-        const btnShareLocation = document.getElementById('btnShareLocation');
         const btnCloseChat = document.getElementById('btnCloseChat');
         const btnRequestTranscript = document.getElementById('btnRequestTranscript');
         const btnStartNewChat = document.getElementById('btnStartNewChat');
@@ -1424,7 +1443,6 @@
             // Chat functionality
             btnSendMessage.addEventListener('click', sendMessage);
             messageInput.addEventListener('keypress', handleEnterPress);
-            btnShareLocation.addEventListener('click', shareLocation);
             
             // Chat management
             btnCloseChat.addEventListener('click', confirmEndChat);
@@ -1850,30 +1868,6 @@
             }
         }
         
-        // Share location
-        function shareLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    position => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        
-                        // Send location message
-                        const locationText = `Locația mea: https://maps.google.com/?q=${lat},${lng}`;
-                        messageInput.value = locationText;
-                        sendMessage();
-                    },
-                    error => {
-                        console.error('Geolocation error:', error);
-                        showNotice(errorNotice, 'Nu am putut obține locația. Vă rugăm să verificați permisiunile browser-ului.');
-                    },
-                    { timeout: 10000 }
-                );
-            } else {
-                showNotice(errorNotice, 'Browserul dvs. nu suportă geolocalizarea.');
-            }
-        }
-        
         // =============================================
         // Message Display Functions
         // =============================================
@@ -2171,7 +2165,6 @@
             // Disable input
             messageInput.disabled = true;
             btnSendMessage.disabled = true;
-            btnShareLocation.disabled = true;
             
             // Show end screen after a delay
             setTimeout(() => {
@@ -2278,7 +2271,6 @@
             
             // Reset buttons
             btnSendMessage.disabled = false;
-            btnShareLocation.disabled = false;
 
             // Reset form fields
             document.getElementById('chat-subject').value = '';
