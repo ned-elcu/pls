@@ -1,31 +1,85 @@
-// Create Material Icon Badge
-  function createMaterialIconBadge(status) {
-    const badge = document.createElement('div');
-    badge.className = `status-badge ${status}`;
+// Add filter buttons to the interface
+  function addStatusFilters() {
+    // Check if filters already exist
+    if (document.querySelector('.status-filters')) {
+      return;
+    }
     
-    const icon = document.createElement('span');
-    icon.className = 'material-icons';
-    icon.textContent = DESIGN.icons[status];
-    icon.style.marginRight = '8px';
+    // Create filter container
+    const filterContainer = document.createElement('div');
+    filterContainer.className = 'status-filters';
     
-    const label = document.createElement('span');
-    label.className = 'label';
-    label.textContent = statusLabels[status];
+    // Filter options (All + status-based filters)
+    const filters = [
+      { id: 'all', label: 'Toate', icon: 'list' },
+      { id: 'waiting', label: 'În așteptare', icon: DESIGN.icons.waiting },
+      { id: 'taken', label: 'Preluate', icon: DESIGN.icons.taken },
+      { id: 'resolved', label: 'Rezolvate', icon: DESIGN.icons.resolved }
+    ];
     
-    const count = document.createElement('span');
-    count.className = 'count';
-    count.textContent = '0';
-    
-    badge.appendChild(icon);
-    badge.appendChild(label);
-    badge.appendChild(count);
-    
-    // Add click event to filter chats
-    badge.addEventListener('click', () => {
-      filterChatsByStatus(status);
+    // Create filter buttons
+    filters.forEach(filter => {
+      const button = document.createElement('button');
+      button.className = `status-filter ${filter.id}`;
+      button.dataset.filter = filter.id;
+      
+      const icon = document.createElement('span');
+      icon.className = 'material-icons';
+      icon.textContent = filter.icon;
+      
+      const label = document.createElement('span');
+      label.textContent = filter.label;
+      
+      button.appendChild(icon);
+      button.appendChild(label);
+      
+      // Add click handler
+      button.addEventListener('click', () => {
+        filterConversations(filter.id);
+        
+        // Update active state
+        document.querySelectorAll('.status-filter').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        button.classList.add('active');
+      });
+      
+      filterContainer.appendChild(button);
     });
     
-    return badge;
+    // Find insertion point - try to find tab container or navigation
+    let insertionPoint = document.querySelector('.nav-tabs, .tabs, nav, .navigation');
+    
+    // If no obvious insertion point, insert at top of content area
+    if (!insertionPoint) {
+      insertionPoint = document.querySelector('.content, main, .container, .container-fluid');
+    }
+    
+    // Insert filters
+    if (insertionPoint) {
+      if (insertionPoint.parentNode) {
+        insertionPoint.parentNode.insertBefore(filterContainer, insertionPoint.nextSibling);
+      } else {
+        document.body.insertBefore(filterContainer, document.body.firstChild);
+      }
+    }
+  }
+  
+  // Filter conversations by status
+  function filterConversations(status) {
+    const allItems = document.querySelectorAll('.card, .conversation-item, .list-group-item, .chat-list-item');
+    
+    allItems.forEach(item => {
+      if (status === 'all') {
+        item.style.display = '';
+      } else {
+        if (item.classList.contains(status)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      }
+    });
   }/**
  * chatStateVisualizer.js
  * 
@@ -36,29 +90,58 @@
 (function() {
   // Configuration - Visual Design System
   const DESIGN = {
-    // Color Palette
+    // Color Palette - Adapted for Romanian interface
     colors: {
-      waiting: {
+      waiting: {  // În așteptare
         primary: '#FF9800',       // Vibrant orange for attention
-        secondary: '#FFF3E0',     // Soft orange background
+        secondary: 'rgba(255, 243, 224, 0.8)',  // Soft orange background with transparency
         accent: '#F57C00',        // Darker orange for accents
-        text: '#7D4A00',          // Dark readable text on light backgrounds
-        border: '#FFB74D',        // Lighter border
-        icon: '#FF5722'           // Bright icon color
+        text: '#7D4A00',          // Dark readable text
+        icon: '#FF5722'           // Icon color
       },
-      taken: {
+      taken: {    // Preluate
         primary: '#2196F3',       // Engaging blue for active chats
-        secondary: '#E3F2FD',     // Soft blue background
+        secondary: 'rgba(227, 242, 253, 0.8)',  // Soft blue background with transparency
         accent: '#1976D2',        // Darker blue for accents
-        text: '#0D47A1',          // Dark readable text on light backgrounds
-        border: '#64B5F6',        // Lighter border
+        text: '#0D47A1',          // Dark readable text
         icon: '#0D47A1'           // Icon color
       },
-      resolved: {
+      resolved: { // Rezolvate
         primary: '#4CAF50',       // Calm green for completed chats
-        secondary: '#E8F5E9',     // Soft green background
+        secondary: 'rgba(232, 245, 233, 0.8)',  // Soft green background with transparency
         accent: '#388E3C',        // Darker green for accents
-        text: '#1B5E20',          // Dark readable text on light backgrounds
+        text: '#1B5E20',          // Dark readable text
+        icon: '#2E7D32'           // Icon color
+      }
+    },
+    
+    // Animation Timings
+    animation: {
+      standard: '0.25s ease',
+      hover: '0.15s ease-out'
+    },
+    
+    // Shadows
+    shadows: {
+      light: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
+      medium: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
+      hover: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'
+    },
+    
+    // Border Radius
+    borderRadius: {
+      small: '4px',
+      standard: '8px',
+      large: '12px'
+    },
+    
+    // Icons - Using Material Icons
+    icons: {
+      waiting: 'schedule',      // Clock icon for waiting
+      taken: 'person',          // Person icon for taken chats
+      resolved: 'check_circle'  // Check icon for resolved chats
+    }
+  };B5E20',          // Dark readable text on light backgrounds
         border: '#81C784',        // Lighter border
         icon: '#2E7D32'           // Icon color
       }
@@ -96,38 +179,119 @@
   function injectStyles(css) {
     const style = document.createElement('style');
     style.textContent = css;
-    // Append to end of head to ensure our styles have higher precedence
     document.head.appendChild(style);
-    
-    // For extra safety, we can also try to load after a slight delay
-    // to ensure our styles come after any async-loaded stylesheets
-    setTimeout(() => {
-      const reinforcementStyle = document.createElement('style');
-      reinforcementStyle.textContent = css;
-      document.head.appendChild(reinforcementStyle);
-    }, 500);
   }
   
-  // Reset and enhanced specificity styles for all chat items
+  // Identify chat items and detect their status
+  function detectChatItemStatus() {
+    // First, let's get all chat items
+    const chatItems = document.querySelectorAll('.card, .card-body, .list-group-item, .conversation-item');
+    
+    chatItems.forEach(item => {
+      // Default status is "waiting" unless we find otherwise
+      let status = 'waiting';
+      
+      // Look for status indicators in the item
+      const statusText = item.innerText.toLowerCase();
+      const statusAttr = item.getAttribute('data-status');
+      
+      // Check data attribute first (if it exists)
+      if (statusAttr) {
+        if (statusAttr.includes('preluat') || statusAttr.includes('taken')) {
+          status = 'taken';
+        } else if (statusAttr.includes('rezolvat') || statusAttr.includes('resolved')) {
+          status = 'resolved';
+        }
+      } 
+      // Otherwise check for text indicators
+      else {
+        // Check for Romanian status terms
+        if (statusText.includes('preluat') || statusText.includes('în lucru')) {
+          status = 'taken';
+        } else if (statusText.includes('rezolvat') || statusText.includes('închis')) {
+          status = 'resolved';
+        }
+      }
+      
+      // Apply the appropriate status class
+      item.classList.add(status);
+      
+      // Add status icon at the beginning of each card
+      const statusIcon = document.createElement('div');
+      statusIcon.className = 'status-icon material-icons';
+      statusIcon.textContent = DESIGN.icons[status];
+      statusIcon.style.color = DESIGN.colors[status].icon;
+      statusIcon.style.position = 'absolute';
+      statusIcon.style.top = '16px';
+      statusIcon.style.left = '16px';
+      statusIcon.style.fontSize = '20px';
+      
+      // Only add if doesn't already exist
+      if (!item.querySelector('.status-icon')) {
+        item.style.position = 'relative';
+        item.style.paddingLeft = '40px';
+        item.appendChild(statusIcon);
+      }
+    });
+  }
+  
+  // Base styles for all chat items - targeting all possible selectors
   const baseStyles = `
-    /* Reset key visual properties to ensure our styles take precedence */
-    .chat-item,
-    div.chat-item,
-    body .chat-container .chat-item,
-    #chats .chat-item,
-    .chats-list .chat-item {
-      background: none;
-      border: none !important;
-      box-shadow: none;
-      margin: 12px 0 !important;
-      padding: 16px !important;
-      border-radius: ${DESIGN.borderRadius.standard} !important;
-      transition: all ${DESIGN.animation.standard} !important;
+    /* Target various possible chat item container classes */
+    .card,
+    .conversation-item,
+    .list-group-item,
+    .chat-list-item,
+    div[class*="conversation"],
+    div[class*="chat-item"],
+    div[class*="message-item"] {
       position: relative !important;
-      overflow: hidden !important;
+      border-radius: ${DESIGN.borderRadius.standard} !important;
+      margin: 8px 0 !important;
+      transition: transform ${DESIGN.animation.standard}, box-shadow ${DESIGN.animation.standard} !important;
       box-shadow: ${DESIGN.shadows.light} !important;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+      overflow: hidden !important;
     }
+    
+    /* Hover effect */
+    .card:hover,
+    .conversation-item:hover,
+    .list-group-item:hover,
+    .chat-list-item:hover,
+    div[class*="conversation"]:hover,
+    div[class*="chat-item"]:hover,
+    div[class*="message-item"]:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: ${DESIGN.shadows.hover} !important;
+      cursor: pointer;
+    }
+    
+    /* Status indicator stripe on the left side */
+    .card::before,
+    .conversation-item::before,
+    .list-group-item::before,
+    .chat-list-item::before,
+    div[class*="conversation"]::before,
+    div[class*="chat-item"]::before,
+    div[class*="message-item"]::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      z-index: 2;
+    }
+    
+    /* Status icon styles */
+    .status-icon {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      font-size: 20px;
+      z-index: 2;
+    }
+  `;
     
     .chat-item:hover {
       transform: translateY(-2px);
@@ -268,25 +432,48 @@
   `;
   
   const takenStyles = `
-    /* High specificity selectors for taken status */
-    .chat-item.taken,
-    div.chat-item.taken,
-    body .chat-container .chat-item.taken,
-    #chats .chat-item.taken,
-    .chats-list .chat-item.taken {
+    /* Taken status (Preluate) - Blue theme */
+    .taken,
+    div.taken,
+    .card.taken,
+    .conversation-item.taken,
+    .list-group-item.taken,
+    .chat-list-item.taken,
+    div[class*="conversation"].taken,
+    div[class*="chat-item"].taken,
+    div[class*="message-item"].taken {
       background-color: ${DESIGN.colors.taken.secondary} !important;
-      border: 1px solid ${DESIGN.colors.taken.border} !important;
-      color: ${DESIGN.colors.taken.text} !important;
+      border-left: 5px solid ${DESIGN.colors.taken.primary} !important;
     }
     
-    .chat-item.taken::before,
-    div.chat-item.taken::before,
-    body .chat-container .chat-item.taken::before,
-    #chats .chat-item.taken::before,
-    .chats-list .chat-item.taken::before {
-      content: '${DESIGN.icons.taken}' !important;
-      color: ${DESIGN.colors.taken.icon} !important;
+    .taken::before,
+    div.taken::before,
+    .card.taken::before,
+    .conversation-item.taken::before,
+    .list-group-item.taken::before,
+    .chat-list-item.taken::before,
+    div[class*="conversation"].taken::before,
+    div[class*="chat-item"].taken::before,
+    div[class*="message-item"].taken::before {
+      background-color: ${DESIGN.colors.taken.primary} !important;
     }
+    
+    /* Subtle gradient animation for taken chats */
+    @keyframes takenGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .taken,
+    div.taken,
+    .card.taken,
+    .conversation-item.taken {
+      background-image: linear-gradient(120deg, ${DESIGN.colors.taken.secondary}, rgba(227, 242, 253, 0.9), ${DESIGN.colors.taken.secondary}) !important;
+      background-size: 200% 100% !important;
+      animation: takenGradient 5s ease infinite !important;
+    }
+  `;
     
     .chat-item.taken::after {
       background-color: ${DESIGN.colors.taken.primary};
@@ -319,25 +506,40 @@
   `;
   
   const resolvedStyles = `
-    /* High specificity selectors for resolved status */
-    .chat-item.resolved,
-    div.chat-item.resolved,
-    body .chat-container .chat-item.resolved,
-    #chats .chat-item.resolved,
-    .chats-list .chat-item.resolved {
+    /* Resolved status (Rezolvate) - Green theme */
+    .resolved,
+    div.resolved,
+    .card.resolved,
+    .conversation-item.resolved,
+    .list-group-item.resolved,
+    .chat-list-item.resolved,
+    div[class*="conversation"].resolved,
+    div[class*="chat-item"].resolved,
+    div[class*="message-item"].resolved {
       background-color: ${DESIGN.colors.resolved.secondary} !important;
-      border: 1px solid ${DESIGN.colors.resolved.border} !important;
-      color: ${DESIGN.colors.resolved.text} !important;
+      border-left: 5px solid ${DESIGN.colors.resolved.primary} !important;
+      opacity: 0.85 !important;
     }
     
-    .chat-item.resolved::before,
-    div.chat-item.resolved::before,
-    body .chat-container .chat-item.resolved::before,
-    #chats .chat-item.resolved::before,
-    .chats-list .chat-item.resolved::before {
-      content: '${DESIGN.icons.resolved}' !important;
-      color: ${DESIGN.colors.resolved.icon} !important;
+    .resolved::before,
+    div.resolved::before,
+    .card.resolved::before,
+    .conversation-item.resolved::before,
+    .list-group-item.resolved::before,
+    .chat-list-item.resolved::before,
+    div[class*="conversation"].resolved::before,
+    div[class*="chat-item"].resolved::before,
+    div[class*="message-item"].resolved::before {
+      background-color: ${DESIGN.colors.resolved.primary} !important;
     }
+    
+    .resolved:hover,
+    div.resolved:hover,
+    .card.resolved:hover,
+    .conversation-item.resolved:hover {
+      opacity: 1 !important;
+    }
+  `;
     
     .chat-item.resolved::after {
       background-color: ${DESIGN.colors.resolved.primary};
@@ -365,51 +567,71 @@
     }
   `;
   
-  // Badge counters styles
-  const badgeStyles = `
-    .status-badges {
+  // Status filter buttons styles
+  const filterButtonsStyles = `
+    /* Status filter buttons */
+    .status-filters {
       display: flex;
-      margin-bottom: 20px;
+      margin: 16px 0;
+      justify-content: center;
     }
     
-    .status-badge {
-      border-radius: 20px;
+    .status-filter {
       padding: 8px 16px;
-      margin-right: 10px;
-      font-size: 14px;
-      font-weight: 600;
+      margin: 0 8px;
+      border-radius: 20px;
+      font-weight: 500;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      box-shadow: ${DESIGN.shadows.light};
-      transition: all ${DESIGN.animation.standard};
+      border: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
     }
     
-    .status-badge:hover {
-      box-shadow: ${DESIGN.shadows.medium};
-      transform: translateY(-1px);
+    .status-filter .material-icons {
+      margin-right: 8px;
+      font-size: 18px;
     }
     
-    .status-badge.waiting {
+    .status-filter.waiting {
+      background-color: ${DESIGN.colors.waiting.secondary};
+      color: ${DESIGN.colors.waiting.text};
+    }
+    
+    .status-filter.waiting:hover, .status-filter.waiting.active {
       background-color: ${DESIGN.colors.waiting.primary};
       color: white;
     }
     
-    .status-badge.taken {
+    .status-filter.taken {
+      background-color: ${DESIGN.colors.taken.secondary};
+      color: ${DESIGN.colors.taken.text};
+    }
+    
+    .status-filter.taken:hover, .status-filter.taken.active {
       background-color: ${DESIGN.colors.taken.primary};
       color: white;
     }
     
-    .status-badge.resolved {
+    .status-filter.resolved {
+      background-color: ${DESIGN.colors.resolved.secondary};
+      color: ${DESIGN.colors.resolved.text};
+    }
+    
+    .status-filter.resolved:hover, .status-filter.resolved.active {
       background-color: ${DESIGN.colors.resolved.primary};
       color: white;
     }
     
-    .status-badge .count {
-      margin-left: 8px;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 12px;
-      padding: 2px 8px;
-      font-size: 12px;
+    .status-filter.all {
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    .status-filter.all:hover, .status-filter.all.active {
+      background-color: #9e9e9e;
+      color: white;
     }
   `;
   
@@ -544,38 +766,78 @@
     }
   }
   
-  function addStatusBadgesIfNeeded() {
-    // Check if badges already exist
-    if (document.querySelector('.status-badges')) {
-      return;
-    }
+  // Main function to apply all enhancements
+  function applyConversationEnhancements() {
+    // Inject all styles
+    injectStyles(
+      baseStyles + 
+      waitingStyles + 
+      takenStyles + 
+      resolvedStyles + 
+      filterButtonsStyles
+    );
     
-    // Create badge container
-    const badgeContainer = document.createElement('div');
-    badgeContainer.className = 'status-badges';
+    // Detect and apply status classes to conversation items
+    detectChatItemStatus();
     
-    // Create individual badges
-    const statuses = ['waiting', 'taken', 'resolved'];
-    const statusLabels = {
-      waiting: 'Waiting',
-      taken: 'In Progress',
-      resolved: 'Resolved'
-    };
+    // Add filter buttons
+    addStatusFilters();
     
-    statuses.forEach(status => {
-      const badge = createMaterialIconBadge(status);
-      badgeContainer.appendChild(badge);
+    // Set up mutation observer to handle dynamically added content
+    observeConversationChanges();
+  }
+  
+  // Observe DOM for changes
+  function observeConversationChanges() {
+    const observer = new MutationObserver(mutations => {
+      let needsUpdate = false;
+      
+      mutations.forEach(mutation => {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          // Check if any added nodes are conversation items
+          Array.from(mutation.addedNodes).forEach(node => {
+            if (node.nodeType === 1) { // Element node
+              if (node.classList && 
+                 (node.classList.contains('card') || 
+                  node.classList.contains('conversation-item') || 
+                  node.classList.contains('list-group-item') ||
+                  node.className.includes('chat') ||
+                  node.className.includes('conversation'))) {
+                needsUpdate = true;
+              }
+              
+              // Check for conversation items within the added node
+              if (node.querySelectorAll) {
+                const conversationItems = node.querySelectorAll('.card, .conversation-item, .list-group-item, .chat-list-item');
+                if (conversationItems.length > 0) {
+                  needsUpdate = true;
+                }
+              }
+            }
+          });
+        }
+      });
+      
+      // Reapply status detection if new items were added
+      if (needsUpdate) {
+        detectChatItemStatus();
+      }
     });
     
-    // Find chat container and insert badges before it
-    const chatContainer = document.querySelector('.chat-container') || 
-                         document.querySelector('.chats-list') || 
-                         document.getElementById('chats');
-    
-    if (chatContainer && chatContainer.parentNode) {
-      chatContainer.parentNode.insertBefore(badgeContainer, chatContainer);
-    }
+    // Start observing the entire document
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
   }
+  
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyConversationEnhancements);
+  } else {
+    applyConversationEnhancements();
+  }
+})();
   
   function filterChatsByStatus(status) {
     // Get all chat items
