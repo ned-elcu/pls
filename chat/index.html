@@ -263,6 +263,63 @@
             display: flex;
             flex-direction: column;
         }
+
+        /* Notifications Container */
+        .notifications-container {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            pointer-events: none;
+        }
+
+        /* Notice Styling */
+        .notice {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius-small);
+            font-size: 14px;
+            box-shadow: var(--shadow-medium);
+            animation: slideDown 0.3s ease-out;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .notice i {
+            font-size: 20px;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .error-notice {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .success-notice {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .warning-notice {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .info-notice {
+            background-color: var(--secondary-color);
+            color: white;
+        }
         
         /* Welcome Screen */
         .welcome-screen {
@@ -328,6 +385,10 @@
             color: var(--primary-color);
             margin-bottom: var(--spacing-md);
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
         }
         
         .verification-description {
@@ -337,20 +398,68 @@
             text-align: center;
             line-height: 1.7;
         }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--background-light);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .step.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .step.completed {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .step-line {
+            width: 50px;
+            height: 2px;
+            background-color: var(--background-light);
+            margin: 0 var(--spacing-xs);
+        }
+
+        .step-line.completed {
+            background-color: var(--success-color);
+        }
         
         .phone-input-group {
             display: flex;
             align-items: center;
             margin-bottom: var(--spacing-lg);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: var(--border-radius-small);
+            border: 2px solid var(--background-light);
+            border-radius: var(--border-radius-medium);
             overflow: hidden;
+            transition: var(--transition-fast);
+        }
+
+        .phone-input-group:focus-within {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px var(--secondary-light);
         }
         
         .phone-prefix {
             background-color: var(--background-light);
             padding: var(--spacing-sm) var(--spacing-md);
-            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            border-right: 2px solid var(--background-light);
             font-weight: 600;
             color: var(--text-primary);
         }
@@ -358,9 +467,10 @@
         .phone-input-group input {
             flex: 1;
             border: none;
-            padding: var(--spacing-sm) var(--spacing-md);
-            font-size: var(--font-size-base);
+            padding: var(--spacing-md) var(--spacing-md);
+            font-size: var(--font-size-large);
             outline: none;
+            background: transparent;
         }
         
         .verification-code-section {
@@ -371,6 +481,7 @@
             display: flex;
             gap: var(--spacing-sm);
             margin-bottom: var(--spacing-lg);
+            justify-content: center;
         }
         
         .code-input {
@@ -378,27 +489,34 @@
             height: 50px;
             text-align: center;
             font-size: var(--font-size-xl);
-            border: 2px solid rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--background-light);
             border-radius: var(--border-radius-small);
             transition: var(--transition-fast);
+            font-weight: 600;
         }
         
         .code-input:focus {
             border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+            box-shadow: 0 0 0 3px var(--secondary-light);
+        }
+
+        .code-input.filled {
+            border-color: var(--success-color);
+            background-color: rgba(76, 175, 80, 0.05);
         }
         
         .retry-message {
             text-align: center;
             color: var(--text-secondary);
             margin-top: var(--spacing-md);
+            font-size: 14px;
         }
         
         .retry-timer {
             color: var(--primary-color);
             font-weight: 600;
         }
-        
+
         /* Emergency Check */
         .emergency-check {
             padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
@@ -418,6 +536,7 @@
             margin-bottom: var(--spacing-md);
             display: flex;
             align-items: center;
+            justify-content: center;
         }
         
         .emergency-title i {
@@ -429,12 +548,14 @@
             margin-bottom: var(--spacing-lg);
             color: var(--text-primary);
             line-height: 1.7;
+            text-align: center;
         }
         
         .emergency-buttons {
             display: flex;
             flex-direction: column;
             gap: var(--spacing-md);
+            align-items: center;
         }
         
         /* Department Selection */
@@ -848,34 +969,6 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Notices */
-        .notice {
-            padding: var(--spacing-sm);
-            margin-bottom: var(--spacing-sm);
-            border-radius: var(--border-radius-small);
-            font-size: 14px;
-            display: none;
-            box-shadow: var(--shadow-small);
-            animation: slideDown 0.3s ease-out;
-        }
-        
-        @keyframes slideDown {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        .error-notice {
-            background-color: rgba(244, 67, 54, 0.1);
-            border-left: 4px solid var(--danger-color);
-            color: var(--danger-color);
-        }
-        
-        .success-notice {
-            background-color: rgba(76, 175, 80, 0.1);
-            border-left: 4px solid var(--success-color);
-            color: var(--success-color);
-        }
-        
         /* Typing Animation */
         @keyframes typingAnimation {
             0% { opacity: 0.3; transform: translateY(0); }
@@ -1003,6 +1096,15 @@
         .btn i {
             margin-right: var(--spacing-sm);
             font-size: 22px;
+        }
+
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .btn.loading i {
+            animation: spin 1s linear infinite;
         }
         
         /* Welcome Screen Button */
@@ -1484,11 +1586,8 @@
         
         <!-- Main App Content -->
         <main class="app-content">
-            <!-- Error Notice -->
-            <div id="errorNotice" class="notice error-notice" role="alert"></div>
-            
-            <!-- Success Notice -->
-            <div id="successNotice" class="notice success-notice" role="status"></div>
+            <!-- Notifications Container -->
+            <div class="notifications-container" id="notificationsContainer"></div>
             
             <!-- Welcome Screen -->
             <div id="welcomeScreen" class="welcome-screen">
@@ -1504,12 +1603,21 @@
             
             <!-- Phone Verification Screen -->
             <div id="phoneVerification" class="phone-verification" style="display:none;">
-                <h2 class="verification-title">Verificare Număr de Telefon</h2>
-                <p class="verification-description">Introduceți numărul dvs. de telefon pentru a continua. Veți primi un cod SMS pentru verificare.</p>
+                <div class="step-indicator">
+                    <div class="step active" id="step1">1</div>
+                    <div class="step-line" id="stepLine1"></div>
+                    <div class="step" id="step2">2</div>
+                </div>
+
+                <h2 class="verification-title">
+                    <i class="material-icons">smartphone</i>
+                    Verificare Identitate
+                </h2>
+                <p class="verification-description">Pentru siguranța dumneavoastră și pentru a preveni abuzurile, vă rugăm să vă verificați identitatea folosind numărul de telefon.</p>
                 
                 <div class="phone-input-group">
                     <span class="phone-prefix">+40</span>
-                    <input type="tel" id="phoneNumber" class="form-control" placeholder="7XX XXX XXX" maxlength="9" pattern="[0-9]*" inputmode="numeric">
+                    <input type="tel" id="phoneNumber" class="form-control" placeholder="7XX XXX XXX" maxlength="9" pattern="[0-9]*" inputmode="numeric" autocomplete="tel">
                 </div>
                 
                 <button id="btnSendCode" class="btn btn-primary">
@@ -1526,7 +1634,7 @@
                         <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
                         <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
                     </div>
-                    <button id="btnVerifyCode" class="btn btn-primary">
+                    <button id="btnVerifyCode" class="btn btn-primary" disabled>
                         <i class="material-icons">check</i> Verifică Cod
                     </button>
                     <div class="retry-message" id="retryMessage" style="display:none;">
@@ -1542,20 +1650,21 @@
                 <h2 class="emergency-title">
                     <i class="material-icons">warning</i>Verificare Urgență
                 </h2>
-                <p class="emergency-text">Vă aflați într-o situație de urgență care necesită asistență imediată?</p>
+                <p class="emergency-text">Această platformă este destinată exclusiv situațiilor non-urgente. În caz de urgență, apelați imediat 112.</p>
+                <p class="emergency-text"><strong>Aveți o urgență care necesită intervenție imediată?</strong></p>
                 <div class="emergency-buttons">
                     <button id="btnEmergency" class="btn btn-danger">
-                        <i class="material-icons">call</i> Da, am nevoie de ajutor acum
+                        <i class="material-icons">call</i> Da, sun la 112
                     </button>
                     <button id="btnNonemergency" class="btn btn-success">
-                        <i class="material-icons">check_circle</i> Nu, este o situație non-urgentă
+                        <i class="material-icons">check_circle</i> Nu, continuă
                     </button>
                 </div>
             </div>
             
             <!-- Department Selection -->
             <div id="departmentSelect" class="department-select">
-                <h2 class="department-title">Selectați departamentul care vă poate ajuta</h2>
+                <h2 class="department-title">Selectați departamentul</h2>
                 
                 <div class="department-list">
                     <div class="department-item" data-id="traffic">
@@ -1564,7 +1673,7 @@
                         </div>
                         <div class="department-info">
                             <div class="department-name">Circulație Rutieră</div>
-                            <div class="department-description">Probleme legate de trafic, parcare sau semaforizare</div>
+                            <div class="department-description">Parcări neregulamentare, blocări acces, accidente ușoare</div>
                         </div>
                     </div>
                     
@@ -1574,7 +1683,7 @@
                         </div>
                         <div class="department-info">
                             <div class="department-name">Ordine Publică</div>
-                            <div class="department-description">Tulburarea liniștii publice, comportament necorespunzător</div>
+                            <div class="department-description">Tulburarea liniștii publice, scandal, cerșetorie</div>
                         </div>
                     </div>
                     
@@ -1583,8 +1692,8 @@
                             <i class="material-icons">nature</i>
                         </div>
                         <div class="department-info">
-                            <div class="department-name">Protecția Mediului</div>
-                            <div class="department-description">Depozitarea deșeurilor, poluare, animale abandonate</div>
+                            <div class="department-name">Mediu</div>
+                            <div class="department-description">Depozitare ilegală deșeuri, poluare, câini fără stăpân</div>
                         </div>
                     </div>
                     
@@ -1594,7 +1703,7 @@
                         </div>
                         <div class="department-info">
                             <div class="department-name">Control Comercial</div>
-                            <div class="department-description">Comerț ilegal, nereguli în activități comerciale</div>
+                            <div class="department-description">Comerț stradal neautorizat, probleme magazine</div>
                         </div>
                     </div>
                     
@@ -1603,8 +1712,8 @@
                             <i class="material-icons">help_outline</i>
                         </div>
                         <div class="department-info">
-                            <div class="department-name">Informații Generale</div>
-                            <div class="department-description">Întrebări generale, informații despre serviciile poliției</div>
+                            <div class="department-name">Altele</div>
+                            <div class="department-description">Alte situații sau nu știu exact unde să raportez</div>
                         </div>
                     </div>
                 </div>
@@ -1612,50 +1721,42 @@
             
             <!-- Pre-Chat Form -->
             <div id="chatForm" class="chat-form">
-                <div class="notice error-notice" id="formErrorNotice" style="display:none;">
-                    Vă rugăm să completați toate câmpurile obligatorii.
-                </div>
-                
-                <h2 class="form-title">Înainte de a începe</h2>
+                <h2 class="form-title">Detalii suplimentare</h2>
                 
                 <div class="form-group">
-                    <label class="form-label" for="chat-subject">Subiect:</label>
-                    <input type="text" id="chat-subject" class="form-control" placeholder="Descrieți pe scurt problema" required>
+                    <label class="form-label" for="chat-subject">Descrieți problema: *</label>
+                    <input type="text" id="chat-subject" class="form-control" placeholder="Ex: Mașină parcată pe trotuar" required>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label" for="chat-name">Numele dumneavoastră:</label>
-                    <input type="text" id="chat-name" class="form-control" placeholder="Nume și prenume" required>
+                    <label class="form-label" for="chat-name">Numele dvs: *</label>
+                    <input type="text" id="chat-name" class="form-control" placeholder="Ex: Ion Popescu" required>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label" for="chat-email">Email (pentru transcriere):</label>
-                    <input type="email" id="chat-email" class="form-control" placeholder="adresa@email.ro">
+                    <label class="form-label" for="chat-email">Email (opțional):</label>
+                    <input type="email" id="chat-email" class="form-control" placeholder="Pentru a primi transcript conversație">
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label" for="chat-phone">Telefon:</label>
-                    <input type="tel" id="chat-phone" class="form-control" placeholder="Număr de telefon" readonly>
+                    <input type="tel" id="chat-phone" class="form-control" readonly>
                 </div>
                 
                 <div class="form-group">
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="privacy-check" required>
-                        <label class="form-check-label" for="privacy-check">Am citit și accept <a href="/privacy-policy" target="_blank">politica de confidențialitate</a>.</label>
+                        <label class="form-check-label" for="privacy-check">Accept <a href="/privacy-policy" target="_blank">politica de confidențialitate</a> *</label>
                     </div>
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="recording-check" required>
-                        <label class="form-check-label" for="recording-check">Înțeleg că această conversație poate fi înregistrată pentru îmbunătățirea serviciilor.</label>
+                        <label class="form-check-label" for="recording-check">Înțeleg că conversația este înregistrată *</label>
                     </div>
-                </div>
-                
-                <div class="gdpr-info">
-                    <p>Datele dumneavoastră sunt protejate în conformitate cu Regulamentul General privind Protecția Datelor (GDPR).</p>
                 </div>
                 
                 <div class="form-submit-btn">
                     <button id="btnStartChat" class="btn btn-primary">
-                        <i class="material-icons">chat</i> Începe Chat
+                        <i class="material-icons">chat</i> Începe Conversația
                     </button>
                 </div>
             </div>
@@ -1663,17 +1764,15 @@
             <!-- Loading State -->
             <div id="loadingState" class="loading-container">
                 <div class="loading-spinner"></div>
-                <p id="loadingText">Se conectează la chat...</p>
+                <p id="loadingText">Se conectează...</p>
             </div>
             
             <!-- Chat Area -->
             <div id="chatArea" class="chat-area">
-                <!-- Chat Messages -->
                 <div id="chatMessages" class="chat-messages"></div>
                 
-                <!-- Chat Input -->
                 <div id="chatInput" class="chat-input">
-                    <input type="text" class="chat-input-field" id="messageInput" placeholder="Scrieți mesajul aici..." aria-label="Scrieți mesajul">
+                    <input type="text" class="chat-input-field" id="messageInput" placeholder="Scrieți mesajul..." aria-label="Scrieți mesajul">
                     <div class="chat-actions">
                         <button id="btnSendMessage" class="chat-action chat-action-send" aria-label="Trimite mesaj">
                             <i class="material-icons">send</i>
@@ -1682,11 +1781,11 @@
                 </div>
             </div>
             
-            <!-- Chat End -->
+            <!-- Chat End Screen -->
             <div id="chatEnd" class="chat-end">
                 <i class="material-icons chat-end-icon">check_circle</i>
                 <h2 class="chat-end-title">Conversație încheiată</h2>
-                <p class="chat-end-text">Vă mulțumim pentru că ați contactat Poliția Locală Slobozia. Puteți primi transcriptul conversației pe email sau puteți începe o nouă conversație.</p>
+                <p class="chat-end-text">Vă mulțumim că ați contactat Poliția Locală Slobozia. Sesizarea dumneavoastră a fost înregistrată.</p>
                 <button id="btnRequestTranscript" class="btn btn-secondary">
                     <i class="material-icons">description</i> Primește transcript
                 </button>
@@ -1700,10 +1799,10 @@
         <div id="pwaBanner" class="pwa-banner">
             <div class="pwa-message">
                 <div class="pwa-title">Instalează aplicația</div>
-                <div class="pwa-description">Adaugă pe ecranul principal pentru acces rapid</div>
+                <div class="pwa-description">Acces rapid din ecranul principal</div>
             </div>
             <div class="pwa-buttons">
-                <button id="btnDismissPwa" class="pwa-btn pwa-btn-dismiss">Nu acum</button>
+                <button id="btnDismissPwa" class="pwa-btn pwa-btn-dismiss">Mai târziu</button>
                 <button id="btnInstallPwa" class="pwa-btn pwa-btn-install">Instalează</button>
             </div>
         </div>
@@ -1719,6 +1818,7 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         const functions = firebase.functions();
+        const realtimeDb = firebase.database();
         
         // =============================================
         // DOM Elements
@@ -1742,10 +1842,8 @@
         const retryTimer = document.getElementById('retryTimer');
         const codeInputs = document.querySelectorAll('.code-input');
         
-        // Notices
-        const errorNotice = document.getElementById('errorNotice');
-        const successNotice = document.getElementById('successNotice');
-        const formErrorNotice = document.getElementById('formErrorNotice');
+        // Notifications
+        const notificationsContainer = document.getElementById('notificationsContainer');
         
         // Chat Elements
         const chatMessages = document.getElementById('chatMessages');
@@ -1814,156 +1912,124 @@
         };
         
         // =============================================
+        // Notification System
+        // =============================================
+        
+        function showNotification(message, type = 'info', duration = 5000) {
+            const notification = document.createElement('div');
+            notification.className = `notice ${type}-notice`;
+            
+            // Add icon based on type
+            let icon;
+            switch(type) {
+                case 'error':
+                    icon = 'error';
+                    break;
+                case 'success':
+                    icon = 'check_circle';
+                    break;
+                case 'warning':
+                    icon = 'warning';
+                    break;
+                default:
+                    icon = 'info';
+            }
+            
+            notification.innerHTML = `
+                <i class="material-icons">${icon}</i>
+                <span>${message}</span>
+            `;
+            
+            notificationsContainer.appendChild(notification);
+            
+            // Auto-remove after duration
+            if (duration > 0) {
+                setTimeout(() => {
+                    notification.style.animation = 'slideDown 0.3s ease-out reverse';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, duration);
+            }
+            
+            return notification;
+        }
+
+        // =============================================
         // Device Fingerprinting
         // =============================================
         
-        // Generate device fingerprint
-        function generateDeviceFingerprint() {
-            return new Promise((resolve) => {
+        async function generateDeviceFingerprint() {
+            try {
+                const components = [
+                    navigator.userAgent,
+                    navigator.language,
+                    navigator.platform,
+                    screen.colorDepth,
+                    screen.width + 'x' + screen.height,
+                    new Date().getTimezoneOffset(),
+                    !!window.sessionStorage,
+                    !!window.localStorage,
+                    !!window.indexedDB
+                ];
+
+                // Canvas fingerprint
                 try {
-                    // Collect browser information
-                    const components = [
-                        navigator.userAgent,
-                        navigator.language,
-                        navigator.platform,
-                        navigator.vendor,
-                        screen.colorDepth,
-                        screen.width + 'x' + screen.height,
-                        new Date().getTimezoneOffset(),
-                        !!window.sessionStorage,
-                        !!window.localStorage,
-                        !!window.indexedDB
-                    ];
-
-                    // Check for available plugins
-                    if (navigator.plugins) {
-                        const pluginsStr = Array.from(navigator.plugins)
-                            .map(p => p.name + p.filename + p.description)
-                            .join('');
-                        components.push(pluginsStr);
-                    }
-
-                    // Create canvas fingerprint
-                    try {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        canvas.width = 200;
-                        canvas.height = 50;
-
-                        // Add text with different styles
-                        ctx.textBaseline = 'top';
-                        ctx.font = '16px Arial';
-                        ctx.fillStyle = '#F72585';
-                        ctx.fillText('Fingerprint', 0, 10);
-                        ctx.fillStyle = '#4361EE';
-                        ctx.font = 'bold 14px Times New Roman';
-                        ctx.fillText('Canvas', 100, 25);
-
-                        // Add shapes
-                        ctx.beginPath();
-                        ctx.moveTo(10, 40);
-                        ctx.bezierCurveTo(30, 30, 60, 50, 90, 35);
-                        ctx.strokeStyle = '#7209B7';
-                        ctx.stroke();
-
-                        // Get canvas data
-                        const canvasData = canvas.toDataURL();
-                        components.push(canvasData);
-                    } catch (e) {
-                        components.push('canvas-not-supported');
-                    }
-
-                    // Check for localStorage fingerprint
-                    const storedFingerprint = localStorage.getItem('deviceIdentifier');
-                    if (storedFingerprint) {
-                        components.push(storedFingerprint);
-                    }
-
-                    // Combine and hash components
-                    const componentsStr = components.join('###');
-                    const fingerprint = CryptoJS.SHA256(componentsStr).toString();
-
-                    // Cache in localStorage for persistence
-                    localStorage.setItem('deviceIdentifier', fingerprint);
-
-                    resolve(fingerprint);
-                } catch (error) {
-                    console.error('Error generating device fingerprint:', error);
-                    // Fallback to a simpler fingerprint
-                    const fallbackFingerprint = CryptoJS.SHA256(
-                        navigator.userAgent + screen.width + screen.height + navigator.language
-                    ).toString();
-                    localStorage.setItem('deviceIdentifier', fallbackFingerprint);
-                    resolve(fallbackFingerprint);
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 200;
+                    canvas.height = 50;
+                    ctx.textBaseline = 'alphabetic';
+                    ctx.fillStyle = '#f60';
+                    ctx.fillRect(125, 1, 62, 20);
+                    ctx.fillStyle = '#069';
+                    ctx.font = '11pt Arial';
+                    ctx.fillText('Canvas fingerprint', 2, 15);
+                    ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+                    ctx.font = '18pt Arial';
+                    ctx.fillText('BrowserLeaks.com', 4, 45);
+                    components.push(canvas.toDataURL());
+                } catch (e) {
+                    components.push('canvas-not-supported');
                 }
-            });
+
+                const fingerprint = CryptoJS.SHA256(components.join('###')).toString();
+                localStorage.setItem('deviceFingerprint', fingerprint);
+                
+                return fingerprint;
+            } catch (error) {
+                console.error('Error generating device fingerprint:', error);
+                return CryptoJS.SHA256(Math.random().toString()).toString();
+            }
         }
 
-        // Register or update device fingerprint in Firestore
-        function registerDeviceFingerprint(fingerprint) {
-            return new Promise((resolve, reject) => {
-                if (!fingerprint) {
-                    reject(new Error('No device fingerprint provided'));
-                    return;
-                }
-
-                // Create a fingerprint hash for the document ID
-                const fingerprintHash = CryptoJS.SHA256(fingerprint).toString();
-
-                // Check if this fingerprint already exists
-                db.collection('deviceFingerprints')
-                    .doc(fingerprintHash)
-                    .get()
-                    .then((doc) => {
-                        const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-                        const deviceData = {
-                            fingerprintHash: fingerprintHash,
-                            lastSeen: timestamp,
-                            userAgent: navigator.userAgent
-                        };
-
-                        if (doc.exists) {
-                            // Update existing fingerprint
-                            return db.collection('deviceFingerprints')
-                                .doc(fingerprintHash)
-                                .update({
-                                    lastSeen: timestamp,
-                                    userAgent: navigator.userAgent,
-                                    ...(currentUser ? { userId: currentUser.uid } : {})
-                                });
-                        } else {
-                            // Create new fingerprint record
-                            return db.collection('deviceFingerprints')
-                                .doc(fingerprintHash)
-                                .set({
-                                    ...deviceData,
-                                    createdAt: timestamp,
-                                    ...(currentUser ? { userId: currentUser.uid } : {})
-                                });
-                        }
-                    })
-                    .then(() => {
-                        console.log('Device fingerprint registered successfully');
-                        resolve(fingerprintHash);
-                    })
-                    .catch((error) => {
-                        console.error('Error registering device fingerprint:', error);
-                        reject(error);
-                    });
-            });
+        async function registerDeviceFingerprint(fingerprint) {
+            if (!fingerprint) return;
+            
+            try {
+                const fingerprintRef = db.collection('deviceFingerprints').doc(fingerprint);
+                
+                await fingerprintRef.set({
+                    fingerprint: fingerprint,
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                    userAgent: navigator.userAgent,
+                    ...(currentUser ? { userId: currentUser.uid } : {})
+                }, { merge: true });
+                
+                console.log('Device fingerprint registered successfully');
+            } catch (error) {
+                console.error('Error registering device fingerprint:', error);
+            }
         }
         
         // =============================================
         // Security and Encryption Functions
         // =============================================
         
-        // Generate a new encryption key for the chat session
         function generateEncryptionKey() {
-            const randomBytes = CryptoJS.lib.WordArray.random(32);
-            return randomBytes.toString();
+            return CryptoJS.lib.WordArray.random(32).toString();
         }
         
-        // Encrypt a message
         function encryptMessage(message, key) {
             try {
                 if (!key) return message;
@@ -1974,7 +2040,6 @@
             }
         }
         
-        // Decrypt a message
         function decryptMessage(encryptedMessage, key) {
             try {
                 if (!key) return encryptedMessage;
@@ -1990,7 +2055,6 @@
         // Phone Authentication Rate Limiting
         // =============================================
         
-        // Check phone verification rate limits
         async function checkPhoneRateLimits(deviceFingerprint, phoneNumber) {
             const phoneHash = CryptoJS.SHA256(phoneNumber).toString();
             const today = new Date().toISOString().split('T')[0];
@@ -2017,21 +2081,24 @@
                         throw new Error(`Dispozitivul este blocat. Încercați din nou în ${waitTime}.`);
                     }
                     
-                    // Check attempt count within time window
-                    const recentAttempts = await db.collection('phoneVerificationAttempts')
-                        .doc(deviceFingerprint)
-                        .collection('attempts')
-                        .where('timestamp', '>', firebase.firestore.Timestamp.fromMillis(Date.now() - phoneRateLimitConfig.timeWindow))
-                        .get();
+                    // Check recent attempts
+                    const recentAttempts = data.recentAttempts || [];
+                    const now = Date.now();
+                    const validAttempts = recentAttempts.filter(attempt => 
+                        now - attempt.timestamp < phoneRateLimitConfig.timeWindow
+                    );
                     
-                    if (recentAttempts.size >= phoneRateLimitConfig.maxAttempts) {
-                        const cooldownIndex = Math.min(recentAttempts.size - phoneRateLimitConfig.maxAttempts, phoneRateLimitConfig.cooldownPeriods.length - 1);
+                    if (validAttempts.length >= phoneRateLimitConfig.maxAttempts) {
+                        const cooldownIndex = Math.min(
+                            validAttempts.length - phoneRateLimitConfig.maxAttempts, 
+                            phoneRateLimitConfig.cooldownPeriods.length - 1
+                        );
                         const cooldownPeriod = phoneRateLimitConfig.cooldownPeriods[cooldownIndex];
                         
                         // Block the device
                         await deviceRef.update({
                             isBlocked: true,
-                            blockUntil: firebase.firestore.Timestamp.fromMillis(Date.now() + cooldownPeriod * 1000),
+                            blockUntil: firebase.firestore.Timestamp.fromMillis(now + cooldownPeriod * 1000),
                             attempts: firebase.firestore.FieldValue.increment(1)
                         });
                         
@@ -2057,38 +2124,30 @@
             }
         }
         
-        // Log verification attempt
         async function logVerificationAttempt(deviceFingerprint, phoneHash) {
-            const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            const timestamp = Date.now();
             const today = new Date().toISOString().split('T')[0];
             
             try {
-                // Log to device attempts
-                await db.collection('phoneVerificationAttempts')
-                    .doc(deviceFingerprint)
-                    .collection('attempts')
-                    .add({
+                // Update device attempts
+                const deviceRef = db.collection('phoneVerificationAttempts').doc(deviceFingerprint);
+                
+                await deviceRef.set({
+                    deviceFingerprint: deviceFingerprint,
+                    lastAttempt: timestamp,
+                    recentAttempts: firebase.firestore.FieldValue.arrayUnion({
                         phoneHash: phoneHash,
                         timestamp: timestamp
-                    });
-                
-                // Update device data
-                await db.collection('phoneVerificationAttempts')
-                    .doc(deviceFingerprint)
-                    .set({
-                        deviceFingerprint: deviceFingerprint,
-                        lastAttempt: timestamp,
-                        attempts: firebase.firestore.FieldValue.increment(1)
-                    }, { merge: true });
+                    }),
+                    attempts: firebase.firestore.FieldValue.increment(1)
+                }, { merge: true });
                 
                 // Update daily stats
-                await db.collection('dailyVerificationStats')
-                    .doc(today)
-                    .set({
-                        date: today,
-                        totalAttempts: firebase.firestore.FieldValue.increment(1),
-                        lastUpdated: timestamp
-                    }, { merge: true });
+                await db.collection('dailyVerificationStats').doc(today).set({
+                    date: today,
+                    totalAttempts: firebase.firestore.FieldValue.increment(1),
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
             } catch (error) {
                 console.error('Error logging verification attempt:', error);
             }
@@ -2098,20 +2157,16 @@
         // Phone Verification Functions
         // =============================================
         
-        // Validate Romanian phone number
         function validateRomanianPhoneNumber(phoneNumber) {
-            // Romanian mobile numbers: 7XX XXX XXX
             const romanianMobileRegex = /^7\d{8}$/;
             return romanianMobileRegex.test(phoneNumber);
         }
         
-        // Format phone number for display
         function formatPhoneNumber(phoneNumber) {
             if (!phoneNumber) return '';
             return phoneNumber.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
         }
         
-        // Format duration for display
         function formatDuration(seconds) {
             if (seconds < 60) return `${seconds} secunde`;
             if (seconds < 3600) return `${Math.floor(seconds / 60)} minute`;
@@ -2119,7 +2174,6 @@
             return `${Math.floor(seconds / 86400)} zile`;
         }
         
-        // Calculate wait time
         function calculateWaitTime(blockUntilTimestamp) {
             const now = firebase.firestore.Timestamp.now();
             const blockUntil = blockUntilTimestamp.toMillis();
@@ -2130,37 +2184,33 @@
             return formatDuration(Math.ceil(difference / 1000));
         }
         
-        // Handle phone number input
         function handlePhoneInput(event) {
-            // Allow only digits
             const value = event.target.value.replace(/\D/g, '');
             event.target.value = value;
+            
+            // Enable/disable send code button
+            btnSendCode.disabled = !validateRomanianPhoneNumber(value);
         }
         
-        // Handle code input
         function handleCodeInput(event, index) {
             const input = event.target;
             const value = input.value.replace(/\D/g, '').substr(0, 1);
             input.value = value;
             
             if (value) {
-                // Move to next input
+                input.classList.add('filled');
                 if (index < codeInputs.length - 1) {
                     codeInputs[index + 1].focus();
                 }
+            } else {
+                input.classList.remove('filled');
             }
             
             // Check if all code inputs are filled
-            if (index === codeInputs.length - 1) {
-                const code = Array.from(codeInputs).map(input => input.value).join('');
-                if (code.length === 6) {
-                    // Enable verify button
-                    btnVerifyCode.disabled = false;
-                }
-            }
+            const code = Array.from(codeInputs).map(input => input.value).join('');
+            btnVerifyCode.disabled = code.length !== 6;
         }
         
-        // Handle code paste
         function handleCodePaste(event) {
             event.preventDefault();
             const pastedData = (event.clipboardData || window.clipboardData).getData('text');
@@ -2169,34 +2219,33 @@
             // Fill inputs with pasted data
             for (let i = 0; i < cleanData.length && i < codeInputs.length; i++) {
                 codeInputs[i].value = cleanData[i];
+                codeInputs[i].classList.add('filled');
             }
             
             // Focus last filled input or first empty one
-            const lastFilledIndex = cleanData.length - 1;
-            if (lastFilledIndex >= 0 && lastFilledIndex < codeInputs.length) {
-                codeInputs[Math.min(lastFilledIndex, codeInputs.length - 1)].focus();
+            if (cleanData.length > 0) {
+                const nextEmptyIndex = cleanData.length < 6 ? cleanData.length : 5;
+                codeInputs[nextEmptyIndex].focus();
             }
             
             // Check if all inputs are filled
-            if (cleanData.length === 6) {
-                btnVerifyCode.disabled = false;
-            }
+            btnVerifyCode.disabled = cleanData.length !== 6;
         }
         
-        // Setup code inputs
         function setupCodeInputs() {
             codeInputs.forEach((input, index) => {
                 input.addEventListener('input', (e) => handleCodeInput(e, index));
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Backspace' && !input.value && index > 0) {
                         codeInputs[index - 1].focus();
+                        codeInputs[index - 1].value = '';
+                        codeInputs[index - 1].classList.remove('filled');
                     }
                 });
                 input.addEventListener('paste', handleCodePaste);
             });
         }
         
-        // Start retry countdown
         function startRetryCountdown() {
             retryTimeLeft = 60;
             retryMessage.style.display = 'block';
@@ -2214,26 +2263,25 @@
                     clearInterval(retryCountdown);
                     retryMessage.style.display = 'none';
                     btnSendCode.disabled = false;
-                    btnSendCode.textContent = 'Retrimite Cod SMS';
+                    btnSendCode.innerHTML = '<i class="material-icons">refresh</i> Retrimite Cod';
                 }
             }, 1000);
         }
         
-        // Send verification code
         async function sendVerificationCode() {
             const phoneNumber = phoneNumberInput.value.trim();
             
-            // Validate phone number
             if (!validateRomanianPhoneNumber(phoneNumber)) {
-                showNotice(errorNotice, 'Vă rugăm să introduceți un număr de telefon valid (format: 7XX XXX XXX)');
+                showNotification('Introduceți un număr valid (format: 7XX XXX XXX)', 'error');
                 return;
             }
             
             const fullPhoneNumber = '+40' + phoneNumber;
             
             try {
-                // Disable button and show loading
+                // Show loading state
                 btnSendCode.disabled = true;
+                btnSendCode.classList.add('loading');
                 btnSendCode.innerHTML = '<i class="material-icons">hourglass_empty</i> Se trimite...';
                 
                 // Check rate limits
@@ -2256,18 +2304,22 @@
                 const confirmationResult = await auth.signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
                 window.confirmationResult = confirmationResult;
                 
-                // Show verification code input
+                // Update UI
                 verificationSection.style.display = 'block';
+                document.getElementById('step1').classList.add('completed');
+                document.getElementById('step2').classList.add('active');
+                document.getElementById('stepLine1').classList.add('completed');
                 codeInputs[0].focus();
                 
                 // Start retry countdown
                 startRetryCountdown();
                 
                 // Update button state
-                btnSendCode.innerHTML = '<i class="material-icons">refresh</i> Retrimite Cod SMS';
+                btnSendCode.innerHTML = '<i class="material-icons">refresh</i> Retrimite Cod';
                 btnSendCode.disabled = true;
+                btnSendCode.classList.remove('loading');
                 
-                showNotice(successNotice, 'Cod trimis! Verificați SMS-ul.');
+                showNotification('Cod trimis! Verificați SMS-ul.', 'success');
                 
             } catch (error) {
                 console.error('Error sending verification code:', error);
@@ -2275,6 +2327,7 @@
                 
                 // Reset button
                 btnSendCode.disabled = false;
+                btnSendCode.classList.remove('loading');
                 btnSendCode.innerHTML = '<i class="material-icons">sms</i> Trimite Cod SMS';
                 
                 // Reset reCAPTCHA
@@ -2285,18 +2338,18 @@
             }
         }
         
-        // Verify code
         async function verifyCode() {
             const code = Array.from(codeInputs).map(input => input.value).join('');
             
             if (code.length !== 6) {
-                showNotice(errorNotice, 'Vă rugăm să introduceți codul complet de 6 cifre');
+                showNotification('Introduceți codul complet de 6 cifre', 'error');
                 return;
             }
             
             try {
-                // Disable button and show loading
+                // Show loading state
                 btnVerifyCode.disabled = true;
+                btnVerifyCode.classList.add('loading');
                 btnVerifyCode.innerHTML = '<i class="material-icons">hourglass_empty</i> Se verifică...';
                 
                 // Verify the code
@@ -2309,7 +2362,6 @@
                 const phoneData = await phoneRef.get();
                 
                 if (phoneData.exists && phoneData.data().userId !== currentUser.uid) {
-                    // Phone number already used by another account
                     await auth.signOut();
                     throw new Error('Acest număr de telefon este deja înregistrat.');
                 }
@@ -2338,11 +2390,14 @@
                     clearInterval(retryCountdown);
                 }
                 
+                showNotification('Verificare reușită!', 'success');
+                
+                // Update UI steps
+                document.getElementById('step2').classList.add('completed');
+                
                 // Continue to emergency check
                 phoneVerification.style.display = 'none';
                 emergencyCheck.style.display = 'flex';
-                
-                showNotice(successNotice, 'Verificare reușită!');
                 
             } catch (error) {
                 console.error('Error verifying code:', error);
@@ -2350,32 +2405,29 @@
                 
                 // Reset button
                 btnVerifyCode.disabled = false;
+                btnVerifyCode.classList.remove('loading');
                 btnVerifyCode.innerHTML = '<i class="material-icons">check</i> Verifică Cod';
             }
         }
         
-        // Handle authentication errors
         function handleAuthError(error) {
-            let message = 'A apărut o eroare. Vă rugăm să încercați din nou.';
+            let message = 'A apărut o eroare. Încercați din nou.';
             
             switch (error.code) {
                 case 'auth/invalid-phone-number':
-                    message = 'Număr de telefon invalid. Vă rugăm să verificați formatul.';
+                    message = 'Număr de telefon invalid.';
                     break;
                 case 'auth/too-many-requests':
-                    message = 'Prea multe încercări. Vă rugăm să așteptați și să încercați din nou.';
+                    message = 'Prea multe încercări. Așteptați puțin.';
                     break;
                 case 'auth/quota-exceeded':
-                    message = 'Serviciul este temporar indisponibil. Vă rugăm să încercați mai târziu.';
+                    message = 'Serviciul temporar indisponibil.';
                     break;
                 case 'auth/invalid-verification-code':
-                    message = 'Cod de verificare invalid. Vă rugăm să verificați și să încercați din nou.';
+                    message = 'Cod invalid. Verificați și încercați din nou.';
                     break;
                 case 'auth/code-expired':
-                    message = 'Codul de verificare a expirat. Vă rugăm să solicitați un nou cod.';
-                    break;
-                case 'auth/missing-verification-code':
-                    message = 'Vă rugăm să introduceți codul de verificare.';
+                    message = 'Codul a expirat. Solicitați unul nou.';
                     break;
                 default:
                     if (error.message) {
@@ -2383,28 +2435,23 @@
                     }
             }
             
-            showNotice(errorNotice, message);
+            showNotification(message, 'error');
         }
         
         // =============================================
-        // Chat Status and Connection Management
+        // Chat Connection Management
         // =============================================
         
-        // Update connection status
         function updateConnectionStatus(status) {
             connectionStatus.textContent = status;
             
             if (status === 'Offline') {
                 connectionStatus.style.color = 'var(--danger-color)';
-                
                 if (!chatEnded && chatArea.style.display !== 'none') {
-                    showNotice(errorNotice, 'Conexiune pierdută. Mesajele vor fi trimise când conexiunea va fi restabilită.');
+                    showNotification('Conexiune pierdută. Reconectare...', 'warning');
                 }
-            } else if (status === 'Connecting...') {
-                connectionStatus.style.color = 'var(--warning-color)';
             } else {
                 connectionStatus.style.color = '';
-                errorNotice.style.display = 'none';
                 
                 if (messageQueue.length > 0) {
                     processMessageQueue();
@@ -2412,60 +2459,28 @@
             }
         }
         
-        // Monitor connection status
         function setupConnectionMonitoring() {
             try {
-                const connectedRef = firebase.database().ref('.info/connected');
+                const connectedRef = realtimeDb.ref('.info/connected');
                 connectedRef.on('value', (snap) => {
-                    if (snap && snap.val() === true) {
+                    if (snap.val() === true) {
                         updateConnectionStatus('Online');
-                        
-                        if (offlineTimeout) {
-                            clearTimeout(offlineTimeout);
-                            offlineTimeout = null;
-                        }
                     } else {
-                        if (!offlineTimeout) {
-                            offlineTimeout = setTimeout(() => {
-                                updateConnectionStatus('Offline');
-                            }, 5000);
-                        }
+                        updateConnectionStatus('Offline');
                     }
-                }, (error) => {
-                    console.error('Error monitoring connection status:', error);
-                    updateConnectionStatus(navigator.onLine ? 'Online' : 'Offline');
                 });
             } catch (error) {
                 console.error('Error setting up connection monitoring:', error);
-                updateConnectionStatus(navigator.onLine ? 'Online' : 'Offline');
             }
             
-            window.addEventListener('online', () => {
-                updateConnectionStatus('Online');
-            });
-            
-            window.addEventListener('offline', () => {
-                updateConnectionStatus('Offline');
-            });
-        }
-        
-        // Show a notice
-        function showNotice(element, message, duration = 5000) {
-            element.textContent = message;
-            element.style.display = 'block';
-            
-            if (duration > 0) {
-                setTimeout(() => {
-                    element.style.display = 'none';
-                }, duration);
-            }
+            window.addEventListener('online', () => updateConnectionStatus('Online'));
+            window.addEventListener('offline', () => updateConnectionStatus('Offline'));
         }
         
         // =============================================
         // Rate Limiting
         // =============================================
         
-        // Check rate limit before sending a message
         function checkRateLimit() {
             const now = Date.now();
             
@@ -2476,15 +2491,14 @@
             if (rateLimitConfig.sentMessages.length >= rateLimitConfig.maxMessages) {
                 if (!rateLimitConfig.isLimited) {
                     rateLimitConfig.isLimited = true;
-                    showNotice(
-                        errorNotice, 
-                        `Ați trimis prea multe mesaje într-un interval scurt de timp. Vă rugăm să așteptați ${Math.ceil(rateLimitConfig.timeWindow/1000)} secunde.`,
+                    showNotification(
+                        `Prea multe mesaje. Așteptați ${Math.ceil(rateLimitConfig.timeWindow/1000)} secunde.`,
+                        'warning',
                         rateLimitConfig.timeWindow
                     );
                     
                     setTimeout(() => {
                         rateLimitConfig.isLimited = false;
-                        errorNotice.style.display = 'none';
                     }, rateLimitConfig.timeWindow);
                 }
                 return false;
@@ -2493,30 +2507,27 @@
             return true;
         }
         
-        // Record a sent message for rate limiting
         function recordMessageSent() {
             rateLimitConfig.sentMessages.push(Date.now());
         }
         
-// =============================================
-        // Message Queue Management (for offline support)
+        // =============================================
+        // Message Queue Management
         // =============================================
         
-        // Add a message to the queue
         function queueMessage(message) {
             messageQueue.push(message);
             localStorage.setItem('messageQueue_' + currentChatId, JSON.stringify(messageQueue));
         }
         
-        // Process the message queue when back online
         function processMessageQueue() {
             if (messageQueue.length === 0) return;
             
-            showNotice(successNotice, `Se trimit ${messageQueue.length} mesaje din coada offline...`);
+            showNotification(`Se trimit ${messageQueue.length} mesaje...`, 'info');
             
             const processNext = () => {
                 if (messageQueue.length === 0) {
-                    showNotice(successNotice, 'Toate mesajele au fost trimise cu succes.');
+                    showNotification('Toate mesajele au fost trimise.', 'success');
                     return;
                 }
                 
@@ -2531,59 +2542,34 @@
                         console.error('Error processing queued message:', error);
                         messageQueue.unshift(message);
                         localStorage.setItem('messageQueue_' + currentChatId, JSON.stringify(messageQueue));
-                        showNotice(errorNotice, 'Nu s-au putut trimite toate mesajele. Se va încerca din nou mai târziu.');
+                        showNotification('Eroare la trimiterea mesajelor.', 'error');
                     });
             };
             
             processNext();
         }
         
-        // Send a message to Firestore
-        function sendMessageToFirestore(messageObj) {
-            return new Promise((resolve, reject) => {
-                // Add message to Firestore 
-                db.collection('chats').doc(currentChatId).collection('messages').add(messageObj)
-                    .then(messageRef => {
-                        // Update the chat's last activity timestamp
-                        return db.collection('chats').doc(currentChatId).update({
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            lastMessage: messageObj.encrypted ? "[Encrypted message]" : (messageObj.content || '[Mesaj gol]'),
-                            lastMessageSender: 'user'
-                        });
-                    })
-                    .then(() => {
-                        resolve();
-                    })
-                    .catch(error => {
-                        console.error('Error details:', error);
-                        reject(error);
-                    });
+async function sendMessageToFirestore(messageObj) {
+            await db.collection('chats').doc(currentChatId).collection('messages').add(messageObj);
+            
+            await db.collection('chats').doc(currentChatId).update({
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                lastMessage: messageObj.encrypted ? "[Encrypted message]" : (messageObj.content || '[Mesaj gol]'),
+                lastMessageSender: 'user'
             });
-        }
-        
-        // Handle Enter key press
-        function handleEnterPress(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
         }
         
         // =============================================
         // Message Display Functions
         // =============================================
         
-        // Display a message in the chat
         function displayMessage(message) {
-            // Check if this message is already displayed (for offline message handling)
             const existingMessage = document.querySelector(`[data-message-id="${message.id}"]`);
             if (existingMessage) return;
             
-            // Create message element
             const messageElement = document.createElement('div');
             messageElement.className = 'message';
             
-            // Set message ID if available
             if (message.id) {
                 messageElement.dataset.messageId = message.id;
             }
@@ -2597,17 +2583,13 @@
             
             // Handle different message types
             if (message.type === 'system') {
-                // System message
                 messageElement.className = 'message-system';
                 messageElement.textContent = message.content;
             } else if (message.type === 'user') {
-                // User message (sent by current user)
                 messageElement.classList.add('message-sent');
                 
-                // Create HTML for the message
                 let messageHtml = '';
                 
-                // Add text content
                 if (message.content) {
                     messageHtml += `
                         <div class="message-content">
@@ -2616,7 +2598,6 @@
                     `;
                 }
                 
-                // Add metadata (time, status)
                 let statusHtml = '';
                 if (message.status === 'sent') {
                     statusHtml = `<i class="material-icons" aria-hidden="true">done</i>`;
@@ -2637,16 +2618,12 @@
                 
                 messageElement.innerHTML = messageHtml;
             } else if (message.type === 'agent') {
-                // Agent message
                 messageElement.classList.add('message-received');
                 
-                // Hide typing indicator when receiving agent message
                 hideTypingIndicator();
                 
-                // Create HTML for the message
                 let messageHtml = '';
                 
-                // Add text content
                 if (message.content) {
                     messageHtml += `
                         <div class="message-content">
@@ -2655,7 +2632,6 @@
                     `;
                 }
                 
-                // Add metadata (time)
                 messageHtml += `
                     <div class="message-meta">
                         <span class="message-time">${timeString}</span>
@@ -2665,28 +2641,17 @@
                 messageElement.innerHTML = messageHtml;
             }
             
-            // Add to chat
             chatMessages.appendChild(messageElement);
-            
-            // Scroll to bottom
             scrollToBottom();
         }
         
-        // Display a local message (for offline support)
         function displayLocalMessage(message) {
-            // Clone the message object to avoid modifying the original
             const localMessage = { ...message };
-            
-            // Add a local ID
             localMessage.id = 'local-' + Date.now();
-            
-            // Add pending status indicator
             localMessage.status = 'pending';
             
-            // Display with "pending" styling
             displayMessage(localMessage);
             
-            // Update the message element to show it's queued
             const messageElement = document.querySelector(`[data-message-id="${localMessage.id}"]`);
             if (messageElement) {
                 const statusSpan = messageElement.querySelector('.message-status');
@@ -2696,33 +2661,28 @@
             }
         }
         
-        // Add a system message
         function addSystemMessage(text) {
-            // Create a temporary ID to prevent duplication
             const tempId = 'local-system-' + Date.now();
             
-            // First add to UI immediately with the temp ID
             const systemMessage = {
                 type: 'system',
                 content: text,
                 timestamp: new Date(),
-                id: tempId // Temporary ID to prevent duplication
+                id: tempId
             };
             
             displayMessage(systemMessage);
             
-            // Then add to Firestore, but don't display it again when it comes back
             db.collection('chats').doc(currentChatId).collection('messages').add({
                 type: 'system',
                 content: text,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                clientGeneratedId: tempId // Track that this was generated by the client
+                clientGeneratedId: tempId
             }).catch(error => {
                 console.error('Error adding system message:', error);
             });
         }
         
-        // Scroll chat to bottom
         function scrollToBottom() {
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
@@ -2735,12 +2695,10 @@
         // Typing Indicators
         // =============================================
         
-        // Handle user typing start
         function handleTypingStart() {
             if (!isTyping) {
                 isTyping = true;
                 
-                // Notify the server that the user is typing
                 db.collection('chats').doc(currentChatId).collection('typing')
                     .doc('user')
                     .set({
@@ -2752,7 +2710,6 @@
                     });
             }
             
-            // Reset the typing timeout
             if (typingTimeout) {
                 clearTimeout(typingTimeout);
             }
@@ -2760,12 +2717,10 @@
             typingTimeout = setTimeout(resetTypingIndicator, 3000);
         }
         
-        // Reset typing indicator
         function resetTypingIndicator() {
             if (isTyping) {
                 isTyping = false;
                 
-                // Notify the server that the user stopped typing
                 db.collection('chats').doc(currentChatId).collection('typing')
                     .doc('user')
                     .set({
@@ -2783,9 +2738,7 @@
             }
         }
         
-        // Show agent typing indicator
         function showTypingIndicator() {
-            // Check if typing indicator already exists
             let typingIndicator = document.querySelector('.typing-indicator');
             
             if (!typingIndicator) {
@@ -2804,7 +2757,6 @@
             }
         }
         
-        // Hide agent typing indicator
         function hideTypingIndicator() {
             const typingIndicator = document.querySelector('.typing-indicator');
             if (typingIndicator) {
@@ -2816,20 +2768,15 @@
         // Read Receipts
         // =============================================
         
-        // Set up read receipts
         function setupReadReceipts() {
-            // Update read status when the chat is visible
             document.addEventListener('visibilitychange', updateReadStatus);
             chatMessages.addEventListener('scroll', updateReadStatus);
             
-            // Initial update
             updateReadStatus();
         }
         
-        // Update read status for all messages
         function updateReadStatus() {
             if (document.visibilityState === 'visible' && !chatEnded) {
-                // Find the latest agent message
                 const agentMessages = document.querySelectorAll('.message-received');
                 if (agentMessages.length > 0) {
                     const lastAgentMessage = agentMessages[agentMessages.length - 1];
@@ -2842,7 +2789,6 @@
             }
         }
         
-        // Update a specific message's read status
         function updateMessageReadStatus(messageId) {
             db.collection('chats').doc(currentChatId).collection('messages').doc(messageId)
                 .update({
@@ -2853,171 +2799,9 @@
         }
         
         // =============================================
-        // Chat Conclusion
+        // Chat Management
         // =============================================
         
-        // Handle chat ended
-        function handleChatEnded() {
-            chatEnded = true;
-            
-            // Add system message
-            addSystemMessage('Conversația a fost încheiată.');
-            
-            // Disable input
-            messageInput.disabled = true;
-            btnSendMessage.disabled = true;
-            
-            // Show end screen after a delay
-            setTimeout(() => {
-                chatArea.style.display = 'none';
-                chatEnd.style.display = 'flex';
-            }, 3000);
-        }
-        
-        // Confirm end chat
-        function confirmEndChat() {
-            if (confirm('Sigur doriți să încheiați această conversație?')) {
-                endChat();
-            }
-        }
-        
-        // End chat
-        function endChat() {
-            chatEnded = true;
-            
-            // Update chat status in Firestore
-            db.collection('chats').doc(currentChatId).update({
-                status: 'closed',
-                endedBy: 'user',
-                endedAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                handleChatEnded();
-            }).catch(error => {
-                console.error('Error ending chat:', error);
-                showNotice(errorNotice, 'Eroare la închiderea conversației. Vă rugăm să încercați din nou.');
-            });
-        }
-        
-        // Request transcript
-        function requestTranscript() {
-            const email = document.getElementById('chat-email').value;
-            
-            if (!email || !email.includes('@')) {
-                showNotice(errorNotice, 'Vă rugăm să introduceți o adresă de email validă.');
-                return;
-            }
-            
-            // Show loading state
-            btnRequestTranscript.disabled = true;
-            btnRequestTranscript.textContent = 'Se trimite...';
-            
-            // Call Cloud Function to send transcript
-            const sendTranscriptFunction = firebase.functions().httpsCallable('sendChatTranscript');
-            sendTranscriptFunction({ chatId: currentChatId, email: email })
-                .then(result => {
-                    showNotice(successNotice, 'Transcriptul a fost trimis la adresa de email specificată.');
-                    btnRequestTranscript.textContent = 'Transcript trimis ✓';
-                })
-                .catch(error => {
-                    console.error('Error requesting transcript:', error);
-                    showNotice(errorNotice, 'Eroare la trimiterea transcriptului. Vă rugăm să încercați din nou.');
-                    btnRequestTranscript.disabled = false;
-                    btnRequestTranscript.textContent = 'Primește transcript';
-                });
-        }
-        
-        // Reset chat and start a new one
-        function resetChat() {
-            // Clean up current chat listeners first
-            cleanupChatListeners();
-            
-            // Reset all variables
-            currentChatId = null;
-            selectedDepartment = null;
-            chatSessionKey = null;
-            agentPublicKey = null;
-            chatEnded = false;
-            isTyping = false;
-            agentJoinedFlag = false;
-            
-            if (typingTimeout) {
-                clearTimeout(typingTimeout);
-                typingTimeout = null;
-            }
-            
-            // Clear message queue
-            messageQueue = [];
-            if (currentChatId) {
-                localStorage.removeItem('messageQueue_' + currentChatId);
-            }
-            
-            // Reset rate limiting
-            rateLimitConfig.sentMessages = [];
-            rateLimitConfig.isLimited = false;
-            
-            // Clear chat messages
-            chatMessages.innerHTML = '';
-            
-            // Reset all notices
-            errorNotice.style.display = 'none';
-            successNotice.style.display = 'none';
-            formErrorNotice.style.display = 'none';
-            
-            // Reset message input
-            messageInput.value = '';
-            messageInput.disabled = false;
-            
-            // Reset buttons
-            btnSendMessage.disabled = false;
-            btnRequestTranscript.disabled = false;
-            btnRequestTranscript.textContent = 'Primește transcript';
-
-            // Reset form fields
-            document.getElementById('chat-subject').value = '';
-            document.getElementById('chat-email').value = '';
-            document.getElementById('chat-name').value = '';
-            document.getElementById('privacy-check').checked = false;
-            document.getElementById('recording-check').checked = false;
-            
-            // Hide all sections except emergency check (since user is still authenticated)
-            chatEnd.style.display = 'none';
-            chatArea.style.display = 'none';
-            chatForm.style.display = 'none';
-            departmentSelect.style.display = 'none';
-            loadingState.style.display = 'none';
-            welcomeScreen.style.display = 'none';
-            phoneVerification.style.display = 'none';
-            
-            // Show emergency check
-            emergencyCheck.style.display = 'flex';
-            
-            // Generate a new encryption key
-            chatSessionKey = generateEncryptionKey();
-        }
-        
-        // =============================================
-        // Cleanup function for listeners when chat ends
-        // =============================================
-        function cleanupChatListeners() {
-            if (window.chatListeners) {
-                if (window.chatListeners.chatDoc) {
-                    window.chatListeners.chatDoc();
-                }
-                if (window.chatListeners.messages) {
-                    window.chatListeners.messages();
-                }
-                if (window.chatListeners.typing) {
-                    window.chatListeners.typing();
-                }
-                window.chatListeners = null;
-            }
-        }
-
-        // =============================================
-        // Chat Functions
-        // =============================================
-        
-        // Create a new chat session
         async function createChatSession() {
             try {
                 const chatData = {
@@ -3038,17 +2822,12 @@
                     }
                 };
                 
-                // Create the chat session
                 const chatRef = await db.collection('chats').add(chatData);
                 currentChatId = chatRef.id;
                 
-                // Set up listeners for this chat
                 setupChatListeners();
-                
-                // Load existing messages if any
                 loadExistingMessages();
                 
-                // Add initial system message
                 addSystemMessage('Bine ați venit! Un agent vă va răspunde în curând.');
                 
                 return chatRef.id;
@@ -3058,28 +2837,20 @@
             }
         }
         
-        // Setup chat listeners
         function setupChatListeners() {
-            // Clean up any existing listeners
             cleanupChatListeners();
             
-            // Create a new listener object
             window.chatListeners = {};
             
-            // Listen for chat updates (agent joining, chat ending, etc.)
             window.chatListeners.chatDoc = db.collection('chats').doc(currentChatId)
                 .onSnapshot(doc => {
                     const data = doc.data();
                     if (data) {
                         if (data.status === 'active' && !agentJoinedFlag) {
                             agentJoinedFlag = true;
-                            if (data.agentName) {
-                                addSystemMessage(`Agentul ${data.agentName} s-a alăturat conversației.`);
-                            } else {
-                                addSystemMessage('Un agent s-a alăturat conversației.');
-                            }
+                            const agentName = data.agentName || 'Un agent';
+                            addSystemMessage(`${agentName} s-a alăturat conversației.`);
                             
-                            // Store agent's public key if available
                             if (data.agentPublicKey) {
                                 agentPublicKey = data.agentPublicKey;
                             }
@@ -3089,7 +2860,6 @@
                     }
                 });
             
-            // Listen for new messages
             window.chatListeners.messages = db.collection('chats').doc(currentChatId)
                 .collection('messages')
                 .orderBy('timestamp', 'asc')
@@ -3099,28 +2869,23 @@
                             const messageData = change.doc.data();
                             const messageId = change.doc.id;
                             
-                            // Check if this is a message we just sent (to avoid duplicates)
                             if (messageData.clientGeneratedId) {
                                 const existingMessage = document.querySelector(`[data-message-id="${messageData.clientGeneratedId}"]`);
                                 if (existingMessage) {
-                                    // Update the existing message with the server ID
                                     existingMessage.dataset.messageId = messageId;
                                     return;
                                 }
                             }
                             
-                            // Decrypt message if needed
                             if (messageData.encrypted && chatSessionKey) {
                                 messageData.content = decryptMessage(messageData.content, chatSessionKey);
                             }
                             
-                            // Display the message
                             displayMessage({
                                 ...messageData,
                                 id: messageId
                             });
                             
-                            // Update read status if needed
                             if (messageData.type === 'agent' && document.visibilityState === 'visible') {
                                 updateMessageReadStatus(messageId);
                             }
@@ -3128,7 +2893,6 @@
                     });
                 });
             
-            // Listen for typing indicators
             window.chatListeners.typing = db.collection('chats').doc(currentChatId)
                 .collection('typing')
                 .doc('agent')
@@ -3142,7 +2906,6 @@
                 });
         }
         
-        // Load existing messages
         function loadExistingMessages() {
             db.collection('chats').doc(currentChatId)
                 .collection('messages')
@@ -3153,7 +2916,6 @@
                         const messageData = doc.data();
                         const messageId = doc.id;
                         
-                        // Decrypt message if needed
                         if (messageData.encrypted && chatSessionKey) {
                             messageData.content = decryptMessage(messageData.content, chatSessionKey);
                         }
@@ -3171,7 +2933,6 @@
                 });
         }
         
-        // Send a message
         function sendMessage() {
             const messageText = messageInput.value.trim();
             
@@ -3183,13 +2944,9 @@
                 return;
             }
             
-            // Clear the input
             messageInput.value = '';
-            
-            // Reset typing indicator
             resetTypingIndicator();
             
-            // Create message object
             const messageObj = {
                 type: 'user',
                 content: chatSessionKey ? encryptMessage(messageText, chatSessionKey) : messageText,
@@ -3199,59 +2956,172 @@
                 status: 'sent'
             };
             
-            // Check if online
             if (navigator.onLine) {
-                // Display message locally first
                 displayMessage({
                     ...messageObj,
-                    content: messageText, // Show unencrypted content
+                    content: messageText,
                     timestamp: new Date(),
                     id: 'local-' + Date.now()
                 });
                 
-                // Send to Firestore
                 sendMessageToFirestore(messageObj)
                     .then(() => {
                         recordMessageSent();
                     })
                     .catch(error => {
                         console.error('Error sending message:', error);
-                        showNotice(errorNotice, 'Eroare la trimiterea mesajului. Se încearcă din nou...');
+                        showNotification('Eroare la trimiterea mesajului.', 'error');
                         queueMessage(messageObj);
                     });
             } else {
-                // Display locally and queue for later
                 displayLocalMessage({
                     ...messageObj,
-                    content: messageText, // Show unencrypted content
+                    content: messageText,
                     timestamp: new Date()
                 });
                 
                 queueMessage(messageObj);
-                showNotice(errorNotice, 'Mesajul va fi trimis când conexiunea va fi restabilită.');
+                showNotification('Mesajul va fi trimis când veți fi online.', 'warning');
             }
         }
         
+        function handleChatEnded() {
+            chatEnded = true;
+            
+            addSystemMessage('Conversația a fost încheiată.');
+            
+            messageInput.disabled = true;
+            btnSendMessage.disabled = true;
+            
+            setTimeout(() => {
+                chatArea.style.display = 'none';
+                chatEnd.style.display = 'flex';
+            }, 2000);
+        }
+        
+        function confirmEndChat() {
+            if (confirm('Sigur doriți să încheiați conversația?')) {
+                endChat();
+            }
+        }
+        
+        function endChat() {
+            chatEnded = true;
+            
+            db.collection('chats').doc(currentChatId).update({
+                status: 'closed',
+                endedBy: 'user',
+                endedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                handleChatEnded();
+            }).catch(error => {
+                console.error('Error ending chat:', error);
+                showNotification('Eroare la închiderea conversației.', 'error');
+            });
+        }
+        
+        function requestTranscript() {
+            const email = document.getElementById('chat-email').value;
+            
+            if (!email || !email.includes('@')) {
+                showNotification('Introduceți o adresă de email validă.', 'error');
+                return;
+            }
+            
+            btnRequestTranscript.disabled = true;
+            btnRequestTranscript.innerHTML = '<i class="material-icons">hourglass_empty</i> Se trimite...';
+            
+            const sendTranscriptFunction = functions.httpsCallable('sendChatTranscript');
+            sendTranscriptFunction({ chatId: currentChatId, email: email })
+                .then(result => {
+                    showNotification('Transcriptul a fost trimis pe email.', 'success');
+                    btnRequestTranscript.innerHTML = '<i class="material-icons">done</i> Transcript trimis';
+                })
+                .catch(error => {
+                    console.error('Error requesting transcript:', error);
+                    showNotification('Eroare la trimiterea transcriptului.', 'error');
+                    btnRequestTranscript.disabled = false;
+                    btnRequestTranscript.innerHTML = '<i class="material-icons">description</i> Primește transcript';
+                });
+        }
+        
+        function resetChat() {
+            cleanupChatListeners();
+            
+            currentChatId = null;
+            selectedDepartment = null;
+            chatSessionKey = null;
+            agentPublicKey = null;
+            chatEnded = false;
+            isTyping = false;
+            agentJoinedFlag = false;
+            
+            if (typingTimeout) {
+                clearTimeout(typingTimeout);
+                typingTimeout = null;
+            }
+            
+            messageQueue = [];
+            if (currentChatId) {
+                localStorage.removeItem('messageQueue_' + currentChatId);
+            }
+            
+            rateLimitConfig.sentMessages = [];
+            rateLimitConfig.isLimited = false;
+            
+            chatMessages.innerHTML = '';
+            messageInput.value = '';
+            messageInput.disabled = false;
+            btnSendMessage.disabled = false;
+            
+            document.getElementById('chat-subject').value = '';
+            document.getElementById('chat-email').value = '';
+            document.getElementById('chat-name').value = '';
+            document.getElementById('privacy-check').checked = false;
+            document.getElementById('recording-check').checked = false;
+            
+            chatEnd.style.display = 'none';
+            chatArea.style.display = 'none';
+            chatForm.style.display = 'none';
+            departmentSelect.style.display = 'none';
+            loadingState.style.display = 'none';
+            welcomeScreen.style.display = 'none';
+            phoneVerification.style.display = 'none';
+            
+            emergencyCheck.style.display = 'flex';
+            
+            chatSessionKey = generateEncryptionKey();
+        }
+        
+        function cleanupChatListeners() {
+            if (window.chatListeners) {
+                if (window.chatListeners.chatDoc) {
+                    window.chatListeners.chatDoc();
+                }
+                if (window.chatListeners.messages) {
+                    window.chatListeners.messages();
+                }
+                if (window.chatListeners.typing) {
+                    window.chatListeners.typing();
+                }
+                window.chatListeners = null;
+            }
+        }
+
         // =============================================
         // Event Listeners
         // =============================================
         
-        // Start from welcome screen
         btnStartWelcome.addEventListener('click', () => {
             welcomeScreen.style.display = 'none';
             phoneVerification.style.display = 'flex';
         });
         
-        // Send verification code
         btnSendCode.addEventListener('click', sendVerificationCode);
-        
-        // Verify code
         btnVerifyCode.addEventListener('click', verifyCode);
         
-        // Phone number input handling
         phoneNumberInput.addEventListener('input', handlePhoneInput);
         
-        // Emergency buttons
         btnEmergency.addEventListener('click', () => {
             window.location.href = 'tel:112';
         });
@@ -3261,85 +3131,72 @@
             departmentSelect.style.display = 'flex';
         });
         
-        // Department selection
         departmentItems.forEach(item => {
             item.addEventListener('click', () => {
                 selectedDepartment = item.dataset.id;
                 departmentSelect.style.display = 'none';
                 chatForm.style.display = 'flex';
                 
-                // Populate phone number in form
                 if (currentUser && currentUser.phoneNumber) {
                     document.getElementById('chat-phone').value = currentUser.phoneNumber;
                 }
             });
         });
         
-        // Start chat
         btnStartChat.addEventListener('click', async () => {
-            // Validate form
             const subject = document.getElementById('chat-subject').value.trim();
             const name = document.getElementById('chat-name').value.trim();
             const privacyCheck = document.getElementById('privacy-check').checked;
             const recordingCheck = document.getElementById('recording-check').checked;
             
             if (!subject || !name || !privacyCheck || !recordingCheck) {
-                showNotice(formErrorNotice, 'Vă rugăm să completați toate câmpurile obligatorii.');
+                showNotification('Completați toate câmpurile obligatorii.', 'error');
                 return;
             }
             
             try {
-                // Show loading state
                 chatForm.style.display = 'none';
                 loadingState.style.display = 'flex';
                 loadingText.textContent = 'Se creează sesiunea de chat...';
                 
-                // Create chat session
                 await createChatSession();
                 
-                // Transition to chat area
                 loadingState.style.display = 'none';
                 chatArea.style.display = 'flex';
                 
-                // Focus on message input
                 messageInput.focus();
                 
             } catch (error) {
                 console.error('Error starting chat:', error);
                 loadingState.style.display = 'none';
                 chatForm.style.display = 'flex';
-                showNotice(errorNotice, 'Eroare la crearea sesiunii de chat. Vă rugăm să încercați din nou.');
+                showNotification('Eroare la crearea sesiunii.', 'error');
             }
         });
         
-        // Send message
         btnSendMessage.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', handleEnterPress);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
         messageInput.addEventListener('input', handleTypingStart);
         
-        // Close chat
         btnCloseChat.addEventListener('click', confirmEndChat);
-        
-        // Request transcript
         btnRequestTranscript.addEventListener('click', requestTranscript);
-        
-        // Start new chat
         btnStartNewChat.addEventListener('click', resetChat);
         
         // =============================================
         // PWA Support
         // =============================================
         
-        // Check for PWA support
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            
-            // Show PWA install banner
             pwaBanner.classList.add('show');
         });
         
-        // Install PWA
         btnInstallPwa.addEventListener('click', async () => {
             if (!deferredPrompt) return;
             
@@ -3352,7 +3209,6 @@
             pwaBanner.classList.remove('show');
         });
         
-        // Dismiss PWA banner
         btnDismissPwa.addEventListener('click', () => {
             pwaBanner.classList.remove('show');
         });
@@ -3362,52 +3218,41 @@
         // =============================================
         async function initializeChat() {
             try {
-                // Setup connection monitoring
                 setupConnectionMonitoring();
                 
-                // Generate device fingerprint
                 deviceFingerprint = await generateDeviceFingerprint();
                 
-                // Setup code inputs
                 setupCodeInputs();
                 
-                // Check authentication state
                 auth.onAuthStateChanged(async (user) => {
                     if (user) {
                         currentUser = user;
-                        // Register device fingerprint
                         await registerDeviceFingerprint(deviceFingerprint);
                         
-                        // Check current screen
                         if (welcomeScreen.style.display !== 'none' || phoneVerification.style.display !== 'none') {
                             welcomeScreen.style.display = 'none';
                             phoneVerification.style.display = 'none';
                             emergencyCheck.style.display = 'flex';
                         }
                     } else {
-                        // User is not authenticated
                         if (emergencyCheck.style.display !== 'none' || 
                             departmentSelect.style.display !== 'none' || 
                             chatForm.style.display !== 'none' || 
                             chatArea.style.display !== 'none') {
-                            // Reset to welcome screen
                             resetToWelcome();
                         }
                     }
                 });
                 
-                // Generate initial encryption key
                 chatSessionKey = generateEncryptionKey();
                 
             } catch (error) {
                 console.error('Error initializing chat:', error);
-                showNotice(errorNotice, 'Eroare la inițializarea aplicației. Vă rugăm să reîncărcați pagina.');
+                showNotification('Eroare la inițializare.', 'error');
             }
         }
         
-        // Reset to welcome screen
         function resetToWelcome() {
-            // Hide all screens
             welcomeScreen.style.display = 'flex';
             phoneVerification.style.display = 'none';
             emergencyCheck.style.display = 'none';
@@ -3417,7 +3262,6 @@
             chatArea.style.display = 'none';
             chatEnd.style.display = 'none';
             
-            // Reset state
             currentUser = null;
             resetChat();
         }
