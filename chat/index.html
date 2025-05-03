@@ -75,8 +75,8 @@
         html, body {
             height: 100%;
             width: 100%;
-            overflow: auto; /* Changed from hidden to auto */
-            position: relative; /* Changed from fixed to relative */
+            overflow: auto;
+            position: relative;
             -webkit-overflow-scrolling: touch;
         }
         
@@ -95,7 +95,6 @@
             position: relative;
         }
         
-        /* Add overlay to ensure contrast with the background */
         body::before {
             content: '';
             position: fixed;
@@ -103,7 +102,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Dark overlay for better contrast */
+            background: rgba(0, 0, 0, 0.5);
             z-index: -1;
         }
         
@@ -157,7 +156,7 @@
             justify-content: space-between;
             box-shadow: var(--shadow-medium);
             z-index: 10;
-            height: 70px; /* Reduced from 80px for mobile */
+            height: 70px;
             flex-shrink: 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -168,14 +167,14 @@
         }
         
         .header-logo {
-            width: 40px; /* Reduced from 48px for mobile */
-            height: 40px; /* Reduced from 48px for mobile */
+            width: 40px;
+            height: 40px;
             background-color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
+            margin-right: var(--spacing-sm);
             flex-shrink: 0;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             transition: var(--transition-fast);
@@ -186,18 +185,18 @@
         }
         
         .header-logo img {
-            width: 32px; /* Reduced from 36px for mobile */
-            height: 32px; /* Reduced from 36px for mobile */
+            width: 32px;
+            height: 32px;
         }
         
         .header-title {
-            font-size: var(--font-size-large); /* Reduced from var(--font-size-xl) for mobile */
+            font-size: var(--font-size-large);
             font-weight: 600;
             letter-spacing: 0.3px;
         }
         
         .header-status {
-            font-size: calc(var(--font-size-base) - 2px); /* Reduced for mobile */
+            font-size: calc(var(--font-size-base) - 2px);
             opacity: 0.9;
             margin-top: -2px;
             display: flex;
@@ -239,12 +238,12 @@
         }
         
         .header-button-with-text {
-            min-width: 36px; /* Reduced from 42px for mobile */
-            height: 36px; /* Reduced from 42px for mobile */
+            min-width: 36px;
+            height: 36px;
         }
         
         .header-button-with-text span {
-            display: none; /* Hide text on mobile */
+            display: none;
         }
         
         .header-actions button:hover {
@@ -268,7 +267,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: var(--spacing-lg) var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
+            padding: var(--spacing-lg) var(--spacing-lg);
             height: 100%;
             background: linear-gradient(to bottom, rgba(26, 47, 95, 0.92) 0%, rgba(26, 47, 95, 0.85) 100%), url('https://images4.imagebam.com/c0/05/ef/ME11M3FT_o.png');
             background-size: cover;
@@ -277,39 +276,128 @@
         }
         
         .welcome-title {
-            font-size: 26px; /* Reduced from 32px for mobile */
+            font-size: 26px;
             font-weight: 700;
-            margin-bottom: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
+            margin-bottom: var(--spacing-md);
             letter-spacing: 0.5px;
         }
         
         .welcome-description {
-            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
-            margin-bottom: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
+            font-size: var(--font-size-base);
+            margin-bottom: var(--spacing-lg);
             max-width: 600px;
             line-height: 1.7;
         }
         
         .welcome-logo {
-            width: 80px; /* Reduced from 100px for mobile */
-            height: 80px; /* Reduced from 100px for mobile */
+            width: 80px;
+            height: 80px;
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
+            margin-bottom: var(--spacing-lg);
             box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
         }
         
         .welcome-logo img {
-            width: 60px; /* Reduced from 76px for mobile */
-            height: 60px; /* Reduced from 76px for mobile */
+            width: 60px;
+            height: 60px;
+        }
+        
+        /* Phone Verification Screen */
+        .phone-verification {
+            padding: var(--spacing-lg) var(--spacing-lg);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            background-color: white;
+        }
+        
+        .verification-title {
+            font-size: var(--font-size-xl);
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-md);
+            text-align: center;
+        }
+        
+        .verification-description {
+            font-size: var(--font-size-base);
+            margin-bottom: var(--spacing-lg);
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.7;
+        }
+        
+        .phone-input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-small);
+            overflow: hidden;
+        }
+        
+        .phone-prefix {
+            background-color: var(--background-light);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .phone-input-group input {
+            flex: 1;
+            border: none;
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-base);
+            outline: none;
+        }
+        
+        .verification-code-section {
+            margin-top: var(--spacing-xl);
+        }
+        
+        .code-input-group {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .code-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: var(--font-size-xl);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-small);
+            transition: var(--transition-fast);
+        }
+        
+        .code-input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+        
+        .retry-message {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-top: var(--spacing-md);
+        }
+        
+        .retry-timer {
+            color: var(--primary-color);
+            font-weight: 600;
         }
         
         /* Emergency Check */
         .emergency-check {
-            padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg); /* Reduced padding for mobile */
+            padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
             background-color: white;
             height: 100%;
             display: flex;
@@ -321,9 +409,9 @@
         }
         
         .emergency-title {
-            font-size: var(--font-size-xl); /* Reduced from var(--font-size-xxl) for mobile */
+            font-size: var(--font-size-xl);
             color: var(--danger-color);
-            margin-bottom: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
+            margin-bottom: var(--spacing-md);
             display: flex;
             align-items: center;
         }
@@ -333,8 +421,8 @@
         }
         
         .emergency-text {
-            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
-            margin-bottom: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
+            font-size: var(--font-size-base);
+            margin-bottom: var(--spacing-lg);
             color: var(--text-primary);
             line-height: 1.7;
         }
@@ -347,7 +435,7 @@
         
         /* Department Selection */
         .department-select {
-            padding: var(--spacing-md) var(--spacing-lg); /* Reduced from var(--spacing-lg) var(--spacing-xl) for mobile */
+            padding: var(--spacing-md) var(--spacing-lg);
             height: 100%;
             overflow-y: auto;
             display: none;
@@ -359,8 +447,8 @@
         }
         
         .department-title {
-            font-size: var(--font-size-large); /* Reduced from var(--font-size-xl) for mobile */
-            margin-bottom: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
+            font-size: var(--font-size-large);
+            margin-bottom: var(--spacing-lg);
             text-align: center;
             color: var(--primary-color);
         }
@@ -368,11 +456,11 @@
         .department-list {
             display: flex;
             flex-direction: column;
-            gap: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
+            gap: var(--spacing-md);
         }
         
         .department-item {
-            padding: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
+            padding: var(--spacing-md);
             border-radius: var(--border-radius-medium);
             background-color: var(--background-light);
             box-shadow: var(--shadow-small);
@@ -394,14 +482,14 @@
         }
         
         .department-icon {
-            width: 56px; /* Reduced from 64px for mobile */
-            height: 56px; /* Reduced from 64px for mobile */
+            width: 56px;
+            height: 56px;
             background-color: var(--secondary-light);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
+            margin-right: var(--spacing-sm);
             color: var(--secondary-color);
             flex-shrink: 0;
             transition: var(--transition-fast);
@@ -413,7 +501,7 @@
         }
         
         .department-icon i {
-            font-size: 28px; /* Reduced from 32px for mobile */
+            font-size: 28px;
         }
         
         .department-info {
@@ -422,18 +510,18 @@
         
         .department-name {
             font-weight: 600;
-            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
+            font-size: var(--font-size-base);
             margin-bottom: 4px;
         }
         
         .department-description {
             color: var(--text-secondary);
-            font-size: 14px; /* Added for mobile */
+            font-size: 14px;
         }
         
         /* Pre-Chat Form */
         .chat-form {
-            padding: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
+            padding: var(--spacing-lg);
             overflow-y: auto;
             height: 100%;
             display: none;
@@ -445,14 +533,14 @@
         }
         
         .form-title {
-            font-size: var(--font-size-large); /* Reduced from var(--font-size-xl) for mobile */
+            font-size: var(--font-size-large);
             color: var(--primary-color);
-            margin-bottom: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
+            margin-bottom: var(--spacing-md);
             text-align: center;
         }
         
         .form-group {
-            margin-bottom: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
+            margin-bottom: var(--spacing-md);
         }
         
         .form-label {
@@ -465,12 +553,12 @@
         
         .form-control {
             width: 100%;
-            padding: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
+            padding: var(--spacing-sm);
             border-radius: var(--border-radius-small);
             border: 1px solid rgba(0, 0, 0, 0.1);
             background-color: var(--background-light);
             transition: var(--transition-fast);
-            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
+            font-size: var(--font-size-base);
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         
@@ -484,7 +572,7 @@
             display: flex;
             align-items: flex-start;
             margin-bottom: var(--spacing-md);
-            min-height: 36px; /* Ensure both checkboxes have same height */
+            min-height: 36px;
         }
         
         .form-check-input {
@@ -492,14 +580,14 @@
             margin-top: 4px;
             width: 20px;
             height: 20px;
-            flex-shrink: 0; /* Prevent checkbox from shrinking */
+            flex-shrink: 0;
         }
         
         .form-check-label {
-            font-size: 14px; /* Reduced from var(--font-size-base) for mobile */
+            font-size: 14px;
             color: var(--text-secondary);
             line-height: 1.5;
-            flex: 1; /* Allow label to take remaining space */
+            flex: 1;
         }
         
         .form-check-label a {
@@ -514,10 +602,10 @@
         
         .gdpr-info {
             margin-top: var(--spacing-md);
-            font-size: 13px; /* Reduced from 14px for mobile */
+            font-size: 13px;
             color: var(--text-secondary);
             background-color: rgba(0, 0, 0, 0.03);
-            padding: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
+            padding: var(--spacing-sm);
             border-radius: var(--border-radius-small);
             line-height: 1.5;
         }
@@ -533,7 +621,7 @@
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: var(--spacing-sm) var(--spacing-md); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
+            padding: var(--spacing-sm) var(--spacing-md);
             background-color: var(--background-light);
             display: flex;
             flex-direction: column;
@@ -541,8 +629,8 @@
         }
         
         .message {
-            margin-bottom: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
-            max-width: 85%; /* Increased from 75% for mobile */
+            margin-bottom: var(--spacing-sm);
+            max-width: 85%;
             animation: fadeIn 0.3s ease-out;
         }
         
@@ -560,10 +648,10 @@
         }
         
         .message-content {
-            padding: var(--spacing-sm) var(--spacing-md); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
+            padding: var(--spacing-sm) var(--spacing-md);
             border-radius: var(--border-radius-medium);
             position: relative;
-            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
+            font-size: var(--font-size-base);
             box-shadow: var(--shadow-small);
             line-height: 1.6;
             transition: transform 0.2s ease;
@@ -588,8 +676,8 @@
         .message-meta {
             display: flex;
             justify-content: space-between;
-            font-size: 11px; /* Reduced from 12px for mobile */
-            margin-top: 2px; /* Reduced from 4px for mobile */
+            font-size: 11px;
+            margin-top: 2px;
             padding: 0 var(--spacing-xs);
         }
         
@@ -604,7 +692,7 @@
         }
         
         .message-status i {
-            font-size: 12px; /* Reduced from 14px for mobile */
+            font-size: 12px;
             margin-left: 4px;
         }
         
@@ -612,16 +700,16 @@
             align-self: center;
             max-width: 90%;
             background-color: rgba(0,0,0,0.05);
-            padding: var(--spacing-xs) var(--spacing-sm); /* Reduced from var(--spacing-sm) var(--spacing-md) for mobile */
+            padding: var(--spacing-xs) var(--spacing-sm);
             border-radius: var(--border-radius-small);
-            margin-bottom: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
+            margin-bottom: var(--spacing-sm);
             text-align: center;
-            font-size: 13px; /* Reduced from 14px for mobile */
+            font-size: 13px;
             color: var(--text-secondary);
         }
         
         .chat-input {
-            padding: var(--spacing-xs) var(--spacing-sm); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
+            padding: var(--spacing-xs) var(--spacing-sm);
             background-color: white;
             border-top: 1px solid rgba(0, 0, 0, 0.1);
             display: flex;
@@ -631,14 +719,14 @@
         
         .chat-input-field {
             flex: 1;
-            padding: var(--spacing-sm); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
+            padding: var(--spacing-sm);
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 28px;
             background-color: var(--background-light);
             transition: var(--transition-fast);
-            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
+            font-size: var(--font-size-base);
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-            min-height: 46px; /* Reduced from 54px for mobile */
+            min-height: 46px;
             resize: none;
         }
         
@@ -654,8 +742,8 @@
         }
         
         .chat-action {
-            width: 46px; /* Reduced from 54px for mobile */
-            height: 46px; /* Reduced from 54px for mobile */
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -675,7 +763,7 @@
         }
         
         .chat-action i {
-            font-size: 22px; /* Reduced from 24px for mobile */
+            font-size: 22px;
         }
         
         .chat-action:disabled {
@@ -696,7 +784,7 @@
         
         /* Chat End */
         .chat-end {
-            padding: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
+            padding: var(--spacing-lg);
             display: none;
             flex-direction: column;
             align-items: center;
@@ -706,9 +794,9 @@
         }
         
         .chat-end-icon {
-            font-size: 48px; /* Reduced from 56px for mobile */
+            font-size: 48px;
             color: var(--success-color);
-            margin-bottom: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
+            margin-bottom: var(--spacing-sm);
             animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
@@ -718,15 +806,15 @@
         }
         
         .chat-end-title {
-            font-size: var(--font-size-xl); /* Reduced from var(--font-size-xxl) for mobile */
+            font-size: var(--font-size-xl);
             color: var(--primary-color);
-            margin-bottom: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
+            margin-bottom: var(--spacing-sm);
         }
         
         .chat-end-text {
-            margin-bottom: var(--spacing-lg); /* Reduced from var(--spacing-xl) for mobile */
+            margin-bottom: var(--spacing-lg);
             color: var(--text-secondary);
-            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
+            font-size: var(--font-size-base);
             max-width: 600px;
         }
         
@@ -738,14 +826,14 @@
             justify-content: center;
             height: 100%;
             color: var(--text-secondary);
-            gap: var(--spacing-md); /* Reduced from var(--spacing-lg) for mobile */
+            gap: var(--spacing-md);
         }
         
         .loading-spinner {
             display: inline-block;
-            width: 50px; /* Reduced from 60px for mobile */
-            height: 50px; /* Reduced from 60px for mobile */
-            border: 3px solid rgba(0, 0, 0, 0.1); /* Reduced from 4px for mobile */
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
             border-radius: 50%;
             border-top-color: var(--secondary-color);
             animation: spin 1s ease-in-out infinite;
@@ -758,10 +846,10 @@
         
         /* Notices */
         .notice {
-            padding: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
-            margin-bottom: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
+            padding: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
             border-radius: var(--border-radius-small);
-            font-size: 14px; /* Reduced from var(--font-size-base) for mobile */
+            font-size: 14px;
             display: none;
             box-shadow: var(--shadow-small);
             animation: slideDown 0.3s ease-out;
@@ -794,17 +882,17 @@
         .typing-indicator {
             display: flex;
             align-items: center;
-            margin: 8px 0; /* Reduced from 10px for mobile */
+            margin: 8px 0;
             align-self: flex-start;
             background: white;
-            padding: 10px 14px; /* Reduced from 12px 16px for mobile */
+            padding: 10px 14px;
             border-radius: var(--border-radius-medium);
             box-shadow: var(--shadow-small);
         }
         
         .typing-dot {
-            height: 8px; /* Reduced from 10px for mobile */
-            width: 8px; /* Reduced from 10px for mobile */
+            height: 8px;
+            width: 8px;
             margin: 0 2px;
             background-color: var(--secondary-color);
             border-radius: 50%;
@@ -825,17 +913,17 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: var(--spacing-sm) var(--spacing-md); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
+            padding: var(--spacing-sm) var(--spacing-md);
             border-radius: var(--border-radius-medium);
             font-weight: 600;
             text-decoration: none;
             transition: var(--transition-fast);
-            font-size: var(--font-size-base); /* Reduced from var(--font-size-large) for mobile */
+            font-size: var(--font-size-base);
             border: none;
             cursor: pointer;
-            min-height: 48px; /* Reduced from 56px for mobile */
+            min-height: 48px;
             width: 100%;
-            max-width: 280px; /* Reduced from 400px for mobile */
+            max-width: 280px;
             letter-spacing: 0.5px;
             position: relative;
             overflow: hidden;
@@ -910,12 +998,12 @@
         
         .btn i {
             margin-right: var(--spacing-sm);
-            font-size: 22px; /* Reduced from 24px for mobile */
+            font-size: 22px;
         }
         
         /* Welcome Screen Button */
         .welcome-btn {
-            max-width: 250px; /* Reduced from 280px for mobile */
+            max-width: 250px;
             margin-top: var(--spacing-md);
         }
         
@@ -963,7 +1051,7 @@
             right: 0;
             background-image: var(--primary-gradient);
             color: white;
-            padding: var(--spacing-sm) var(--spacing-md); /* Reduced from var(--spacing-md) var(--spacing-lg) for mobile */
+            padding: var(--spacing-sm) var(--spacing-md);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -979,13 +1067,13 @@
         
         .pwa-message {
             flex: 1;
-            margin-right: var(--spacing-sm); /* Reduced from var(--spacing-md) for mobile */
+            margin-right: var(--spacing-sm);
         }
         
         .pwa-title {
             font-weight: 600;
-            margin-bottom: 2px; /* Reduced from 4px for mobile */
-            font-size: 14px; /* Added for mobile */
+            margin-bottom: 2px;
+            font-size: 14px;
         }
         
         .pwa-buttons {
@@ -994,13 +1082,13 @@
         }
         
         .pwa-btn {
-            padding: var(--spacing-xs) var(--spacing-sm); /* Reduced from var(--spacing-sm) var(--spacing-md) for mobile */
+            padding: var(--spacing-xs) var(--spacing-sm);
             border-radius: var(--border-radius-small);
             font-weight: 600;
             border: none;
             cursor: pointer;
             transition: var(--transition-fast);
-            font-size: 14px; /* Added for mobile */
+            font-size: 14px;
         }
         
         .pwa-btn-install {
@@ -1034,7 +1122,6 @@
             }
             
             .app-container {
-                /* For desktop, use a constrained width in the center */
                 width: 90%;
                 max-width: 1200px;
                 height: calc(100vh - 40px);
@@ -1046,36 +1133,36 @@
             }
             
             .app-header {
-                height: 80px; /* Restore desktop height */
+                height: 80px;
                 padding: var(--spacing-md) var(--spacing-lg);
             }
             
             .header-logo {
-                width: 48px; /* Restore desktop size */
+                width: 48px;
                 height: 48px;
-                margin-right: var(--spacing-md); /* Restore desktop spacing */
+                margin-right: var(--spacing-md);
             }
             
             .header-logo img {
-                width: 36px; /* Restore desktop size */
+                width: 36px;
                 height: 36px;
             }
             
             .header-title {
-                font-size: var(--font-size-xl); /* Restore desktop font size */
+                font-size: var(--font-size-xl);
             }
             
             .header-status {
-                font-size: calc(var(--font-size-base) - 1px); /* Restore desktop font size */
+                font-size: calc(var(--font-size-base) - 1px);
             }
             
             .header-button-with-text {
-                min-width: 42px; /* Restore desktop size */
+                min-width: 42px;
                 height: 42px;
             }
             
             .header-button-with-text span {
-                display: inline-block; /* Show text on desktop */
+                display: inline-block;
                 margin-left: 6px;
                 font-size: 14px;
                 font-weight: 500;
@@ -1319,7 +1406,6 @@
                 font-size: inherit;
             }
             
-            /* Desktop hover effects */
             .department-item:hover .department-name {
                 color: var(--secondary-color);
             }
@@ -1379,7 +1465,6 @@
                 </div>
             </div>
             <div class="header-actions">
-                <!-- Added Home Button with Text -->
                 <a href="/" aria-label="Pagina principală">
                     <button id="btnHome" aria-label="Pagina principală" class="header-button-with-text">
                         <i class="material-icons">home</i>
@@ -1411,6 +1496,41 @@
                 <button id="btnStartWelcome" class="btn btn-primary welcome-btn">
                     <i class="material-icons">message</i> Începe Chat
                 </button>
+            </div>
+            
+            <!-- Phone Verification Screen -->
+            <div id="phoneVerification" class="phone-verification" style="display:none;">
+                <h2 class="verification-title">Verificare Număr de Telefon</h2>
+                <p class="verification-description">Introduceți numărul dvs. de telefon pentru a continua. Veți primi un cod SMS pentru verificare.</p>
+                
+                <div class="phone-input-group">
+                    <span class="phone-prefix">+40</span>
+                    <input type="tel" id="phoneNumber" class="form-control" placeholder="7XX XXX XXX" maxlength="9" pattern="[0-9]*" inputmode="numeric">
+                </div>
+                
+                <button id="btnSendCode" class="btn btn-primary">
+                    <i class="material-icons">sms</i> Trimite Cod SMS
+                </button>
+                
+                <div id="verificationSection" class="verification-code-section" style="display:none;">
+                    <p class="verification-description">Introduceți codul de 6 cifre primit prin SMS:</p>
+                    <div class="code-input-group">
+                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                    </div>
+                    <button id="btnVerifyCode" class="btn btn-primary">
+                        <i class="material-icons">check</i> Verifică Cod
+                    </button>
+                    <div class="retry-message" id="retryMessage" style="display:none;">
+                        Puteți solicita un nou cod în <span class="retry-timer" id="retryTimer">60</span> secunde.
+                    </div>
+                </div>
+                
+                <div id="recaptcha-container"></div>
             </div>
             
             <!-- Emergency Check -->
@@ -1511,7 +1631,7 @@
                 
                 <div class="form-group">
                     <label class="form-label" for="chat-phone">Telefon:</label>
-                    <input type="tel" id="chat-phone" class="form-control" placeholder="Număr de telefon">
+                    <input type="tel" id="chat-phone" class="form-control" placeholder="Număr de telefon" readonly>
                 </div>
                 
                 <div class="form-group">
@@ -1551,7 +1671,6 @@
                 <div id="chatInput" class="chat-input">
                     <input type="text" class="chat-input-field" id="messageInput" placeholder="Scrieți mesajul aici..." aria-label="Scrieți mesajul">
                     <div class="chat-actions">
-                        <!-- Location sharing button removed -->
                         <button id="btnSendMessage" class="chat-action chat-action-send" aria-label="Trimite mesaj">
                             <i class="material-icons">send</i>
                         </button>
@@ -1602,12 +1721,22 @@
         // =============================================
         // Screens
         const welcomeScreen = document.getElementById('welcomeScreen');
+        const phoneVerification = document.getElementById('phoneVerification');
         const emergencyCheck = document.getElementById('emergencyCheck');
         const departmentSelect = document.getElementById('departmentSelect');
         const chatForm = document.getElementById('chatForm');
         const loadingState = document.getElementById('loadingState');
         const chatArea = document.getElementById('chatArea');
         const chatEnd = document.getElementById('chatEnd');
+        
+        // Phone verification elements
+        const phoneNumberInput = document.getElementById('phoneNumber');
+        const btnSendCode = document.getElementById('btnSendCode');
+        const verificationSection = document.getElementById('verificationSection');
+        const btnVerifyCode = document.getElementById('btnVerifyCode');
+        const retryMessage = document.getElementById('retryMessage');
+        const retryTimer = document.getElementById('retryTimer');
+        const codeInputs = document.querySelectorAll('.code-input');
         
         // Notices
         const errorNotice = document.getElementById('errorNotice');
@@ -1648,25 +1777,36 @@
         let currentUser = null;
         let currentChatId = null;
         let selectedDepartment = null;
-        let chatSessionKey = null; // For encryption
-        let agentPublicKey = null; // For encryption
+        let chatSessionKey = null;
+        let agentPublicKey = null;
         let chatEnded = false;
         let isTyping = false;
         let typingTimeout = null;
         let lastReadTimestamp = null;
         let unreadCount = 0;
         let offlineTimeout = null;
-        let messageQueue = []; // For offline message queuing
-        let agentJoinedFlag = false; // Flag to track if agent has already joined
-        let deferredPrompt = null; // For PWA installation
-        let deviceFingerprint = null; // Device fingerprint for rate limiting
+        let messageQueue = [];
+        let agentJoinedFlag = false;
+        let deferredPrompt = null;
+        let deviceFingerprint = null;
+        let verificationId = null;
+        let retryCountdown = null;
+        let retryTimeLeft = 60;
         
         // Rate limiting
         const rateLimitConfig = {
             maxMessages: 20,
-            timeWindow: 60000, // 1 minute
+            timeWindow: 60000,
             sentMessages: [],
             isLimited: false
+        };
+        
+        // Phone verification rate limiting
+        const phoneRateLimitConfig = {
+            maxAttempts: 3,
+            timeWindow: 3600000, // 1 hour
+            cooldownPeriods: [60, 300, 900, 3600, 86400], // 1min, 5min, 15min, 1hr, 24hr
+            attempts: []
         };
         
         // =============================================
@@ -1785,7 +1925,6 @@
                                 .update({
                                     lastSeen: timestamp,
                                     userAgent: navigator.userAgent,
-                                    // If user is authenticated, associate fingerprint with user
                                     ...(currentUser ? { userId: currentUser.uid } : {})
                                 });
                         } else {
@@ -1795,7 +1934,6 @@
                                 .set({
                                     ...deviceData,
                                     createdAt: timestamp,
-                                    // If user is authenticated, associate fingerprint with user
                                     ...(currentUser ? { userId: currentUser.uid } : {})
                                 });
                         }
@@ -1817,8 +1955,6 @@
         
         // Generate a new encryption key for the chat session
         function generateEncryptionKey() {
-            // In a real implementation, this would use the Web Crypto API
-            // For demo purposes, we're using CryptoJS to generate a random key
             const randomBytes = CryptoJS.lib.WordArray.random(32);
             return randomBytes.toString();
         }
@@ -1826,24 +1962,424 @@
         // Encrypt a message
         function encryptMessage(message, key) {
             try {
-                if (!key) return message; // Fallback
+                if (!key) return message;
                 return CryptoJS.AES.encrypt(message, key).toString();
             } catch (error) {
                 console.error('Encryption error:', error);
-                return message; // Fallback
+                return message;
             }
         }
         
         // Decrypt a message
         function decryptMessage(encryptedMessage, key) {
             try {
-                if (!key) return encryptedMessage; // Fallback
+                if (!key) return encryptedMessage;
                 const bytes = CryptoJS.AES.decrypt(encryptedMessage, key);
                 return bytes.toString(CryptoJS.enc.Utf8);
             } catch (error) {
                 console.error('Decryption error:', error);
-                return encryptedMessage; // Fallback
+                return encryptedMessage;
             }
+        }
+        
+        // =============================================
+        // Phone Authentication Rate Limiting
+        // =============================================
+        
+        // Check phone verification rate limits
+        async function checkPhoneRateLimits(deviceFingerprint, phoneNumber) {
+            const phoneHash = CryptoJS.SHA256(phoneNumber).toString();
+            const today = new Date().toISOString().split('T')[0];
+            
+            try {
+                // Check daily global limit
+                const dailyStatsRef = db.collection('dailyVerificationStats').doc(today);
+                const dailyStats = await dailyStatsRef.get();
+                
+                if (dailyStats.exists && dailyStats.data().totalAttempts >= 50) {
+                    throw new Error('Limita zilnică de verificări a fost atinsă. Vă rugăm să încercați mâine.');
+                }
+                
+                // Check device limits
+                const deviceRef = db.collection('phoneVerificationAttempts').doc(deviceFingerprint);
+                const deviceData = await deviceRef.get();
+                
+                if (deviceData.exists) {
+                    const data = deviceData.data();
+                    
+                    // Check if device is blocked
+                    if (data.isBlocked && data.blockUntil > firebase.firestore.Timestamp.now()) {
+                        const waitTime = calculateWaitTime(data.blockUntil);
+                        throw new Error(`Dispozitivul este blocat. Încercați din nou în ${waitTime}.`);
+                    }
+                    
+                    // Check attempt count within time window
+                    const recentAttempts = await db.collection('phoneVerificationAttempts')
+                        .doc(deviceFingerprint)
+                        .collection('attempts')
+                        .where('timestamp', '>', firebase.firestore.Timestamp.fromMillis(Date.now() - phoneRateLimitConfig.timeWindow))
+                        .get();
+                    
+                    if (recentAttempts.size >= phoneRateLimitConfig.maxAttempts) {
+                        const cooldownIndex = Math.min(recentAttempts.size - phoneRateLimitConfig.maxAttempts, phoneRateLimitConfig.cooldownPeriods.length - 1);
+                        const cooldownPeriod = phoneRateLimitConfig.cooldownPeriods[cooldownIndex];
+                        
+                        // Block the device
+                        await deviceRef.update({
+                            isBlocked: true,
+                            blockUntil: firebase.firestore.Timestamp.fromMillis(Date.now() + cooldownPeriod * 1000),
+                            attempts: firebase.firestore.FieldValue.increment(1)
+                        });
+                        
+                        throw new Error(`Prea multe încercări. Vă rugăm să așteptați ${formatDuration(cooldownPeriod)}.`);
+                    }
+                }
+                
+                // Check if phone number already used
+                const phoneRef = db.collection('phoneNumbersUsed').doc(phoneHash);
+                const phoneData = await phoneRef.get();
+                
+                if (phoneData.exists) {
+                    throw new Error('Acest număr de telefon este deja înregistrat.');
+                }
+                
+                // Log this attempt
+                await logVerificationAttempt(deviceFingerprint, phoneHash);
+                
+                return true;
+            } catch (error) {
+                console.error('Rate limit check error:', error);
+                throw error;
+            }
+        }
+        
+        // Log verification attempt
+        async function logVerificationAttempt(deviceFingerprint, phoneHash) {
+            const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            const today = new Date().toISOString().split('T')[0];
+            
+            try {
+                // Log to device attempts
+                await db.collection('phoneVerificationAttempts')
+                    .doc(deviceFingerprint)
+                    .collection('attempts')
+                    .add({
+                        phoneHash: phoneHash,
+                        timestamp: timestamp
+                    });
+                
+                // Update device data
+                await db.collection('phoneVerificationAttempts')
+                    .doc(deviceFingerprint)
+                    .set({
+                        deviceFingerprint: deviceFingerprint,
+                        lastAttempt: timestamp,
+                        attempts: firebase.firestore.FieldValue.increment(1)
+                    }, { merge: true });
+                
+                // Update daily stats
+                await db.collection('dailyVerificationStats')
+                    .doc(today)
+                    .set({
+                        date: today,
+                        totalAttempts: firebase.firestore.FieldValue.increment(1),
+                        lastUpdated: timestamp
+                    }, { merge: true });
+            } catch (error) {
+                console.error('Error logging verification attempt:', error);
+            }
+        }
+        
+        // =============================================
+        // Phone Verification Functions
+        // =============================================
+        
+        // Validate Romanian phone number
+        function validateRomanianPhoneNumber(phoneNumber) {
+            // Romanian mobile numbers: 7XX XXX XXX
+            const romanianMobileRegex = /^7\d{8}$/;
+            return romanianMobileRegex.test(phoneNumber);
+        }
+        
+        // Format phone number for display
+        function formatPhoneNumber(phoneNumber) {
+            if (!phoneNumber) return '';
+            return phoneNumber.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
+        }
+        
+        // Format duration for display
+        function formatDuration(seconds) {
+            if (seconds < 60) return `${seconds} secunde`;
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} minute`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} ore`;
+            return `${Math.floor(seconds / 86400)} zile`;
+        }
+        
+        // Calculate wait time
+        function calculateWaitTime(blockUntilTimestamp) {
+            const now = firebase.firestore.Timestamp.now();
+            const blockUntil = blockUntilTimestamp.toMillis();
+            const difference = blockUntil - now.toMillis();
+            
+            if (difference <= 0) return 'acum';
+            
+            return formatDuration(Math.ceil(difference / 1000));
+        }
+        
+        // Handle phone number input
+        function handlePhoneInput(event) {
+            // Allow only digits
+            const value = event.target.value.replace(/\D/g, '');
+            event.target.value = value;
+        }
+        
+        // Handle code input
+        function handleCodeInput(event, index) {
+            const input = event.target;
+            const value = input.value.replace(/\D/g, '').substr(0, 1);
+            input.value = value;
+            
+            if (value) {
+                // Move to next input
+                if (index < codeInputs.length - 1) {
+                    codeInputs[index + 1].focus();
+                }
+            }
+            
+            // Check if all code inputs are filled
+            if (index === codeInputs.length - 1) {
+                const code = Array.from(codeInputs).map(input => input.value).join('');
+                if (code.length === 6) {
+                    // Enable verify button
+                    btnVerifyCode.disabled = false;
+                }
+            }
+        }
+        
+        // Handle code paste
+        function handleCodePaste(event) {
+            event.preventDefault();
+            const pastedData = (event.clipboardData || window.clipboardData).getData('text');
+            const cleanData = pastedData.replace(/\D/g, '').substr(0, 6);
+            
+            // Fill inputs with pasted data
+            for (let i = 0; i < cleanData.length && i < codeInputs.length; i++) {
+                codeInputs[i].value = cleanData[i];
+            }
+            
+            // Focus last filled input or first empty one
+            const lastFilledIndex = cleanData.length - 1;
+            if (lastFilledIndex >= 0 && lastFilledIndex < codeInputs.length) {
+                codeInputs[Math.min(lastFilledIndex, codeInputs.length - 1)].focus();
+            }
+            
+            // Check if all inputs are filled
+            if (cleanData.length === 6) {
+                btnVerifyCode.disabled = false;
+            }
+        }
+        
+        // Setup code inputs
+        function setupCodeInputs() {
+            codeInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => handleCodeInput(e, index));
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !input.value && index > 0) {
+                        codeInputs[index - 1].focus();
+                    }
+                });
+                input.addEventListener('paste', handleCodePaste);
+            });
+        }
+        
+        // Start retry countdown
+        function startRetryCountdown() {
+            retryTimeLeft = 60;
+            retryMessage.style.display = 'block';
+            retryTimer.textContent = retryTimeLeft;
+            
+            if (retryCountdown) {
+                clearInterval(retryCountdown);
+            }
+            
+            retryCountdown = setInterval(() => {
+                retryTimeLeft--;
+                retryTimer.textContent = retryTimeLeft;
+                
+                if (retryTimeLeft <= 0) {
+                    clearInterval(retryCountdown);
+                    retryMessage.style.display = 'none';
+                    btnSendCode.disabled = false;
+                    btnSendCode.textContent = 'Retrimite Cod SMS';
+                }
+            }, 1000);
+        }
+        
+        // Send verification code
+        async function sendVerificationCode() {
+            const phoneNumber = phoneNumberInput.value.trim();
+            
+            // Validate phone number
+            if (!validateRomanianPhoneNumber(phoneNumber)) {
+                showNotice(errorNotice, 'Vă rugăm să introduceți un număr de telefon valid (format: 7XX XXX XXX)');
+                return;
+            }
+            
+            const fullPhoneNumber = '+40' + phoneNumber;
+            
+            try {
+                // Disable button and show loading
+                btnSendCode.disabled = true;
+                btnSendCode.innerHTML = '<i class="material-icons">hourglass_empty</i> Se trimite...';
+                
+                // Check rate limits
+                await checkPhoneRateLimits(deviceFingerprint, fullPhoneNumber);
+                
+                // Set up reCAPTCHA
+                if (!window.recaptchaVerifier) {
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                        size: 'invisible',
+                        callback: (response) => {
+                            console.log('reCAPTCHA solved');
+                        },
+                        'expired-callback': () => {
+                            console.log('reCAPTCHA expired');
+                        }
+                    });
+                }
+                
+                // Send verification code
+                const confirmationResult = await auth.signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier);
+                window.confirmationResult = confirmationResult;
+                
+                // Show verification code input
+                verificationSection.style.display = 'block';
+                codeInputs[0].focus();
+                
+                // Start retry countdown
+                startRetryCountdown();
+                
+                // Update button state
+                btnSendCode.innerHTML = '<i class="material-icons">refresh</i> Retrimite Cod SMS';
+                btnSendCode.disabled = true;
+                
+                showNotice(successNotice, 'Cod trimis! Verificați SMS-ul.');
+                
+            } catch (error) {
+                console.error('Error sending verification code:', error);
+                handleAuthError(error);
+                
+                // Reset button
+                btnSendCode.disabled = false;
+                btnSendCode.innerHTML = '<i class="material-icons">sms</i> Trimite Cod SMS';
+                
+                // Reset reCAPTCHA
+                if (window.recaptchaVerifier) {
+                    window.recaptchaVerifier.clear();
+                    window.recaptchaVerifier = null;
+                }
+            }
+        }
+        
+        // Verify code
+        async function verifyCode() {
+            const code = Array.from(codeInputs).map(input => input.value).join('');
+            
+            if (code.length !== 6) {
+                showNotice(errorNotice, 'Vă rugăm să introduceți codul complet de 6 cifre');
+                return;
+            }
+            
+            try {
+                // Disable button and show loading
+                btnVerifyCode.disabled = true;
+                btnVerifyCode.innerHTML = '<i class="material-icons">hourglass_empty</i> Se verifică...';
+                
+                // Verify the code
+                const result = await window.confirmationResult.confirm(code);
+                currentUser = result.user;
+                
+                // Check if phone number already used
+                const phoneHash = CryptoJS.SHA256(currentUser.phoneNumber).toString();
+                const phoneRef = db.collection('phoneNumbersUsed').doc(phoneHash);
+                const phoneData = await phoneRef.get();
+                
+                if (phoneData.exists && phoneData.data().userId !== currentUser.uid) {
+                    // Phone number already used by another account
+                    await auth.signOut();
+                    throw new Error('Acest număr de telefon este deja înregistrat.');
+                }
+                
+                // Register phone number
+                if (!phoneData.exists) {
+                    await phoneRef.set({
+                        phoneHash: phoneHash,
+                        userId: currentUser.uid,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        deviceFingerprint: deviceFingerprint
+                    });
+                }
+                
+                // Update verification success stats
+                const today = new Date().toISOString().split('T')[0];
+                await db.collection('dailyVerificationStats').doc(today).update({
+                    successfulVerifications: firebase.firestore.FieldValue.increment(1)
+                });
+                
+                // Register device fingerprint with user ID
+                await registerDeviceFingerprint(deviceFingerprint);
+                
+                // Clear retry countdown
+                if (retryCountdown) {
+                    clearInterval(retryCountdown);
+                }
+                
+                // Continue to emergency check
+                phoneVerification.style.display = 'none';
+                emergencyCheck.style.display = 'flex';
+                
+                showNotice(successNotice, 'Verificare reușită!');
+                
+            } catch (error) {
+                console.error('Error verifying code:', error);
+                handleAuthError(error);
+                
+                // Reset button
+                btnVerifyCode.disabled = false;
+                btnVerifyCode.innerHTML = '<i class="material-icons">check</i> Verifică Cod';
+            }
+        }
+        
+        // Handle authentication errors
+        function handleAuthError(error) {
+            let message = 'A apărut o eroare. Vă rugăm să încercați din nou.';
+            
+            switch (error.code) {
+                case 'auth/invalid-phone-number':
+                    message = 'Număr de telefon invalid. Vă rugăm să verificați formatul.';
+                    break;
+                case 'auth/too-many-requests':
+                    message = 'Prea multe încercări. Vă rugăm să așteptați și să încercați din nou.';
+                    break;
+                case 'auth/quota-exceeded':
+                    message = 'Serviciul este temporar indisponibil. Vă rugăm să încercați mai târziu.';
+                    break;
+                case 'auth/invalid-verification-code':
+                    message = 'Cod de verificare invalid. Vă rugăm să verificați și să încercați din nou.';
+                    break;
+                case 'auth/code-expired':
+                    message = 'Codul de verificare a expirat. Vă rugăm să solicitați un nou cod.';
+                    break;
+                case 'auth/missing-verification-code':
+                    message = 'Vă rugăm să introduceți codul de verificare.';
+                    break;
+                default:
+                    if (error.message) {
+                        message = error.message;
+                    }
+            }
+            
+            showNotice(errorNotice, message);
         }
         
         // =============================================
@@ -1857,7 +2393,6 @@
             if (status === 'Offline') {
                 connectionStatus.style.color = 'var(--danger-color)';
                 
-                // Queue up messages when offline
                 if (!chatEnded && chatArea.style.display !== 'none') {
                     showNotice(errorNotice, 'Conexiune pierdută. Mesajele vor fi trimise când conexiunea va fi restabilită.');
                 }
@@ -1867,7 +2402,6 @@
                 connectionStatus.style.color = '';
                 errorNotice.style.display = 'none';
                 
-                // Send queued messages if there are any
                 if (messageQueue.length > 0) {
                     processMessageQueue();
                 }
@@ -1876,7 +2410,6 @@
         
         // Monitor connection status
         function setupConnectionMonitoring() {
-            // Set up Firebase connection state monitoring
             try {
                 const connectedRef = firebase.database().ref('.info/connected');
                 connectedRef.on('value', (snap) => {
@@ -1888,7 +2421,6 @@
                             offlineTimeout = null;
                         }
                     } else {
-                        // Set a timeout to show offline only after a delay
                         if (!offlineTimeout) {
                             offlineTimeout = setTimeout(() => {
                                 updateConnectionStatus('Offline');
@@ -1904,7 +2436,6 @@
                 updateConnectionStatus(navigator.onLine ? 'Online' : 'Offline');
             }
             
-            // Also monitor window online/offline events as a backup
             window.addEventListener('online', () => {
                 updateConnectionStatus('Online');
             });
@@ -1934,12 +2465,10 @@
         function checkRateLimit() {
             const now = Date.now();
             
-            // Remove messages outside the time window
             rateLimitConfig.sentMessages = rateLimitConfig.sentMessages.filter(
                 timestamp => now - timestamp < rateLimitConfig.timeWindow
             );
             
-            // Check if we've hit the limit
             if (rateLimitConfig.sentMessages.length >= rateLimitConfig.maxMessages) {
                 if (!rateLimitConfig.isLimited) {
                     rateLimitConfig.isLimited = true;
@@ -1949,7 +2478,6 @@
                         rateLimitConfig.timeWindow
                     );
                     
-                    // Reset rate limit after the time window
                     setTimeout(() => {
                         rateLimitConfig.isLimited = false;
                         errorNotice.style.display = 'none';
@@ -1990,550 +2518,24 @@
                 
                 const message = messageQueue.shift();
                 
-                // Send the message
                 sendMessageToFirestore(message)
-                    .then(() => {
-                        // Update local storage
-                        localStorage.setItem('messageQueue_' + currentChatId, JSON.stringify(messageQueue));
-                        // Process next message
+                .then(() => {
+                    localStorage.setItem('messageQueue_' + currentChatId, JSON.stringify(messageQueue));
+                    processNext();
+                })
+
+                .setItem('messageQueue_' + currentChatId, JSON.stringify(messageQueue));
                         processNext();
                     })
                     .catch(error => {
                         console.error('Error processing queued message:', error);
-                        // Put the message back in the queue
                         messageQueue.unshift(message);
                         localStorage.setItem('messageQueue_' + currentChatId, JSON.stringify(messageQueue));
-                        // Stop processing for now
                         showNotice(errorNotice, 'Nu s-au putut trimite toate mesajele. Se va încerca din nou mai târziu.');
                     });
             };
             
             processNext();
-        }
-        
-        // Load queued messages from localStorage
-        function loadMessageQueue() {
-            const queueStr = localStorage.getItem('messageQueue_' + currentChatId);
-            if (queueStr) {
-                try {
-                    messageQueue = JSON.parse(queueStr);
-                } catch (e) {
-                    console.error('Error loading message queue:', e);
-                    messageQueue = [];
-                }
-            } else {
-                messageQueue = [];
-            }
-        }
-        
-        // =============================================
-        // Initialization and Main Flow
-        // =============================================
-        
-        // Initialize chat
-        function initializeChat() {
-            console.log('Initializing chat application...');
-            
-            // Override Firebase Auth persistence to LOCAL
-            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-                .then(() => {
-                    console.log('Firebase Auth persistence set to LOCAL');
-                })
-                .catch((error) => {
-                    console.error('Error setting persistence:', error);
-                });
-            
-            // Set up connection monitoring
-            setupConnectionMonitoring();
-            
-            // Generate a unique session key for this page load
-            chatSessionKey = generateEncryptionKey();
-            
-            // Generate device fingerprint
-            generateDeviceFingerprint()
-                .then(fingerprint => {
-                    deviceFingerprint = fingerprint;
-                    console.log('Device fingerprint generated');
-                    
-                    // Check if user is already logged in
-                    return auth.onAuthStateChanged(user => {
-                        if (user) {
-                            currentUser = user;
-                            console.log('User already logged in:', user.uid);
-                            
-                            // Update device fingerprint with user ID
-                            registerDeviceFingerprint(deviceFingerprint)
-                                .then(fingerprintHash => {
-                                    console.log('Device fingerprint registered with user ID');
-                                })
-                                .catch(error => {
-                                    console.error('Error registering device fingerprint with user ID:', error);
-                                });
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error in device fingerprinting:', error);
-                    // Generate a fallback fingerprint
-                    deviceFingerprint = CryptoJS.SHA256(
-                        navigator.userAgent + screen.width + screen.height + Date.now()
-                    ).toString();
-                });
-            
-            // Set up event listeners
-            setupEventListeners();
-            
-            // Set up PWA
-            setupPwa();
-        }
-
-        // Set up all event listeners
-        function setupEventListeners() {
-            // Welcome screen
-            btnStartWelcome.addEventListener('click', function() {
-                welcomeScreen.style.display = 'none';
-                emergencyCheck.style.display = 'flex';
-            });
-            
-            // Emergency check
-            btnEmergency.addEventListener('click', handleEmergency);
-            btnNonemergency.addEventListener('click', showDepartmentSelection);
-            
-            // Department selection
-            departmentItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    selectDepartment(item.dataset.id);
-                });
-            });
-            
-            // Chat form
-            btnStartChat.addEventListener('click', handleStartChat);
-            
-            // Chat functionality
-            btnSendMessage.addEventListener('click', sendMessage);
-            messageInput.addEventListener('keypress', handleEnterPress);
-            
-            // Chat management
-            btnCloseChat.addEventListener('click', confirmEndChat);
-            btnRequestTranscript.addEventListener('click', requestTranscript);
-            btnStartNewChat.addEventListener('click', resetChat);
-            
-            // Input typing detection
-            messageInput.addEventListener('input', handleTypingStart);
-            
-            // PWA installation
-            btnDismissPwa.addEventListener('click', () => {
-                pwaBanner.classList.remove('show');
-                localStorage.setItem('pwa_dismissed', Date.now());
-            });
-            
-            btnInstallPwa.addEventListener('click', () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('User accepted the install prompt');
-                        } else {
-                            console.log('User dismissed the install prompt');
-                        }
-                        deferredPrompt = null;
-                        pwaBanner.classList.remove('show');
-                    });
-                }
-            });
-        }
-        
-        // =============================================
-        // PWA Setup
-        // =============================================
-        
-        function setupPwa() {
-            // PWA installation
-            window.addEventListener('beforeinstallprompt', (e) => {
-                // Prevent Chrome 67+ from automatically showing the prompt
-                e.preventDefault();
-                // Stash the event so it can be triggered later
-                deferredPrompt = e;
-                
-                // Show the banner if not dismissed recently
-                const lastDismissed = localStorage.getItem('pwa_dismissed');
-                if (!lastDismissed || Date.now() - lastDismissed > 7 * 24 * 60 * 60 * 1000) { // 7 days
-                    setTimeout(() => {
-                        pwaBanner.classList.add('show');
-                    }, 5000);
-                }
-            });
-            
-            // When the PWA is installed
-            window.addEventListener('appinstalled', (evt) => {
-                pwaBanner.classList.remove('show');
-                console.log('App was installed');
-            });
-        }
-        
-        // =============================================
-        // Chat Flow Functions
-        // =============================================
-        
-        // Handle emergency button click
-        function handleEmergency() {
-            // Log the emergency (useful for statistics and monitoring)
-            logEmergencyRequest();
-            
-            // For emergency, redirect to call page or show emergency info
-            alert('Pentru situații de urgență, vă rugăm să sunați la 112. Vă redirecționăm către pagina de informații despre urgențe.');
-            // In a real implementation, redirect to emergency page
-            // window.location.href = '/urgenta';
-        }
-        
-        // Log emergency request
-        function logEmergencyRequest() {
-            try {
-                db.collection('emergency_logs').add({
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    userAgent: navigator.userAgent,
-                    deviceFingerprint: deviceFingerprint,
-                    ipAddress: '', // This would be populated by a Cloud Function
-                    location: '' // This would be populated by a Cloud Function if available
-                });
-            } catch (error) {
-                console.error('Error logging emergency request:', error);
-            }
-        }
-        
-        // Show department selection
-        function showDepartmentSelection() {
-            emergencyCheck.style.display = 'none';
-            departmentSelect.style.display = 'flex';
-        }
-        
-        // Select department
-        function selectDepartment(departmentId) {
-            selectedDepartment = departmentId;
-            departmentSelect.style.display = 'none';
-            chatForm.style.display = 'flex';
-            
-            // Pre-fill subject based on department
-            const subjectMap = {
-                'traffic': 'Problemă de circulație rutieră',
-                'public-order': 'Problemă de ordine publică',
-                'environment': 'Problemă de mediu',
-                'commerce': 'Problemă comercială',
-                'general': 'Informații generale'
-            };
-            
-            document.getElementById('chat-subject').value = subjectMap[departmentId] || '';
-        }
-        
-        // Handle start chat button click
-        function handleStartChat() {
-            // Validate form
-            const nameInput = document.getElementById('chat-name');
-            const subjectInput = document.getElementById('chat-subject');
-            const privacyCheck = document.getElementById('privacy-check');
-            const recordingCheck = document.getElementById('recording-check');
-            
-            // Reset error notice
-            formErrorNotice.style.display = 'none';
-            
-            // Check required fields
-            if (!nameInput.value.trim() || !subjectInput.value.trim() || !privacyCheck.checked || !recordingCheck.checked) {
-                formErrorNotice.style.display = 'block';
-                return;
-            }
-            
-            // Show loading state
-            chatForm.style.display = 'none';
-            loadingState.style.display = 'flex';
-            loadingText.textContent = 'Se inițializează conexiunea securizată...';
-            
-            // Ensure device fingerprint is generated
-            if (!deviceFingerprint) {
-                generateDeviceFingerprint()
-                    .then((fingerprint) => {
-                        deviceFingerprint = fingerprint;
-                        authenticateAnonymously();
-                    })
-                    .catch((error) => {
-                        console.error('Error generating device fingerprint:', error);
-                        // Use a fallback fingerprint
-                        deviceFingerprint = CryptoJS.SHA256(
-                            navigator.userAgent + screen.width + screen.height + Date.now()
-                        ).toString();
-                        authenticateAnonymously();
-                    });
-            } else {
-                // Start authentication process
-                authenticateAnonymously();
-            }
-        }
-        
-        // Authenticate anonymously
-        function authenticateAnonymously() {
-            auth.signInAnonymously()
-                .then(userCredential => {
-                    currentUser = userCredential.user;
-                    loadingText.textContent = 'Se înregistrează dispozitivul...';
-                    
-                    // Register device fingerprint with user ID
-                    return registerDeviceFingerprint(deviceFingerprint);
-                })
-                .then(fingerprintHash => {
-                    loadingText.textContent = 'Se creează sesiunea de chat...';
-                    
-                    // Get user info from form
-                    const chatSubject = document.getElementById('chat-subject').value;
-                    const chatName = document.getElementById('chat-name').value;
-                    const chatEmail = document.getElementById('chat-email').value;
-                    const chatPhone = document.getElementById('chat-phone').value;
-                    
-                    // Create chat session
-                    return createChatSession(chatSubject, chatName, chatEmail, chatPhone, deviceFingerprint);
-                })
-                .then(() => {
-                    loadingText.textContent = 'Se conectează la departamentul relevant...';
-                    return setupChatListeners();
-                })
-                .then(() => {
-                    // Show chat interface
-                    loadingState.style.display = 'none';
-                    chatArea.style.display = 'flex';
-                    
-                    // Add welcome message
-                    addSystemMessage('Conectat la Poliția Locală Slobozia. Un agent va răspunde în curând.');
-                    
-                    // Set up read receipts
-                    setupReadReceipts();
-                    
-                    // Focus on input
-                    messageInput.focus();
-                })
-                .catch(error => {
-                    console.error('Error starting chat:', error);
-                    loadingState.style.display = 'none';
-                    chatForm.style.display = 'flex';
-                    showNotice(errorNotice, 'Eroare la inițierea conversației. Vă rugăm să încercați din nou.');
-                });
-        }
-        
-        // Create a new chat session
-        function createChatSession(subject, name, email, phone, deviceFingerprint) {
-            return new Promise((resolve, reject) => {
-                if (!deviceFingerprint) {
-                    reject(new Error('Device fingerprint not available'));
-                    return;
-                }
-                
-                const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-                
-                // Create chat document
-                db.collection('chats').add({
-                    userId: currentUser.uid,
-                    userName: name,
-                    userEmail: email || '',
-                    userPhone: phone || '',
-                    subject: subject,
-                    department: selectedDepartment,
-                    status: 'waiting',
-                    priority: 'normal',
-                    createdAt: timestamp,
-                    updatedAt: timestamp,
-                    agentId: null,
-                    agentName: null,
-                    deviceFingerprint: deviceFingerprint, // Include device fingerprint
-                    conversationData: {
-                        clientPlatform: navigator.platform,
-                        clientBrowser: navigator.userAgent,
-                        clientLanguage: navigator.language,
-                        chatSource: 'web'
-                    }
-                }).then(docRef => {
-                    currentChatId = docRef.id;
-                    
-                    // Store the encryption key in a separate collection for security
-                    return db.collection('chatKeys').doc(currentChatId).set({
-                        key: chatSessionKey,
-                        createdAt: timestamp
-                    });
-                }).then(() => {
-                    resolve();
-                }).catch(error => {
-                    reject(error);
-                });
-            });
-        }
-        
-        // Set up chat listeners
-        function setupChatListeners() {
-            return new Promise((resolve, reject) => {
-                try {
-                    // Listen for chat status changes (e.g., agent joined, priority changed)
-                    const chatDocListener = db.collection('chats').doc(currentChatId)
-                        .onSnapshot(doc => {
-                            if (!doc.exists) {
-                                console.error('Chat document does not exist');
-                                return;
-                            }
-                            
-                            const chatData = doc.data();
-                            
-                            // Check if an agent was assigned
-                            if (chatData.agentId && chatData.status === 'active' && !agentJoinedFlag) {
-                                // An agent has joined - mark the flag so we don't trigger this again
-                                agentJoinedFlag = true;
-                                
-                                // Store agent public key for encryption if available
-                                agentPublicKey = chatData.agentPublicKey || null;
-                            }
-                            
-                            // Check if chat was ended by the agent
-                            if (chatData.status === 'closed' && !chatEnded) {
-                                handleChatEnded();
-                            }
-                        }, error => {
-                            console.error('Error in chat document listener:', error);
-                        });
-                    
-                    // Listen for messages
-                    const messagesListener = db.collection('chats').doc(currentChatId).collection('messages')
-                        .orderBy('timestamp', 'asc')
-                        .onSnapshot(snapshot => {
-                            snapshot.docChanges().forEach(change => {
-                                if (change.type === 'added') {
-                                    const message = change.doc.data();
-                                    // Add the message ID to the message object
-                                    message.id = change.doc.id;
-                                    
-                                    // If the message has encrypted content, decrypt it
-                                    if (message.encrypted && message.content) {
-                                        message.content = decryptMessage(message.content, chatSessionKey);
-                                    }
-                                    
-                                    // Check for duplicate message before displaying
-                                    if (!document.querySelector(`[data-message-id="${message.id}"]`) && 
-                                        !(message.type === 'system' && message.clientGeneratedId && 
-                                          document.querySelector(`[data-message-id="${message.clientGeneratedId}"]`))) {
-                                        
-                                        displayMessage(message);
-                                        
-                                        // Update read status for agent messages
-                                        if (message.type === 'agent') {
-                                            updateMessageReadStatus(change.doc.id);
-                                        }
-                                    }
-                                }
-                            });
-                            
-                            // Scroll to bottom
-                            scrollToBottom();
-                        }, error => {
-                            console.error('Error in messages listener:', error);
-                        });
-                    
-                    // Listen for typing indicators
-                    const typingListener = db.collection('chats').doc(currentChatId).collection('typing')
-                        .doc('agent')
-                        .onSnapshot(doc => {
-                            if (doc.exists && doc.data().isTyping) {
-                                showTypingIndicator();
-                            } else {
-                                hideTypingIndicator();
-                            }
-                        }, error => {
-                            console.error('Error in typing indicator listener:', error);
-                        });
-                    
-                    // Load queued messages if any
-                    loadMessageQueue();
-                    
-                    // Store listeners for cleanup
-                    window.chatListeners = {
-                        chatDoc: chatDocListener,
-                        messages: messagesListener,
-                        typing: typingListener
-                    };
-                    
-                    resolve();
-                } catch (error) {
-                    console.error('Error setting up chat listeners:', error);
-                    reject(error);
-                }
-            });
-        }
-        
-        // =============================================
-        // Message Handling
-        // =============================================
-        
-        // Send a message
-        function sendMessage() {
-            const text = messageInput.value.trim();
-            if (!text || chatEnded) return;
-            
-            // Check rate limit
-            if (!checkRateLimit()) {
-                return;
-            }
-            
-            // Disable input during send
-            messageInput.disabled = true;
-            btnSendMessage.disabled = true;
-            
-            // Record this message for rate limiting
-            recordMessageSent();
-            
-            // Create the message object
-            const messageObj = {
-                type: 'user',
-                content: text,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                sender: {
-                    id: currentUser.uid,
-                    name: document.getElementById('chat-name').value || 'Anonim'
-                },
-                status: 'sent'
-            };
-            
-            // Encrypt message content if we have encryption set up
-            if (chatSessionKey) {
-                messageObj.content = encryptMessage(text, chatSessionKey);
-                messageObj.encrypted = true;
-            }
-            
-            // Try to send to Firestore
-            sendMessageToFirestore(messageObj)
-                .then(() => {
-                    // Clear input and enable it again
-                    messageInput.value = '';
-                    messageInput.disabled = false;
-                    btnSendMessage.disabled = false;
-                    
-                    // Reset typing indicator
-                    resetTypingIndicator();
-                    
-                    // Focus input field
-                    messageInput.focus();
-                })
-                .catch(error => {
-                    console.error('Error sending message:', error);
-                    
-                    // Queue the message for later if we're offline
-                    if (connectionStatus.textContent === 'Offline') {
-                        queueMessage(messageObj);
-                        
-                        // Show a temporary version of the message
-                        displayLocalMessage(messageObj);
-                        
-                        // Clear input
-                        messageInput.value = '';
-                    } else {
-                        showNotice(errorNotice, 'Eroare la trimiterea mesajului. Vă rugăm să încercați din nou.');
-                    }
-                    
-                    // Re-enable input
-                    messageInput.disabled = false;
-                    btnSendMessage.disabled = false;
-                });
         }
         
         // Send a message to Firestore
@@ -2926,15 +2928,10 @@
         
         // Reset chat and start a new one
         function resetChat() {
-            // Sign out current user if any
-            if (currentUser) {
-                auth.signOut().catch(error => {
-                    console.error('Error signing out:', error);
-                });
-            }
+            // Clean up current chat listeners first
+            cleanupChatListeners();
             
             // Reset all variables
-            currentUser = null;
             currentChatId = null;
             selectedDepartment = null;
             chatSessionKey = null;
@@ -2950,7 +2947,9 @@
             
             // Clear message queue
             messageQueue = [];
-            localStorage.removeItem('messageQueue_' + currentChatId);
+            if (currentChatId) {
+                localStorage.removeItem('messageQueue_' + currentChatId);
+            }
             
             // Reset rate limiting
             rateLimitConfig.sentMessages = [];
@@ -2976,26 +2975,24 @@
             // Reset form fields
             document.getElementById('chat-subject').value = '';
             document.getElementById('chat-email').value = '';
-            document.getElementById('chat-phone').value = '';
+            document.getElementById('chat-name').value = '';
             document.getElementById('privacy-check').checked = false;
             document.getElementById('recording-check').checked = false;
             
-            // Hide all sections except welcome screen
+            // Hide all sections except emergency check (since user is still authenticated)
             chatEnd.style.display = 'none';
             chatArea.style.display = 'none';
             chatForm.style.display = 'none';
             departmentSelect.style.display = 'none';
             loadingState.style.display = 'none';
-            emergencyCheck.style.display = 'none';
+            welcomeScreen.style.display = 'none';
+            phoneVerification.style.display = 'none';
             
-            // Show welcome screen
-            welcomeScreen.style.display = 'flex';
+            // Show emergency check
+            emergencyCheck.style.display = 'flex';
             
             // Generate a new encryption key
             chatSessionKey = generateEncryptionKey();
-            
-            // Clean up chat listeners
-            cleanupChatListeners();
         }
         
         // =============================================
