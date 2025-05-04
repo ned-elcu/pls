@@ -2376,9 +2376,9 @@
                 
                 showNotification('Înregistrare completă!', 'success');
                 
-                // Move to emergency check
+                // Move to department selection
                 accountRegistration.style.display = 'none';
-                emergencyCheck.style.display = 'flex';
+                departmentSelect.style.display = 'flex';
                 
             } catch (error) {
                 console.error('Error completing registration:', error);
@@ -2534,12 +2534,12 @@
                 timeString = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             }
             
-            // Handle different message types
+// Handle different message types
             if (message.type === 'system') {
                 messageElement.className = 'message-system';
                 messageElement.textContent = message.content;
             } else if (message.type === 'user') {
-messageElement.classList.add('message-sent');
+                messageElement.classList.add('message-sent');
                 
                 let messageHtml = '';
                 
@@ -2757,8 +2757,17 @@ messageElement.classList.add('message-sent');
         
         async function createChatSession() {
             try {
+                if (!currentUser) {
+                    throw new Error('User not authenticated');
+                }
+                
                 // Get user profile
                 const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                
+                if (!userDoc.exists) {
+                    throw new Error('User profile not found');
+                }
+                
                 const userProfile = userDoc.data();
                 
                 const chatData = {
@@ -2978,33 +2987,32 @@ messageElement.classList.add('message-sent');
         }
         
         function requestTranscript() {
-            const userDoc = db.collection('users').doc(currentUser.uid).get();
-            
-            userDoc.then(doc => {
-                const userData = doc.data();
-                const email = userData.email;
-                
-                if (!email || !email.includes('@')) {
-                    showNotification('Email-ul dvs. este invalid.', 'error');
-                    return;
-                }
-                
-                btnRequestTranscript.disabled = true;
-                btnRequestTranscript.innerHTML = '<i class="material-icons">hourglass_empty</i> Se trimite...';
-                
-                const sendTranscriptFunction = functions.httpsCallable('sendChatTranscript');
-                sendTranscriptFunction({ chatId: currentChatId, email: email })
-                    .then(result => {
-                        showNotification('Transcriptul a fost trimis pe email.', 'success');
-                        btnRequestTranscript.innerHTML = '<i class="material-icons">done</i> Transcript trimis';
-                    })
-                    .catch(error => {
-                        console.error('Error requesting transcript:', error);
-                        showNotification('Eroare la trimiterea transcriptului.', 'error');
-                        btnRequestTranscript.disabled = false;
-                        btnRequestTranscript.innerHTML = '<i class="material-icons">description</i> Primește transcript';
-                    });
-            });
+            db.collection('users').doc(currentUser.uid).get()
+                .then(doc => {
+                    const userData = doc.data();
+                    const email = userData.email;
+                    
+                    if (!email || !email.includes('@')) {
+                        showNotification('Email-ul dvs. este invalid.', 'error');
+                        return;
+                    }
+                    
+                    btnRequestTranscript.disabled = true;
+                    btnRequestTranscript.innerHTML = '<i class="material-icons">hourglass_empty</i> Se trimite...';
+                    
+                    const sendTranscriptFunction = functions.httpsCallable('sendChatTranscript');
+                    sendTranscriptFunction({ chatId: currentChatId, email: email })
+                        .then(result => {
+                            showNotification('Transcriptul a fost trimis pe email.', 'success');
+                            btnRequestTranscript.innerHTML = '<i class="material-icons">done</i> Transcript trimis';
+                        })
+                        .catch(error => {
+                            console.error('Error requesting transcript:', error);
+                            showNotification('Eroare la trimiterea transcriptului.', 'error');
+                            btnRequestTranscript.disabled = false;
+                            btnRequestTranscript.innerHTML = '<i class="material-icons">description</i> Primește transcript';
+                        });
+                });
         }
         
         function resetChat() {
@@ -3043,6 +3051,7 @@ messageElement.classList.add('message-sent');
             welcomeScreen.style.display = 'none';
             accountRegistration.style.display = 'none';
             
+            // Return to emergency check
             emergencyCheck.style.display = 'flex';
             
             chatSessionKey = generateEncryptionKey();
@@ -3062,128 +3071,6 @@ messageElement.classList.add('message-sent');
                 window.chatListeners = null;
             }
         }
-
-        // =============================================
-        // Event Listeners
-        // =============================================
-        
-        btnStartWelcome.addEventListener('click', () => {
-            welcomeScreen.style.display = 'none';
-            accountRegistration.style.display = 'flex';
-        });
-        
-        btnNextStep1.addEventListener('click', handleStep1);
-        btnSendCode.addEventListener('click', sendVerificationCode);
-        btnVerifyCode.addEventListener('click', verifyCode);
-        btnCompleteRegistration.addEventListener('click', completeRegistration);
-        
-        phoneNumberInput.addEventListener('input', handlePhoneInput);
-        
-        btnEmergency.addEventListener('click', () => {
-            window.location.href = 'tel:112';
-        });
-        
-        btnNonemergency.addEventListener('click', () => {
-            emergencyCheck.style.display = 'none';
-            departmentSelect.style.display = 'flex';
-        });
-        
-        departmentItems.forEach(item => {
-            item.addEventListener('click', () => {
-                selectedDepartment = item.dataset.id;
-                departmentSelect.style.display = 'none';
-                loadingState.style.display = 'flex';
-                loadingText.textContent = 'Se creează sesiunea de chat...';
-                
-                createChatSession()
-                    .then(() => {
-                        loadingState.style.display = 'none';
-                        chatArea.style.display = 'flex';
-                        messageInput.focus();
-                    })
-                    .catch(error => {
-                        console.error('Error starting chat:', error);
-                        loadingState.style.display = 'none';
-                        departmentSelect.style.display = 'flex';
-                        showNotification('Eroare la crearea sesiunii.', 'error');
-                    });
-            });
-        });
-        
-        btnSendMessage.addEventListener('click', sendMessage);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-        messageInput.addEventListener('input', handleTypingStart);
-        
-        btnCloseChat.addEventListener('click', confirmEndChat);
-        btnRequestTranscript.addEventListener('click', requestTranscript);
-        btnStartNewChat.addEventListener('click', resetChat);
-        
-        // =============================================
-        // Initialize the chat
-        // =============================================
-        async function initializeChat() {
-            try {
-                setupConnectionMonitoring();
-                
-                deviceFingerprint = await generateDeviceFingerprint();
-                
-                setupCodeInputs();
-                
-                auth.onAuthStateChanged(async (user) => {
-                    if (user) {
-                        currentUser = user;
-                        await registerDeviceFingerprint(deviceFingerprint);
-                        
-                        // Check if user profile exists
-                        const userDoc = await db.collection('users').doc(user.uid).get();
-                        
-                        if (userDoc.exists) {
-                            // User is already registered, go to emergency check
-                            welcomeScreen.style.display = 'none';
-                            accountRegistration.style.display = 'none';
-                            emergencyCheck.style.display = 'flex';
-                        } else {
-                            // User needs to complete registration
-                            welcomeScreen.style.display = 'none';
-                            accountRegistration.style.display = 'flex';
-                        }
-                    } else {
-                        if (emergencyCheck.style.display !== 'none' || 
-                            departmentSelect.style.display !== 'none' || 
-                            chatArea.style.display !== 'none') {
-                            resetToWelcome();
-                        }
-                    }
-                });
-                
-                chatSessionKey = generateEncryptionKey();
-                
-            } catch (error) {
-                console.error('Error initializing chat:', error);
-                showNotification('Eroare la inițializare.', 'error');
-            }
-        }
-        
-        function resetToWelcome() {
-            welcomeScreen.style.display = 'flex';
-            accountRegistration.style.display = 'none';
-            emergencyCheck.style.display = 'none';
-            departmentSelect.style.display = 'none';
-            loadingState.style.display = 'none';
-            chatArea.style.display = 'none';
-            chatEnd.style.display = 'none';
-            
-            currentUser = null;
-            resetChat();
-        }
-
-        // Initialize the chat application
-        initializeChat();
-    </script>
+</script>
 </body>
 </html>
