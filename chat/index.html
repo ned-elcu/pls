@@ -367,8 +367,8 @@
             height: 60px;
         }
         
-        /* Phone Verification Screen */
-        .phone-verification {
+        /* Account Registration Screen */
+        .account-registration {
             padding: var(--spacing-lg) var(--spacing-lg);
             height: 100%;
             display: flex;
@@ -380,7 +380,7 @@
             background-color: white;
         }
         
-        .verification-title {
+        .registration-title {
             font-size: var(--font-size-xl);
             color: var(--primary-color);
             margin-bottom: var(--spacing-md);
@@ -391,7 +391,7 @@
             gap: var(--spacing-sm);
         }
         
-        .verification-description {
+        .registration-description {
             font-size: var(--font-size-base);
             margin-bottom: var(--spacing-lg);
             color: var(--text-secondary);
@@ -439,6 +439,41 @@
 
         .step-line.completed {
             background-color: var(--success-color);
+        }
+        
+        .registration-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: var(--font-size-base);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius-small);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: var(--background-light);
+            transition: var(--transition-fast);
+            font-size: var(--font-size-base);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.05);
         }
         
         .phone-input-group {
@@ -515,6 +550,38 @@
         .retry-timer {
             color: var(--primary-color);
             font-weight: 600;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-md);
+            min-height: 36px;
+        }
+        
+        .form-check-input {
+            margin-right: var(--spacing-sm);
+            margin-top: 4px;
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        
+        .form-check-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            flex: 1;
+        }
+        
+        .form-check-label a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .form-check-label a:hover {
+            text-decoration: underline;
         }
 
         /* Emergency Check */
@@ -642,97 +709,6 @@
         .department-description {
             color: var(--text-secondary);
             font-size: 14px;
-        }
-        
-        /* Pre-Chat Form */
-        .chat-form {
-            padding: var(--spacing-lg);
-            overflow-y: auto;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            background-color: white;
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-        }
-        
-        .form-title {
-            font-size: var(--font-size-large);
-            color: var(--primary-color);
-            margin-bottom: var(--spacing-md);
-            text-align: center;
-        }
-        
-        .form-group {
-            margin-bottom: var(--spacing-md);
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: var(--spacing-xs);
-            font-weight: 500;
-            color: var(--text-primary);
-            font-size: var(--font-size-base);
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: var(--spacing-sm);
-            border-radius: var(--border-radius-small);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            background-color: var(--background-light);
-            transition: var(--transition-fast);
-            font-size: var(--font-size-base);
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
-        
-        .form-check {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: var(--spacing-md);
-            min-height: 36px;
-        }
-        
-        .form-check-input {
-            margin-right: var(--spacing-sm);
-            margin-top: 4px;
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-        }
-        
-        .form-check-label {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            flex: 1;
-        }
-        
-        .form-check-label a {
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .form-check-label a:hover {
-            text-decoration: underline;
-        }
-        
-        .gdpr-info {
-            margin-top: var(--spacing-md);
-            font-size: 13px;
-            color: var(--text-secondary);
-            background-color: rgba(0, 0, 0, 0.03);
-            padding: var(--spacing-sm);
-            border-radius: var(--border-radius-small);
-            line-height: 1.5;
         }
         
         /* Chat Area */
@@ -1149,75 +1125,6 @@
             }
         }
         
-        /* PWA Installation Banner */
-        .pwa-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-image: var(--primary-gradient);
-            color: white;
-            padding: var(--spacing-sm) var(--spacing-md);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 999;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .pwa-banner.show {
-            transform: translateY(0);
-        }
-        
-        .pwa-message {
-            flex: 1;
-            margin-right: var(--spacing-sm);
-        }
-        
-        .pwa-title {
-            font-weight: 600;
-            margin-bottom: 2px;
-            font-size: 14px;
-        }
-        
-        .pwa-buttons {
-            display: flex;
-            gap: var(--spacing-xs);
-        }
-        
-        .pwa-btn {
-            padding: var(--spacing-xs) var(--spacing-sm);
-            border-radius: var(--border-radius-small);
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            font-size: 14px;
-        }
-        
-        .pwa-btn-install {
-            background-color: var(--accent-color);
-            color: var(--text-primary);
-        }
-        
-        .pwa-btn-install:hover {
-            background-color: var(--accent-dark);
-            transform: translateY(-2px);
-        }
-        
-        .pwa-btn-dismiss {
-            background-color: transparent;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .pwa-btn-dismiss:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-        
         /* Desktop Specific Styles */
         @media (min-width: 768px) {
             body {
@@ -1422,11 +1329,6 @@
                 font-size: var(--font-size-base);
             }
             
-            .gdpr-info {
-                font-size: 14px;
-                padding: var(--spacing-md);
-            }
-            
             .chat-form {
                 padding: var(--spacing-xl);
             }
@@ -1492,24 +1394,6 @@
             .typing-dot {
                 height: 10px;
                 width: 10px;
-            }
-            
-            .pwa-banner {
-                padding: var(--spacing-md) var(--spacing-lg);
-            }
-            
-            .pwa-message {
-                margin-right: var(--spacing-md);
-            }
-            
-            .pwa-title {
-                margin-bottom: 4px;
-                font-size: inherit;
-            }
-            
-            .pwa-btn {
-                padding: var(--spacing-sm) var(--spacing-md);
-                font-size: inherit;
             }
             
             .department-item:hover .department-name {
@@ -1601,48 +1485,97 @@
                 </button>
             </div>
             
-            <!-- Phone Verification Screen -->
-            <div id="phoneVerification" class="phone-verification" style="display:none;">
+            <!-- Account Registration Screen -->
+            <div id="accountRegistration" class="account-registration" style="display:none;">
                 <div class="step-indicator">
                     <div class="step active" id="step1">1</div>
                     <div class="step-line" id="stepLine1"></div>
                     <div class="step" id="step2">2</div>
+                    <div class="step-line" id="stepLine2"></div>
+                    <div class="step" id="step3">3</div>
                 </div>
 
-                <h2 class="verification-title">
-                    <i class="material-icons">smartphone</i>
-                    Verificare Identitate
+                <h2 class="registration-title">
+                    <i class="material-icons">person_add</i>
+                    Înregistrare Cont
                 </h2>
-                <p class="verification-description">Pentru siguranța dumneavoastră și pentru a preveni abuzurile, vă rugăm să vă verificați identitatea folosind numărul de telefon.</p>
+                <p class="registration-description">Pentru a utiliza serviciul de chat, vă rugăm să vă creați un cont. Avem nevoie de datele dumneavoastră reale pentru a asigura securitatea și pentru a putea da curs sesizărilor.</p>
                 
-                <div class="phone-input-group">
-                    <span class="phone-prefix">+40</span>
-                    <input type="tel" id="phoneNumber" class="form-control" placeholder="7XX XXX XXX" maxlength="9" pattern="[0-9]*" inputmode="numeric" autocomplete="tel">
-                </div>
-                
-                <button id="btnSendCode" class="btn btn-primary">
-                    <i class="material-icons">sms</i> Trimite Cod SMS
-                </button>
-                
-                <div id="verificationSection" class="verification-code-section" style="display:none;">
-                    <p class="verification-description">Introduceți codul de 6 cifre primit prin SMS:</p>
-                    <div class="code-input-group">
-                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-                        <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                <!-- Step 1: Personal Information -->
+                <div id="registrationStep1" class="registration-form">
+                    <div class="form-group">
+                        <label class="form-label" for="firstName">Prenume: *</label>
+                        <input type="text" id="firstName" class="form-control" placeholder="Ex: Ion" required>
                     </div>
-                    <button id="btnVerifyCode" class="btn btn-primary" disabled>
-                        <i class="material-icons">check</i> Verifică Cod
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="lastName">Nume: *</label>
+                        <input type="text" id="lastName" class="form-control" placeholder="Ex: Popescu" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email: *</label>
+                        <input type="email" id="email" class="form-control" placeholder="Ex: ion.popescu@email.com" required>
+                    </div>
+                    
+                    <button id="btnNextStep1" class="btn btn-primary">
+                        <i class="material-icons">arrow_forward</i> Continuă
                     </button>
-                    <div class="retry-message" id="retryMessage" style="display:none;">
-                        Puteți solicita un nou cod în <span class="retry-timer" id="retryTimer">60</span> secunde.
-                    </div>
                 </div>
                 
-                <div id="recaptcha-container"></div>
+                <!-- Step 2: Phone Verification -->
+                <div id="registrationStep2" class="registration-form" style="display:none;">
+                    <div class="phone-input-group">
+                        <span class="phone-prefix">+40</span>
+                        <input type="tel" id="phoneNumber" class="form-control" placeholder="7XX XXX XXX" maxlength="9" pattern="[0-9]*" inputmode="numeric" autocomplete="tel">
+                    </div>
+                    
+                    <button id="btnSendCode" class="btn btn-primary">
+                        <i class="material-icons">sms</i> Trimite Cod SMS
+                    </button>
+                    
+                    <div id="verificationSection" class="verification-code-section" style="display:none;">
+                        <p class="registration-description">Introduceți codul de 6 cifre primit prin SMS:</p>
+                        <div class="code-input-group">
+                            <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                            <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                            <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                            <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                            <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                            <input type="text" class="code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+                        </div>
+                        <button id="btnVerifyCode" class="btn btn-primary" disabled>
+                            <i class="material-icons">check</i> Verifică Cod
+                        </button>
+                        <div class="retry-message" id="retryMessage" style="display:none;">
+                            Puteți solicita un nou cod în <span class="retry-timer" id="retryTimer">60</span> secunde.
+                        </div>
+                    </div>
+                    
+                    <div id="recaptcha-container"></div>
+                </div>
+                
+                <!-- Step 3: Terms and Conditions -->
+                <div id="registrationStep3" class="registration-form" style="display:none;">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="terms-check" required>
+                        <label class="form-check-label" for="terms-check">Accept <a href="/terms" target="_blank">termenii și condițiile</a> *</label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="privacy-check" required>
+                        <label class="form-check-label" for="privacy-check">Accept <a href="/privacy-policy" target="_blank">politica de confidențialitate</a> *</label>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="recording-check" required>
+                        <label class="form-check-label" for="recording-check">Înțeleg că conversația este înregistrată *</label>
+                    </div>
+                    
+                    <button id="btnCompleteRegistration" class="btn btn-primary">
+                        <i class="material-icons">check_circle</i> Finalizează Înregistrarea
+                    </button>
+                </div>
             </div>
             
             <!-- Emergency Check -->
@@ -1719,48 +1652,6 @@
                 </div>
             </div>
             
-            <!-- Pre-Chat Form -->
-            <div id="chatForm" class="chat-form">
-                <h2 class="form-title">Detalii suplimentare</h2>
-                
-                <div class="form-group">
-                    <label class="form-label" for="chat-subject">Descrieți problema: *</label>
-                    <input type="text" id="chat-subject" class="form-control" placeholder="Ex: Mașină parcată pe trotuar" required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label" for="chat-name">Numele dvs: *</label>
-                    <input type="text" id="chat-name" class="form-control" placeholder="Ex: Ion Popescu" required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label" for="chat-email">Email (opțional):</label>
-                    <input type="email" id="chat-email" class="form-control" placeholder="Pentru a primi transcript conversație">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label" for="chat-phone">Telefon:</label>
-                    <input type="tel" id="chat-phone" class="form-control" readonly>
-                </div>
-                
-                <div class="form-group">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="privacy-check" required>
-                        <label class="form-check-label" for="privacy-check">Accept <a href="/privacy-policy" target="_blank">politica de confidențialitate</a> *</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="recording-check" required>
-                        <label class="form-check-label" for="recording-check">Înțeleg că conversația este înregistrată *</label>
-                    </div>
-                </div>
-                
-                <div class="form-submit-btn">
-                    <button id="btnStartChat" class="btn btn-primary">
-                        <i class="material-icons">chat</i> Începe Conversația
-                    </button>
-                </div>
-            </div>
-            
             <!-- Loading State -->
             <div id="loadingState" class="loading-container">
                 <div class="loading-spinner"></div>
@@ -1794,18 +1685,6 @@
                 </button>
             </div>
         </main>
-        
-        <!-- PWA Installation Banner -->
-        <div id="pwaBanner" class="pwa-banner">
-            <div class="pwa-message">
-                <div class="pwa-title">Instalează aplicația</div>
-                <div class="pwa-description">Acces rapid din ecranul principal</div>
-            </div>
-            <div class="pwa-buttons">
-                <button id="btnDismissPwa" class="pwa-btn pwa-btn-dismiss">Mai târziu</button>
-                <button id="btnInstallPwa" class="pwa-btn pwa-btn-install">Instalează</button>
-            </div>
-        </div>
     </div>
     
     <!-- Firebase configuration -->
@@ -1825,22 +1704,38 @@
         // =============================================
         // Screens
         const welcomeScreen = document.getElementById('welcomeScreen');
-        const phoneVerification = document.getElementById('phoneVerification');
+        const accountRegistration = document.getElementById('accountRegistration');
         const emergencyCheck = document.getElementById('emergencyCheck');
         const departmentSelect = document.getElementById('departmentSelect');
-        const chatForm = document.getElementById('chatForm');
         const loadingState = document.getElementById('loadingState');
         const chatArea = document.getElementById('chatArea');
         const chatEnd = document.getElementById('chatEnd');
         
-        // Phone verification elements
+        // Registration steps
+        const registrationStep1 = document.getElementById('registrationStep1');
+        const registrationStep2 = document.getElementById('registrationStep2');
+        const registrationStep3 = document.getElementById('registrationStep3');
+        
+        // Registration form elements
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const emailInput = document.getElementById('email');
         const phoneNumberInput = document.getElementById('phoneNumber');
+        const termsCheck = document.getElementById('terms-check');
+        const privacyCheck = document.getElementById('privacy-check');
+        const recordingCheck = document.getElementById('recording-check');
+        
+        // Phone verification elements
         const btnSendCode = document.getElementById('btnSendCode');
         const verificationSection = document.getElementById('verificationSection');
         const btnVerifyCode = document.getElementById('btnVerifyCode');
         const retryMessage = document.getElementById('retryMessage');
         const retryTimer = document.getElementById('retryTimer');
         const codeInputs = document.querySelectorAll('.code-input');
+        
+        // Registration buttons
+        const btnNextStep1 = document.getElementById('btnNextStep1');
+        const btnCompleteRegistration = document.getElementById('btnCompleteRegistration');
         
         // Notifications
         const notificationsContainer = document.getElementById('notificationsContainer');
@@ -1854,7 +1749,6 @@
         const btnStartWelcome = document.getElementById('btnStartWelcome');
         const btnEmergency = document.getElementById('btnEmergency');
         const btnNonemergency = document.getElementById('btnNonemergency');
-        const btnStartChat = document.getElementById('btnStartChat');
         const btnSendMessage = document.getElementById('btnSendMessage');
         const btnCloseChat = document.getElementById('btnCloseChat');
         const btnRequestTranscript = document.getElementById('btnRequestTranscript');
@@ -1867,11 +1761,6 @@
         const connectionStatus = document.getElementById('connectionStatus');
         const securityStatus = document.getElementById('securityStatus');
         const loadingText = document.getElementById('loadingText');
-        
-        // PWA Banner
-        const pwaBanner = document.getElementById('pwaBanner');
-        const btnDismissPwa = document.getElementById('btnDismissPwa');
-        const btnInstallPwa = document.getElementById('btnInstallPwa');
         
         // =============================================
         // State Variables
@@ -1889,11 +1778,18 @@
         let offlineTimeout = null;
         let messageQueue = [];
         let agentJoinedFlag = false;
-        let deferredPrompt = null;
         let deviceFingerprint = null;
         let verificationId = null;
         let retryCountdown = null;
         let retryTimeLeft = 60;
+        
+        // Registration data
+        let registrationData = {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: ''
+        };
         
         // Rate limiting
         const rateLimitConfig = {
@@ -2106,14 +2002,6 @@
                     }
                 }
                 
-                // Check if phone number already used
-                const phoneRef = db.collection('phoneNumbersUsed').doc(phoneHash);
-                const phoneData = await phoneRef.get();
-                
-                if (phoneData.exists) {
-                    throw new Error('Acest număr de telefon este deja înregistrat.');
-                }
-                
                 // Log this attempt
                 await logVerificationAttempt(deviceFingerprint, phoneHash);
                 
@@ -2306,9 +2194,6 @@
                 
                 // Update UI
                 verificationSection.style.display = 'block';
-                document.getElementById('step1').classList.add('completed');
-                document.getElementById('step2').classList.add('active');
-                document.getElementById('stepLine1').classList.add('completed');
                 codeInputs[0].focus();
                 
                 // Start retry countdown
@@ -2356,34 +2241,8 @@
                 const result = await window.confirmationResult.confirm(code);
                 currentUser = result.user;
                 
-                // Check if phone number already used
-                const phoneHash = CryptoJS.SHA256(currentUser.phoneNumber).toString();
-                const phoneRef = db.collection('phoneNumbersUsed').doc(phoneHash);
-                const phoneData = await phoneRef.get();
-                
-                if (phoneData.exists && phoneData.data().userId !== currentUser.uid) {
-                    await auth.signOut();
-                    throw new Error('Acest număr de telefon este deja înregistrat.');
-                }
-                
-                // Register phone number
-                if (!phoneData.exists) {
-                    await phoneRef.set({
-                        phoneHash: phoneHash,
-                        userId: currentUser.uid,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        deviceFingerprint: deviceFingerprint
-                    });
-                }
-                
-                // Update verification success stats
-                const today = new Date().toISOString().split('T')[0];
-                await db.collection('dailyVerificationStats').doc(today).update({
-                    successfulVerifications: firebase.firestore.FieldValue.increment(1)
-                });
-                
-                // Register device fingerprint with user ID
-                await registerDeviceFingerprint(deviceFingerprint);
+                // Store phone number in registration data
+                registrationData.phone = currentUser.phoneNumber;
                 
                 // Clear retry countdown
                 if (retryCountdown) {
@@ -2394,10 +2253,12 @@
                 
                 // Update UI steps
                 document.getElementById('step2').classList.add('completed');
+                document.getElementById('step3').classList.add('active');
+                document.getElementById('stepLine2').classList.add('completed');
                 
-                // Continue to emergency check
-                phoneVerification.style.display = 'none';
-                emergencyCheck.style.display = 'flex';
+                // Move to step 3
+                registrationStep2.style.display = 'none';
+                registrationStep3.style.display = 'block';
                 
             } catch (error) {
                 console.error('Error verifying code:', error);
@@ -2436,6 +2297,98 @@
             }
             
             showNotification(message, 'error');
+        }
+        
+        // =============================================
+        // Registration Functions
+        // =============================================
+        
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        function handleStep1() {
+            const firstName = firstNameInput.value.trim();
+            const lastName = lastNameInput.value.trim();
+            const email = emailInput.value.trim();
+            
+            if (!firstName || !lastName || !email) {
+                showNotification('Completați toate câmpurile obligatorii', 'error');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showNotification('Introduceți o adresă de email validă', 'error');
+                return;
+            }
+            
+            // Save data
+            registrationData.firstName = firstName;
+            registrationData.lastName = lastName;
+            registrationData.email = email;
+            
+            // Update steps
+            document.getElementById('step1').classList.add('completed');
+            document.getElementById('step2').classList.add('active');
+            document.getElementById('stepLine1').classList.add('completed');
+            
+            // Move to step 2
+            registrationStep1.style.display = 'none';
+            registrationStep2.style.display = 'block';
+        }
+        
+        async function completeRegistration() {
+            if (!termsCheck.checked || !privacyCheck.checked || !recordingCheck.checked) {
+                showNotification('Acceptați toate termenii și condițiile', 'error');
+                return;
+            }
+            
+            try {
+                // Show loading
+                btnCompleteRegistration.disabled = true;
+                btnCompleteRegistration.classList.add('loading');
+                btnCompleteRegistration.innerHTML = '<i class="material-icons">hourglass_empty</i> Se finalizează...';
+                
+                // Create user profile
+                const userProfile = {
+                    firstName: registrationData.firstName,
+                    lastName: registrationData.lastName,
+                    email: registrationData.email,
+                    phone: registrationData.phone,
+                    userId: currentUser.uid,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    deviceFingerprint: deviceFingerprint,
+                    termsAccepted: true,
+                    privacyAccepted: true,
+                    recordingAccepted: true
+                };
+                
+                // Save user profile
+                await db.collection('users').doc(currentUser.uid).set(userProfile, { merge: true });
+                
+                // Register device fingerprint
+                await registerDeviceFingerprint(deviceFingerprint);
+                
+                // Update step
+                document.getElementById('step3').classList.add('completed');
+                
+                showNotification('Înregistrare completă!', 'success');
+                
+                // Move to emergency check
+                accountRegistration.style.display = 'none';
+                emergencyCheck.style.display = 'flex';
+                
+            } catch (error) {
+                console.error('Error completing registration:', error);
+                showNotification('Eroare la finalizarea înregistrării', 'error');
+                
+                // Reset button
+                btnCompleteRegistration.disabled = false;
+                btnCompleteRegistration.classList.remove('loading');
+                btnCompleteRegistration.innerHTML = '<i class="material-icons">check_circle</i> Finalizează Înregistrarea';
+            }
         }
         
         // =============================================
@@ -2549,7 +2502,7 @@
             processNext();
         }
         
-async function sendMessageToFirestore(messageObj) {
+        async function sendMessageToFirestore(messageObj) {
             await db.collection('chats').doc(currentChatId).collection('messages').add(messageObj);
             
             await db.collection('chats').doc(currentChatId).update({
@@ -2586,7 +2539,7 @@ async function sendMessageToFirestore(messageObj) {
                 messageElement.className = 'message-system';
                 messageElement.textContent = message.content;
             } else if (message.type === 'user') {
-                messageElement.classList.add('message-sent');
+messageElement.classList.add('message-sent');
                 
                 let messageHtml = '';
                 
@@ -2804,12 +2757,16 @@ async function sendMessageToFirestore(messageObj) {
         
         async function createChatSession() {
             try {
+                // Get user profile
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                const userProfile = userDoc.data();
+                
                 const chatData = {
                     department: selectedDepartment,
-                    subject: document.getElementById('chat-subject').value,
-                    userName: document.getElementById('chat-name').value,
-                    userEmail: document.getElementById('chat-email').value || '',
-                    userPhone: currentUser.phoneNumber || '',
+                    subject: `Chat din ${new Date().toLocaleDateString()}`,
+                    userName: `${userProfile.firstName} ${userProfile.lastName}`,
+                    userEmail: userProfile.email,
+                    userPhone: userProfile.phone,
                     userId: currentUser.uid,
                     status: 'waiting',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -3021,28 +2978,33 @@ async function sendMessageToFirestore(messageObj) {
         }
         
         function requestTranscript() {
-            const email = document.getElementById('chat-email').value;
+            const userDoc = db.collection('users').doc(currentUser.uid).get();
             
-            if (!email || !email.includes('@')) {
-                showNotification('Introduceți o adresă de email validă.', 'error');
-                return;
-            }
-            
-            btnRequestTranscript.disabled = true;
-            btnRequestTranscript.innerHTML = '<i class="material-icons">hourglass_empty</i> Se trimite...';
-            
-            const sendTranscriptFunction = functions.httpsCallable('sendChatTranscript');
-            sendTranscriptFunction({ chatId: currentChatId, email: email })
-                .then(result => {
-                    showNotification('Transcriptul a fost trimis pe email.', 'success');
-                    btnRequestTranscript.innerHTML = '<i class="material-icons">done</i> Transcript trimis';
-                })
-                .catch(error => {
-                    console.error('Error requesting transcript:', error);
-                    showNotification('Eroare la trimiterea transcriptului.', 'error');
-                    btnRequestTranscript.disabled = false;
-                    btnRequestTranscript.innerHTML = '<i class="material-icons">description</i> Primește transcript';
-                });
+            userDoc.then(doc => {
+                const userData = doc.data();
+                const email = userData.email;
+                
+                if (!email || !email.includes('@')) {
+                    showNotification('Email-ul dvs. este invalid.', 'error');
+                    return;
+                }
+                
+                btnRequestTranscript.disabled = true;
+                btnRequestTranscript.innerHTML = '<i class="material-icons">hourglass_empty</i> Se trimite...';
+                
+                const sendTranscriptFunction = functions.httpsCallable('sendChatTranscript');
+                sendTranscriptFunction({ chatId: currentChatId, email: email })
+                    .then(result => {
+                        showNotification('Transcriptul a fost trimis pe email.', 'success');
+                        btnRequestTranscript.innerHTML = '<i class="material-icons">done</i> Transcript trimis';
+                    })
+                    .catch(error => {
+                        console.error('Error requesting transcript:', error);
+                        showNotification('Eroare la trimiterea transcriptului.', 'error');
+                        btnRequestTranscript.disabled = false;
+                        btnRequestTranscript.innerHTML = '<i class="material-icons">description</i> Primește transcript';
+                    });
+            });
         }
         
         function resetChat() {
@@ -3074,19 +3036,12 @@ async function sendMessageToFirestore(messageObj) {
             messageInput.disabled = false;
             btnSendMessage.disabled = false;
             
-            document.getElementById('chat-subject').value = '';
-            document.getElementById('chat-email').value = '';
-            document.getElementById('chat-name').value = '';
-            document.getElementById('privacy-check').checked = false;
-            document.getElementById('recording-check').checked = false;
-            
             chatEnd.style.display = 'none';
             chatArea.style.display = 'none';
-            chatForm.style.display = 'none';
             departmentSelect.style.display = 'none';
             loadingState.style.display = 'none';
             welcomeScreen.style.display = 'none';
-            phoneVerification.style.display = 'none';
+            accountRegistration.style.display = 'none';
             
             emergencyCheck.style.display = 'flex';
             
@@ -3114,11 +3069,13 @@ async function sendMessageToFirestore(messageObj) {
         
         btnStartWelcome.addEventListener('click', () => {
             welcomeScreen.style.display = 'none';
-            phoneVerification.style.display = 'flex';
+            accountRegistration.style.display = 'flex';
         });
         
+        btnNextStep1.addEventListener('click', handleStep1);
         btnSendCode.addEventListener('click', sendVerificationCode);
         btnVerifyCode.addEventListener('click', verifyCode);
+        btnCompleteRegistration.addEventListener('click', completeRegistration);
         
         phoneNumberInput.addEventListener('input', handlePhoneInput);
         
@@ -3135,43 +3092,22 @@ async function sendMessageToFirestore(messageObj) {
             item.addEventListener('click', () => {
                 selectedDepartment = item.dataset.id;
                 departmentSelect.style.display = 'none';
-                chatForm.style.display = 'flex';
-                
-                if (currentUser && currentUser.phoneNumber) {
-                    document.getElementById('chat-phone').value = currentUser.phoneNumber;
-                }
-            });
-        });
-        
-        btnStartChat.addEventListener('click', async () => {
-            const subject = document.getElementById('chat-subject').value.trim();
-            const name = document.getElementById('chat-name').value.trim();
-            const privacyCheck = document.getElementById('privacy-check').checked;
-            const recordingCheck = document.getElementById('recording-check').checked;
-            
-            if (!subject || !name || !privacyCheck || !recordingCheck) {
-                showNotification('Completați toate câmpurile obligatorii.', 'error');
-                return;
-            }
-            
-            try {
-                chatForm.style.display = 'none';
                 loadingState.style.display = 'flex';
                 loadingText.textContent = 'Se creează sesiunea de chat...';
                 
-                await createChatSession();
-                
-                loadingState.style.display = 'none';
-                chatArea.style.display = 'flex';
-                
-                messageInput.focus();
-                
-            } catch (error) {
-                console.error('Error starting chat:', error);
-                loadingState.style.display = 'none';
-                chatForm.style.display = 'flex';
-                showNotification('Eroare la crearea sesiunii.', 'error');
-            }
+                createChatSession()
+                    .then(() => {
+                        loadingState.style.display = 'none';
+                        chatArea.style.display = 'flex';
+                        messageInput.focus();
+                    })
+                    .catch(error => {
+                        console.error('Error starting chat:', error);
+                        loadingState.style.display = 'none';
+                        departmentSelect.style.display = 'flex';
+                        showNotification('Eroare la crearea sesiunii.', 'error');
+                    });
+            });
         });
         
         btnSendMessage.addEventListener('click', sendMessage);
@@ -3186,32 +3122,6 @@ async function sendMessageToFirestore(messageObj) {
         btnCloseChat.addEventListener('click', confirmEndChat);
         btnRequestTranscript.addEventListener('click', requestTranscript);
         btnStartNewChat.addEventListener('click', resetChat);
-        
-        // =============================================
-        // PWA Support
-        // =============================================
-        
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            pwaBanner.classList.add('show');
-        });
-        
-        btnInstallPwa.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            
-            deferredPrompt.prompt();
-            
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response to the install prompt: ${outcome}`);
-            
-            deferredPrompt = null;
-            pwaBanner.classList.remove('show');
-        });
-        
-        btnDismissPwa.addEventListener('click', () => {
-            pwaBanner.classList.remove('show');
-        });
         
         // =============================================
         // Initialize the chat
@@ -3229,15 +3139,22 @@ async function sendMessageToFirestore(messageObj) {
                         currentUser = user;
                         await registerDeviceFingerprint(deviceFingerprint);
                         
-                        if (welcomeScreen.style.display !== 'none' || phoneVerification.style.display !== 'none') {
+                        // Check if user profile exists
+                        const userDoc = await db.collection('users').doc(user.uid).get();
+                        
+                        if (userDoc.exists) {
+                            // User is already registered, go to emergency check
                             welcomeScreen.style.display = 'none';
-                            phoneVerification.style.display = 'none';
+                            accountRegistration.style.display = 'none';
                             emergencyCheck.style.display = 'flex';
+                        } else {
+                            // User needs to complete registration
+                            welcomeScreen.style.display = 'none';
+                            accountRegistration.style.display = 'flex';
                         }
                     } else {
                         if (emergencyCheck.style.display !== 'none' || 
                             departmentSelect.style.display !== 'none' || 
-                            chatForm.style.display !== 'none' || 
                             chatArea.style.display !== 'none') {
                             resetToWelcome();
                         }
@@ -3254,10 +3171,9 @@ async function sendMessageToFirestore(messageObj) {
         
         function resetToWelcome() {
             welcomeScreen.style.display = 'flex';
-            phoneVerification.style.display = 'none';
+            accountRegistration.style.display = 'none';
             emergencyCheck.style.display = 'none';
             departmentSelect.style.display = 'none';
-            chatForm.style.display = 'none';
             loadingState.style.display = 'none';
             chatArea.style.display = 'none';
             chatEnd.style.display = 'none';
