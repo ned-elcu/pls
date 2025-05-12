@@ -197,6 +197,8 @@ const COMPONENTS_CSS = `
     z-index: 1000;
     transition: var(--transition-fast);
     top: 0;
+    /* FIX: Ensure header container doesn't clip dropdowns */
+    overflow: visible !important;
 }
 
 .header-top {
@@ -366,7 +368,9 @@ const COMPONENTS_CSS = `
     height: 60px !important; /* Fixed height for consistency with !important to enforce */
     min-height: 60px;
     max-height: 60px;
-    overflow: visible !important; /* Critical: Allow dropdowns to overflow */
+    /* CRITICAL FIX: Ensure dropdowns can overflow the fixed height container */
+    overflow: visible !important;
+    position: relative; /* Added for proper stacking context */
 }
 
 .header-main.scrolled {
@@ -380,6 +384,9 @@ const COMPONENTS_CSS = `
     height: 100%;
     transition: var(--transition-fast);
     overflow: visible !important; /* Critical: Allow dropdowns to overflow */
+    /* FIX: Increase z-index to ensure proper stacking */
+    position: relative;
+    z-index: 100;
 }
 
 .main-nav ul {
@@ -389,6 +396,9 @@ const COMPONENTS_CSS = `
     padding: 0;
     height: 100%;
     align-items: center; /* Center all items vertically */
+    /* FIX: Ensure proper overflow for dropdown menus */
+    overflow: visible !important;
+    position: relative;
 }
 
 .main-nav ul li {
@@ -397,6 +407,8 @@ const COMPONENTS_CSS = `
     height: 100%;
     display: flex;
     align-items: center;
+    /* FIX: Ensure proper overflow for dropdown menus */
+    overflow: visible !important;
 }
 
 .main-nav ul li a {
@@ -468,6 +480,8 @@ const COMPONENTS_CSS = `
 /* ENHANCED DROPDOWN STYLES */
 .main-nav ul li.has-dropdown {
     position: relative;
+    /* FIX: Ensure proper overflow for dropdown menus */
+    overflow: visible !important;
 }
 
 .main-nav ul li.has-dropdown > a {
@@ -490,7 +504,7 @@ const COMPONENTS_CSS = `
     transform: rotate(180deg);
 }
 
-/* Enhanced dropdown styling */
+/* Enhanced dropdown styling - FIXED */
 .dropdown-menu {
     position: absolute !important;
     top: 100% !important;
@@ -510,12 +524,19 @@ const COMPONENTS_CSS = `
     transform: translateY(15px) !important;
     transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) !important;
     overflow: visible !important;
+    /* FIX: Increased z-index to ensure it's above other elements */
+    z-index: 10000 !important;
+    /* FIX: Ensure proper pointerEvents so hover works correctly */
+    pointer-events: none !important;
 }
 
+/* FIX: Properly show dropdown on hover */
 .main-nav ul li.has-dropdown:hover .dropdown-menu {
     visibility: visible !important;
     opacity: 1 !important;
     transform: translateY(0) !important;
+    /* FIX: Enable pointer events when visible */
+    pointer-events: auto !important;
 }
 
 .dropdown-menu::before {
@@ -561,6 +582,7 @@ const COMPONENTS_CSS = `
     float: none !important;
     margin: 0 !important;
     padding: 0 !important;
+    height: auto !important; /* FIX: Override height constraints for dropdown items */
 }
 
 .dropdown-menu li:last-child {
@@ -580,6 +602,7 @@ const COMPONENTS_CSS = `
     transition: all 0.3s ease !important;
     border-left: 3px solid transparent !important;
     white-space: normal !important; /* Allow wrapping in dropdown items */
+    height: auto !important; /* FIX: Override height constraints for dropdown links */
 }
 
 /* Icon in dropdown menu */
@@ -624,6 +647,7 @@ const COMPONENTS_CSS = `
     height: 36px; /* Fixed height */
     display: flex;
     align-items: center;
+    z-index: 90; /* FIX: Adjusted z-index to be below dropdown but above most content */
 }
 
 .search-bar input {
@@ -792,6 +816,8 @@ const COMPONENTS_CSS = `
         width: 100% !important;
         margin-top: 0 !important;
         border-radius: 0 !important;
+        /* FIX: Ensure pointer events work in mobile */
+        pointer-events: auto !important;
     }
     
     .dropdown-menu::before {
