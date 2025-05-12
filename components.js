@@ -366,7 +366,7 @@ const COMPONENTS_CSS = `
     height: 60px !important; /* Fixed height for consistency with !important to enforce */
     min-height: 60px;
     max-height: 60px;
-    overflow: visible;
+    overflow: visible !important; /* Critical: Allow dropdowns to overflow */
 }
 
 .header-main.scrolled {
@@ -379,6 +379,7 @@ const COMPONENTS_CSS = `
 .main-nav {
     height: 100%;
     transition: var(--transition-fast);
+    overflow: visible !important; /* Critical: Allow dropdowns to overflow */
 }
 
 .main-nav ul {
@@ -408,7 +409,11 @@ const COMPONENTS_CSS = `
     height: 100%;
     padding: 0 0.2rem;
     transition: all 0.3s ease;
-    white-space: nowrap; /* Critical: Prevent text wrapping */
+}
+
+/* Only prevent wrapping on MAIN menu items, not dropdowns */
+.main-nav > ul > li > a {
+    white-space: nowrap !important;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -504,7 +509,7 @@ const COMPONENTS_CSS = `
     opacity: 0 !important;
     transform: translateY(15px) !important;
     transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) !important;
-    overflow: hidden !important;
+    overflow: visible !important;
 }
 
 .main-nav ul li.has-dropdown:hover .dropdown-menu {
@@ -562,7 +567,7 @@ const COMPONENTS_CSS = `
     border-bottom: none !important;
 }
 
-/* Dropdown menu item styling */
+/* Dropdown menu item styling - Allow wrapping */
 .dropdown-menu li a {
     display: flex !important;
     align-items: center !important;
@@ -574,6 +579,7 @@ const COMPONENTS_CSS = `
     font-weight: 400 !important;
     transition: all 0.3s ease !important;
     border-left: 3px solid transparent !important;
+    white-space: normal !important; /* Allow wrapping in dropdown items */
 }
 
 /* Icon in dropdown menu */
@@ -761,6 +767,11 @@ const COMPONENTS_CSS = `
         border-bottom: 1px solid rgba(0,0,0,0.05);
         height: auto;
         white-space: normal; /* Allow wrapping in mobile menu */
+    }
+    
+    /* Reset nowrap for mobile */
+    .main-nav > ul > li > a {
+        white-space: normal !important;
     }
     
     .main-nav ul li a::after {
