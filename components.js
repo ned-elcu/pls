@@ -19,11 +19,11 @@ const COMPONENTS_CSS = `
     --text-light: #f5f5f5;
     --background-light: #f8f9fa;
     --background-dark: #121a2b;
-    /* Responsive header height values */
-    --header-height-desktop: 140px;
-    --header-height-tablet: 120px;
-    --header-height-mobile: 100px;
-    --header-height: var(--header-height-desktop); /* Default value, will be overridden */
+    /* Adjusted header height values */
+    --header-height-desktop: 130px; /* Top blue bar + white nav bar */
+    --header-height-tablet: 110px;
+    --header-height-mobile: 95px;
+    --header-height: var(--header-height-desktop);
     --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
     --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -354,22 +354,25 @@ const COMPONENTS_CSS = `
     background-color: var(--secondary-color);
 }
 
+/* IMPROVED HEADER MAIN - FIXED HEIGHT & BETTER ALIGNMENT */
 .header-main {
     background-color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 3rem;
+    padding: 0 3rem; /* Horizontal padding only */
     box-shadow: var(--shadow-small);
     transition: var(--transition-fast);
+    height: 60px; /* Fixed height for consistency */
 }
 
 .header-main.scrolled {
-    padding: 0.7rem 3rem;
+    height: 55px; /* Slightly smaller when scrolled */
 }
 
-/* ENHANCED NAVIGATION STYLES */
+/* ENHANCED NAVIGATION STYLES - WITH BETTER ALIGNMENT */
 .main-nav {
+    height: 100%;
     transition: var(--transition-fast);
 }
 
@@ -378,30 +381,39 @@ const COMPONENTS_CSS = `
     list-style: none;
     margin: 0;
     padding: 0;
+    height: 100%;
+    align-items: center; /* Center all items vertically */
 }
 
 .main-nav ul li {
-    margin: 0 1rem;
+    margin: 0 0.8rem;
     position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .main-nav ul li a {
     color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
-    padding: 0.5rem 0;
-    transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
-    font-size: 0.95rem;
-    display: inline-flex;
+    font-size: 0.9rem;
+    display: flex;
     align-items: center;
+    height: 100%;
+    padding: 0 0.2rem;
+    transition: all 0.3s ease;
 }
 
 /* Icon in main menu */
 .menu-icon {
-    margin-right: 0.5rem;
-    font-size: 1.2rem;
+    margin-right: 0.4rem;
+    font-size: 1.1rem;
     opacity: 0.8;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .main-nav ul li a:hover {
@@ -417,7 +429,7 @@ const COMPONENTS_CSS = `
 .main-nav ul li a::after {
     content: '';
     position: absolute;
-    bottom: -3px;
+    bottom: 0;
     left: 0;
     width: 0;
     height: 2px;
@@ -447,13 +459,16 @@ const COMPONENTS_CSS = `
 .main-nav ul li.has-dropdown > a {
     display: flex;
     align-items: center;
-    padding-right: 1.2rem;
+    padding-right: 0.8rem;
 }
 
 .main-nav ul li.has-dropdown > a .dropdown-icon {
     margin-left: 0.3rem;
     font-size: 1rem;
     transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .main-nav ul li.has-dropdown:hover > a .dropdown-icon {
@@ -585,18 +600,21 @@ const COMPONENTS_CSS = `
     margin: 0.5rem 0;
 }
 
-/* Search Bar styles */
+/* Search Bar styles - IMPROVED */
 .search-bar {
     position: relative;
     width: 250px;
-    transition: var(--transition-fast);
+    height: 36px; /* Fixed height */
+    display: flex;
+    align-items: center;
 }
 
 .search-bar input {
     width: 100%;
-    padding: 0.7rem 1rem 0.7rem 2.5rem;
+    height: 36px; /* Fixed height */
+    padding: 0 1rem 0 2.5rem;
     border: 1px solid #e0e0e0;
-    border-radius: 30px;
+    border-radius: 18px; /* Half the height for perfect roundness */
     outline: none;
     transition: var(--transition-fast);
     font-family: 'Poppins', sans-serif;
@@ -666,15 +684,15 @@ const COMPONENTS_CSS = `
 /* Mobile adjustments */
 @media (max-width: 1200px) {
     .main-nav ul li {
-        margin: 0 0.7rem;
+        margin: 0 0.6rem;
     }
     
     .main-nav ul li a {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
     
     .menu-icon {
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
     
     .search-bar {
@@ -717,17 +735,20 @@ const COMPONENTS_CSS = `
     .main-nav ul {
         flex-direction: column;
         padding: 1rem 0;
+        height: auto;
     }
     
     .main-nav ul li {
         margin: 0;
         width: 100%;
+        height: auto;
     }
     
     .main-nav ul li a {
         display: flex;
         padding: 1rem 2rem;
         border-bottom: 1px solid rgba(0,0,0,0.05);
+        height: auto;
     }
     
     .main-nav ul li a::after {
@@ -1496,7 +1517,7 @@ function initializeComponents() {
     window.addEventListener('resize', updateHeaderHeight);
 }
 
-// Update header height based on screen size
+// Update header height based on screen size - IMPROVED
 function updateHeaderHeight() {
     let headerHeight;
     if (window.innerWidth <= 768) {
@@ -1508,6 +1529,15 @@ function updateHeaderHeight() {
     }
     
     document.body.style.paddingTop = headerHeight;
+    
+    // Also update the main nav position for mobile
+    if (window.innerWidth <= 992) {
+        const mainNav = document.getElementById('main-nav');
+        if (mainNav) {
+            mainNav.style.top = headerHeight;
+            mainNav.style.height = `calc(100vh - ${headerHeight})`;
+        }
+    }
 }
 
 // Intro Screen Animation and Removal
