@@ -363,11 +363,16 @@ const COMPONENTS_CSS = `
     padding: 0 3rem; /* Horizontal padding only */
     box-shadow: var(--shadow-small);
     transition: var(--transition-fast);
-    height: 60px; /* Fixed height for consistency */
+    height: 60px !important; /* Fixed height for consistency with !important to enforce */
+    min-height: 60px;
+    max-height: 60px;
+    overflow: visible;
 }
 
 .header-main.scrolled {
-    height: 55px; /* Slightly smaller when scrolled */
+    height: 55px !important; /* Slightly smaller when scrolled */
+    min-height: 55px;
+    max-height: 55px;
 }
 
 /* ENHANCED NAVIGATION STYLES - WITH BETTER ALIGNMENT */
@@ -397,12 +402,15 @@ const COMPONENTS_CSS = `
     color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
-    font-size: 0.9rem;
+    font-size: 0.85rem; /* Slightly smaller font for better fit */
     display: flex;
     align-items: center;
     height: 100%;
     padding: 0 0.2rem;
     transition: all 0.3s ease;
+    white-space: nowrap; /* Critical: Prevent text wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Icon in main menu */
@@ -414,6 +422,7 @@ const COMPONENTS_CSS = `
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0; /* Prevent icon from shrinking */
 }
 
 .main-nav ul li a:hover {
@@ -469,6 +478,7 @@ const COMPONENTS_CSS = `
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0; /* Prevent dropdown icon from shrinking */
 }
 
 .main-nav ul li.has-dropdown:hover > a .dropdown-icon {
@@ -573,6 +583,7 @@ const COMPONENTS_CSS = `
     color: var(--text-secondary) !important;
     opacity: 0.7 !important;
     transition: all 0.3s ease !important;
+    flex-shrink: 0 !important; /* Prevent icon from shrinking */
 }
 
 .dropdown-menu li a:hover {
@@ -684,11 +695,11 @@ const COMPONENTS_CSS = `
 /* Mobile adjustments */
 @media (max-width: 1200px) {
     .main-nav ul li {
-        margin: 0 0.6rem;
+        margin: 0 0.3rem; /* Reduced margin for better fit */
     }
     
     .main-nav ul li a {
-        font-size: 0.85rem;
+        font-size: 0.8rem; /* Smaller font size */
     }
     
     .menu-icon {
@@ -749,6 +760,7 @@ const COMPONENTS_CSS = `
         padding: 1rem 2rem;
         border-bottom: 1px solid rgba(0,0,0,0.05);
         height: auto;
+        white-space: normal; /* Allow wrapping in mobile menu */
     }
     
     .main-nav ul li a::after {
