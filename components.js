@@ -1,3 +1,5 @@
+// COMPONENTS.JS - Combined Header/Footer components with installation code
+// Simply include this file in your HTML pages to automatically load the header and footer
 
 // CSS for header and footer as a string
 const COMPONENTS_CSS = `
@@ -345,11 +347,14 @@ const COMPONENTS_CSS = `
     list-style: none;
     margin: 0;
     padding: 0;
+    align-items: center;
 }
 
 .main-nav ul li {
     margin: 0 1rem;
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .main-nav ul li a {
@@ -359,8 +364,10 @@ const COMPONENTS_CSS = `
     padding: 0.5rem 0;
     transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
     font-size: 0.95rem;
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    height: 40px;
+    line-height: 1;
 }
 
 /* Icon in main menu */
@@ -369,6 +376,10 @@ const COMPONENTS_CSS = `
     font-size: 1.2rem;
     opacity: 0.8;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
 }
 
 .main-nav ul li a:hover {
@@ -415,12 +426,16 @@ const COMPONENTS_CSS = `
     display: flex;
     align-items: center;
     padding-right: 1.2rem;
+    height: 40px;
 }
 
 .main-nav ul li.has-dropdown > a .dropdown-icon {
     margin-left: 0.3rem;
     font-size: 1rem;
     transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+    display: flex;
+    align-items: center;
+    height: 24px;
 }
 
 .main-nav ul li.has-dropdown:hover > a .dropdown-icon {
@@ -556,6 +571,8 @@ const COMPONENTS_CSS = `
 .search-bar {
     position: relative;
     width: 250px;
+    display: flex;
+    align-items: center;
 }
 
 .search-bar input {
@@ -957,6 +974,33 @@ footer {
     .logo-subtitle {
         font-size: 0.75rem;
     }
+    
+    /* Ensure header items are properly aligned when wrapped */
+    .header-main {
+        flex-wrap: wrap;
+        align-items: center;
+        row-gap: 8px; /* Spacing between rows if header wraps */
+    }
+    
+    /* Fix for main nav wrapping */
+    .main-nav {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Better alignment when menu wraps */
+    .main-nav ul {
+        flex-wrap: wrap;
+        row-gap: 5px; /* Space between wrapped menu rows */
+        align-items: center;
+        justify-content: flex-start;
+    }
+    
+    /* Ensure all dropdown menus have consistent position */
+    .dropdown-menu {
+        top: 40px !important; /* Consistent distance from parent */
+    }
 }
 
 /* Additional fixes for even smaller screens but before mobile breakpoint */
@@ -1168,7 +1212,6 @@ body {
 }
 `;
 
-// The rest of your components.js file stays the same...
 // HTML Components as JavaScript strings
 const HEADER_HTML = `
 <div class="intro-screen" id="intro-screen">
