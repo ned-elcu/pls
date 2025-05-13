@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Include components.js first to load shared styles -->
-    <script src="../components.js"></script>
+    <script src="../../components.js"></script>
     
     <style>
         :root {
@@ -178,181 +178,6 @@
             font-size: 1.125rem;
         }
 
-        /* Hero Section */
-        .hero-section {
-            min-height: 100vh;
-            background-color: var(--primary-color);
-            background-image: var(--background-gradient);
-            color: white;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            padding-top: var(--header-height);
-        }
-        
-        .hero-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0.15;
-            z-index: 0;
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 650px;
-            padding: 2rem 0 4rem;
-        }
-        
-        .hero-badge {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.15);
-            color: var(--accent-color);
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 0.5rem 1.25rem;
-            border-radius: 50px;
-            margin-bottom: 1.5rem;
-            backdrop-filter: blur(5px);
-            animation: fadeInUp 0.8s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-            color: white;
-            position: relative;
-            animation: fadeInUp 0.8s ease 0.2s forwards;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        
-        .hero-title span {
-            color: var(--accent-color);
-            position: relative;
-            display: inline-block;
-        }
-        
-        .hero-title span::after {
-            content: '';
-            position: absolute;
-            bottom: 5px;
-            left: 0;
-            width: 100%;
-            height: 8px;
-            background-color: var(--accent-color);
-            opacity: 0.3;
-            border-radius: 4px;
-        }
-        
-        .hero-description {
-            font-size: 1.125rem;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 2.5rem;
-            animation: fadeInUp 0.8s ease 0.4s forwards;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-            animation: fadeInUp 0.8s ease 0.6s forwards;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        
-        .hero-image {
-            position: absolute;
-            top: 50%;
-            right: 0;
-            transform: translateY(-50%);
-            max-width: 45%;
-            max-height: 80%;
-            z-index: 1;
-            animation: fadeInRight 1s ease 0.8s forwards;
-            opacity: 0;
-        }
-        
-        .scroll-down {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: white;
-            text-decoration: none;
-            animation: fadeIn 1s ease 1s forwards;
-            opacity: 0;
-        }
-        
-        .scroll-text {
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
-        
-        .scroll-icon {
-            width: 30px;
-            height: 50px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
-            position: relative;
-            display: flex;
-            justify-content: center;
-        }
-        
-        .scroll-icon::before {
-            content: '';
-            width: 4px;
-            height: 10px;
-            background-color: var(--accent-color);
-            border-radius: 2px;
-            position: absolute;
-            top: 10px;
-            animation: scrollAnim 2.5s infinite;
-        }
-        
-        .shape-divider {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            overflow: hidden;
-            line-height: 0;
-            z-index: 1;
-        }
-
-        .shape-divider svg {
-            position: relative;
-            display: block;
-            width: calc(100% + 1.3px);
-            height: 90px;
-        }
-
-        .shape-divider .shape-fill {
-            fill: #FFFFFF;
-        }
-
         /* Page Title Section */
         .page-title-section {
             background-color: var(--primary-color);
@@ -459,7 +284,7 @@
 
         /* Tabs Navigation */
         .main-tabs-container {
-            margin: -40px auto 5rem;
+            margin: -40px auto 0;
             position: relative;
             z-index: 10;
         }
@@ -1325,127 +1150,10 @@
             gap: 1.5rem;
         }
 
-        /* Contact Section */
-        .contact-container {
-            display: flex;
-            gap: 3rem;
-            align-items: flex-start;
-        }
-        
-        .contact-info {
-            flex: 1;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-        }
-        
-        .contact-icon {
-            width: 50px;
-            height: 50px;
-            background-color: rgba(30, 136, 229, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            color: var(--secondary-color);
-            font-size: 1.25rem;
-            flex-shrink: 0;
-        }
-        
-        .contact-text h4 {
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
-        }
-        
-        .contact-text p {
-            color: var(--text-secondary);
-            margin-bottom: 0;
-        }
-        
-        .contact-form {
-            flex: 1;
-            background-color: white;
-            padding: 2.5rem;
-            border-radius: var(--border-radius-large);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        .form-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: var(--border-radius-small);
-            font-family: inherit;
-            font-size: 1rem;
-            transition: var(--transition-fast);
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
-        }
-        
-        textarea.form-control {
-            min-height: 120px;
-            resize: vertical;
-        }
-        
-        .form-submit {
-            width: 100%;
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: var(--border-radius-small);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .form-submit:hover {
-            background-color: var(--secondary-light);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(30, 136, 229, 0.3);
-        }
-        
-        .form-submit i {
-            margin-left: 0.5rem;
-        }
-
         /* Responsive */
         @media (max-width: 1200px) {
             .container {
                 max-width: 960px;
-            }
-            
-            .hero-title {
-                font-size: 3rem;
             }
             
             .section-title {
@@ -1464,22 +1172,6 @@
         @media (max-width: 992px) {
             .container {
                 max-width: 720px;
-            }
-            
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .hero-image {
-                display: none;
-            }
-            
-            .hero-content {
-                max-width: 100%;
-            }
-            
-            .contact-container {
-                flex-direction: column;
             }
             
             .timeline-line {
@@ -1535,10 +1227,6 @@
                 max-width: 540px;
             }
             
-            .hero-title {
-                font-size: 2rem;
-            }
-            
             .section-title {
                 font-size: 1.75rem;
             }
@@ -1565,16 +1253,6 @@
             .container {
                 max-width: 100%;
                 padding: 0 15px;
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
-                gap: 1rem;
-                width: 100%;
-            }
-            
-            .hero-buttons .btn {
-                width: 100%;
             }
             
             .section {
@@ -1673,18 +1351,18 @@
     <div class="container">
         <div class="main-tabs-container">
             <div class="main-tabs">
-                <a href="cariere.html" class="main-tab" id="tab-cariere">
+                <button class="main-tab active" data-tab="cariere">
                     <i class="material-icons">work</i> Cariere
-                </a>
-                <a href="voluntariat.html" class="main-tab" id="tab-voluntariat">
+                </button>
+                <button class="main-tab" data-tab="voluntariat">
                     <i class="material-icons">volunteer_activism</i> Voluntariat
-                </a>
-                <a href="cerinte.html" class="main-tab" id="tab-cerinte">
+                </button>
+                <button class="main-tab" data-tab="cerinte">
                     <i class="material-icons">assignment</i> Cerințe
-                </a>
-                <a href="beneficii.html" class="main-tab" id="tab-beneficii">
+                </button>
+                <button class="main-tab" data-tab="beneficii">
                     <i class="material-icons">stars</i> Beneficii
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -1692,7 +1370,7 @@
     <!-- Main Content -->
     <section class="content-section">
         <div class="container">
-            <!-- Content will change based on page -->
+            <!-- Cariere Tab Content -->
             <div class="main-tab-content active" id="cariere">
                 <h2 class="section-heading">Oportunități de Carieră</h2>
                 <div class="section-intro">
@@ -1717,26 +1395,6 @@
                         </div>
                         <h3 class="feature-title">Polițist Local - Circulație Rutieră</h3>
                         <p class="feature-text">Asigură fluența circulației pe drumurile publice din municipiu, verifică respectarea normelor legale privind oprirea și staționarea autovehiculelor.</p>
-                        <a href="#" class="arrow-link">Detalii și aplicare <i class="material-icons">arrow_forward</i></a>
-                    </div>
-
-                    <!-- Job Card 3 -->
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="material-icons">business</i>
-                        </div>
-                        <h3 class="feature-title">Polițist Local - Control Comercial</h3>
-                        <p class="feature-text">Verifică respectarea normelor legale privind desfășurarea comerțului stradal și a activităților comerciale în zone publice și private.</p>
-                        <a href="#" class="arrow-link">Detalii și aplicare <i class="material-icons">arrow_forward</i></a>
-                    </div>
-
-                    <!-- Job Card 4 -->
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="material-icons">construction</i>
-                        </div>
-                        <h3 class="feature-title">Polițist Local - Disciplina în Construcții</h3>
-                        <p class="feature-text">Verifică respectarea normelor legale privind lucrările de construcții, a normelor legale privind afișajul publicitar și respectarea disciplinei în domeniu.</p>
                         <a href="#" class="arrow-link">Detalii și aplicare <i class="material-icons">arrow_forward</i></a>
                     </div>
                 </div>
@@ -1837,6 +1495,371 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Voluntariat Tab Content -->
+            <div class="main-tab-content" id="voluntariat">
+                <h2 class="section-heading">Programul de Voluntariat</h2>
+                <div class="section-intro">
+                    <p>Programul nostru de voluntariat oferă oportunități valoroase pentru cei care doresc să contribuie la siguranța și bunăstarea comunității, acumulând în același timp experiență practică.</p>
+                </div>
+
+                <div class="features-grid">
+                    <!-- Volunteer Opportunity 1 -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="material-icons">school</i>
+                        </div>
+                        <h3 class="feature-title">Siguranța în școli</h3>
+                        <p class="feature-text">Participă la programele de prevenire și educație în școlile din municipiu, ajutând la crearea unui mediu școlar sigur pentru toți elevii.</p>
+                        <a href="#" class="arrow-link">Află mai multe <i class="material-icons">arrow_forward</i></a>
+                    </div>
+
+                    <!-- Volunteer Opportunity 2 -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="material-icons">event</i>
+                        </div>
+                        <h3 class="feature-title">Asistență la evenimente</h3>
+                        <p class="feature-text">Sprijină activitățile Poliției Locale în cadrul evenimentelor publice, contribuind la desfășurarea acestora în condiții de siguranță.</p>
+                        <a href="#" class="arrow-link">Află mai multe <i class="material-icons">arrow_forward</i></a>
+                    </div>
+
+                    <!-- Volunteer Opportunity 3 -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="material-icons">campaign</i>
+                        </div>
+                        <h3 class="feature-title">Campanii de informare</h3>
+                        <p class="feature-text">Implică-te în campaniile de conștientizare și informare a cetățenilor cu privire la normele de conviețuire socială și prevenirea infracționalității.</p>
+                        <a href="#" class="arrow-link">Află mai multe <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                </div>
+
+                <!-- Volunteer Benefits -->
+                <h2 class="section-heading" style="margin-top: 4rem;">Beneficii pentru voluntari</h2>
+                <div class="section-intro">
+                    <p>Programul nostru de voluntariat îți oferă multiple avantaje și oportunități de dezvoltare personală și profesională.</p>
+                </div>
+
+                <div class="benefits-container">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">psychology</i>
+                        </div>
+                        <h3 class="benefit-title">Dezvoltare personală</h3>
+                        <p class="benefit-text">Dobândește abilități și competențe valoroase prin participarea la activități practice și training-uri specializate.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">groups</i>
+                        </div>
+                        <h3 class="benefit-title">Networking</h3>
+                        <p class="benefit-text">Construiește relații profesionale și fă parte dintr-o rețea de profesioniști dedicați siguranței publice.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">insights</i>
+                        </div>
+                        <h3 class="benefit-title">Experiență practică</h3>
+                        <p class="benefit-text">Câștigă experiență directă în domeniul ordinii publice și înțelege mai bine funcționarea poliției locale.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">badge</i>
+                        </div>
+                        <h3 class="benefit-title">Certificare</h3>
+                        <p class="benefit-text">Primește certificate de voluntariat care pot reprezenta un avantaj în cariera ta profesională.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">priority_high</i>
+                        </div>
+                        <h3 class="benefit-title">Prioritate la angajare</h3>
+                        <p class="benefit-text">Voluntarii cu performanțe bune pot beneficia de prioritate în procesul de recrutare pentru posturile vacante.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">volunteer_activism</i>
+                        </div>
+                        <h3 class="benefit-title">Impact comunitar</h3>
+                        <p class="benefit-text">Contribuie direct la îmbunătățirea calității vieții în comunitatea ta și fii un agent al schimbării pozitive.</p>
+                    </div>
+                </div>
+                
+                <!-- How to Apply -->
+                <h2 class="section-heading" style="margin-top: 4rem;">Cum să te înscrii</h2>
+                <div class="section-intro">
+                    <p>Procesul de înscriere în programul de voluntariat este simplu și deschis tuturor persoanelor care doresc să contribuie la siguranța comunității.</p>
+                </div>
+                
+                <div class="process-container">
+                    <div class="process-line"></div>
+                    <div class="process-steps">
+                        <div class="process-step active">
+                            <div class="process-number">1</div>
+                            <h4 class="process-title">Completează formularul</h4>
+                            <p class="process-description">Descarcă și completează formularul de înscriere disponibil pe site-ul nostru.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="process-number">2</div>
+                            <h4 class="process-title">Depune documentele</h4>
+                            <p class="process-description">Transmite formularul împreună cu documentele solicitate la sediul instituției sau pe email.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="process-number">3</div>
+                            <h4 class="process-title">Participă la interviu</h4>
+                            <p class="process-description">Discută cu coordonatorul programului de voluntariat despre așteptările și motivația ta.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="process-number">4</div>
+                            <h4 class="process-title">Începe activitatea</h4>
+                            <p class="process-description">După acceptare, vei primi un program de activități și vei fi integrat în echipă.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cerinte Tab Content -->
+            <div class="main-tab-content" id="cerinte">
+                <h2 class="section-heading">Condiții de eligibilitate</h2>
+                <div class="section-intro">
+                    <p>Pentru a face parte din echipa Poliției Locale Slobozia, candidații trebuie să îndeplinească următoarele criterii generale și specifice.</p>
+                </div>
+
+                <div class="requirements-list">
+                    <!-- General Requirements -->
+                    <div class="requirement-card">
+                        <div class="requirement-number">1</div>
+                        <div class="requirement-content">
+                            <h4>Cetățenie și domiciliu</h4>
+                            <p>Să aibă cetățenia română și domiciliul în România, să cunoască limba română, scris și vorbit.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="requirement-card">
+                        <div class="requirement-number">2</div>
+                        <div class="requirement-content">
+                            <h4>Vârstă</h4>
+                            <p>Să aibă vârsta de minimum 18 ani împliniți.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="requirement-card">
+                        <div class="requirement-number">3</div>
+                        <div class="requirement-content">
+                            <h4>Capacitate deplină de exercițiu</h4>
+                            <p>Să aibă capacitate deplină de exercițiu și să fie apt din punct de vedere medical și psihologic.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="requirement-card">
+                        <div class="requirement-number">4</div>
+                        <div class="requirement-content">
+                            <h4>Studii</h4>
+                            <p>Să fie absolvenți de studii liceale, respectiv studii medii sau studii superioare cu diplomă de bacalaureat/licență, în funcție de postul vizat.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="requirement-card">
+                        <div class="requirement-number">5</div>
+                        <div class="requirement-content">
+                            <h4>Cazier judiciar</h4>
+                            <p>Să nu aibă antecedente penale sau să nu fie în curs de urmărire penală ori de judecată pentru săvârșirea de infracțiuni.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="requirement-card">
+                        <div class="requirement-number">6</div>
+                        <div class="requirement-content">
+                            <h4>Cerințe fizice</h4>
+                            <p>Să îndeplinească condițiile de înălțime, capacitate fizică și aptitudini, în funcție de necesitățile postului.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="requirement-card">
+                        <div class="requirement-number">7</div>
+                        <div class="requirement-content">
+                            <h4>Permis de conducere</h4>
+                            <p>Să dețină permis de conducere categoria B pentru anumite posturi, conform specificațiilor din fișa postului.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline for Officer Formation -->
+                <h2 class="section-heading" style="margin-top: 4rem;">Formare profesională</h2>
+                <div class="section-intro">
+                    <p>După angajare, polițiștii locali parcurg un program comprehensiv de formare profesională pentru dezvoltarea competențelor necesare.</p>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <span class="timeline-date">Etapa 1</span>
+                            <h4 class="timeline-title">Pregătire inițială</h4>
+                            <p class="timeline-text">Formare inițială în instituțiile de învățământ ale Ministerului Afacerilor Interne, pentru o perioadă de până la 3 luni, în funcție de specificul postului.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <span class="timeline-date">Etapa 2</span>
+                            <h4 class="timeline-title">Integrare și practică</h4>
+                            <p class="timeline-text">Program de integrare în cadrul departamentului și activități practice sub supervizarea unui mentor cu experiență.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <span class="timeline-date">Etapa 3</span>
+                            <h4 class="timeline-title">Dezvoltare specializată</h4>
+                            <p class="timeline-text">Training-uri specializate în funcție de domeniul de activitate și responsabilitățile specifice postului.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <span class="timeline-date">Etapa 4</span>
+                            <h4 class="timeline-title">Formare continuă</h4>
+                            <p class="timeline-text">Programe de dezvoltare profesională continuă, actualizare a cunoștințelor legislative și îmbunătățire a abilităților practice.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Physical Requirements -->
+                <h2 class="section-heading" style="margin-top: 4rem;">Probe fizice</h2>
+                <div class="section-intro">
+                    <p>Candidații pentru postul de polițist local trebuie să treacă probe de evaluare a capacității fizice care includ:</p>
+                    
+                    <ul style="margin: 1.5rem 0 0 2rem; list-style-type: disc;">
+                        <li>Alergare de viteză (50m)</li>
+                        <li>Alergare de rezistență (1000m pentru bărbați, 800m pentru femei)</li>
+                        <li>Flotări (număr minim diferențiat pe categorii de vârstă și gen)</li>
+                        <li>Abdomene (număr minim diferențiat pe categorii de vârstă și gen)</li>
+                        <li>Tracțiuni (pentru bărbați) sau menținere în atârnat (pentru femei)</li>
+                    </ul>
+                    
+                    <p style="margin-top: 1.5rem;">Baremurile specifice sunt anunțate în cadrul procedurii de recrutare. Recomandăm pregătirea fizică generală înainte de concurs, cu accent pe exerciții de forță și rezistență.</p>
+                </div>
+            </div>
+            
+            <!-- Beneficii Tab Content -->
+            <div class="main-tab-content" id="beneficii">
+                <h2 class="section-heading">Avantaje profesionale</h2>
+                <div class="section-intro">
+                    <p>O carieră în cadrul Poliției Locale Slobozia oferă multiple beneficii și oportunități de dezvoltare profesională și personală.</p>
+                </div>
+
+                <div class="benefits-container">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">local_atm</i>
+                        </div>
+                        <h3 class="benefit-title">Stabilitate financiară</h3>
+                        <p class="benefit-text">Pachet salarial competitiv, cu creșteri periodice și bonusuri pentru performanță.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">health_and_safety</i>
+                        </div>
+                        <h3 class="benefit-title">Asigurări de sănătate</h3>
+                        <p class="benefit-text">Acces la servicii medicale de calitate prin sisteme de asigurări complete pentru tine și familie.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">school</i>
+                        </div>
+                        <h3 class="benefit-title">Formare continuă</h3>
+                        <p class="benefit-text">Oportunități de dezvoltare și perfecționare profesională prin cursuri și training-uri specializate.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">trending_up</i>
+                        </div>
+                        <h3 class="benefit-title">Oportunități de avansare</h3>
+                        <p class="benefit-text">Posibilități clare de promovare și avansare în carieră, bazate pe performanță și competență.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">timer</i>
+                        </div>
+                        <h3 class="benefit-title">Program de lucru flexibil</h3>
+                        <p class="benefit-text">Sistem de ture planificate care permite un echilibru între viața profesională și cea personală.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="material-icons">fitness_center</i>
+                        </div>
+                        <h3 class="benefit-title">Facilități sportive</h3>
+                        <p class="benefit-text">Acces la sala de fitness și echipamente pentru menținerea condiției fizice optime.</p>
+                    </div>
+                </div>
+
+                <!-- Testimonials Section -->
+                <h2 class="section-heading" style="margin-top: 4rem;">Experiențe reale</h2>
+                <div class="section-intro">
+                    <p>Descoperă poveștile celor care au ales să facă parte din echipa Poliției Locale Slobozia și impactul pe care îl au în comunitate.</p>
+                </div>
+
+                <div class="testimonials-container">
+                    <div class="testimonials-slider">
+                        <div class="testimonial-item active">
+                            <div class="testimonial-content">
+                                <p>Lucrez în cadrul Poliției Locale Slobozia de peste 5 ani, iar această experiență mi-a oferit oportunitatea de a contribui direct la siguranța comunității mele. Fiecare zi aduce provocări noi și satisfacția de a face o diferență reală în viața oamenilor.</p>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-image">
+                                    <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Alexandru Popescu">
+                                </div>
+                                <h4 class="author-name">Alexandru Popescu</h4>
+                                <div class="author-title">Polițist Local - Ordine Publică</div>
+                            </div>
+                        </div>
+                        
+                        <div class="testimonial-item">
+                            <div class="testimonial-content">
+                                <p>Am început ca voluntar și am descoperit o pasiune pentru acest domeniu. Acum, ca angajat al Poliției Locale, pot spune că deciziile mele de zi cu zi fac orașul nostru un loc mai sigur pentru toți. Apreciez profesionalismul echipei și oportunitățile de dezvoltare.</p>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-image">
+                                    <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Maria Ionescu">
+                                </div>
+                                <h4 class="author-name">Maria Ionescu</h4>
+                                <div class="author-title">Polițist Local - Protecția Mediului</div>
+                            </div>
+                        </div>
+                        
+                        <div class="testimonial-item">
+                            <div class="testimonial-content">
+                                <p>După 10 ani de experiență în cadrul Poliției Locale Slobozia, pot afirma cu certitudine că această carieră mi-a oferit stabilitate, respect și satisfacția profesională pe care mi-am dorit-o. Formarea continuă și spiritul de echipă sunt valorile care ne definesc.</p>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-image">
+                                    <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Mihai Dumitrescu">
+                                </div>
+                                <h4 class="author-name">Mihai Dumitrescu</h4>
+                                <div class="author-title">Șef Serviciu Circulație Rutieră</div>
+                            </div>
+                        </div>
+                        
+                        <div class="testimonial-controls">
+                            <div class="testimonial-arrow prev">
+                                <i class="material-icons">arrow_back</i>
+                            </div>
+                            <div class="testimonial-arrow next">
+                                <i class="material-icons">arrow_forward</i>
+                            </div>
+                        </div>
+                        
+                        <div class="testimonial-indicators">
+                            <div class="testimonial-indicator active"></div>
+                            <div class="testimonial-indicator"></div>
+                            <div class="testimonial-indicator"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -1849,98 +1872,7 @@
                 <p class="cta-text">Fie că dorești să aplici pentru un post disponibil sau să te implici ca voluntar, suntem aici pentru a răspunde întrebărilor tale și a te ghida în acest proces.</p>
                 <div class="cta-buttons">
                     <a href="#" class="btn btn-primary btn-lg">Aplică acum <i class="material-icons">arrow_forward</i></a>
-                    <a href="#" class="btn btn-light btn-lg">Contactează-ne <i class="material-icons">arrow_forward</i></a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-heading">Contact</h2>
-            <div class="section-intro">
-                <p>Ai întrebări despre posturile disponibile sau despre programul de voluntariat? Echipa noastră îți stă la dispoziție pentru orice informații.</p>
-            </div>
-
-            <div class="contact-container">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="material-icons">location_on</i>
-                        </div>
-                        <div class="contact-text">
-                            <h4>Adresă</h4>
-                            <p>Bulevardul Matei Basarab, nr. 114, Slobozia, Județul Ialomița, România</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="material-icons">phone</i>
-                        </div>
-                        <div class="contact-text">
-                            <h4>Telefon</h4>
-                            <p>0243 955<br>0243 231 954</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="material-icons">email</i>
-                        </div>
-                        <div class="contact-text">
-                            <h4>Email</h4>
-                            <p>politia.locala@pcslobozia.ro<br>cariere@pcslobozia.ro</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="material-icons">schedule</i>
-                        </div>
-                        <div class="contact-text">
-                            <h4>Program</h4>
-                            <p>Luni - Vineri: 08:00 - 16:00<br>Dispecerat: 24/7</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="contact-form">
-                    <h3 class="form-title">Trimite-ne un mesaj</h3>
-                    <form>
-                        <div class="form-group">
-                            <label for="name" class="form-label">Nume și prenume</label>
-                            <input type="text" id="name" class="form-control" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" id="email" class="form-control" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="phone" class="form-label">Telefon</label>
-                            <input type="tel" id="phone" class="form-control">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="subject" class="form-label">Subiect</label>
-                            <select id="subject" class="form-control">
-                                <option value="careers">Informații cariere</option>
-                                <option value="volunteer">Program voluntariat</option>
-                                <option value="requirements">Cerințe și eligibilitate</option>
-                                <option value="other">Altele</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message" class="form-label">Mesaj</label>
-                            <textarea id="message" class="form-control" required></textarea>
-                        </div>
-                        
-                        <button type="submit" class="form-submit">Trimite mesajul <i class="material-icons">send</i></button>
-                    </form>
+                    <a href="tel:0243955" class="btn btn-light btn-lg">Contactează-ne <i class="material-icons">phone</i></a>
                 </div>
             </div>
         </div>
@@ -1952,20 +1884,23 @@
     <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set the active tab based on the current page
-            const currentPage = window.location.pathname.split('/').pop();
-            const tabLinks = document.querySelectorAll('.main-tab');
+            // Tabs functionality
+            const tabButtons = document.querySelectorAll('.main-tab');
+            const tabContents = document.querySelectorAll('.main-tab-content');
             
-            tabLinks.forEach(tab => {
-                if(currentPage.includes(tab.getAttribute('href'))) {
-                    tab.classList.add('active');
-                }
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to current tab and content
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
             });
-            
-            // If we're on the index or main page, set the first tab as active
-            if(currentPage === '' || currentPage === 'index.html' || !document.querySelector('.main-tab.active')) {
-                document.getElementById('tab-cariere').classList.add('active');
-            }
             
             // FAQ functionality
             const faqQuestions = document.querySelectorAll('.faq-question');
@@ -2004,23 +1939,60 @@
                 });
             });
             
-            // Smooth scroll for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const targetId = this.getAttribute('href');
-                    if (targetId === '#') return;
-                    
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 100,
-                            behavior: 'smooth'
-                        });
-                    }
+            // Testimonials slider
+            const testimonialItems = document.querySelectorAll('.testimonial-item');
+            const testimonialIndicators = document.querySelectorAll('.testimonial-indicator');
+            const prevBtn = document.querySelector('.testimonial-arrow.prev');
+            const nextBtn = document.querySelector('.testimonial-arrow.next');
+            let currentTestimonial = 0;
+            
+            function showTestimonial(index) {
+                // Hide all testimonials
+                testimonialItems.forEach(item => item.classList.remove('active'));
+                testimonialIndicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                // Show the selected testimonial
+                currentTestimonial = (index + testimonialItems.length) % testimonialItems.length;
+                testimonialItems[currentTestimonial].classList.add('active');
+                testimonialIndicators[currentTestimonial].classList.add('active');
+            }
+            
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    showTestimonial(currentTestimonial - 1);
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    showTestimonial(currentTestimonial + 1);
+                });
+            }
+            
+            testimonialIndicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    showTestimonial(index);
                 });
             });
+            
+            // Auto-switch testimonials every 5 seconds
+            let testimonialInterval = setInterval(() => {
+                showTestimonial(currentTestimonial + 1);
+            }, 5000);
+            
+            // Pause auto-switch when hovering over testimonial
+            const testimonialContainer = document.querySelector('.testimonials-container');
+            if (testimonialContainer) {
+                testimonialContainer.addEventListener('mouseenter', () => {
+                    clearInterval(testimonialInterval);
+                });
+                
+                testimonialContainer.addEventListener('mouseleave', () => {
+                    testimonialInterval = setInterval(() => {
+                        showTestimonial(currentTestimonial + 1);
+                    }, 5000);
+                });
+            }
         });
     </script>
 </body>
