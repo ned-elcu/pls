@@ -1,5 +1,3 @@
-// COMPONENTS.JS - Combined Header/Footer components with installation code
-// Simply include this file in your HTML pages to automatically load the header and footer
 
 // CSS for header and footer as a string
 const COMPONENTS_CSS = `
@@ -899,6 +897,98 @@ footer {
     opacity: 0.7;
 }
 
+/* 1920x1080 Resolution Optimizations */
+@media screen and (max-width: 1920px) {
+    /* Header padding adjustments */
+    .header-top,
+    .header-main {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+    
+    /* Reduced menu item spacing */
+    .main-nav ul li {
+        margin: 0 0.5rem;
+    }
+    
+    /* Smaller font size for menu items */
+    .main-nav ul li a {
+        font-size: 0.85rem;
+    }
+    
+    /* Smaller icons with reduced margin */
+    .menu-icon {
+        margin-right: 0.3rem;
+        font-size: 1.1rem;
+    }
+    
+    /* Reduce dropdown icon size */
+    .main-nav ul li.has-dropdown > a .dropdown-icon {
+        font-size: 0.9rem;
+    }
+    
+    /* Slightly narrow search bar */
+    .search-bar {
+        width: 220px;
+    }
+    
+    /* Reduce utility item spacing */
+    .utility-item {
+        margin-left: 1rem;
+        font-size: 0.75rem;
+    }
+    
+    /* Smaller emergency button */
+    .utility-item.emergency {
+        padding: 0.6rem 1rem;
+    }
+    
+    /* Reduce logo size */
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+    
+    .logo-badge {
+        width: 45px;
+        height: 52px;
+    }
+    
+    /* Reduce logo subtitle size */
+    .logo-subtitle {
+        font-size: 0.75rem;
+    }
+}
+
+/* Additional fixes for even smaller screens but before mobile breakpoint */
+@media screen and (max-width: 1366px) {
+    /* Further reduce padding */
+    .header-top,
+    .header-main {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* Tighter menu spacing */
+    .main-nav ul li {
+        margin: 0 0.3rem;
+    }
+    
+    /* Even smaller font */
+    .main-nav ul li a {
+        font-size: 0.8rem;
+    }
+    
+    /* Smaller search bar */
+    .search-bar {
+        width: 180px;
+    }
+    
+    /* Minimize icon margins */
+    .menu-icon {
+        margin-right: 0.2rem;
+    }
+}
+
 /* Mobile adjustments */
 @media (max-width: 992px) {
     .header-top,
@@ -1078,6 +1168,7 @@ body {
 }
 `;
 
+// The rest of your components.js file stays the same...
 // HTML Components as JavaScript strings
 const HEADER_HTML = `
 <div class="intro-screen" id="intro-screen">
