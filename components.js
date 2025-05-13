@@ -1,4 +1,9 @@
-// COMPONENTS.JS - Combined Header/Footer components with installation code
+/* Completely revised dropdown styling */
+.dropdown-menu {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    min-width: 280px !important;// COMPONENTS.JS - Combined Header/Footer components with installation code
 // Simply include this file in your HTML pages to automatically load the header and footer
 
 // CSS for header and footer as a string
@@ -504,7 +509,7 @@ const COMPONENTS_CSS = `
     transform: rotate(180deg);
 }
 
-/* Enhanced dropdown styling - FIXED */
+/* Enhanced dropdown styling - COMPLETE FIX */
 .dropdown-menu {
     position: absolute !important;
     top: 100% !important;
@@ -518,18 +523,15 @@ const COMPONENTS_CSS = `
     margin-top: 0.5rem !important;
     border-radius: 8px !important;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
-    z-index: 1000 !important;
     visibility: hidden !important;
     opacity: 0 !important;
     transform: translateY(15px) !important;
     transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) !important;
     overflow: visible !important;
-    /* FIX: Increased z-index to ensure it's above other elements */
     z-index: 10000 !important;
-    /* FIX: Ensure proper pointerEvents so hover works correctly */
     pointer-events: none !important;
-    /* FIX: Ensure continuous panel with no gaps between sections */
-    padding-bottom: 0 !important;
+    /* Critical: Force SOLID white background for entire dropdown */
+    background-color: white !important;
 }
 
 /* FIX: Properly show dropdown on hover */
@@ -553,7 +555,7 @@ const COMPONENTS_CSS = `
     border-bottom: 8px solid white;
 }
 
-/* Group headers in dropdown */
+/* Group headers in dropdown - FIXED WITH SOLID BACKGROUND */
 .dropdown-group-header {
     padding: 0.5rem 1.5rem;
     font-size: 0.75rem;
@@ -564,29 +566,29 @@ const COMPONENTS_CSS = `
     margin-top: 0.5rem;
     margin-bottom: 0;
     opacity: 0.7;
-    background-color: white; /* Ensure consistent background */
+    background-color: white !important; /* Critical: Force WHITE background */
 }
 
-/* Group styling in dropdown */
-.dropdown-group-1 {
-    background-color: var(--menu-group-1);
-    /* Ensure no gaps between groups */
-    margin: 0;
-    padding: 0;
+/* Force white background on ALL dropdown elements */
+.dropdown-menu,
+.dropdown-menu > *,
+.dropdown-menu li,
+.dropdown-menu div,
+.dropdown-group-header,
+.dropdown-group-1,
+.dropdown-group-2,
+.dropdown-group-3,
+.dropdown-menu li a {
+    background-color: white !important;
 }
 
-.dropdown-group-2 {
-    background-color: var(--menu-group-2);
-    /* Ensure no gaps between groups */
-    margin: 0;
-    padding: 0;
-}
-
+/* Group styling - all with WHITE background */
+.dropdown-group-1, 
+.dropdown-group-2, 
 .dropdown-group-3 {
-    background-color: var(--menu-group-3);
-    /* Ensure no gaps between groups */
-    margin: 0;
-    padding: 0;
+    background-color: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .dropdown-menu li {
@@ -602,7 +604,18 @@ const COMPONENTS_CSS = `
     border-bottom: none !important;
 }
 
-/* Dropdown menu item styling - Allow wrapping */
+/* Dropdown menu item styling - CRITICAL FIX FOR BACKGROUNDS */
+.dropdown-menu li {
+    display: block !important;
+    width: 100% !important;
+    float: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important; /* Override height constraints */
+    background-color: white !important; /* CRITICAL: Force background */
+}
+
+/* Dropdown menu item links - CRITICAL FIX FOR BACKGROUNDS */
 .dropdown-menu li a {
     display: flex !important;
     align-items: center !important;
@@ -615,7 +628,8 @@ const COMPONENTS_CSS = `
     transition: all 0.3s ease !important;
     border-left: 3px solid transparent !important;
     white-space: normal !important; /* Allow wrapping in dropdown items */
-    height: auto !important; /* FIX: Override height constraints for dropdown links */
+    height: auto !important; /* Override height constraints for dropdown links */
+    background-color: white !important; /* CRITICAL: Force background */
 }
 
 /* Icon in dropdown menu */
@@ -1397,26 +1411,23 @@ const HEADER_HTML = `
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
-                        <!-- FIX: Modified structure to ensure continuous background -->
-                        <div style="background-color: white;">
-                            <div class="dropdown-group-header">Financiare</div>
-                            <div class="dropdown-group-1">
-                                <li><a href="/pls/transparenta/financiara/#raportare-salariala"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
-                                <li><a href="/pls/transparenta/financiara/#bilanturi-bugete"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
-                                <li><a href="/pls/transparenta/financiara/#program-achizitii"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
-                            </div>
-                            <div class="dropdown-group-header">Transparență</div>
-                            <div class="dropdown-group-2">
-                                <li><a href="/pls/transparenta/#declaratii-interese"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
-                                <li><a href="/pls/transparenta/#declaratii-avere"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
-                                <li><a href="/pls/transparenta/#rapoarte-544"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
-                                <li><a href="/pls/transparenta/documente"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
-                            </div>
-                            <div class="dropdown-group-header">Dezvoltare</div>
-                            <div class="dropdown-group-3">
-                                <li><a href="/pls/transparenta/formare"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
-                                <li><a href="/pls/transparenta/cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
-                            </div>
+                        <div class="dropdown-group-header">Financiare</div>
+                        <div class="dropdown-group-1">
+                            <li><a href="/pls/transparenta/financiara/#raportare-salariala"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
+                            <li><a href="/pls/transparenta/financiara/#bilanturi-bugete"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
+                            <li><a href="/pls/transparenta/financiara/#program-achizitii"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
+                        </div>
+                        <div class="dropdown-group-header">Transparență</div>
+                        <div class="dropdown-group-2">
+                            <li><a href="/pls/transparenta/#declaratii-interese"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
+                            <li><a href="/pls/transparenta/#declaratii-avere"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
+                            <li><a href="/pls/transparenta/#rapoarte-544"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
+                            <li><a href="/pls/transparenta/documente"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
+                        </div>
+                        <div class="dropdown-group-header">Dezvoltare</div>
+                        <div class="dropdown-group-3">
+                            <li><a href="/pls/transparenta/formare"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
+                            <li><a href="/pls/transparenta/cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
                         </div>
                     </ul>
                 </li>
