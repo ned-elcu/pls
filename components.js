@@ -1,4 +1,4 @@
-// COMPONENTS.JS - Combined Header/Footer components with installation code
+// COMPONENTS.JS - Fixed version without header size changes on scroll
 // Simply include this file in your HTML pages to automatically load the header and footer
 
 // CSS for header and footer as a string
@@ -178,7 +178,7 @@ const COMPONENTS_CSS = `
     justify-content: space-between;
     align-items: center;
     padding: 0.8rem 3rem;
-    transition: var(--transition-fast);
+    transition: background-color 0.3s ease;
     position: relative;
     overflow: hidden;
 }
@@ -196,7 +196,8 @@ const COMPONENTS_CSS = `
 }
 
 .header-top.scrolled {
-    padding: 0.5rem 3rem;
+    /* Removed size-changing properties */
+    background-color: var(--primary-dark);
 }
 
 .logo {
@@ -334,11 +335,12 @@ const COMPONENTS_CSS = `
     align-items: center;
     padding: 1rem 3rem;
     box-shadow: var(--shadow-small);
-    transition: var(--transition-fast);
+    transition: background-color 0.3s ease;
 }
 
 .header-main.scrolled {
-    padding: 0.7rem 3rem;
+    /* Removed size-changing properties */
+    box-shadow: var(--shadow-medium);
 }
 
 /* ENHANCED NAVIGATION STYLES */
@@ -1210,6 +1212,40 @@ body {
     vertical-align: middle;
     line-height: 1;
 }
+
+/* Disable header size changes on scroll */
+.header-top.scrolled,
+.header-top {
+    padding: 0.8rem 3rem !important; /* Use the same padding regardless of scroll state */
+    transition: background-color 0.3s ease !important; /* Only transition color changes, not size */
+}
+
+.header-main.scrolled,
+.header-main {
+    padding: 1rem 3rem !important; /* Use the same padding regardless of scroll state */
+    transition: background-color 0.3s ease !important; /* Only transition color changes, not size */
+}
+
+/* Maintain consistent padding at different screen sizes */
+@media screen and (max-width: 1920px) {
+    .header-top.scrolled,
+    .header-top,
+    .header-main.scrolled,
+    .header-main {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+@media screen and (max-width: 1366px) {
+    .header-top.scrolled,
+    .header-top,
+    .header-main.scrolled,
+    .header-main {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
 `;
 
 // HTML Components as JavaScript strings
@@ -1472,7 +1508,7 @@ function initializeComponents() {
     // Initialize intro screen
     initIntroScreen();
     
-    // Initialize header effects
+    // Initialize header effects - modified to keep consistent size
     initHeaderEffects();
     
     // Initialize mobile menu
@@ -1498,7 +1534,7 @@ function initIntroScreen() {
     }
 }
 
-// Header scroll effect
+// Header scroll effect - MODIFIED: now only changes background color, not size
 function initHeaderEffects() {
     const headerTop = document.getElementById('header-top');
     const headerMain = document.getElementById('header-main');
