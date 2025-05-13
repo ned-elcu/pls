@@ -528,6 +528,8 @@ const COMPONENTS_CSS = `
     z-index: 10000 !important;
     /* FIX: Ensure proper pointerEvents so hover works correctly */
     pointer-events: none !important;
+    /* FIX: Ensure continuous panel with no gaps between sections */
+    padding-bottom: 0 !important;
 }
 
 /* FIX: Properly show dropdown on hover */
@@ -560,20 +562,31 @@ const COMPONENTS_CSS = `
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 0.5rem;
+    margin-bottom: 0;
     opacity: 0.7;
+    background-color: white; /* Ensure consistent background */
 }
 
 /* Group styling in dropdown */
 .dropdown-group-1 {
     background-color: var(--menu-group-1);
+    /* Ensure no gaps between groups */
+    margin: 0;
+    padding: 0;
 }
 
 .dropdown-group-2 {
     background-color: var(--menu-group-2);
+    /* Ensure no gaps between groups */
+    margin: 0;
+    padding: 0;
 }
 
 .dropdown-group-3 {
     background-color: var(--menu-group-3);
+    /* Ensure no gaps between groups */
+    margin: 0;
+    padding: 0;
 }
 
 .dropdown-menu li {
@@ -1384,23 +1397,26 @@ const HEADER_HTML = `
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
-                        <div class="dropdown-group-header">Financiare</div>
-                        <div class="dropdown-group-1">
-                            <li><a href="/pls/transparenta/financiara/#raportare-salariala"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
-                            <li><a href="/pls/transparenta/financiara/#bilanturi-bugete"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
-                            <li><a href="/pls/transparenta/financiara/#program-achizitii"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
-                        </div>
-                        <div class="dropdown-group-header">Transparență</div>
-                        <div class="dropdown-group-2">
-                            <li><a href="/pls/transparenta/#declaratii-interese"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
-                            <li><a href="/pls/transparenta/#declaratii-avere"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
-                            <li><a href="/pls/transparenta/#rapoarte-544"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
-                            <li><a href="/pls/transparenta/documente"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
-                        </div>
-                        <div class="dropdown-group-header">Dezvoltare</div>
-                        <div class="dropdown-group-3">
-                            <li><a href="/pls/transparenta/formare"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
-                            <li><a href="/pls/transparenta/cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
+                        <!-- FIX: Modified structure to ensure continuous background -->
+                        <div style="background-color: white;">
+                            <div class="dropdown-group-header">Financiare</div>
+                            <div class="dropdown-group-1">
+                                <li><a href="/pls/transparenta/financiara/#raportare-salariala"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
+                                <li><a href="/pls/transparenta/financiara/#bilanturi-bugete"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
+                                <li><a href="/pls/transparenta/financiara/#program-achizitii"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
+                            </div>
+                            <div class="dropdown-group-header">Transparență</div>
+                            <div class="dropdown-group-2">
+                                <li><a href="/pls/transparenta/#declaratii-interese"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
+                                <li><a href="/pls/transparenta/#declaratii-avere"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
+                                <li><a href="/pls/transparenta/#rapoarte-544"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
+                                <li><a href="/pls/transparenta/documente"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
+                            </div>
+                            <div class="dropdown-group-header">Dezvoltare</div>
+                            <div class="dropdown-group-3">
+                                <li><a href="/pls/transparenta/formare"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
+                                <li><a href="/pls/transparenta/cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Raport privind declararea cadourilor</a></li>
+                            </div>
                         </div>
                     </ul>
                 </li>
@@ -1664,7 +1680,20 @@ function initMobileMenu() {
 function initDropdownMenu() {
     const dropdownItems = document.querySelectorAll('.main-nav .has-dropdown');
     
+    // Fix: Add hover reset to ensure continuous hover experience
     dropdownItems.forEach(item => {
+        // Find all sub-elements that might interrupt hover
+        const groupHeaders = item.querySelectorAll('.dropdown-group-header');
+        const groupDivs = item.querySelectorAll('[class^="dropdown-group-"]');
+        
+        // Make all interior elements pass through hover events to parent
+        [...groupHeaders, ...groupDivs].forEach(el => {
+            el.addEventListener('mouseenter', function(e) {
+                // Prevent hover state loss
+                e.stopPropagation();
+            });
+        });
+        
         item.addEventListener('click', function(e) {
             // Check if we're in mobile view
             if (window.innerWidth <= 992) {
