@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planuri de Dezvoltare și Programe Comunitare - Poliția Locală Slobozia</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Include components.js first to load shared styles -->
+    <script src="../../components.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-white: #ffffff;
+            --background-dark: #121a2b;
+            --background-gradient: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            --header-height: 80px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-small: 0 2px 10px rgba(0,0,0,0.08);
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+            --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
+            --shadow-xl: 0 15px 35px rgba(0,0,0,0.2);
+            --border-radius-small: 4px;
+            --border-radius-medium: 8px;
+            --border-radius-large: 12px;
+            --border-radius-xl: 24px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            background-color: var(--background-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.3;
+        }
+
+        a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        a:hover {
+            color: var(--primary-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.75rem;
+            border-radius: var(--border-radius-small);
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(0);
+            transform-origin: center;
+            border-radius: 50%;
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::after {
+            transform: scale(2.5);
+        }
+        
+        .btn i {
+            margin-left: 0.5rem;
+            font-size: 1.25rem;
+            transition: var(--transition-fast);
+        }
+        
+        .btn:hover i {
+            transform: translateX(4px);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            box-shadow: 0 4px 12px rgba(255, 202, 40, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 202, 40, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(30, 136, 229, 0.4);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--secondary-color);
+            border: 2px solid var(--secondary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(30, 136, 229, 0.3);
+        }
+        
+        .btn-light {
+            background-color: white;
+            color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-light:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-lg {
+            padding: 1rem 2.5rem;
+            font-size: 1.125rem;
+        }
+
+        /* Page Title Section */
+        .page-title-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 7rem 0 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-title-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .page-title-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        .page-title-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            color: white;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .breadcrumbs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .breadcrumbs a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumbs a:hover {
+            color: var(--accent-color);
+        }
+        
+        .breadcrumbs .separator {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            opacity: 0.5;
+        }
+        
+        .breadcrumbs .current {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Tabs Navigation */
+        .main-tabs-container {
+            margin: -40px auto 0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .main-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .main-tab {
+            padding: 1.2rem 1.8rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: none;
+            background: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            text-decoration: none;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .main-tab:hover {
+            color: var(--secondary-color);
+            background-color: rgba(30, 136, 229, 0.05);
+        }
+        
+        .main-tab.active {
+            color: var(--secondary-color);
+            background-color: rgba(30, 136, 229, 0.1);
+        }
+        
+        .main-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        .main-tab i {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .main-tab-content {
+            display: none;
+            padding: 2rem 0;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .main-tab-content.active {
+            display: block;
+        }
+
+        /* Content Sections */
+        .section {
+            padding: 5rem 0;
+            position: relative;
+        }
+        
+        .section-light {
+            background-color: var(--background-white);
+        }
+        
+        .section-dark {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .section-accent {
+            background-color: rgba(255, 202, 40, 0.1);
+        }
+        
+        .section-blue {
+            background-color: rgba(30, 136, 229, 0.05);
+        }
+        
+        .section-heading {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+        
+        .section-intro {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title-container {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+        
+        .section-subtitle {
+            color: var(--secondary-color);
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .section-subtitle::before, 
+        .section-subtitle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30px;
+            height: 1px;
+            background-color: var(--secondary-color);
+        }
+        
+        .section-subtitle::before {
+            left: -40px;
+        }
+        
+        .section-subtitle::after {
+            right: -40px;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1.25rem;
+            position: relative;
+        }
+        
+        .section-dark .section-title {
+            color: white;
+        }
+        
+        .section-title span {
+            color: var(--secondary-color);
+            position: relative;
+        }
+        
+        .section-title span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: var(--accent-color);
+            opacity: 0.3;
+            border-radius: 4px;
+            z-index: -1;
+        }
+        
+        .section-description {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+        
+        .section-dark .section-description {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-medium);
+            transition: var(--transition-medium);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: var(--secondary-color);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(30, 136, 229, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+            transition: var(--transition-medium);
+        }
+        
+        .feature-card:hover .feature-icon {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .feature-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .feature-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .arrow-link {
+            display: inline-flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--secondary-color);
+            transition: var(--transition-fast);
+        }
+        
+        .arrow-link i {
+            font-size: 1.125rem;
+            transition: var(--transition-fast);
+            margin-left: 0.25rem;
+        }
+        
+        .arrow-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .arrow-link:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Strategic Vision Cards */
+        .vision-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .vision-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            transition: var(--transition-medium);
+        }
+        
+        .vision-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .vision-card-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .vision-card-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .vision-card-content {
+            padding: 2rem;
+        }
+        
+        .vision-card-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .vision-card-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Timeline Section */
+        .timeline-container {
+            position: relative;
+            max-width: 900px;
+            margin: 4rem auto 2rem;
+            padding: 0 1rem;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background-color: rgba(30, 136, 229, 0.2);
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+        
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 30px;
+            position: relative;
+            margin-bottom: 4rem;
+        }
+        
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: 30px;
+        }
+        
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            box-shadow: 0 0 0 4px rgba(30, 136, 229, 0.2);
+            z-index: 1;
+        }
+        
+        .timeline-content {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            padding: 2rem;
+            box-shadow: var(--shadow-medium);
+            width: calc(50% - 50px);
+            position: relative;
+            transition: var(--transition-medium);
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: -15px;
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 15px solid white;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content::before {
+            right: auto;
+            left: -15px;
+            border-left: none;
+            border-right: 15px solid white;
+        }
+        
+        .timeline-date {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .timeline-title {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .timeline-text {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        /* Program Stats */
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            padding: 2rem;
+            width: calc(25% - 1.5rem);
+            min-width: 220px;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+            transition: var(--transition-medium);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Programs Section */
+        .programs-container {
+            margin-top: 3rem;
+        }
+        
+        .program-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-medium);
+        }
+        
+        .program-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .program-card-header {
+            padding: 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .program-card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            z-index: 0;
+        }
+        
+        .program-card-title {
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+        
+        .program-card-title i {
+            margin-right: 0.8rem;
+            font-size: 1.8rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .program-card-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .program-card-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .program-card-footer {
+            padding: 1rem 1.5rem;
+            background-color: rgba(0, 0, 0, 0.03);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .program-card-status {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--success-color);
+            font-weight: 500;
+        }
+        
+        .program-card-status i {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .program-card-status.ongoing {
+            color: var(--success-color);
+        }
+        
+        .program-card-status.upcoming {
+            color: var(--secondary-color);
+        }
+        
+        .program-card-status.completed {
+            color: var(--text-secondary);
+        }
+
+        /* Partners Section */
+        .partners-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .partner-logo {
+            width: 150px;
+            height: 100px;
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            box-shadow: var(--shadow-small);
+            transition: var(--transition-fast);
+        }
+        
+        .partner-logo:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .partner-logo img {
+            max-width: 100%;
+            max-height: 100%;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: var(--transition-fast);
+        }
+        
+        .partner-logo:hover img {
+            filter: grayscale(0);
+            opacity: 1;
+        }
+
+        /* FAQ Section */
+        .faq-container {
+            max-width: 900px;
+            margin: 3rem auto 0;
+        }
+        
+        .faq-item {
+            margin-bottom: 1.5rem;
+            border-radius: var(--border-radius-medium);
+            background-color: white;
+            box-shadow: var(--shadow-small);
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            cursor: pointer;
+            background-color: white;
+            transition: var(--transition-fast);
+            border-left: 4px solid transparent;
+        }
+        
+        .faq-question:hover {
+            background-color: rgba(30, 136, 229, 0.05);
+        }
+        
+        .faq-question.active {
+            border-left-color: var(--secondary-color);
+            background-color: rgba(30, 136, 229, 0.05);
+        }
+        
+        .faq-toggle {
+            width: 24px;
+            height: 24px;
+            position: relative;
+            transition: var(--transition-fast);
+        }
+        
+        .faq-toggle::before,
+        .faq-toggle::after {
+            content: '';
+            position: absolute;
+            background-color: var(--secondary-color);
+            transition: var(--transition-fast);
+        }
+        
+        .faq-toggle::before {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .faq-toggle::after {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .faq-question.active .faq-toggle::before {
+            transform: translateX(-50%) scaleY(0);
+        }
+        
+        .faq-question h4 {
+            font-size: 1.125rem;
+            margin: 0;
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1.5rem;
+        }
+        
+        .faq-answer-inner {
+            padding-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        /* Project Showcase */
+        .project-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+        
+        .project-card {
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            transition: var(--transition-medium);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .project-card-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .project-card-body {
+            padding: 2rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .project-card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .project-card-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .project-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        .project-card-status {
+            background-color: rgba(67, 160, 71, 0.1);
+            color: var(--success-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .project-card-status.ongoing {
+            background-color: rgba(67, 160, 71, 0.1);
+            color: var(--success-color);
+        }
+        
+        .project-card-status.upcoming {
+            background-color: rgba(30, 136, 229, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .project-card-status.completed {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--text-secondary);
+        }
+
+        /* Call to Action Section */
+        .cta-section {
+            background-color: var(--primary-color);
+            background-image: linear-gradient(135deg, rgba(30, 136, 229, 0.2) 0%, rgba(26, 47, 95, 0.9) 100%);
+            color: white;
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(255, 202, 40, 0.05) 0%, transparent 50%);
+            z-index: 0;
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .cta-text {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 960px;
+            }
+            
+            .section-title {
+                font-size: 2.25rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .project-cards {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .container {
+                max-width: 720px;
+            }
+            
+            .timeline-line {
+                left: 30px;
+            }
+            
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                justify-content: flex-start;
+                padding-left: 60px;
+                padding-right: 0;
+            }
+            
+            .timeline-item::after {
+                left: 30px;
+            }
+            
+            .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                width: 100%;
+            }
+            
+            .timeline-content::before,
+            .timeline-item:nth-child(even) .timeline-content::before {
+                left: -15px;
+                right: auto;
+                border-left: none;
+                border-right: 15px solid white;
+            }
+            
+            .stat-card {
+                width: calc(50% - 1rem);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                max-width: 540px;
+            }
+            
+            .section-title {
+                font-size: 1.75rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .main-tab {
+                padding: 1rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .stat-card {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                max-width: 100%;
+                padding: 0 15px;
+            }
+            
+            .section {
+                padding: 3rem 0;
+            }
+            
+            .main-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .main-tab {
+                flex: 1 0 50%;
+                justify-content: flex-start;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px) translateY(-50%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) translateY(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container - Will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Page Title Section -->
+    <section class="page-title-section">
+        <div class="page-title-bg" style="background-image: url('https://images4.imagebam.com/df/bb/ea/ME11IUQ6_o.jpg')"></div>
+        <div class="container">
+            <div class="page-title-content">
+                <div class="page-title-badge">Dezvoltare Continuă</div>
+                <h1 class="page-title">Planuri și Programe Comunitare</h1>
+                <p class="page-description">Descoperiți inițiativele strategice și programele noastre de dezvoltare create pentru a îmbunătăți siguranța publică și calitatea vieții în comunitatea noastră.</p>
+                
+                <div class="breadcrumbs">
+                    <a href="/">Acasă</a>
+                    <span class="separator"><i class="material-icons">chevron_right</i></span>
+                    <span class="current">Planuri și Programe</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Tabs Navigation -->
+    <div class="container">
+        <div class="main-tabs-container">
+            <div class="main-tabs">
+                <a href="https://ned-elcu.github.io/pls/planuri-programe/#planuri" class="main-tab active" data-tab="planuri">
+                    <i class="material-icons">alt_route</i> Planuri de Dezvoltare
+                </a>
+                <a href="https://ned-elcu.github.io/pls/planuri-programe/#programe" class="main-tab" data-tab="programe">
+                    <i class="material-icons">groups</i> Programe Comunitare
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <section class="content-section">
+        <div class="container">
+            <!-- Planuri de Dezvoltare Tab Content -->
+            <div class="main-tab-content active" id="planuri">
+                <h2 class="section-heading">Viziunea noastră strategică</h2>
+                <div class="section-intro">
+                    <p>Planurile noastre de dezvoltare sunt bazate pe principii de eficiență, transparență și inovație, urmărind adaptarea constantă la nevoile comunității și la cele mai bune practici în domeniul siguranței publice.</p>
+                </div>
+                
+                <div class="vision-cards">
+                    <div class="vision-card">
+                        <div class="vision-card-image" style="background-image: url('https://images4.imagebam.com/c1/08/5e/ME11IUQ1_o.jpg')">
+                            <span class="vision-card-badge">În derulare</span>
+                        </div>
+                        <div class="vision-card-content">
+                            <h3 class="vision-card-title">Siguranță Urbană Inteligentă</h3>
+                            <p class="vision-card-text">Implementarea tehnologiilor avansate de monitorizare și analiză a datelor pentru îmbunătățirea timpului de răspuns și eficiența intervențiilor în situații de urgență.</p>
+                            <a href="https://ned-elcu.github.io/pls/planuri-programe/#planuri" class="arrow-link">Află mai multe <i class="material-icons">arrow_forward</i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="vision-card">
+                        <div class="vision-card-image" style="background-image: url('https://images4.imagebam.com/c2/c0/fa/ME11IUQ2_o.jpg')">
+                            <span class="vision-card-badge">Dezvoltare</span>
+                        </div>
+                        <div class="vision-card-content">
+                            <h3 class="vision-card-title">Transformare Organizațională</h3>
+                            <p class="vision-card-text">Modernizarea structurii organizaționale și a proceselor interne pentru a răspunde eficient provocărilor actuale și viitoare în domeniul siguranței publice.</p>
+                            <a href="https://ned-elcu.github.io/pls/planuri-programe/#planuri" class="arrow-link">Află mai multe <i class="material-icons">arrow_forward</i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="vision-card">
+                        <div class="vision-card-image" style="background-image: url('https://images4.imagebam.com/10/f7/05/ME11IUQ3_o.jpg')">
+                            <span class="vision-card-badge">Planificare</span>
+                        </div>
+                        <div class="vision-card-content">
+                            <h3 class="vision-card-title">Creșterea Rezilienței Urbane</h3>
+                            <p class="vision-card-text">Dezvoltarea capacității de prevenire și gestionare a riscurilor urbane prin implementarea unor măsuri integrate de siguranță publică și protecție civilă.</p>
+                            <a href="https://ned-elcu.github.io/pls/planuri-programe/#planuri" class="arrow-link">Află mai multe <i class="material-icons">arrow_forward</i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Projects -->
+                <h2 class="section-heading" style="margin-top: 4rem;">Proiecte strategice</h2>
+                <div class="section-intro">
+                    <p>Explorează proiectele noastre strategice care urmăresc transformarea Poliției Locale Slobozia într-o instituție modernă, eficientă și orientată către nevoile comunității.</p>
+                </div>
+
+                <div class="project-cards">
+                    <div class="project-card">
+                        <div class="project-card-image" style="background-image: url('https://images4.imagebam.com/51/f2/ac/ME11IUQ5_o.jpg')"></div>
+                        <div class="project-card-body">
+                            <h3 class="project-card-title">Rețea Urbană de Monitorizare Inteligentă</h3>
+                            <p class="project-card-text">Extinderea sistemului de supraveghere video în zonele strategice ale orașului, cu implementarea tehnologiilor de analiză automată a datelor pentru detectarea în timp real a incidentelor și situațiilor de risc.</p>
+                            <div class="project-card-footer">
+                                <span class="project-card-status ongoing">În desfășurare</span>
+                                <a href="https://ned-elcu.github.io/pls/planuri-programe/#planuri" class="arrow-link">Detalii <i class="material-icons">arrow_forward</i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-card-image" style="background-image: url('https://images4.imagebam.com/27/20/c5/ME11IUQ4_o.jpg')"></div>
+                        <div class="project-card-body">
+                            <h3 class="project-card-title">Centrul Integrat de Management al Siguranței Urbane</h3>
+                            <p class="project-card-text">Crearea unui centru operațional modern pentru coordonarea eficientă a tuturor activităților de menținere a ordinii publice, cu instrumente avansate de comunicare și suport decizional.</p>
+                            <div class="project-card-footer">
+                                <span class="project-card-status upcoming">În pregătire</span>
+                                <a href="https://ned-elcu.github.io/pls/planuri-programe/#planuri" class="arrow-link">Detalii <i class="material-icons">arrow_forward</i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-card-image" style="background-image: url('https://images4.imagebam.com/6c/a9/75/ME11IUQ7_o.jpg')"></div>
+                        <div class="project-card-body">
+                            <h3 class="project-card-title">Digitalizarea Serviciilor pentru Cetățeni</h3>
+                            <p class="project-card-text">Implementarea unor soluții digitale pentru eficientizarea interacțiunii cetățenilor cu Poliția Locală, inclusiv aplicație mobilă pentru raportarea incidentelor și portal online pentru informații și servicii.</p>
+                            <div class="project-card-footer">
+                                <span class="project-card-status completed">Finalizat</span>
+                                <a href="https://ned-elcu.github.io/pls/planuri-programe/#planuri" class="arrow-link">Detalii <i class="material-icons">arrow_forward</i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Development Timeline -->
+                <h2 class="section-heading" style="margin-top: 4rem;">Calendarul implementării</h2>
+                <div class="section-intro">
+                    <p>Calendarul nostru strategic de implementare a proiectelor majore de dezvoltare, cu obiective clare și termene stabilite pentru perioada 2023-2027.</p>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <span class="timeline-date">2023</span>
+                            <h4 class="timeline-title">Planificare și Analiză</h4>
+                            <p class="timeline-text">Evaluarea situației actuale și a nevoilor, definirea viziunii și a obiectivelor strategice, identificarea resurselor necesare pentru implementare.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <span class="timeline-date">2024</span>
+                            <h4 class="timeline-title">Modernizare Tehnologică</h4>
+                            <p class="timeline-text">Implementarea sistemelor de monitorizare inteligentă, dezvoltarea platformelor digitale pentru cetățeni, modernizarea echipamentelor și infrastructurii operaționale.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <span class="timeline-date">2025</span>
+                            <h4 class="timeline-title">Transformare Organizațională</h4>
+                            <p class="timeline-text">Reorganizarea structurilor interne, implementarea noilor procese operaționale, dezvoltarea competențelor personalului și alinierea la cele mai bune practici internaționale.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <span class="timeline-date">2026-2027</span>
+                            <h4 class="timeline-title">Consolidare și Extindere</h4>
+                            <p class="timeline-text">Consolidarea rezultatelor obținute, evaluarea impactului și ajustarea strategiilor, extinderea zonei de acoperire a serviciilor și intensificarea colaborării interinstituționale.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ Section -->
+                <h2 class="section-heading" style="margin-top: 4rem;">Întrebări Frecvente</h2>
+                <div class="section-intro">
+                    <p>Răspunsuri la cele mai frecvente întrebări despre planurile noastre de dezvoltare și impactul acestora asupra comunității locale.</p>
+                </div>
+
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>Cum vor contribui aceste planuri la îmbunătățirea siguranței publice?</h4>
+                            <div class="faq-toggle"></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                <p>Planurile noastre de dezvoltare sunt concepute pentru a îmbunătăți siguranța publică prin:</p>
+                                <ul>
+                                    <li>Implementarea tehnologiilor avansate de monitorizare care permit identificarea rapidă a incidentelor</li>
+                                    <li>Reducerea timpului de răspuns la urgențe prin optimizarea proceselor operaționale</li>
+                                    <li>Îmbunătățirea prevenirii infracționalității prin analiza predictivă a datelor</li>
+                                    <li>Consolidarea relației cu comunitatea prin programe educaționale și de conștientizare</li>
+                                </ul>
+                                <p>Toate aceste măsuri vor contribui la crearea unui mediu urban mai sigur, cu o capacitate sporită de prevenire și intervenție în situații de risc.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>Care este bugetul alocat pentru implementarea acestor proiecte?</h4>
+                            <div class="faq-toggle"></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                <p>Bugetul total estimat pentru implementarea planurilor de dezvoltare în perioada 2023-2027 este de aproximativ 15 milioane de lei, cu următoarea distribuție:</p>
+                                <ul>
+                                    <li>5 milioane de lei pentru infrastructura tehnologică (sisteme de monitorizare, echipamente, software)</li>
+                                    <li>4 milioane de lei pentru modernizarea infrastructurii fizice (centru operațional, puncte de prezență)</li>
+                                    <li>3 milioane de lei pentru dezvoltarea resurselor umane (formare, certificări, vizite de studiu)</li>
+                                    <li>3 milioane de lei pentru programe comunitare și inițiative de prevenire</li>
+                                </ul>
+                                <p>Finanțarea este asigurată atât din bugetul local, cât și din fonduri europene și parteneriate public-private, având o strategie de implementare etapizată pentru a gestiona eficient resursele disponibile.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h4>Cum pot cetățenii să se implice în procesul de implementare?</h4>
+                            <div class="faq-toggle"></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">
+                                <p>Cetățenii au un rol esențial în succesul planurilor noastre de dezvoltare și pot contribui prin:</p>
+                                <ul>
+                                    <li>Participarea la consultările publice organizate periodic pentru a evalua nevoile și prioritățile comunității</li>
+                                    <li>Implicarea în programele de voluntariat pentru suport în acțiunile de prevenție și educație</li>
+                                    <li>Utilizarea platformelor digitale pentru raportarea problemelor și oferirea de feedback</li>
+                                    <li>Participarea la atelierele comunitare pentru identificarea soluțiilor inovative la problemele locale</li>
+                                </ul>
+                                <p>Informațiile despre oportunitățile de implicare sunt disponibile pe site-ul nostru și pe canalele sociale, încurajând participarea activă a tuturor membrilor comunității.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Programe Comunitare Tab Content -->
+            <div class="main-tab-content" id="programe">
+                <h2 class="section-heading">Programele Noastre Comunitare</h2>
+                <div class="section-intro">
+                    <p>Programele comunitare dezvoltate de Poliția Locală Slobozia sunt concepute pentru a întări relația cu cetățenii, pentru a educa și a promova un comportament civic responsabil și pentru a crește gradul de siguranță resimțit de toți membrii comunității.</p>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="material-icons">school</i>
+                        </div>
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Programe educaționale</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="material-icons">people</i>
+                        </div>
+                        <div class="stat-number">5,400+</div>
+                        <div class="stat-label">Participanți în 2024</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="material-icons">handshake</i>
+                        </div>
+                        <div class="stat-number">18</div>
+                        <div class="stat-label">Parteneriate active</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="material-icons">trending_up</i>
+                        </div>
+                        <div class="stat-number">32%</div>
+                        <div class="stat-label">Creșterea siguranței percepute</div>
+                    </div>
+                </div>
+
+                <!-- Current Programs -->
+                <div class="programs-container">
+                    <div class="program-card">
+                        <div class="program-card-header">
+                            <h3 class="program-card-title">
+                                <i class="material-icons">school</i>
+                                Școala Siguranței
+                            </h3>
+                        </div>
+                        <div class="program-card-body">
+                            <p class="program-card-text">Program educațional destinat elevilor din ciclul primar și gimnazial, care își propune să dezvolte o cultură a siguranței personale și responsabilității civice în rândul tinerilor. Prin activități interactive și adaptate vârstei, copiii învață despre reguli de circulație, comportament preventiv în situații de risc și importanța respectării normelor sociale.</p>
+                            <p class="program-card-text">În 2024, programul a fost implementat în 15 școli din Slobozia, cu peste 1.200 de elevi participanți și rezultate notabile în îmbunătățirea comportamentului civic al copiilor, confirmate prin evaluările profesorilor și părinților.</p>
+                        </div>
+                        <div class="program-card-footer">
+                            <span class="program-card-status ongoing">
+                                <i class="material-icons">check_circle</i> Program activ
+                            </span>
+                            <a href="https://ned-elcu.github.io/pls/planuri-programe/#programe" class="arrow-link">Detalii <i class="material-icons">arrow_forward</i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="program-card">
+                        <div class="program-card-header">
+                            <h3 class="program-card-title">
+                                <i class="material-icons">security</i>
+                                Vecinătate Sigură
+                            </h3>
+                        </div>
+                        <div class="program-card-body">
+                            <p class="program-card-text">Programul "Vecinătate Sigură" încurajează implicarea activă a cetățenilor în creșterea nivelului de siguranță al zonei în care locuiesc, prin dezvoltarea rețelelor de comunicare între vecini și autoritățile locale. Locuitorii sunt instruiți pentru a recunoaște și raporta situațiile suspecte, participând astfel direct la prevenirea infracționalității.</p>
+                            <p class="program-card-text">Implementat în 8 cartiere din Slobozia, programul a contribuit la reducerea cu 25% a incidentelor raportate în zonele participante și la creșterea semnificativă a nivelului de încredere între cetățeni și Poliția Locală.</p>
+                        </div>
+                        <div class="program-card-footer">
+                            <span class="program-card-status ongoing">
+                                <i class="material-icons">check_circle</i> Program activ
+                            </span>
+                            <a href="https://ned-elcu.github.io/pls/planuri-programe/#programe" class="arrow-link">Detalii <i class="material-icons">arrow_forward</i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="program-card">
+                        <div class="program-card-header">
+                            <h3 class="program-card-title">
+                                <i class="material-icons">elderly</i>
+                                Seniori în Siguranță
+                            </h3>
+                        </div>
+                        <div class="program-card-body">
+                            <p class="program-card-text">Program specializat pentru protecția persoanelor vârstnice, una dintre categoriile cele mai vulnerabile în fața diferitelor forme de abuz și înșelăciune. Prin sesiuni informative, materiale educaționale și vizite la domiciliu, seniorii sunt informați despre riscurile specifice și măsurile de protecție recomandare.</p>
+                            <p class="program-card-text">Programul include un sistem de suport telefonic dedicat persoanelor vârstnice și patrule regulate în zonele cu densitate ridicată de seniori, contribuind la o reducere de 40% a cazurilor de înșelăciune raportate în rândul acestei categorii de vârstă.</p>
+                        </div>
+                        <div class="program-card-footer">
+                            <span class="program-card-status ongoing">
+                                <i class="material-icons">check_circle</i> Program activ
+                            </span>
+                            <a href="https://ned-elcu.github.io/pls/planuri-programe/#programe" class="arrow-link">Detalii <i class="material-icons">arrow_forward</i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="program-card">
+                        <div class="program-card-header">
+                            <h3 class="program-card-title">
+                                <i class="material-icons">business</i>
+                                Mediul de Afaceri Protejat
+                            </h3>
+                        </div>
+                        <div class="program-card-body">
+                            <p class="program-card-text">Inițiativă dedicată sprijinirii mediului de afaceri local prin servicii de consultanță în domeniul securității, evaluări de risc și recomandări personalizate pentru protejarea patrimoniului. Programul include sesiuni de training pentru angajați și manageri, auditul de securitate al spațiilor comerciale și planuri de acțiune în caz de incidente.</p>
+                            <p class="program-card-text">Peste 60 de întreprinderi locale beneficiază de acest program, care a contribuit la reducerea cu 30% a infracțiunilor economice în rândul participanților și la crearea unui mediu de afaceri mai sigur și mai competitiv.</p>
+                        </div>
+                        <div class="program-card-footer">
+                            <span class="program-card-status upcoming">
+                                <i class="material-icons">update</i> În dezvoltare
+                            </span>
+                            <a href="https://ned-elcu.github.io/pls/planuri-programe/#programe" class="arrow-link">Detalii <i class="material-icons">arrow_forward</i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Partners Section -->
+                <h2 class="section-heading" style="margin-top: 4rem;">Partenerii Noștri</h2>
+                <div class="section-intro">
+                    <p>Programele noastre comunitare sunt dezvoltate și implementate în parteneriat cu instituții publice, organizații non-guvernamentale și companii private care împărtășesc valorile noastre și angajamentul pentru o comunitate mai sigură.</p>
+                </div>
+
+                <div class="partners-container">
+                    <div class="partner-logo">
+                        <img src="https://images4.imagebam.com/e9/e5/44/ME11IUQ8_o.png" alt="Inspectoratul Școlar Județean Ialomița">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="https://images4.imagebam.com/4c/f4/f7/ME11IUQ9_o.png" alt="Camera de Comerț și Industrie Ialomița">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="https://images4.imagebam.com/ea/36/9e/ME11IUQA_o.png" alt="Crucea Roșie Română - Filiala Ialomița">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="https://images4.imagebam.com/72/25/ba/ME11IUQB_o.png" alt="Asociația Națională a Specialiștilor în Securitate">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="https://images4.imagebam.com/3a/b4/8a/ME11IUQC_o.png" alt="Direcția Generală de Asistență Socială și Protecția Copilului Ialomița">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="https://images4.imagebam.com/9a/10/fd/ME11IUQD_o.png" alt="Clubul Seniorilor Slobozia">
+                    </div>
+                </div>
+
+                <!-- Join Programs Section -->
+                <h2 class="section-heading" style="margin-top: 4rem;">Implică-te în programele noastre</h2>
+                <div class="section-intro">
+                    <p>Oferim multiple oportunități pentru cetățeni și organizații de a se implica în programele noastre comunitare, contribuind astfel la crearea unui mediu urban mai sigur și mai responsabil.</p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="material-icons">volunteer_activism</i>
+                        </div>
+                        <h3 class="feature-title">Devino Voluntar</h3>
+                        <p class="feature-text">Alătură-te echipei noastre de voluntari și participă activ la implementarea programelor educaționale și de prevenție, aducându-ți contribuția la siguranța comunității.</p>
+                        <a href="https://ned-elcu.github.io/pls/planuri-programe/#programe" class="arrow-link">Înscrie-te acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="material-icons">handshake</i>
+                        </div>
+                        <h3 class="feature-title">Propune un Parteneriat</h3>
+                        <p class="feature-text">Ai o organizație sau companie și dorești să colaborezi cu noi pentru dezvoltarea unor programe comunitare? Propune un parteneriat și explorează posibilitățile de colaborare.</p>
+                        <a href="https://ned-elcu.github.io/pls/planuri-programe/#programe" class="arrow-link">Contact parteneriate <i class="material-icons">arrow_forward</i></a>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="material-icons">lightbulb</i>
+                        </div>
+                        <h3 class="feature-title">Propune o Idee</h3>
+                        <p class="feature-text">Ai o idee pentru un nou program comunitar sau pentru îmbunătățirea celor existente? Împărtășește-o cu noi și contribuie la dezvoltarea unor inițiative inovatoare.</p>
+                        <a href="https://ned-elcu.github.io/pls/planuri-programe/#programe" class="arrow-link">Trimite propunerea <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <div class="cta-bg-pattern"></div>
+        <div class="container">
+            <div class="cta-container">
+                <h2 class="cta-title">Alătură-te eforturilor noastre pentru o comunitate mai sigură</h2>
+                <p class="cta-text">Fie că dorești să te implici ca voluntar, să propui un parteneriat sau să afli mai multe despre programele noastre comunitare, suntem aici pentru a răspunde întrebărilor tale și a te ghida în acest proces.</p>
+                <div class="cta-buttons">
+                    <a href="https://ned-elcu.github.io/pls/planuri-programe/#programe" class="btn btn-primary btn-lg">Implică-te acum <i class="material-icons">arrow_forward</i></a>
+                    <a href="tel:0243955" class="btn btn-light btn-lg">Contactează-ne <i class="material-icons">phone</i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Container - Will be populated by components.js -->
+    <div id="footer-container"></div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tabs functionality
+            const tabButtons = document.querySelectorAll('.main-tab');
+            const tabContents = document.querySelectorAll('.main-tab-content');
+            
+            // Check if URL has hash and activate corresponding tab
+            function activateTabFromHash() {
+                const hash = window.location.hash.substring(1);
+                if (hash) {
+                    tabButtons.forEach(button => {
+                        const tabId = button.getAttribute('data-tab');
+                        if (tabId === hash) {
+                            // Remove active class from all tabs and contents
+                            tabButtons.forEach(btn => btn.classList.remove('active'));
+                            tabContents.forEach(content => content.classList.remove('active'));
+                            
+                            // Add active class to current tab and content
+                            button.classList.add('active');
+                            document.getElementById(hash).classList.add('active');
+                        }
+                    });
+                }
+            }
+            
+            // Initial check for hash in URL
+            activateTabFromHash();
+            
+            // Add event listener for hash changes
+            window.addEventListener('hashchange', activateTabFromHash);
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to current tab and content
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Update URL hash without page jump
+                    history.replaceState(null, null, `#${tabId}`);
+                    e.preventDefault();
+                });
+            });
+            
+            // FAQ functionality
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    const isActive = this.classList.contains('active');
+                    
+                    // Close all other FAQs
+                    faqQuestions.forEach(q => {
+                        if (q !== this) {
+                            q.classList.remove('active');
+                            q.nextElementSibling.style.maxHeight = null;
+                        }
+                    });
+                    
+                    // Toggle current FAQ
+                    if (!isActive) {
+                        this.classList.add('active');
+                        answer.style.maxHeight = answer.scrollHeight + 'px';
+                    } else {
+                        this.classList.remove('active');
+                        answer.style.maxHeight = null;
+                    }
+                });
+            });
+            
+            // Program cards hover effect
+            const programCards = document.querySelectorAll('.program-card');
+            
+            programCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = 'var(--shadow-large)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
