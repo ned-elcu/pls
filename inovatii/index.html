@@ -82,43 +82,55 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to right, rgba(26, 47, 95, 0.9) 0%, rgba(26, 47, 95, 0.7) 40%, rgba(26, 47, 95, 0.4) 100%);
+            background: linear-gradient(to bottom, 
+                rgba(26, 47, 95, 0.9) 0%, 
+                rgba(26, 47, 95, 0.5) 40%, 
+                rgba(26, 47, 95, 0.5) 60%, 
+                rgba(26, 47, 95, 0.9) 100%);
             display: flex;
             align-items: center;
         }
         
         .slide-content {
-            width: 60%;
-            max-width: 750px;
-            margin-left: 10%;
-            transform: translateX(-50px);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             opacity: 0;
-            transition: all 1s ease 0.5s;
-            padding-bottom: 40px;
+            transition: opacity 1s ease 0.5s;
         }
         
         .slide.active .slide-content {
-            transform: translateX(0);
             opacity: 1;
         }
         
-        .slide-badge {
-            display: inline-block;
-            background-color: var(--accent-color);
-            color: var(--text-primary);
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            margin-bottom: 1.5rem;
-            transform: translateY(20px);
+        .slide-title-container {
+            width: 80%;
+            max-width: 800px;
+            margin: 3rem auto 0;
+            padding: 2rem;
+            transform: translateY(-30px);
             opacity: 0;
-            transition: all 0.8s ease 0.6s;
+            transition: all 0.8s ease 0.8s;
         }
         
-        .slide.active .slide-badge {
+        .slide.active .slide-title-container {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .slide-description-container {
+            width: 80%;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            padding: 2rem;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.8s ease 1s;
+        }
+        
+        .slide.active .slide-description-container {
             transform: translateY(0);
             opacity: 1;
         }
@@ -128,17 +140,9 @@
             font-size: 2.4rem;
             font-weight: 700;
             line-height: 1.2;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             color: white;
             position: relative;
-            transform: translateY(30px);
-            opacity: 0;
-            transition: all 0.8s ease 0.8s;
-        }
-        
-        .slide.active .slide-title {
-            transform: translateY(0);
-            opacity: 1;
         }
         
         .slide-title span {
@@ -163,16 +167,6 @@
             font-size: 1.1rem;
             line-height: 1.8;
             color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 2rem;
-            max-width: 600px;
-            transform: translateY(40px);
-            opacity: 0;
-            transition: all 0.8s ease 1s;
-        }
-        
-        .slide.active .slide-description {
-            transform: translateY(0);
-            opacity: 1;
         }
         
         .slide-indicators {
@@ -763,9 +757,12 @@
             <div class="slide active" style="background-image: url('https://images4.imagebam.com/5c/a1/f9/ME11J74V_o.jpg')">
                 <div class="slide-overlay">
                     <div class="slide-content">
-                        <div class="slide-badge">Inovație în Siguranța Publică</div>
-                        <h2 class="slide-title">Poligon de Tragere <span>Ultramodern</span></h2>
-                        <p class="slide-description">Poliția Locală Slobozia a dezvoltat un poligon modern de tragere, realizat pe terenul fostului poligon militar, transferat de MApN administrației locale - asigurând instruirea continuă a personalului pentru protejarea comunității.</p>
+                        <div class="slide-title-container">
+                            <h2 class="slide-title">Poligon de Tragere <span>Ultramodern</span></h2>
+                        </div>
+                        <div class="slide-description-container">
+                            <p class="slide-description">Poliția Locală Slobozia a dezvoltat un poligon modern de tragere, realizat pe terenul fostului poligon militar, transferat de MApN administrației locale - asigurând instruirea continuă a personalului pentru protejarea comunității.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -774,9 +771,12 @@
             <div class="slide" style="background-image: url('https://images4.imagebam.com/8a/d5/0d/ME11J74W_o.jpg')">
                 <div class="slide-overlay">
                     <div class="slide-content">
-                        <div class="slide-badge">Performanță și Excelență</div>
-                        <h2 class="slide-title">Instalații <span>Automatizate</span> de Antrenament</h2>
-                        <p class="slide-description">Poligonul închis și omologat beneficiază de instalații de ultimă generație pentru antrenament tactic, fiind utilizat atât de Poliția Locală cât și de structurile MAI din județ pentru asigurarea celor mai înalte standarde de pregătire.</p>
+                        <div class="slide-title-container">
+                            <h2 class="slide-title">Instalații <span>Automatizate</span> de Antrenament</h2>
+                        </div>
+                        <div class="slide-description-container">
+                            <p class="slide-description">Poligonul închis și omologat beneficiază de instalații de ultimă generație pentru antrenament tactic, fiind utilizat atât de Poliția Locală cât și de structurile MAI din județ pentru asigurarea celor mai înalte standarde de pregătire.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -785,9 +785,12 @@
             <div class="slide" style="background-image: url('https://images4.imagebam.com/33/f3/c0/ME11J74X_o.jpg')">
                 <div class="slide-overlay">
                     <div class="slide-content">
-                        <div class="slide-badge">Centru de Comandă Avansat</div>
-                        <h2 class="slide-title">Dispecerat cu <span>Videowall</span> Integrat</h2>
-                        <p class="slide-description">Centrul de comandă al Poliției Locale Slobozia este dotat cu tehnologie de ultimă generație, permițând monitorizarea în timp real a întregului oraș prin cele peste 546 de camere amplasate strategic în toate zonele urbane.</p>
+                        <div class="slide-title-container">
+                            <h2 class="slide-title">Dispecerat cu <span>Videowall</span> Integrat</h2>
+                        </div>
+                        <div class="slide-description-container">
+                            <p class="slide-description">Centrul de comandă al Poliției Locale Slobozia este dotat cu tehnologie de ultimă generație, permițând monitorizarea în timp real a întregului oraș prin cele peste 546 de camere amplasate strategic în toate zonele urbane.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -796,9 +799,12 @@
             <div class="slide" style="background-image: url('https://images4.imagebam.com/50/0b/4a/ME11J74Y_o.jpg')">
                 <div class="slide-overlay">
                     <div class="slide-content">
-                        <div class="slide-badge">Tehnologie Smart City</div>
-                        <h2 class="slide-title">Monitorizare <span>În Timp Real</span> a Traficului</h2>
-                        <p class="slide-description">Sistemul video integrat permite supravegherea și fluidizarea traficului în peste 200 de puncte cheie, recunoașterea numerelor de înmatriculare și detectarea automată a incidentelor pentru un timp de reacție minim.</p>
+                        <div class="slide-title-container">
+                            <h2 class="slide-title">Monitorizare <span>În Timp Real</span> a Traficului</h2>
+                        </div>
+                        <div class="slide-description-container">
+                            <p class="slide-description">Sistemul video integrat permite supravegherea și fluidizarea traficului în peste 200 de puncte cheie, recunoașterea numerelor de înmatriculare și detectarea automată a incidentelor pentru un timp de reacție minim.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -807,9 +813,12 @@
             <div class="slide" style="background-image: url('https://images4.imagebam.com/38/f0/a9/ME11J74Z_o.jpg')">
                 <div class="slide-overlay">
                     <div class="slide-content">
-                        <div class="slide-badge">Infrastructură Digitală Avansată</div>
-                        <h2 class="slide-title">Centru de <span>Date</span> de Înaltă Performanță</h2>
-                        <p class="slide-description">Investițiile în infrastructura digitală includ un centru de date modern care gestionează fluxul de informații de la toate sistemele de supraveghere și aplicațiile informatice dedicate activității polițienești.</p>
+                        <div class="slide-title-container">
+                            <h2 class="slide-title">Centru de <span>Date</span> de Înaltă Performanță</h2>
+                        </div>
+                        <div class="slide-description-container">
+                            <p class="slide-description">Investițiile în infrastructura digitală includ un centru de date modern care gestionează fluxul de informații de la toate sistemele de supraveghere și aplicațiile informatice dedicate activității polițienești.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -818,9 +827,12 @@
             <div class="slide" style="background-image: url('https://images4.imagebam.com/fb/25/21/ME11J750_o.jpg')">
                 <div class="slide-overlay">
                     <div class="slide-content">
-                        <div class="slide-badge">Securitate Cibernetică</div>
-                        <h2 class="slide-title">Sisteme <span>Redundante</span> de Stocare și Procesare</h2>
-                        <p class="slide-description">Serverele avansate asigură funcționarea neîntreruptă 24/7 a sistemelor critice, cu protocoale stricte de securitate cibernetică și capacitate mare de stocare pentru arhivarea înregistrărilor video conform legislației.</p>
+                        <div class="slide-title-container">
+                            <h2 class="slide-title">Sisteme <span>Redundante</span> de Stocare și Procesare</h2>
+                        </div>
+                        <div class="slide-description-container">
+                            <p class="slide-description">Serverele avansate asigură funcționarea neîntreruptă 24/7 a sistemelor critice, cu protocoale stricte de securitate cibernetică și capacitate mare de stocare pentru arhivarea înregistrărilor video conform legislației.</p>
+                        </div>
                     </div>
                 </div>
             </div>
