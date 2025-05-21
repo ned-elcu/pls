@@ -1620,7 +1620,7 @@ const HEADER_HTML = `
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="/pls/petitii"><i class="material-icons dropdown-icon-item">edit_note</i> Petiții</a></li>
-                        <li><a href="/pls/raspunsuri"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări, reclamații, anonime</a></li>
+                        <li><a href="/pls/raspunsuri"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
