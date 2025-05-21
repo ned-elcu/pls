@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inovații și Investiții - Poliția Locală Slobozia</title>
+    
+    <!-- Import components.js for header and footer -->
+    <script src="components.js"></script>
+    
+    <!-- Material icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Page-specific styles -->
+    <style>
+        /* Base styles */
+        :root {
+            --primary-color: #1a2f5f;
+            --primary-dark: #0f1a36;
+            --secondary-color: #1e88e5;
+            --secondary-light: #4dabf5;
+            --accent-color: #ffca28;
+            --accent-dark: #f5a623;
+            --success-color: #43a047;
+            --danger-color: #e53935;
+            --text-primary: #212121;
+            --text-secondary: #424242;
+            --text-light: #f5f5f5;
+            --background-light: #f8f9fa;
+            --background-dark: #121a2b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--background-light);
+        }
+        
+        /* Hero Slider - Modified for smaller titles and no buttons */
+        .hero-slider {
+            height: 85vh;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--background-dark);
+        }
+        
+        .slides-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease, transform 1.5s ease;
+            transform: scale(1.05);
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            z-index: 1;
+        }
+        
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(26, 47, 95, 0.9) 0%, rgba(26, 47, 95, 0.7) 40%, rgba(26, 47, 95, 0.4) 100%);
+            display: flex;
+            align-items: center;
+        }
+        
+        .slide-content {
+            width: 60%;
+            max-width: 750px;
+            margin-left: 10%;
+            transform: translateX(-50px);
+            opacity: 0;
+            transition: all 1s ease 0.5s;
+            padding-bottom: 40px;
+        }
+        
+        .slide.active .slide-content {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .slide-badge {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            margin-bottom: 1.5rem;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.8s ease 0.6s;
+        }
+        
+        .slide.active .slide-badge {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .slide-title {
+            /* Smaller title as requested */
+            font-size: 2.4rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: white;
+            position: relative;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.8s ease 0.8s;
+        }
+        
+        .slide.active .slide-title {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .slide-title span {
+            color: var(--accent-color);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .slide-title span::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: var(--accent-color);
+            opacity: 0.3;
+            border-radius: 4px;
+        }
+        
+        .slide-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            transform: translateY(40px);
+            opacity: 0;
+            transition: all 0.8s ease 1s;
+        }
+        
+        .slide.active .slide-description {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .slide-indicators {
+            position: absolute;
+            bottom: 50px;
+            left: 10%;
+            z-index: 10;
+            display: flex;
+        }
+        
+        .slide-indicator {
+            width: 50px;
+            height: 4px;
+            margin-right: 10px;
+            background-color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide-indicator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background-color: var(--accent-color);
+            transition: all 0.5s ease;
+        }
+        
+        .slide-indicator.active {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .slide-indicator.active::before {
+            width: 100%;
+            animation: indicatorProgress 6s linear forwards;
+        }
+        
+        @keyframes indicatorProgress {
+            0% {
+                width: 0;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+        
+        .slide-arrows {
+            position: absolute;
+            bottom: 50px;
+            right: 10%;
+            z-index: 10;
+            display: flex;
+        }
+        
+        .slide-arrow {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .slide-arrow:hover {
+            background-color: var(--accent-color);
+            color: var(--text-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Navigation Tabs - Deep links section */
+        .nav-tabs-container {
+            background-color: white;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* For Firefox */
+            -ms-overflow-style: none; /* For Internet Explorer and Edge */
+        }
+        
+        /* Hide scrollbar */
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .nav-tab {
+            flex: 1;
+            min-width: max-content;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--secondary-color);
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+        
+        .nav-tab:hover::before {
+            opacity: 0.05;
+        }
+        
+        .nav-tab.active {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .nav-tab.active::before {
+            opacity: 0.08;
+        }
+        
+        .nav-tab-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-tab:hover .nav-tab-icon {
+            transform: translateY(-5px);
+        }
+        
+        .nav-tab-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 5px;
+            background-color: var(--accent-color);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+        }
+        
+        /* Feature Cards */
+        .feature-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(30, 136, 229, 0.05) 0%, rgba(30, 136, 229, 0) 100%);
+            z-index: -1;
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background-color: var(--secondary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: -40px auto 20px;
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 8px 25px rgba(30, 136, 229, 0.3);
+            transition: all 0.4s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: rotateY(180deg);
+            background-color: var(--accent-color);
+        }
+        
+        .feature-card-content {
+            padding: 2rem;
+        }
+        
+        .feature-card-title {
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        /* Info Blocks */
+        .info-block {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 4rem;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+        }
+        
+        .info-block:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+        
+        .info-image {
+            flex: 1;
+            min-width: 300px;
+            height: 400px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .info-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .info-block:hover .info-image img {
+            transform: scale(1.1);
+        }
+        
+        .info-content {
+            flex: 1;
+            min-width: 300px;
+            padding: 3rem;
+        }
+        
+        .info-subtitle {
+            color: var(--secondary-color);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .info-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        
+        .info-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        .info-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        
+        .info-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .info-list-item {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 1rem;
+        }
+        
+        .info-list-icon {
+            color: var(--success-color);
+            margin-right: 1rem;
+        }
+        
+        /* Stats Section */
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .stat-card {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        /* Timeline Section */
+        .timeline {
+            position: relative;
+            margin: 3rem 0;
+            padding-left: 2rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background-color: var(--secondary-light);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-date {
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-content h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+            font-size: 1.3rem;
+        }
+        
+        .timeline-content p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        /* Video Container */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 3rem auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .video-container::before {
+            content: '';
+            display: block;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Responsiveness */
+        @media (max-width: 992px) {
+            .slide-content {
+                width: 80%;
+            }
+            
+            .slide-title {
+                font-size: 2.2rem;
+            }
+            
+            .nav-tab {
+                padding: 1.2rem 0.8rem;
+            }
+            
+            .nav-tab-icon {
+                font-size: 1.3rem;
+            }
+            
+            .nav-tab-text {
+                font-size: 1rem;
+            }
+            
+            .info-content {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .slide-content {
+                width: 90%;
+                margin-left: 5%;
+            }
+            
+            .slide-title {
+                font-size: 1.8rem;
+            }
+            
+            .slide-description {
+                font-size: 1rem;
+            }
+            
+            .content-section {
+                padding: 3rem 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .info-content {
+                padding: 1.5rem;
+            }
+            
+            .info-title {
+                font-size: 1.7rem;
+            }
+            
+            .info-image {
+                height: 300px;
+            }
+        }
+        
+        /* Animation for features */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header container - will be populated by components.js -->
+    <div id="header-container"></div>
+
+    <!-- Hero Section with Slider -->
+    <section class="hero-slider">
+        <div class="slides-container">
+            <!-- Slide 1: Poligon 1 -->
+            <div class="slide active" style="background-image: url('https://images4.imagebam.com/5c/a1/f9/ME11J74V_o.jpg')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge">Inovație în Siguranța Publică</div>
+                        <h2 class="slide-title">Poligon de Tragere <span>Ultramodern</span></h2>
+                        <p class="slide-description">Poliția Locală Slobozia a dezvoltat un poligon modern de tragere, realizat pe terenul fostului poligon militar, transferat de MApN administrației locale - asigurând instruirea continuă a personalului pentru protejarea comunității.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 2: Poligon 2 -->
+            <div class="slide" style="background-image: url('https://images4.imagebam.com/8a/d5/0d/ME11J74W_o.jpg')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge">Performanță și Excelență</div>
+                        <h2 class="slide-title">Instalații <span>Automatizate</span> de Antrenament</h2>
+                        <p class="slide-description">Poligonul închis și omologat beneficiază de instalații de ultimă generație pentru antrenament tactic, fiind utilizat atât de Poliția Locală cât și de structurile MAI din județ pentru asigurarea celor mai înalte standarde de pregătire.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 3: Videowall Monitoring 1 -->
+            <div class="slide" style="background-image: url('https://images4.imagebam.com/33/f3/c0/ME11J74X_o.jpg')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge">Centru de Comandă Avansat</div>
+                        <h2 class="slide-title">Dispecerat cu <span>Videowall</span> Integrat</h2>
+                        <p class="slide-description">Centrul de comandă al Poliției Locale Slobozia este dotat cu tehnologie de ultimă generație, permițând monitorizarea în timp real a întregului oraș prin cele peste 546 de camere amplasate strategic în toate zonele urbane.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 4: Videowall Monitoring 2 -->
+            <div class="slide" style="background-image: url('https://images4.imagebam.com/50/0b/4a/ME11J74Y_o.jpg')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge">Tehnologie Smart City</div>
+                        <h2 class="slide-title">Monitorizare <span>În Timp Real</span> a Traficului</h2>
+                        <p class="slide-description">Sistemul video integrat permite supravegherea și fluidizarea traficului în peste 200 de puncte cheie, recunoașterea numerelor de înmatriculare și detectarea automată a incidentelor pentru un timp de reacție minim.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 5: Server Room 1 -->
+            <div class="slide" style="background-image: url('https://images4.imagebam.com/38/f0/a9/ME11J74Z_o.jpg')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge">Infrastructură Digitală Avansată</div>
+                        <h2 class="slide-title">Centru de <span>Date</span> de Înaltă Performanță</h2>
+                        <p class="slide-description">Investițiile în infrastructura digitală includ un centru de date modern care gestionează fluxul de informații de la toate sistemele de supraveghere și aplicațiile informatice dedicate activității polițienești.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 6: Server Room 2 -->
+            <div class="slide" style="background-image: url('https://images4.imagebam.com/fb/25/21/ME11J750_o.jpg')">
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <div class="slide-badge">Securitate Cibernetică</div>
+                        <h2 class="slide-title">Sisteme <span>Redundante</span> de Stocare și Procesare</h2>
+                        <p class="slide-description">Serverele avansate asigură funcționarea neîntreruptă 24/7 a sistemelor critice, cu protocoale stricte de securitate cibernetică și capacitate mare de stocare pentru arhivarea înregistrărilor video conform legislației.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide-indicators">
+            <div class="slide-indicator active"></div>
+            <div class="slide-indicator"></div>
+            <div class="slide-indicator"></div>
+            <div class="slide-indicator"></div>
+            <div class="slide-indicator"></div>
+            <div class="slide-indicator"></div>
+        </div>
+        
+        <div class="slide-arrows">
+            <div class="slide-arrow prev"><i class="material-icons">arrow_back</i></div>
+            <div class="slide-arrow next"><i class="material-icons">arrow_forward</i></div>
+        </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs-container">
+        <div class="nav-tabs">
+            <a href="#poligon" class="nav-tab active">
+                <i class="material-icons nav-tab-icon">track_changes</i>
+                <span class="nav-tab-text">Poligon de Tragere</span>
+            </a>
+            <a href="#cctv" class="nav-tab">
+                <i class="material-icons nav-tab-icon">videocam</i>
+                <span class="nav-tab-text">Sistem CCTV</span>
+            </a>
+            <a href="#infrastructura" class="nav-tab">
+                <i class="material-icons nav-tab-icon">router</i>
+                <span class="nav-tab-text">Infrastructură Digitală</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Poligon Section -->
+    <section id="poligon" class="content-section">
+        <h2 class="section-title">Poligonul de Tragere</h2>
+        
+        <div class="info-block">
+            <div class="info-image">
+                <img src="https://images4.imagebam.com/5c/a1/f9/ME11J74V_o.jpg" alt="Poligon de tragere">
+            </div>
+            <div class="info-content">
+                <div class="info-subtitle">Investiție Strategică</div>
+                <h3 class="info-title">Facilități de Instruire la Standarde Internaționale</h3>
+                <p class="info-description">Poliția Locală Slobozia a finalizat în 2023 un poligon de tragere modern care asigură instruirea continuă a agenților pentru menținerea celor mai înalte standarde operaționale.</p>
+                <ul class="info-list">
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Poligon închis, omologat, realizat pe terenul fostului poligon militar</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Utilizat atât de Poliția Locală cât și de structurile MAI din județ</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Dotat cu tehnologie modernă de antrenament tactic și simulare</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Automatizare completă pentru eficiență maximă în antrenament</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="feature-cards">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="material-icons">security</i>
+                </div>
+                <div class="feature-card-content">
+                    <h3 class="feature-card-title">Pregătire Profesională</h3>
+                    <p class="feature-card-description">Antrenamente periodice pentru asigurarea competențelor de utilizare în siguranță a armamentului și dobândirea reflexelor corecte în situații operative complexe.</p>
+                </div>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="material-icons">speed</i>
+                </div>
+                <div class="feature-card-content">
+                    <h3 class="feature-card-title">Tehnologie de Vârf</h3>
+                    <p class="feature-card-description">Sisteme electronice pentru controlul și automatizarea țintelor, cu afișare digitală a rezultatelor și analiză instantanee a performanței trăgătorului.</p>
+                </div>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="material-icons">school</i>
+                </div>
+                <div class="feature-card-content">
+                    <h3 class="feature-card-title">Centru de Instruire</h3>
+                    <p class="feature-card-description">Sală dedicată pregătirii teoretice, cu echipamente multimedia pentru simulări tactice și analiza situațiilor operative din teren.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">2020</div>
+                <div class="timeline-content">
+                    <h4>Inițierea proiectului</h4>
+                    <p>Transferul terenului de la Ministerul Apărării Naționale către administrația locală și elaborarea planului de dezvoltare a poligonului de tragere.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-date">2021 - 2022</div>
+                <div class="timeline-content">
+                    <h4>Construcția facilităților</h4>
+                    <p>Realizarea infrastructurii principale: pereți de protecție acustică, sisteme de ventilație, standuri de tragere și zone de siguranță conform standardelor internaționale.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-date">2023</div>
+                <div class="timeline-content">
+                    <h4>Finalizare și omologare</h4>
+                    <p>Implementarea sistemelor electronice de control, obținerea omologării și deschiderea oficială a poligonului pentru utilizare.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-date">2024 - 2025</div>
+                <div class="timeline-content">
+                    <h4>Modernizări continue</h4>
+                    <p>Extinderea capabilităților cu sisteme de simulare avansate și planuri pentru un centru integrat de pregătire tactică pentru toate situațiile operaționale.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CCTV Section -->
+    <section id="cctv" class="content-section">
+        <h2 class="section-title">Sistemul de Supraveghere Video</h2>
+        
+        <div class="info-block">
+            <div class="info-image">
+                <img src="https://images4.imagebam.com/33/f3/c0/ME11J74X_o.jpg" alt="Videowall monitoring room">
+            </div>
+            <div class="info-content">
+                <div class="info-subtitle">Supraveghere Inteligentă</div>
+                <h3 class="info-title">Dispecerat cu Tehnologie Avansată de Monitorizare</h3>
+                <p class="info-description">Investițiile continue în infrastructura de monitorizare video au transformat Slobozia într-unul dintre cele mai sigure orașe din România, cu un sistem integrat de 546 camere de supraveghere.</p>
+                <ul class="info-list">
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Videowall-uri cu monitoare de înaltă rezoluție pentru vizualizare simultană a feed-urilor video</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Sistem de monitorizare 24/7 cu personal specializat</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Algoritmi de detecție automată a incidentelor pentru alertare rapidă</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Acoperire completă a punctelor strategice din oraș, inclusiv toate unitățile de învățământ</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <i class="material-icons stat-icon">videocam</i>
+                <div class="stat-number" data-count="546">546</div>
+                <div class="stat-label">Camere Active</div>
+            </div>
+            
+            <div class="stat-card">
+                <i class="material-icons stat-icon">traffic</i>
+                <div class="stat-number" data-count="200">200</div>
+                <div class="stat-label">Puncte de Trafic Monitorizate</div>
+            </div>
+            
+            <div class="stat-card">
+                <i class="material-icons stat-icon">school</i>
+                <div class="stat-number" data-count="16">16</div>
+                <div class="stat-label">Unități de Învățământ Securizate</div>
+            </div>
+            
+            <div class="stat-card">
+                <i class="material-icons stat-icon">assignment_turned_in</i>
+                <div class="stat-number" data-count="99">99</div>
+                <div class="stat-label">Puncte Strategice Acoperite</div>
+            </div>
+        </div>
+        
+        <div class="info-block">
+            <div class="info-image">
+                <img src="https://images4.imagebam.com/50/0b/4a/ME11J74Y_o.jpg" alt="Monitorizare trafic">
+            </div>
+            <div class="info-content">
+                <div class="info-subtitle">Sistem Integrat de Transport</div>
+                <h3 class="info-title">Monitorizarea Inteligentă a Traficului Urban</h3>
+                <p class="info-description">Sistemul avansat de supraveghere video include camere specializate pentru managementul traficului, oferind informații în timp real pentru optimizarea circulației și reducerea blocajelor.</p>
+                <ul class="info-list">
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Sisteme de recunoaștere automată a numerelor de înmatriculare (ANPR) în toate punctele de intrare/ieșire din oraș</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Monitorizare continuă a intersecțiilor principale pentru prevenirea accidentelor</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Integrare cu aplicații mobile pentru informarea cetățenilor despre starea traficului</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Timp de răspuns redus la incidente prin localizarea precisă în timp real</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="feature-cards">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="material-icons">face</i>
+                </div>
+                <div class="feature-card-content">
+                    <h3 class="feature-card-title">Analiză Video Avansată</h3>
+                    <p class="feature-card-description">Tehnologii de recunoaștere a comportamentelor suspecte și detectare a evenimentelor de interes pentru siguranța publică, cu respectarea normelor GDPR.</p>
+                </div>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="material-icons">zoom_in</i>
+                </div>
+                <div class="feature-card-content">
+                    <h3 class="feature-card-title">Camere de Înaltă Definiție</h3>
+                    <p class="feature-card-description">Echipamente cu rezoluție 4K pentru claritate maximă în orice condiții de iluminare, cu zoom optic performant pentru detalii esențiale.</p>
+                </div>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="material-icons">cloud_upload</i>
+                </div>
+                <div class="feature-card-content">
+                    <h3 class="feature-card-title">Stocare Redundantă</h3>
+                    <p class="feature-card-description">Arhivare automată a tuturor înregistrărilor video pentru perioadele prevăzute de lege, cu backup permanent pentru eliminarea riscului de pierdere a datelor.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Digital Infrastructure Section -->
+    <section id="infrastructura" class="content-section">
+        <h2 class="section-title">Infrastructură Digitală</h2>
+        
+        <div class="info-block">
+            <div class="info-image">
+                <img src="https://images4.imagebam.com/38/f0/a9/ME11J74Z_o.jpg" alt="Server room">
+            </div>
+            <div class="info-content">
+                <div class="info-subtitle">Tehnologie de Ultimă Generație</div>
+                <h3 class="info-title">Centrul de Date - Inima Digitală a Operațiunilor</h3>
+                <p class="info-description">Infrastructura digitală a Poliției Locale Slobozia reprezintă fundamentul tuturor operațiunilor moderne, permițând procesarea rapidă a informațiilor și luarea deciziilor operative bazate pe date concrete.</p>
+                <ul class="info-list">
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Servere de înaltă performanță pentru procesarea datelor complexe</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Sisteme redundante pentru asigurarea funcționării neîntrerupte</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Securitate cibernetică avansată pentru protecția datelor sensibile</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Capacitate mare de stocare pentru arhivarea înregistrărilor și documentelor electronice</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="feature-cards">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="material-icons">phonelink</i>
+                </div>
+                <div class="feature-card-content">
+                    <h3 class="feature-card-title">Sisteme Informatice Mobile</h3>
+                    <p class="feature-card-description">Echipamente mobile conectate în timp real la bazele de date centrale, permitând agenților din teren acces instantaneu la informațiile necesare intervenției.</p>
+                </div>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="material-icons">insert_chart</i>
+                </div>
+                <div class="feature-card-content">
+                    <h3 class="feature-card-title">Analiză Predictivă</h3>
+                    <p class="feature-card-description">Algoritmi avansați pentru analiza tiparelor infracționale și alocarea optimă a resurselor de patrulare în zonele cu risc crescut.</p>
+                </div>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="material-icons">settings_applications</i>
+                </div>
+                <div class="feature-card-content">
+                    <h3 class="feature-card-title">Aplicații Specializate</h3>
+                    <p class="feature-card-description">Software dedicat pentru evidența sancțiunilor, procesarea sesizărilor și monitorizarea persoanelor cu risc de victimizare sau comportament antisocial.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-block">
+            <div class="info-image">
+                <img src="https://images4.imagebam.com/fb/25/21/ME11J750_o.jpg" alt="Server infrastructure">
+            </div>
+            <div class="info-content">
+                <div class="info-subtitle">Inovație digitală</div>
+                <h3 class="info-title">Rețeaua de Comunicații - Conexiunea Vitală</h3>
+                <p class="info-description">O infrastructură robustă de comunicații asigură transmiterea în timp real a informațiilor între dispecerat, agenții din teren și sistemele automate de monitorizare.</p>
+                <ul class="info-list">
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Rețea de mare viteză cu conexiuni redundante pentru disponibilitate maximă</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Stații radio-telefon cu GPS și localizare în timp real a echipajelor</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Infrastructură cloud pentru scalabilitate și accesibilitate sporită</span>
+                    </li>
+                    <li class="info-list-item">
+                        <i class="material-icons info-list-icon">check_circle</i>
+                        <span>Sisteme de comunicații criptate pentru protecția informațiilor confidențiale</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/dYIPjPvxk-Y" title="Prezentare Dispecerat Politia Locala Slobozia" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </section>
+
+    <!-- Footer container - will be populated by components.js -->
+    <div id="footer-container"></div>
+    
+    <!-- Main JavaScript for page functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hero slider functionality
+            const slides = document.querySelectorAll('.slide');
+            const indicators = document.querySelectorAll('.slide-indicator');
+            const prevBtn = document.querySelector('.slide-arrow.prev');
+            const nextBtn = document.querySelector('.slide-arrow.next');
+            let currentSlide = 0;
+            let slideInterval;
+            
+            function showSlide(index) {
+                // Reset animations for indicators
+                indicators.forEach(indicator => {
+                    indicator.classList.remove('active');
+                });
+                
+                // Hide all slides
+                slides.forEach(slide => slide.classList.remove('active'));
+                
+                // Show the selected slide
+                currentSlide = (index + slides.length) % slides.length;
+                slides[currentSlide].classList.add('active');
+                indicators[currentSlide].classList.add('active');
+                
+                // Reset the auto slide interval
+                clearInterval(slideInterval);
+                startSlideInterval();
+            }
+            
+            function nextSlide() {
+                showSlide(currentSlide + 1);
+            }
+            
+            function prevSlide() {
+                showSlide(currentSlide - 1);
+            }
+            
+            function startSlideInterval() {
+                slideInterval = setInterval(() => {
+                    nextSlide();
+                }, 6000);
+            }
+            
+            // Initialize slider controls
+            if (prevBtn && nextBtn) {
+                prevBtn.addEventListener('click', () => {
+                    prevSlide();
+                });
+                
+                nextBtn.addEventListener('click', () => {
+                    nextSlide();
+                });
+            }
+            
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    showSlide(index);
+                });
+            });
+            
+            // Start auto slide
+            startSlideInterval();
+            
+            // Navigation tabs functionality
+            const navTabs = document.querySelectorAll('.nav-tab');
+            
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all tabs
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Scroll to the target section
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        const headerOffset = 140;
+                        const elementPosition = targetSection.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Intersection Observer for animations
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all elements with fade-in class
+            document.querySelectorAll('.fade-in').forEach(element => {
+                observer.observe(element);
+            });
+            
+            // Observe all timeline items
+            document.querySelectorAll('.timeline-item').forEach(element => {
+                observer.observe(element);
+            });
+            
+            // Update active tab on scroll
+            window.addEventListener('scroll', function() {
+                const scrollPosition = window.scrollY;
+                
+                // Get all sections
+                const sections = document.querySelectorAll('.content-section');
+                
+                // Find the current section
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 150;
+                    const sectionBottom = sectionTop + section.offsetHeight;
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                        const id = section.getAttribute('id');
+                        
+                        // Remove active class from all tabs
+                        navTabs.forEach(tab => tab.classList.remove('active'));
+                        
+                        // Add active class to the corresponding tab
+                        const activeTab = document.querySelector(`.nav-tab[href="#${id}"]`);
+                        if (activeTab) {
+                            activeTab.classList.add('active');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
