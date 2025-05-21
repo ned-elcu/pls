@@ -1,4 +1,55 @@
-// COMPONENTS.JS - Enhanced version with one-line header optimization
+/* Extra styles for icon perfect alignment in HTML */
+/* These styles ensure exact vertical centering of Material Icons */
+.header-main .main-nav ul li a i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Fix for each icon in the menu to ensure perfect vertical alignment */
+.header-main .main-nav ul li a .menu-icon,
+.header-main .main-nav ul li a .dropdown-icon {
+    transform: translateY(0);
+    line-height: normal;
+}
+
+/* Fix for icons in emergency button */
+.utility-item.emergency i {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    top: 0;
+}
+
+/* Consistent height for all menu items to ensure alignment */
+.main-nav ul li a {
+    height: 40px;
+    box-sizing: border-box;
+}// Function to fix icon alignment issues
+function fixIconAlignment() {
+    // Fix all icons in the header menu
+    const menuIcons = document.querySelectorAll('.menu-icon, .dropdown-icon, .dropdown-icon-item');
+    menuIcons.forEach(icon => {
+        // Add alignment class
+        icon.classList.add('align-icons');
+    });
+    
+    // Ensure consistent heights
+    const menuItems = document.querySelectorAll('.main-nav ul li a');
+    menuItems.forEach(item => {
+        item.style.display = 'inline-flex';
+        item.style.alignItems = 'center';
+    });
+    
+    // Fix dropdown icons alignment
+    const dropdownIcons = document.querySelectorAll('.dropdown-icon');
+    dropdownIcons.forEach(icon => {
+        icon.style.display = 'inline-flex';
+        icon.style.alignItems = 'center';
+        icon.style.justifyContent = 'center';
+    });
+}// COMPONENTS.JS - Enhanced version with one-line header optimization
 // Simply include this file in your HTML pages to automatically load the header and footer
 
 // CSS for header and footer as a string
@@ -379,11 +430,14 @@ const COMPONENTS_CSS = `
     height: 40px;
     line-height: 1;
     white-space: nowrap;
+    position: relative; /* Added for better control of children positioning */
 }
 
 /* Support for menu text that can be hidden/shown */
 .menu-text, .menu-text-optional {
     display: inline-block;
+    position: relative;
+    top: 1px; /* Adjust vertical alignment to match with icon */
 }
 
 /* Icon in main menu */
@@ -397,6 +451,8 @@ const COMPONENTS_CSS = `
     justify-content: center;
     height: 24px;
     flex-shrink: 0;
+    position: relative;
+    top: -1px; /* Fix vertical alignment */
 }
 
 .main-nav ul li a:hover {
@@ -453,6 +509,8 @@ const COMPONENTS_CSS = `
     display: flex;
     align-items: center;
     height: 24px;
+    position: relative;
+    top: -1px; /* Fix vertical alignment */
 }
 
 .main-nav ul li.has-dropdown:hover > a .dropdown-icon {
@@ -557,6 +615,9 @@ const COMPONENTS_CSS = `
     color: var(--text-secondary) !important;
     opacity: 0.7 !important;
     transition: all 0.3s ease !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    top: -1px !important; /* Fix vertical alignment */
 }
 
 .dropdown-menu li a:hover {
@@ -1433,10 +1494,20 @@ body {
     background: var(--secondary-light);
 }
 
-/* Material Icons styling */
+/* Add a utility class for icon alignment */
+.align-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .material-icons {
     vertical-align: middle;
     line-height: 1;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Disable header size changes on scroll */
@@ -1768,6 +1839,9 @@ function initializeComponents() {
     
     // Initialize responsive header with new one-line functionality
     initResponsiveHeader();
+    
+    // Fix icon alignment
+    fixIconAlignment();
 }
 
 // Intro Screen Animation and Removal
