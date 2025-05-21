@@ -5,6 +5,35 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    top: 2px; /* Ensure consistent alignment */
+}
+
+/* Fix for each icon in the menu to ensure perfect vertical alignment */
+.header-main .main-nav ul li a .menu-icon,
+.header-main .main-nav ul li a .dropdown-icon {
+    transform: translateY(0);
+    line-height: normal;
+}
+
+/* Additional precise alignment fix for Material Icons */
+.material-icons {
+    vertical-align: middle;
+    line-height: 1;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(2px); /* Added transform to move icons down */
+}
+
+/* Fix for icons in emergency button */
+.utility/* Extra styles for icon perfect alignment in HTML */
+/* These styles ensure exact vertical centering of Material Icons */
+.header-main .main-nav ul li a i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
 /* Fix for each icon in the menu to ensure perfect vertical alignment */
@@ -452,7 +481,7 @@ const COMPONENTS_CSS = `
     height: 24px;
     flex-shrink: 0;
     position: relative;
-    top: -1px; /* Fix vertical alignment */
+    top: 2px; /* Fix vertical alignment - increased from -1px to 2px */
 }
 
 .main-nav ul li a:hover {
@@ -510,7 +539,7 @@ const COMPONENTS_CSS = `
     align-items: center;
     height: 24px;
     position: relative;
-    top: -1px; /* Fix vertical alignment */
+    top: 2px; /* Fix vertical alignment - adjusted from -1px to 2px */
 }
 
 .main-nav ul li.has-dropdown:hover > a .dropdown-icon {
@@ -1620,7 +1649,7 @@ const HEADER_HTML = `
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="/pls/petitii"><i class="material-icons dropdown-icon-item">edit_note</i> Petiții</a></li>
-                        <li><a href="/pls/raspunsuri"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări</a></li>
+                        <li><a href="/pls/raspunsuri"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări, reclamații, anonime</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
@@ -1665,7 +1694,7 @@ const HEADER_HTML = `
                         <div class="dropdown-group-2">
                             <li><a href="/pls/transparenta/#declaratii-interese"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
                             <li><a href="/pls/transparenta/#declaratii-avere"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
-                            <li><a href="/pls/transparenta/#rapoarte-544"><i class="material-icons dropdown-icon-item">description</i> Aplicare a Legii nr. 544/2001</a></li>
+                            <li><a href="/pls/transparenta/#rapoarte-544"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
                             <li><a href="/pls/transparenta/documente"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
                         </div>
                         <div class="dropdown-group-header">Dezvoltare</div>
