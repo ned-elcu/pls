@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rezultate Căutare - Poliția Locală Slobozia</title>
+    <title>Căutare Avansată - Poliția Locală Slobozia</title>
     
-    <!-- Load components.js first to ensure header and footer load correctly -->
-    <script src="../components.js"></script>
-    
-    <!-- Ensure Material Icons are loaded -->
+    <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -115,6 +112,52 @@
             font-weight: 800;
             margin-bottom: 0;
             color: white;
+        }
+        
+        /* Header */
+        .header {
+            background-color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: var(--shadow-small);
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: var(--header-height);
+            padding: 0 1.5rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 80px;
+            margin-right: 1rem;
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1.2;
+        }
+        
+        .logo-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
         }
         
         /* Search container */
@@ -839,69 +882,6 @@
             margin-bottom: 1.5rem;
         }
         
-        /* Related searches and suggestions */
-        .related-searches {
-            background-color: white;
-            border-radius: var(--border-radius-medium);
-            box-shadow: var(--shadow-small);
-            padding: 1.5rem;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-            opacity: 0;
-            animation: fadeIn 0.5s forwards 2s;
-        }
-        
-        .related-searches h3 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-        
-        .suggestion-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .suggestion-item {
-            background-color: rgba(30, 136, 229, 0.1);
-            color: var(--secondary-color);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: var(--transition-fast);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .suggestion-item:before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background-color: rgba(30, 136, 229, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-            z-index: 0;
-        }
-        
-        .suggestion-item:hover:before {
-            width: 300%;
-            height: 300%;
-        }
-        
-        .suggestion-item:hover {
-            background-color: var(--secondary-color);
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-small);
-        }
-        
         /* Pagination */
         .search-pagination {
             display: flex;
@@ -1176,8 +1156,18 @@
     </style>
 </head>
 <body>
-    <!-- Header container - will be populated by components.js -->
-    <div id="header-container"></div>
+    <!-- Simple header since we're in standalone mode -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <img src="https://upload.wikimedia.org/wikipedia/ro/c/c4/Sigla_Poliția_Locală_România.png" alt="Logo Poliția Locală">
+                <div class="logo-text">
+                    <div class="logo-title">Poliția Locală</div>
+                    <div class="logo-subtitle">Slobozia</div>
+                </div>
+            </div>
+        </div>
+    </header>
     
     <!-- Page Title -->
     <div class="page-title-container">
@@ -1269,231 +1259,802 @@
     <div class="toast-container" id="toast-container">
         <!-- Toast notifications will be dynamically added here -->
     </div>
-    
-    <!-- Footer container - will be populated by components.js -->
-    <div id="footer-container"></div>
 
-    <!-- Required libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/elasticlunr/0.9.6/elasticlunr.min.js"></script>
+    <!-- Include FlexSearch library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flexsearch/0.7.31/flexsearch.bundle.js"></script>
     
-    <!-- Load the advanced search implementation -->
-    <script src="../search.js"></script>
-    
-    <!-- Additional UI enhancements -->
+    <!-- Search implementation -->
     <script>
-        // Initialize UI enhancements when DOM is ready
+        // Mock data for demonstration (replace with your actual content)
+        // In a real implementation, you would generate this data with a build script and include it as a separate JSON file
+        const siteContent = [
+            {
+                id: 'home',
+                url: '/index.html',
+                title: 'Poliția Locală Slobozia - Pagina Principală',
+                content: 'Poliția Locală Slobozia este instituția publică de interes local, cu personalitate juridică, aflată în subordinea Consiliului Local al Municipiului Slobozia, care exercită atribuții privind apărarea drepturilor și libertăților fundamentale ale persoanei, a proprietății private și publice, prevenirea și descoperirea infracțiunilor. Poliția Locală Slobozia își desfășoară activitatea în interesul comunității locale, exclusiv pe baza și în executarea legii, precum și a actelor autorității deliberative și ale celei executive ale administrației publice locale.',
+                excerpt: 'Poliția Locală Slobozia este instituția publică de interes local, cu personalitate juridică, aflată în subordinea Consiliului Local al Municipiului Slobozia...',
+                type: 'page',
+                section: 'general'
+            },
+            {
+                id: 'despre',
+                url: '/despre/index.html',
+                title: 'Despre Poliția Locală Slobozia',
+                content: 'Poliția Locală Slobozia a fost înființată în baza Legii Poliției Locale nr. 155/2010 și a Hotărârii de Guvern nr. 1332/2010 pentru aprobarea Regulamentului-cadru de organizare și funcționare a poliției locale. Atribuțiile Poliției Locale Slobozia includ: asigurarea ordinii și liniștii publice, creșterea siguranței cetățeanului, prevenirea și combaterea încălcării normelor legale privind curățenia și comerțul stradal, protecția mediului, disciplina în construcții și afișajul stradal. Misiunea instituției este aceea de a fi permanent în slujba comunității locale și de a asigura respectarea drepturilor și libertăților fundamentale ale cetățenilor.',
+                excerpt: 'Poliția Locală Slobozia a fost înființată în baza Legii Poliției Locale nr. 155/2010 și a Hotărârii de Guvern nr. 1332/2010...',
+                type: 'page',
+                section: 'despre'
+            },
+            {
+                id: 'contact',
+                url: '/contact/index.html',
+                title: 'Contact Poliția Locală Slobozia',
+                content: 'Adresă: Str. Răzoare nr. 3, Slobozia, Județul Ialomița Telefon: 0243 955 Fax: 0243 233 771 Email: politia.locala@sloboziail.ro Program de lucru: Luni-Vineri: 08:00-16:00 Dispecerat: program non-stop Pentru urgențe: Telefon: 0243 955 (disponibil 24/7)',
+                excerpt: 'Adresă: Str. Răzoare nr. 3, Slobozia, Județul Ialomița Telefon: 0243 955 Fax: 0243 233 771 Email: politia.locala@sloboziail.ro',
+                type: 'page',
+                section: 'contact'
+            },
+            {
+                id: 'doc-hcl-2022',
+                url: '/documente/hotarare-consiliu-2022.pdf',
+                title: 'Hotărâre Consiliu Local privind organizarea Poliției Locale Slobozia',
+                content: 'HOTĂRÂRE privind aprobarea Regulamentului de Organizare și Funcționare a Poliției Locale a Municipiului Slobozia Consiliul Local al Municipiului Slobozia, județul Ialomița, întrunit în ședința ordinară din data de 15.03.2022, Având în vedere: Referatul de aprobare al Primarului Municipiului Slobozia; Raportul de specialitate al Direcției Poliția Locală; Prevederile Legii nr. 155/2010 a Poliției Locale, republicată, cu modificările și completările ulterioare; Avizul comisiei de specialitate din cadrul Consiliului Local Slobozia; În temeiul prevederilor art. 129 alin. (2) lit. a) și alin. (3) lit. c), precum și art. 139 alin. (1) din OUG nr. 57/2019 privind Codul Administrativ, HOTĂRĂȘTE: Art. 1. Se aprobă Regulamentul de Organizare și Funcționare a Poliției Locale a Municipiului Slobozia, conform Anexei care face parte integrantă din prezenta hotărâre. Art. 2. La data intrării în vigoare a prezentei hotărâri se abrogă Hotărârea Consiliului Local nr. 45/28.02.2019. Art. 3. Primarul Municipiului Slobozia, prin Direcția Poliția Locală, va aduce la îndeplinire prevederile prezentei hotărâri. Art. 4. Prezenta hotărâre va fi comunicată prin grija Secretarului General al Municipiului Slobozia, Primarului Municipiului Slobozia, Direcției Poliția Locală și Instituției Prefectului - Județul Ialomița.',
+                excerpt: 'HOTĂRÂRE privind aprobarea Regulamentului de Organizare și Funcționare a Poliției Locale a Municipiului Slobozia Consiliul Local al Municipiului Slobozia...',
+                type: 'document',
+                section: 'documente',
+                extension: 'pdf'
+            },
+            {
+                id: 'doc-regulament',
+                url: '/documente/regulament-organizare-functionare.pdf',
+                title: 'Regulament de Organizare și Funcționare',
+                content: 'REGULAMENT DE ORGANIZARE ȘI FUNCȚIONARE A POLIȚIEI LOCALE A MUNICIPIULUI SLOBOZIA CAPITOLUL I Dispoziții generale Art. 1. Prezentul Regulament de Organizare și Funcționare a Poliției Locale a Municipiului Slobozia, denumit în continuare Regulament, reglementează organizarea și funcționarea Poliției Locale a Municipiului Slobozia, ca serviciu public de interes local, specializat, al Municipiului Slobozia. Art. 2. Poliția Locală a Municipiului Slobozia se organizează și funcționează în baza prevederilor Legii Poliției Locale nr. 155/2010, republicată, cu modificările și completările ulterioare, ale Hotărârii Guvernului nr. 1332/2010 privind aprobarea Regulamentului-cadru de organizare și funcționare a poliției locale, ale Legii administrației publice locale nr. 215/2001, republicată, cu modificările și completările ulterioare, precum și ale prezentului Regulament. Art. 3. (1) Poliția Locală a Municipiului Slobozia se înființează în scopul exercitării atribuțiilor privind apărarea drepturilor și libertăților fundamentale ale persoanei, a proprietății private și publice, prevenirea și descoperirea infracțiunilor, în următoarele domenii: a) ordinea și liniștea publică, precum și paza bunurilor; b) circulația pe drumurile publice; c) disciplina în construcții și afișajul stradal; d) protecția mediului; e) activitatea comercială; f) evidența persoanelor; g) alte domenii stabilite prin lege. (2) Poliția Locală a Municipiului Slobozia își desfășoară activitatea pe baza principiilor: legalității, încrederii, previzibilității, proximității și proporționalității, deschiderii și transparenței, eficienței și eficacității, răspunderii și responsabilității, imparțialității și nediscriminării.',
+                excerpt: 'REGULAMENT DE ORGANIZARE ȘI FUNCȚIONARE A POLIȚIEI LOCALE A MUNICIPIULUI SLOBOZIA CAPITOLUL I Dispoziții generale Art. 1. Prezentul Regulament...',
+                type: 'document',
+                section: 'documente',
+                extension: 'pdf'
+            },
+            {
+                id: 'doc-raport-2023',
+                url: '/documente/raport-activitate-2023.pdf',
+                title: 'Raport de activitate 2023',
+                content: 'RAPORT PRIVIND ACTIVITATEA POLIȚIEI LOCALE A MUNICIPIULUI SLOBOZIA PE ANUL 2023 I. INTRODUCERE Prezentul raport de activitate este elaborat în conformitate cu prevederile Legii Poliției Locale nr. 155/2010, republicată, cu modificările și completările ulterioare, și ale H.G. nr. 1332/2010 pentru aprobarea Regulamentului-cadru de organizare și funcționare a poliției locale. Poliția Locală a Municipiului Slobozia funcționează ca instituție publică de interes local, cu personalitate juridică, aflată în subordinea Consiliului Local al Municipiului Slobozia și sub directa coordonare a Primarului Municipiului Slobozia. Pe parcursul anului 2023, polițiștii locali din cadrul Poliției Locale a Municipiului Slobozia au desfășurat activități în vederea prevenirii și combaterii faptelor antisociale, au asigurat protecția și respectarea drepturilor și libertăților fundamentale ale cetățenilor, a proprietății publice și private, precum și măsuri de protecție a populației, în limitele competențelor stabilite prin lege. II. STRUCTURA ORGANIZATORICĂ La nivelul anului 2023, Poliția Locală a Municipiului Slobozia a funcționat cu un număr de 65 de angajați, din care 60 de polițiști locali și 5 personal contractual, organizați astfel: - Director executiv: 1 - Serviciul Ordine și Liniște Publică: 30 polițiști locali - Biroul Circulație pe Drumurile Publice: 10 polițiști locali - Biroul Control Activități Comerciale: 6 polițiști locali - Biroul Disciplină în Construcții și Afișaj Stradal: 5 polițiști locali - Compartimentul Protecția Mediului: 4 polițiști locali - Compartimentul Evidența Persoanelor: 4 polițiști locali - Compartimentul Administrativ: 5 personal contractual III. ACTIVITĂȚI DESFĂȘURATE ÎN ANUL 2023 1. În domeniul ordinii și liniștii publice În cursul anului 2023, polițiștii locali din cadrul Serviciului Ordine și Liniște Publică au desfășurat următoarele activități: - Acțiuni de patrulare: 1.825 - Contravenții constatate: 2.340 - Valoarea amenzilor aplicate: 845.600 lei - Infracțiuni constatate: 12 - Persoane legitimate: 14.520 - Sesizări și reclamații soluționate: 1.235 - Măsuri de ordine asigurate la manifestări culturale, sportive, religioase: 65',
+                excerpt: 'RAPORT PRIVIND ACTIVITATEA POLIȚIEI LOCALE A MUNICIPIULUI SLOBOZIA PE ANUL 2023 I. INTRODUCERE Prezentul raport de activitate este elaborat în conformitate cu prevederile Legii Poliției Locale...',
+                type: 'document',
+                section: 'documente',
+                extension: 'pdf'
+            },
+            {
+                id: 'doc-cerere-petitie',
+                url: '/documente/formular-petitie.docx',
+                title: 'Formular Petiție către Poliția Locală',
+                content: 'PETIȚIE Către Poliția Locală a Municipiului Slobozia Subsemnatul/Subsemnata ... domiciliat/ă în ... posesor/posesoare al/a C.I. seria ... nr. ... eliberată de ... la data de ... CNP ... telefon ... email ... În conformitate cu prevederile O.G. nr. 27/2002 privind reglementarea activității de soluționare a petițiilor, cu modificările și completările ulterioare, formulez prezenta PETIȚIE prin care vă aduc la cunoștință următoarele: ... (descrierea situației, aspectelor sesizate, data și locul unde s-au produs evenimentele, persoanele implicate, etc.) Menționez că această situație contravine prevederilor ... (se menționează, dacă se cunosc, actele normative considerate a fi încălcate) Față de cele prezentate, vă rog să dispuneți măsurile legale pentru soluționarea aspectelor sesizate și să-mi comunicați modul de soluționare. Anexez prezentei următoarele documente: ... Data: ... Semnătura: ... Notă: Datele cu caracter personal sunt prelucrate în conformitate cu prevederile Regulamentului (UE) nr. 2016/679 privind protecția persoanelor fizice în ceea ce privește prelucrarea datelor cu caracter personal și libera circulație a acestor date.',
+                excerpt: 'PETIȚIE Către Poliția Locală a Municipiului Slobozia Subsemnatul/Subsemnata ... domiciliat/ă în ... posesor/posesoare al/a C.I. seria ... nr. ... eliberată de ... la data de ...',
+                type: 'document',
+                section: 'documente',
+                extension: 'docx'
+            },
+            {
+                id: 'servicii',
+                url: '/servicii/index.html',
+                title: 'Serviciile Poliției Locale Slobozia',
+                content: 'Poliția Locală Slobozia oferă următoarele servicii pentru cetățeni și instituții: 1. Asigurarea ordinii și liniștii publice în zonele și locurile stabilite prin Planul de ordine și siguranță publică; 2. Fluidizarea circulației rutiere și pietonale; 3. Supravegherea parcărilor publice; 4. Verificarea respectării normelor legale privind comerțul stradal; 5. Verificarea respectării normelor legale privind disciplina în construcții; 6. Verificarea respectării normelor de protecție a mediului; 7. Verificarea respectării normelor legale privind afișajul publicitar; 8. Verificarea respectării normelor legale privind evidența persoanelor; 9. Asigurarea protecției personalului din aparatul de specialitate al primarului, din instituțiile sau serviciile publice de interes local; 10. Intervenția la solicitările dispeceratului la evenimentele semnalate prin Serviciul de urgență 112; 11. Primirea și soluționarea petițiilor cetățenilor; 12. Monitorizarea video a domeniului public; 13. Acțiuni comune cu Poliția Națională și alte instituții ale statului; 14. Acțiuni de informare și educare a cetățenilor; 15. Acțiuni de verificare a imobilelor abandonate.',
+                excerpt: 'Poliția Locală Slobozia oferă următoarele servicii pentru cetățeni și instituții: 1. Asigurarea ordinii și liniștii publice în zonele și locurile stabilite prin Planul de ordine și siguranță publică...',
+                type: 'page',
+                section: 'general'
+            }
+        ];
+
+        // Initialize FlexSearch
+        const initializeSearchIndex = () => {
+            // Create document index
+            const documentIndex = new FlexSearch.Document({
+                document: {
+                    id: "id",
+                    index: [
+                        "title",
+                        "content",
+                        "url"
+                    ],
+                    store: [
+                        "title", 
+                        "url", 
+                        "excerpt", 
+                        "type", 
+                        "section", 
+                        "extension"
+                    ]
+                },
+                tokenize: "forward",
+                charset: "latin:extra",
+                language: "ro", // For Romanian
+                optimize: true,
+                cache: 100,
+                worker: navigator.hardwareConcurrency || 4 // Use available CPU cores
+            });
+
+            // Add documents to index
+            siteContent.forEach(doc => {
+                documentIndex.add(doc);
+            });
+
+            return documentIndex;
+        };
+
+        // Initialize search when document is ready
+        let searchIndex;
+        let recentSearches = [];
+        const MAX_RECENT_SEARCHES = 10;
+        
         document.addEventListener('DOMContentLoaded', function() {
-            // Show/hide suggestions dropdown
+            // Initialize search index
+            searchIndex = initializeSearchIndex();
+            
+            // Load recent searches from localStorage
+            try {
+                const storedSearches = localStorage.getItem('pls_recent_searches');
+                if (storedSearches) {
+                    recentSearches = JSON.parse(storedSearches);
+                }
+            } catch (e) {
+                console.warn('Failed to load recent searches from localStorage', e);
+            }
+            
+            // Set up search form handler
+            setupSearchHandlers();
+            
+            // Check URL for search query on page load
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            
+            if (query) {
+                const searchInput = document.getElementById('search-input');
+                if (searchInput) {
+                    searchInput.value = query;
+                }
+                performSearch(query);
+            }
+        });
+
+        // Store recent searches
+        function addToRecentSearches(query) {
+            if (!query || query.length < 3) return;
+            
+            // Remove if already exists and add to beginning
+            recentSearches = recentSearches.filter(item => item !== query);
+            recentSearches.unshift(query);
+            
+            // Limit size
+            if (recentSearches.length > MAX_RECENT_SEARCHES) {
+                recentSearches = recentSearches.slice(0, MAX_RECENT_SEARCHES);
+            }
+            
+            // Store in localStorage
+            try {
+                localStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
+            } catch (e) {
+                console.warn('Failed to save recent searches to localStorage', e);
+            }
+        }
+
+        // Set up search event handlers
+        function setupSearchHandlers() {
+            const searchForm = document.getElementById('search-form');
             const searchInput = document.getElementById('search-input');
             const suggestionsDropdown = document.getElementById('search-suggestions');
             
-            if (searchInput && suggestionsDropdown) {
-                searchInput.addEventListener('focus', function() {
-                    if (this.value.length >= 2 && suggestionsDropdown.innerHTML) {
-                        suggestionsDropdown.classList.add('active');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        performSearch(query);
                     }
                 });
-                
-                document.addEventListener('click', function(event) {
-                    if (!event.target.closest('#search-input') && !event.target.closest('#search-suggestions')) {
+            }
+            
+            if (searchInput) {
+                // Set up real-time suggestions
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.trim();
+                    if (query.length >= 2) {
+                        // Get suggestions
+                        const suggestions = getSearchSuggestions(query, 5);
+                        if (suggestions.length > 0) {
+                            renderSuggestions(suggestions);
+                            suggestionsDropdown.classList.add('active');
+                        } else {
+                            suggestionsDropdown.classList.remove('active');
+                        }
+                    } else {
                         suggestionsDropdown.classList.remove('active');
                     }
                 });
             }
             
-            // Toast notification function
-            window.showToast = function(icon, title, message) {
-                const toastContainer = document.getElementById('toast-container');
-                const toast = document.createElement('div');
-                toast.className = 'toast';
-                toast.innerHTML = `
-                    <div class="toast-icon">
-                        <i class="material-icons">${icon}</i>
+            // Set up filter handlers
+            document.querySelectorAll('input[name="content-type"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    if (this.checked && this.value !== 'all') {
+                        // Uncheck "All" option
+                        document.getElementById('filter-all').checked = false;
+                        
+                        // Apply filter
+                        const query = searchInput.value.trim();
+                        if (query) {
+                            performSearch(query);
+                        }
+                    } else if (this.checked && this.value === 'all') {
+                        // Uncheck other options
+                        document.querySelectorAll('input[name="content-type"]').forEach(otherInput => {
+                            if (otherInput.value !== 'all') {
+                                otherInput.checked = false;
+                            }
+                        });
+                        
+                        // Apply filter
+                        const query = searchInput.value.trim();
+                        if (query) {
+                            performSearch(query);
+                        }
+                    }
+                });
+            });
+            
+            // Set up section filter handlers
+            document.querySelectorAll('input[name="section"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    if (this.checked && this.value !== 'all') {
+                        // Uncheck "All" option
+                        document.getElementById('filter-all-sections').checked = false;
+                        
+                        // Apply filter
+                        const query = searchInput.value.trim();
+                        if (query) {
+                            performSearch(query);
+                        }
+                    } else if (this.checked && this.value === 'all') {
+                        // Uncheck other options
+                        document.querySelectorAll('input[name="section"]').forEach(otherInput => {
+                            if (otherInput.value !== 'all') {
+                                otherInput.checked = false;
+                            }
+                        });
+                        
+                        // Apply filter
+                        const query = searchInput.value.trim();
+                        if (query) {
+                            performSearch(query);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Get search suggestions
+        function getSearchSuggestions(query, maxSuggestions = 5) {
+            if (!query || query.length < 2) return [];
+            
+            const normalizedQuery = query.toLowerCase();
+            const suggestions = new Set();
+            
+            // Add from recent searches
+            recentSearches.forEach(search => {
+                if (search.toLowerCase().includes(normalizedQuery)) {
+                    suggestions.add(search);
+                }
+            });
+            
+            // If we have enough suggestions from recent searches, return them
+            if (suggestions.size >= maxSuggestions) {
+                return Array.from(suggestions).slice(0, maxSuggestions);
+            }
+            
+            // Add from site content titles
+            siteContent.forEach(item => {
+                if (item.title.toLowerCase().includes(normalizedQuery)) {
+                    const titleParts = item.title.split(' ');
+                    for (let i = 0; i < titleParts.length; i++) {
+                        const phrase = titleParts.slice(i, Math.min(i + 3, titleParts.length)).join(' ');
+                        if (phrase.toLowerCase().includes(normalizedQuery) && phrase.length > query.length) {
+                            suggestions.add(phrase);
+                        }
+                    }
+                }
+            });
+            
+            return Array.from(suggestions).slice(0, maxSuggestions);
+        }
+
+        // Render search suggestions
+        function renderSuggestions(suggestions) {
+            const container = document.getElementById('search-suggestions');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Create suggestion elements
+            const ul = document.createElement('ul');
+            suggestions.forEach(suggestion => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = '#';
+                a.innerHTML = `<i class="material-icons">search</i>${suggestion}`;
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.getElementById('search-input').value = suggestion;
+                    performSearch(suggestion);
+                    container.classList.remove('active');
+                });
+                li.appendChild(a);
+                ul.appendChild(li);
+            });
+            
+            container.appendChild(ul);
+        }
+
+        // Perform search
+        function performSearch(query, page = 1) {
+            // Update URL
+            const url = new URL(window.location);
+            url.searchParams.set('q', query);
+            url.searchParams.set('page', page);
+            window.history.pushState({}, '', url);
+            
+            // Clear suggestions
+            const suggestionsContainer = document.getElementById('search-suggestions');
+            if (suggestionsContainer) {
+                suggestionsContainer.classList.remove('active');
+            }
+            
+            // Show loading state
+            showSearchLoading();
+            
+            // Add to recent searches
+            addToRecentSearches(query);
+            
+            // Get filter values
+            let typeFilter = null;
+            let sectionFilter = null;
+            
+            // Check if any type filter is selected
+            document.querySelectorAll('input[name="content-type"]:checked').forEach(input => {
+                if (input.value !== 'all') {
+                    typeFilter = input.value;
+                }
+            });
+            
+            // Check if any section filter is selected
+            document.querySelectorAll('input[name="section"]:checked').forEach(input => {
+                if (input.value !== 'all') {
+                    sectionFilter = input.value;
+                }
+            });
+            
+            // Perform search
+            const results = searchIndex.search(query, {
+                limit: 100,
+                suggest: true, // Enable suggestions (fuzzy search)
+                enrich: true // Return full document data
+            });
+            
+            // Process results
+            let allResults = [];
+            
+            // Combine results from all fields
+            results.forEach(resultSet => {
+                resultSet.result.forEach(result => {
+                    // Add if not already in results
+                    if (!allResults.some(r => r.id === result.id)) {
+                        allResults.push(result);
+                    }
+                });
+            });
+            
+            // Apply filters
+            if (typeFilter) {
+                allResults = allResults.filter(result => result.type === typeFilter);
+            }
+            
+            if (sectionFilter) {
+                allResults = allResults.filter(result => result.section === sectionFilter);
+            }
+            
+            // Sort by relevance (assuming first results are most relevant)
+            
+            // Pagination
+            const perPage = 10;
+            const totalResults = allResults.length;
+            const totalPages = Math.ceil(totalResults / perPage);
+            const startIndex = (page - 1) * perPage;
+            const endIndex = Math.min(startIndex + perPage, totalResults);
+            
+            // Get current page results
+            const paginatedResults = allResults.slice(startIndex, endIndex);
+            
+            // Render results
+            setTimeout(() => {
+                renderSearchResults({
+                    query,
+                    results: paginatedResults,
+                    totalResults,
+                    currentPage: page,
+                    totalPages,
+                    perPage,
+                    // Identify direct match (first result with high relevance)
+                    directMatch: allResults.length > 0 ? allResults[0] : null
+                });
+            }, 500); // Small delay to show loading animation
+        }
+
+        // Show loading state
+        function showSearchLoading() {
+            const resultList = document.getElementById('result-list');
+            if (resultList) {
+                resultList.innerHTML = `
+                    <div class="search-loading">
+                        <div class="search-loading-spinner"></div>
+                        <p class="search-loading-text">Se încarcă rezultatele căutării...</p>
+                        <div class="search-loading-progress"></div>
                     </div>
-                    <div class="toast-content">
-                        <div class="toast-title">${title}</div>
-                        <div class="toast-message">${message}</div>
+                `;
+            }
+            
+            // Reset pagination
+            document.getElementById('search-pagination').innerHTML = '';
+            
+            // Hide direct match
+            const directMatchContainer = document.getElementById('direct-match-container');
+            if (directMatchContainer) {
+                directMatchContainer.innerHTML = '';
+            }
+        }
+
+        // Render search results
+        function renderSearchResults(result) {
+            // Update summary
+            const searchSummary = document.getElementById('search-summary');
+            if (searchSummary) {
+                searchSummary.innerHTML = `
+                    S-au găsit <strong>${result.totalResults}</strong> rezultate pentru 
+                    <span class="search-term">"${result.query}"</span>
+                `;
+            }
+            
+            // Update direct match if exists
+            const directMatchContainer = document.getElementById('direct-match-container');
+            if (directMatchContainer && result.directMatch) {
+                const directMatch = result.directMatch;
+                directMatchContainer.innerHTML = `
+                    <div class="direct-match">
+                        <div class="direct-match-icon">
+                            <i class="material-icons">${directMatch.type === 'document' ? 'description' : 'find_in_page'}</i>
+                        </div>
+                        <div class="direct-match-content">
+                            <h3>Rezultat exact găsit</h3>
+                            <p>${highlightSearchTerms(directMatch.title, result.query)}</p>
+                            <a href="${directMatch.url}" class="direct-match-link">
+                                Accesează direct
+                                <i class="material-icons">arrow_forward</i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Update filter counts
+            updateFilterCounts(result);
+            
+            // Display results
+            if (result.totalResults > 0) {
+                displaySearchResults(result);
+                displayPagination(result.totalPages, result.currentPage);
+            } else {
+                showNoResultsState(result.query);
+            }
+            
+            // Show toast notification
+            showToast('search', 'Căutare finalizată', `S-au găsit ${result.totalResults} rezultate`);
+        }
+
+        // Update filter counts
+        function updateFilterCounts(result) {
+            // Count by type
+            const typeCounts = {
+                all: result.totalResults,
+                page: 0,
+                document: 0
+            };
+            
+            // Count from results
+            result.results.forEach(hit => {
+                if (hit.type && typeCounts[hit.type] !== undefined) {
+                    typeCounts[hit.type]++;
+                }
+            });
+            
+            // Also count from all results (not just paginated)
+            siteContent.forEach(item => {
+                // Check if this item matches the search query
+                const searchIndex = initializeSearchIndex();
+                const queryResults = searchIndex.search(result.query);
+                const isMatch = queryResults.some(rs => rs.result.some(r => r.id === item.id));
+                
+                if (isMatch) {
+                    if (item.type === 'page') typeCounts.page++;
+                    if (item.type === 'document') typeCounts.document++;
+                }
+            });
+            
+            // Update DOM
+            Object.keys(typeCounts).forEach(type => {
+                const countElement = document.getElementById(`count-${type}`);
+                if (countElement) {
+                    countElement.textContent = type === 'all' ? result.totalResults : typeCounts[type];
+                }
+            });
+        }
+
+        // Display search results
+        function displaySearchResults(result) {
+            const resultList = document.getElementById('result-list');
+            if (!resultList) return;
+            
+            resultList.innerHTML = '';
+            
+            // Create result cards
+            result.results.forEach(hit => {
+                const resultCard = document.createElement('div');
+                resultCard.className = 'result-card';
+                
+                // Determine icon based on type
+                let typeIcon = 'article';
+                let typeLabel = 'Pagină';
+                
+                if (hit.type === 'document') {
+                    typeIcon = 'description';
+                    typeLabel = 'Document';
+                    
+                    // Specific icon based on extension
+                    if (hit.extension) {
+                        if (hit.extension === 'pdf') {
+                            typeIcon = 'picture_as_pdf';
+                            typeLabel = 'PDF';
+                        } else if (['doc', 'docx'].includes(hit.extension)) {
+                            typeIcon = 'description';
+                            typeLabel = 'Document Word';
+                        } else if (['xls', 'xlsx'].includes(hit.extension)) {
+                            typeIcon = 'table_chart';
+                            typeLabel = 'Excel';
+                        }
+                    }
+                }
+                
+                // Format title with highlighting
+                const highlightedTitle = highlightSearchTerms(hit.title, result.query);
+                
+                // Format content excerpt with highlighting
+                const highlightedExcerpt = highlightSearchTerms(hit.excerpt, result.query);
+                
+                resultCard.innerHTML = `
+                    <div class="result-meta">
+                        <div class="result-type">
+                            <i class="material-icons">${typeIcon}</i>${typeLabel}
+                        </div>
+                        <a href="${hit.url}" class="result-url" title="${hit.url}">${hit.url}</a>
+                    </div>
+                    <h3 class="result-title"><a href="${hit.url}">${highlightedTitle}</a></h3>
+                    <div class="result-excerpt">${highlightedExcerpt}</div>
+                    <div class="result-actions">
+                        <a href="${hit.url}" class="result-action">
+                            <i class="material-icons">open_in_new</i> Vizitează
+                        </a>
+                        <a href="#" class="result-action" onclick="shareResult('${hit.url}', '${escapeHtml(hit.title)}'); return false;">
+                            <i class="material-icons">share</i> Distribuie
+                        </a>
                     </div>
                 `;
                 
-                toastContainer.appendChild(toast);
-                
-                // Auto-remove toast after animation completes
-                setTimeout(() => {
-                    toast.remove();
-                }, 3500);
-            };
+                resultList.appendChild(resultCard);
+            });
+        }
+
+        // Highlight search terms in text
+        function highlightSearchTerms(text, query) {
+            if (!text || !query) return text;
             
-            // Enhanced share function
-            window.shareResult = function(url, title) {
-                if (navigator.share) {
-                    navigator.share({
-                        title: title,
-                        url: url
-                    }).then(() => {
-                        showToast('check_circle', 'Distribuire reușită', 'Conținutul a fost distribuit cu succes!');
-                    }).catch(err => {
-                        console.error('Share failed:', err);
-                        fallbackShare(url);
-                    });
-                } else {
-                    fallbackShare(url);
-                }
-            };
+            const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
             
-            function fallbackShare(url) {
-                // Copy to clipboard fallback
-                const tempInput = document.createElement('input');
-                document.body.appendChild(tempInput);
-                tempInput.value = url;
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                
-                showToast('content_copy', 'Link copiat', 'Link-ul a fost copiat în clipboard!');
+            let highlightedText = text;
+            
+            // Sort words by length (longest first) to prevent highlighting partial words
+            words.sort((a, b) => b.length - a.length);
+            
+            // Replace each word with highlighted version
+            words.forEach(word => {
+                const regex = new RegExp(`(${escapeRegExp(word)})`, 'gi');
+                highlightedText = highlightedText.replace(regex, '<span class="search-highlight">$1</span>');
+            });
+            
+            return highlightedText;
+        }
+
+        // Helper function to escape special characters in regex
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Display pagination
+        function displayPagination(totalPages, currentPage) {
+            const paginationContainer = document.getElementById('search-pagination');
+            if (!paginationContainer) return;
+            
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
             }
             
-            // Enhanced quick search with animation
-            window.quickSearch = function(query) {
-                if (!query) return;
-                
-                // Update search input with animation
-                const searchInput = document.getElementById('search-input');
-                if (searchInput) {
-                    searchInput.value = '';
-                    
-                    // Animate typing effect
-                    let i = 0;
-                    const typeEffect = setInterval(() => {
-                        if (i < query.length) {
-                            searchInput.value += query.charAt(i);
-                            i++;
-                        } else {
-                            clearInterval(typeEffect);
-                            // Execute search after typing animation
-                            executeSearch(query);
-                        }
-                    }, 30);
-                } else {
-                    executeSearch(query);
-                }
-            };
+            let paginationHtml = '';
             
-            function executeSearch(query) {
-                // Update URL
-                const url = new URL(window.location);
-                url.searchParams.set('q', query);
-                url.searchParams.set('page', '1');
-                window.history.pushState({}, '', url);
-                
-                // Clear search suggestions
-                const suggestionsContainer = document.getElementById('search-suggestions');
-                if (suggestionsContainer) {
-                    suggestionsContainer.classList.remove('active');
-                    suggestionsContainer.innerHTML = '';
-                }
-                
-                // Show loading state
-                showSearchLoading();
-                
-                // Perform search (with slight delay to show loading animation)
-                setTimeout(() => {
-                    if (window.siteSearch) {
-                        window.siteSearch.search(query).then(renderSearchResults).catch(handleSearchError);
-                    }
-                }, 500);
+            // Previous page button
+            const prevDisabled = currentPage <= 1 ? 'disabled' : '';
+            paginationHtml += `
+                <a href="#" onclick="navigateToPage(${currentPage - 1}); return false;" 
+                   class="pagination-nav ${prevDisabled}">
+                  <i class="material-icons">chevron_left</i>
+                </a>
+            `;
+            
+            // Page numbers
+            const maxDisplayedPages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxDisplayedPages / 2));
+            let endPage = Math.min(totalPages, startPage + maxDisplayedPages - 1);
+            
+            // Adjust start page if end page is maximum
+            if (endPage === totalPages) {
+                startPage = Math.max(1, endPage - maxDisplayedPages + 1);
             }
             
-            // Show animated loading state
-            function showSearchLoading() {
-                const resultList = document.getElementById('result-list');
-                if (resultList) {
-                    resultList.innerHTML = `
-                        <div class="search-loading">
-                            <div class="search-loading-spinner"></div>
-                            <p class="search-loading-text">Se încarcă rezultatele căutării...</p>
-                            <div class="search-loading-progress"></div>
-                        </div>
-                    `;
-                }
+            // First page
+            if (startPage > 1) {
+                paginationHtml += `
+                    <a href="#" onclick="navigateToPage(1); return false;" class="pagination-btn">1</a>
+                `;
                 
-                // Reset pagination and other elements
-                document.getElementById('search-pagination').innerHTML = '';
-                
-                // Remove related searches if exist
-                const existingRelated = document.querySelector('.related-searches');
-                if (existingRelated) {
-                    existingRelated.remove();
+                if (startPage > 2) {
+                    paginationHtml += '<span class="pagination-ellipsis">...</span>';
                 }
             }
             
-            // Handle search results rendering (wrapper for original function)
-            function renderSearchResults(result) {
-                // Update UI
-                const searchSummary = document.getElementById('search-summary');
-                if (searchSummary) {
-                    searchSummary.innerHTML = `
-                        S-au găsit <strong>${result.totalResults}</strong> rezultate pentru 
-                        <span class="search-term">"${result.query}"</span>
-                    `;
-                }
-                
-                if (result.totalResults > 0) {
-                    // Check for direct match
-                    const directMatchContainer = document.getElementById('direct-match-container');
-                    if (directMatchContainer) {
-                        if (result.directMatch) {
-                            directMatchContainer.innerHTML = `
-                                <div class="direct-match">
-                                    <div class="direct-match-icon">
-                                        <i class="material-icons">${result.directMatch.type === 'document' ? 'description' : 'find_in_page'}</i>
-                                    </div>
-                                    <div class="direct-match-content">
-                                        <h3>Rezultat exact găsit</h3>
-                                        <p>${result.directMatch.title}</p>
-                                        <a href="${result.directMatch.url}" class="direct-match-link">
-                                            Accesează direct
-                                            <i class="material-icons">arrow_forward</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            `;
-                        } else {
-                            directMatchContainer.innerHTML = '';
-                        }
-                    }
-                    
-                    // Update filter counts
-                    updateFilterCounts(result);
-                    
-                    // Display results
-                    displaySearchResults(result);
-                    displayPagination(result.totalPages, result.currentPage);
-                    displayRelatedSearches(result);
-                    
-                    showToast('search', 'Căutare finalizată', `S-au găsit ${result.totalResults} rezultate`);
-                } else {
-                    showNoResultsState(result.query, result);
-                }
+            // Page numbers
+            for (let i = startPage; i <= endPage; i++) {
+                const activeClass = i === currentPage ? 'active' : '';
+                paginationHtml += `
+                    <a href="#" onclick="navigateToPage(${i}); return false;" 
+                       class="pagination-btn ${activeClass}">${i}</a>
+                `;
             }
             
-            // Handle search error
-            function handleSearchError(error) {
-                console.error('Error performing search:', error);
-                const resultList = document.getElementById('result-list');
-                if (resultList) {
-                    resultList.innerHTML = `
-                        <div class="no-results">
-                            <div class="no-results-icon"><i class="material-icons">error</i></div>
-                            <h3>Eroare de căutare</h3>
-                            <p>A apărut o eroare în timpul căutării. Vă rugăm să încercați din nou mai târziu.</p>
-                        </div>
-                    `;
+            // Last page
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHtml += '<span class="pagination-ellipsis">...</span>';
                 }
                 
-                showToast('error', 'Eroare', 'A apărut o eroare în timpul căutării.');
+                paginationHtml += `
+                    <a href="#" onclick="navigateToPage(${totalPages}); return false;" 
+                       class="pagination-btn">${totalPages}</a>
+                `;
             }
-        });
+            
+            // Next page button
+            const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
+            paginationHtml += `
+                <a href="#" onclick="navigateToPage(${currentPage + 1}); return false;" 
+                   class="pagination-nav ${nextDisabled}">
+                  <i class="material-icons">chevron_right</i>
+                </a>
+            `;
+            
+            paginationContainer.innerHTML = paginationHtml;
+        }
+
+        // Show no results state
+        function showNoResultsState(query) {
+            const resultList = document.getElementById('result-list');
+            if (!resultList) return;
+            
+            resultList.innerHTML = `
+                <div class="no-results">
+                    <div class="no-results-icon"><i class="material-icons">search_off</i></div>
+                    <h3>Nu s-au găsit rezultate</h3>
+                    <p>Nu am găsit niciun rezultat pentru <strong>"${query}"</strong>.</p>
+                    <p>Sugestii:</p>
+                    <ul>
+                        <li>Verificați ortografia cuvintelor cheie.</li>
+                        <li>Încercați cuvinte cheie diferite.</li>
+                        <li>Încercați cuvinte cheie mai generale.</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Navigation function for pagination
+        function navigateToPage(page) {
+            const url = new URL(window.location);
+            const query = url.searchParams.get('q') || '';
+            
+            // Update URL parameters
+            url.searchParams.set('page', page);
+            window.history.pushState({}, '', url);
+            
+            // Execute search with updated page
+            performSearch(query, page);
+        }
+
+        // Share result function
+        function shareResult(url, title) {
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: url
+                }).catch(err => {
+                    console.error('Share failed:', err);
+                    copyToClipboard(url);
+                });
+            } else {
+                copyToClipboard(url);
+            }
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('input');
+            document.body.appendChild(tempInput);
+            tempInput.value = text;
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            
+            showToast('content_copy', 'Link copiat', 'Link-ul a fost copiat în clipboard!');
+        }
+
+        // Show toast notification
+        function showToast(icon, title, message) {
+            const toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) return;
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="material-icons">${icon}</i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Auto-remove toast after animation completes
+            setTimeout(() => {
+                toast.remove();
+            }, 3500);
+        }
+
+        // Make functions available globally
+        window.navigateToPage = navigateToPage;
+        window.shareResult = shareResult;
     </script>
 </body>
 </html>
