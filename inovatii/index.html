@@ -108,11 +108,12 @@
         .slide-title-container {
             width: 80%;
             max-width: 800px;
-            margin: 3rem auto 0;
+            margin: 3rem 0 0 3rem; /* Left-aligned with left padding */
             padding: 2rem;
             transform: translateY(-30px);
             opacity: 0;
             transition: all 0.8s ease 0.8s;
+            text-align: left; /* Ensure text is left-aligned */
         }
         
         .slide.active .slide-title-container {
@@ -123,11 +124,12 @@
         .slide-description-container {
             width: 80%;
             max-width: 800px;
-            margin: 0 auto 3rem;
+            margin: 0 0 3rem 3rem; /* Left-aligned with left padding */
             padding: 2rem;
             transform: translateY(30px);
             opacity: 0;
             transition: all 0.8s ease 1s;
+            text-align: left; /* Ensure text is left-aligned */
         }
         
         .slide.active .slide-description-container {
