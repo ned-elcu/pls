@@ -1,84 +1,4 @@
-/* Extra styles for icon perfect alignment in HTML */
-/* These styles ensure exact vertical centering of Material Icons */
-.header-main .main-nav ul li a i {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    top: 2px; /* Ensure consistent alignment */
-}
-
-/* Fix for each icon in the menu to ensure perfect vertical alignment */
-.header-main .main-nav ul li a .menu-icon,
-.header-main .main-nav ul li a .dropdown-icon {
-    transform: translateY(0);
-    line-height: normal;
-}
-
-/* Additional precise alignment fix for Material Icons */
-.material-icons {
-    vertical-align: middle;
-    line-height: 1;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transform: translateY(2px); /* Added transform to move icons down */
-}
-
-/* Fix for icons in emergency button */
-.utility/* Extra styles for icon perfect alignment in HTML */
-/* These styles ensure exact vertical centering of Material Icons */
-.header-main .main-nav ul li a i {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-/* Fix for each icon in the menu to ensure perfect vertical alignment */
-.header-main .main-nav ul li a .menu-icon,
-.header-main .main-nav ul li a .dropdown-icon {
-    transform: translateY(0);
-    line-height: normal;
-}
-
-/* Fix for icons in emergency button */
-.utility-item.emergency i {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    top: 0;
-}
-
-/* Consistent height for all menu items to ensure alignment */
-.main-nav ul li a {
-    height: 40px;
-    box-sizing: border-box;
-}// Function to fix icon alignment issues
-function fixIconAlignment() {
-    // Fix all icons in the header menu
-    const menuIcons = document.querySelectorAll('.menu-icon, .dropdown-icon, .dropdown-icon-item');
-    menuIcons.forEach(icon => {
-        // Add alignment class
-        icon.classList.add('align-icons');
-    });
-    
-    // Ensure consistent heights
-    const menuItems = document.querySelectorAll('.main-nav ul li a');
-    menuItems.forEach(item => {
-        item.style.display = 'inline-flex';
-        item.style.alignItems = 'center';
-    });
-    
-    // Fix dropdown icons alignment
-    const dropdownIcons = document.querySelectorAll('.dropdown-icon');
-    dropdownIcons.forEach(icon => {
-        icon.style.display = 'inline-flex';
-        icon.style.alignItems = 'center';
-        icon.style.justifyContent = 'center';
-    });
-}// COMPONENTS.JS - Enhanced version with one-line header optimization
+// COMPONENTS.JS - Enhanced version with one-line header optimization
 // Simply include this file in your HTML pages to automatically load the header and footer
 
 // CSS for header and footer as a string
@@ -459,29 +379,28 @@ const COMPONENTS_CSS = `
     height: 40px;
     line-height: 1;
     white-space: nowrap;
-    position: relative; /* Added for better control of children positioning */
+    position: relative; /* Added for better positioning control */
 }
 
 /* Support for menu text that can be hidden/shown */
 .menu-text, .menu-text-optional {
     display: inline-block;
     position: relative;
-    top: 1px; /* Adjust vertical alignment to match with icon */
 }
 
-/* Icon in main menu */
+/* Icon in main menu - FIXED ALIGNMENT */
 .menu-icon {
     margin-right: 0.5rem;
     font-size: 1.2rem;
     opacity: 0.8;
     transition: all 0.3s ease;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     height: 24px;
     flex-shrink: 0;
     position: relative;
-    top: 2px; /* Fix vertical alignment - increased from -1px to 2px */
+    top: 2px; /* Fixed alignment to match text height */
 }
 
 .main-nav ul li a:hover {
@@ -535,11 +454,12 @@ const COMPONENTS_CSS = `
     margin-left: 0.3rem;
     font-size: 1rem;
     transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
     height: 24px;
     position: relative;
-    top: 2px; /* Fix vertical alignment - adjusted from -1px to 2px */
+    top: 2px; /* Fixed alignment to match text height */
 }
 
 .main-nav ul li.has-dropdown:hover > a .dropdown-icon {
@@ -637,16 +557,18 @@ const COMPONENTS_CSS = `
     border-left: 3px solid transparent !important;
 }
 
-/* Icon in dropdown menu */
+/* Icon in dropdown menu - FIXED ALIGNMENT */
 .dropdown-icon-item {
     margin-right: 0.7rem !important;
     font-size: 1.1rem !important;
     color: var(--text-secondary) !important;
     opacity: 0.7 !important;
     transition: all 0.3s ease !important;
-    vertical-align: middle !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     position: relative !important;
-    top: -1px !important; /* Fix vertical alignment */
+    top: 2px !important; /* Fixed alignment to match text height */
 }
 
 .dropdown-menu li a:hover {
@@ -1073,6 +995,33 @@ footer {
     color: var(--secondary-color);
     font-size: 1.2rem;
     opacity: 0.7;
+}
+
+/* Extra styles for icon perfect alignment */
+/* These styles ensure exact vertical centering of Material Icons */
+.header-main .main-nav ul li a i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Material Icons global styling - IMPROVED ALIGNMENT */
+.material-icons {
+    vertical-align: middle;
+    line-height: 1;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Fix for icons in emergency button */
+.utility-item.emergency i {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    top: 2px;
 }
 
 /* Dynamic Header Adjustments for Single-Line Menu */
@@ -1523,22 +1472,6 @@ body {
     background: var(--secondary-light);
 }
 
-/* Add a utility class for icon alignment */
-.align-icons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.material-icons {
-    vertical-align: middle;
-    line-height: 1;
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
 /* Disable header size changes on scroll */
 .header-top.scrolled,
 .header-top {
@@ -1649,7 +1582,7 @@ const HEADER_HTML = `
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="/pls/petitii"><i class="material-icons dropdown-icon-item">edit_note</i> Petiții</a></li>
-                        <li><a href="/pls/raspunsuri"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri </a></li>
+                        <li><a href="/pls/raspunsuri"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri la sesizări, reclamații, anonime</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
@@ -1694,7 +1627,7 @@ const HEADER_HTML = `
                         <div class="dropdown-group-2">
                             <li><a href="/pls/transparenta/#declaratii-interese"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
                             <li><a href="/pls/transparenta/#declaratii-avere"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
-                            <li><a href="/pls/transparenta/#rapoarte-544"><i class="material-icons dropdown-icon-item">description</i> Aplicare a Legii nr. 544/2001</a></li>
+                            <li><a href="/pls/transparenta/#rapoarte-544"><i class="material-icons dropdown-icon-item">description</i> Raport anual de aplicare a Legii nr. 544/2001</a></li>
                             <li><a href="/pls/transparenta/documente"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gestionate conform legii</a></li>
                         </div>
                         <div class="dropdown-group-header">Dezvoltare</div>
@@ -1869,7 +1802,7 @@ function initializeComponents() {
     // Initialize responsive header with new one-line functionality
     initResponsiveHeader();
     
-    // Fix icon alignment
+    // Fix icon alignment issues
     fixIconAlignment();
 }
 
@@ -2380,6 +2313,52 @@ function initResponsiveHeader() {
             resizeTimer = setTimeout(applyResponsiveClasses, 100);
         });
     }
+}
+
+// Fix icon alignment
+function fixIconAlignment() {
+    // Wait for DOM to be ready
+    setTimeout(function() {
+        // Fix all main menu icons vertical alignment
+        const menuIcons = document.querySelectorAll('.menu-icon, .dropdown-icon, .dropdown-icon-item');
+        
+        if (menuIcons.length > 0) {
+            menuIcons.forEach(icon => {
+                // Ensure proper vertical alignment
+                if (icon.classList.contains('menu-icon') || icon.classList.contains('dropdown-icon')) {
+                    icon.style.display = 'inline-flex';
+                    icon.style.alignItems = 'center';
+                    icon.style.justifyContent = 'center';
+                    icon.style.position = 'relative';
+                    icon.style.top = '2px'; // This value ensures proper alignment with text
+                }
+            });
+        }
+        
+        // Ensure menu items have consistent height
+        const menuItems = document.querySelectorAll('.main-nav ul li a');
+        if (menuItems.length > 0) {
+            menuItems.forEach(item => {
+                item.style.display = 'inline-flex';
+                item.style.alignItems = 'center';
+                item.style.height = '40px';
+            });
+        }
+        
+        // Fix alignment in dropdown menus
+        const dropdownItems = document.querySelectorAll('.dropdown-menu li a');
+        if (dropdownItems.length > 0) {
+            dropdownItems.forEach(item => {
+                const icon = item.querySelector('.dropdown-icon-item');
+                if (icon) {
+                    icon.style.display = 'inline-flex';
+                    icon.style.alignItems = 'center';
+                    icon.style.position = 'relative';
+                    icon.style.top = '2px';
+                }
+            });
+        }
+    }, 100); // Small delay to ensure DOM is fully processed
 }
 
 // Legacy search function - kept for backwards compatibility
