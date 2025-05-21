@@ -253,6 +253,122 @@
             animation: fadeInUp 0.5s forwards 0.3s;
         }
         
+        /* Crawl progress */
+        .crawl-progress-container {
+            margin-bottom: 1.5rem;
+            background-color: white;
+            border-radius: var(--border-radius-medium);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-small);
+            display: none;
+        }
+        
+        .crawl-progress-container.active {
+            display: block;
+            animation: fadeIn 0.3s forwards;
+        }
+        
+        .crawl-progress-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .crawl-progress-title i {
+            margin-right: 0.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .crawl-progress-bar {
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .crawl-progress-fill {
+            height: 100%;
+            background-color: var(--secondary-color);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+        
+        .crawl-status {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .crawl-stats {
+            display: flex;
+            margin-top: 1rem;
+            gap: 1.5rem;
+        }
+        
+        .crawl-stat {
+            background-color: rgba(30, 136, 229, 0.05);
+            padding: 0.8rem 1rem;
+            border-radius: var(--border-radius-small);
+            flex: 1;
+        }
+        
+        .crawl-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.3rem;
+        }
+        
+        .crawl-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .crawl-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .crawl-action {
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--border-radius-small);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .crawl-action i {
+            margin-right: 0.5rem;
+        }
+        
+        .crawl-action.primary {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+        }
+        
+        .crawl-action.primary:hover {
+            background-color: var(--secondary-light);
+        }
+        
+        .crawl-action.secondary {
+            background-color: white;
+            color: var(--text-secondary);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .crawl-action.secondary:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
         /* Search suggestions dropdown */
         .search-suggestions-dropdown {
             position: absolute;
@@ -1174,7 +1290,7 @@
         <div class="page-title-bg"></div>
         <div class="page-title-content container">
             <div class="page-subtitle">Căutare</div>
-            <h1 class="page-title">Rezultate Căutare</h1>
+            <h1 class="page-title">Căutare în timp real</h1>
         </div>
     </div>
     
@@ -1191,6 +1307,45 @@
                 <div id="search-suggestions" class="search-suggestions-dropdown"></div>
                 <div class="search-summary" id="search-summary">
                     <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Crawl progress -->
+            <div class="crawl-progress-container" id="crawl-progress">
+                <div class="crawl-progress-title">
+                    <i class="material-icons">travel_explore</i>
+                    Explorare site în progres
+                </div>
+                <div class="crawl-progress-bar">
+                    <div class="crawl-progress-fill" id="crawl-progress-fill"></div>
+                </div>
+                <div class="crawl-status">
+                    <div class="crawl-current" id="crawl-current-url">Se procesează...</div>
+                    <div class="crawl-percentage" id="crawl-percentage">0%</div>
+                </div>
+                <div class="crawl-stats">
+                    <div class="crawl-stat">
+                        <div class="crawl-stat-value" id="crawl-pages-count">0</div>
+                        <div class="crawl-stat-label">Pagini indexate</div>
+                    </div>
+                    <div class="crawl-stat">
+                        <div class="crawl-stat-value" id="crawl-queue-count">0</div>
+                        <div class="crawl-stat-label">Pagini în așteptare</div>
+                    </div>
+                    <div class="crawl-stat">
+                        <div class="crawl-stat-value" id="crawl-docs-count">0</div>
+                        <div class="crawl-stat-label">Documente găsite</div>
+                    </div>
+                </div>
+                <div class="crawl-actions">
+                    <button class="crawl-action primary" id="start-crawl-btn">
+                        <i class="material-icons">play_arrow</i>
+                        Începe indexarea
+                    </button>
+                    <button class="crawl-action secondary" id="stop-crawl-btn">
+                        <i class="material-icons">pause</i>
+                        Pauză
+                    </button>
                 </div>
             </div>
             
@@ -1265,91 +1420,122 @@
     
     <!-- Search implementation -->
     <script>
-        // Mock data for demonstration (replace with your actual content)
-        // In a real implementation, you would generate this data with a build script and include it as a separate JSON file
-        const siteContent = [
-            {
-                id: 'home',
-                url: '/index.html',
-                title: 'Poliția Locală Slobozia - Pagina Principală',
-                content: 'Poliția Locală Slobozia este instituția publică de interes local, cu personalitate juridică, aflată în subordinea Consiliului Local al Municipiului Slobozia, care exercită atribuții privind apărarea drepturilor și libertăților fundamentale ale persoanei, a proprietății private și publice, prevenirea și descoperirea infracțiunilor. Poliția Locală Slobozia își desfășoară activitatea în interesul comunității locale, exclusiv pe baza și în executarea legii, precum și a actelor autorității deliberative și ale celei executive ale administrației publice locale.',
-                excerpt: 'Poliția Locală Slobozia este instituția publică de interes local, cu personalitate juridică, aflată în subordinea Consiliului Local al Municipiului Slobozia...',
-                type: 'page',
-                section: 'general'
-            },
-            {
-                id: 'despre',
-                url: '/despre/index.html',
-                title: 'Despre Poliția Locală Slobozia',
-                content: 'Poliția Locală Slobozia a fost înființată în baza Legii Poliției Locale nr. 155/2010 și a Hotărârii de Guvern nr. 1332/2010 pentru aprobarea Regulamentului-cadru de organizare și funcționare a poliției locale. Atribuțiile Poliției Locale Slobozia includ: asigurarea ordinii și liniștii publice, creșterea siguranței cetățeanului, prevenirea și combaterea încălcării normelor legale privind curățenia și comerțul stradal, protecția mediului, disciplina în construcții și afișajul stradal. Misiunea instituției este aceea de a fi permanent în slujba comunității locale și de a asigura respectarea drepturilor și libertăților fundamentale ale cetățenilor.',
-                excerpt: 'Poliția Locală Slobozia a fost înființată în baza Legii Poliției Locale nr. 155/2010 și a Hotărârii de Guvern nr. 1332/2010...',
-                type: 'page',
-                section: 'despre'
-            },
-            {
-                id: 'contact',
-                url: '/contact/index.html',
-                title: 'Contact Poliția Locală Slobozia',
-                content: 'Adresă: Str. Răzoare nr. 3, Slobozia, Județul Ialomița Telefon: 0243 955 Fax: 0243 233 771 Email: politia.locala@sloboziail.ro Program de lucru: Luni-Vineri: 08:00-16:00 Dispecerat: program non-stop Pentru urgențe: Telefon: 0243 955 (disponibil 24/7)',
-                excerpt: 'Adresă: Str. Răzoare nr. 3, Slobozia, Județul Ialomița Telefon: 0243 955 Fax: 0243 233 771 Email: politia.locala@sloboziail.ro',
-                type: 'page',
-                section: 'contact'
-            },
-            {
-                id: 'doc-hcl-2022',
-                url: '/documente/hotarare-consiliu-2022.pdf',
-                title: 'Hotărâre Consiliu Local privind organizarea Poliției Locale Slobozia',
-                content: 'HOTĂRÂRE privind aprobarea Regulamentului de Organizare și Funcționare a Poliției Locale a Municipiului Slobozia Consiliul Local al Municipiului Slobozia, județul Ialomița, întrunit în ședința ordinară din data de 15.03.2022, Având în vedere: Referatul de aprobare al Primarului Municipiului Slobozia; Raportul de specialitate al Direcției Poliția Locală; Prevederile Legii nr. 155/2010 a Poliției Locale, republicată, cu modificările și completările ulterioare; Avizul comisiei de specialitate din cadrul Consiliului Local Slobozia; În temeiul prevederilor art. 129 alin. (2) lit. a) și alin. (3) lit. c), precum și art. 139 alin. (1) din OUG nr. 57/2019 privind Codul Administrativ, HOTĂRĂȘTE: Art. 1. Se aprobă Regulamentul de Organizare și Funcționare a Poliției Locale a Municipiului Slobozia, conform Anexei care face parte integrantă din prezenta hotărâre. Art. 2. La data intrării în vigoare a prezentei hotărâri se abrogă Hotărârea Consiliului Local nr. 45/28.02.2019. Art. 3. Primarul Municipiului Slobozia, prin Direcția Poliția Locală, va aduce la îndeplinire prevederile prezentei hotărâri. Art. 4. Prezenta hotărâre va fi comunicată prin grija Secretarului General al Municipiului Slobozia, Primarului Municipiului Slobozia, Direcției Poliția Locală și Instituției Prefectului - Județul Ialomița.',
-                excerpt: 'HOTĂRÂRE privind aprobarea Regulamentului de Organizare și Funcționare a Poliției Locale a Municipiului Slobozia Consiliul Local al Municipiului Slobozia...',
-                type: 'document',
-                section: 'documente',
-                extension: 'pdf'
-            },
-            {
-                id: 'doc-regulament',
-                url: '/documente/regulament-organizare-functionare.pdf',
-                title: 'Regulament de Organizare și Funcționare',
-                content: 'REGULAMENT DE ORGANIZARE ȘI FUNCȚIONARE A POLIȚIEI LOCALE A MUNICIPIULUI SLOBOZIA CAPITOLUL I Dispoziții generale Art. 1. Prezentul Regulament de Organizare și Funcționare a Poliției Locale a Municipiului Slobozia, denumit în continuare Regulament, reglementează organizarea și funcționarea Poliției Locale a Municipiului Slobozia, ca serviciu public de interes local, specializat, al Municipiului Slobozia. Art. 2. Poliția Locală a Municipiului Slobozia se organizează și funcționează în baza prevederilor Legii Poliției Locale nr. 155/2010, republicată, cu modificările și completările ulterioare, ale Hotărârii Guvernului nr. 1332/2010 privind aprobarea Regulamentului-cadru de organizare și funcționare a poliției locale, ale Legii administrației publice locale nr. 215/2001, republicată, cu modificările și completările ulterioare, precum și ale prezentului Regulament. Art. 3. (1) Poliția Locală a Municipiului Slobozia se înființează în scopul exercitării atribuțiilor privind apărarea drepturilor și libertăților fundamentale ale persoanei, a proprietății private și publice, prevenirea și descoperirea infracțiunilor, în următoarele domenii: a) ordinea și liniștea publică, precum și paza bunurilor; b) circulația pe drumurile publice; c) disciplina în construcții și afișajul stradal; d) protecția mediului; e) activitatea comercială; f) evidența persoanelor; g) alte domenii stabilite prin lege. (2) Poliția Locală a Municipiului Slobozia își desfășoară activitatea pe baza principiilor: legalității, încrederii, previzibilității, proximității și proporționalității, deschiderii și transparenței, eficienței și eficacității, răspunderii și responsabilității, imparțialității și nediscriminării.',
-                excerpt: 'REGULAMENT DE ORGANIZARE ȘI FUNCȚIONARE A POLIȚIEI LOCALE A MUNICIPIULUI SLOBOZIA CAPITOLUL I Dispoziții generale Art. 1. Prezentul Regulament...',
-                type: 'document',
-                section: 'documente',
-                extension: 'pdf'
-            },
-            {
-                id: 'doc-raport-2023',
-                url: '/documente/raport-activitate-2023.pdf',
-                title: 'Raport de activitate 2023',
-                content: 'RAPORT PRIVIND ACTIVITATEA POLIȚIEI LOCALE A MUNICIPIULUI SLOBOZIA PE ANUL 2023 I. INTRODUCERE Prezentul raport de activitate este elaborat în conformitate cu prevederile Legii Poliției Locale nr. 155/2010, republicată, cu modificările și completările ulterioare, și ale H.G. nr. 1332/2010 pentru aprobarea Regulamentului-cadru de organizare și funcționare a poliției locale. Poliția Locală a Municipiului Slobozia funcționează ca instituție publică de interes local, cu personalitate juridică, aflată în subordinea Consiliului Local al Municipiului Slobozia și sub directa coordonare a Primarului Municipiului Slobozia. Pe parcursul anului 2023, polițiștii locali din cadrul Poliției Locale a Municipiului Slobozia au desfășurat activități în vederea prevenirii și combaterii faptelor antisociale, au asigurat protecția și respectarea drepturilor și libertăților fundamentale ale cetățenilor, a proprietății publice și private, precum și măsuri de protecție a populației, în limitele competențelor stabilite prin lege. II. STRUCTURA ORGANIZATORICĂ La nivelul anului 2023, Poliția Locală a Municipiului Slobozia a funcționat cu un număr de 65 de angajați, din care 60 de polițiști locali și 5 personal contractual, organizați astfel: - Director executiv: 1 - Serviciul Ordine și Liniște Publică: 30 polițiști locali - Biroul Circulație pe Drumurile Publice: 10 polițiști locali - Biroul Control Activități Comerciale: 6 polițiști locali - Biroul Disciplină în Construcții și Afișaj Stradal: 5 polițiști locali - Compartimentul Protecția Mediului: 4 polițiști locali - Compartimentul Evidența Persoanelor: 4 polițiști locali - Compartimentul Administrativ: 5 personal contractual III. ACTIVITĂȚI DESFĂȘURATE ÎN ANUL 2023 1. În domeniul ordinii și liniștii publice În cursul anului 2023, polițiștii locali din cadrul Serviciului Ordine și Liniște Publică au desfășurat următoarele activități: - Acțiuni de patrulare: 1.825 - Contravenții constatate: 2.340 - Valoarea amenzilor aplicate: 845.600 lei - Infracțiuni constatate: 12 - Persoane legitimate: 14.520 - Sesizări și reclamații soluționate: 1.235 - Măsuri de ordine asigurate la manifestări culturale, sportive, religioase: 65',
-                excerpt: 'RAPORT PRIVIND ACTIVITATEA POLIȚIEI LOCALE A MUNICIPIULUI SLOBOZIA PE ANUL 2023 I. INTRODUCERE Prezentul raport de activitate este elaborat în conformitate cu prevederile Legii Poliției Locale...',
-                type: 'document',
-                section: 'documente',
-                extension: 'pdf'
-            },
-            {
-                id: 'doc-cerere-petitie',
-                url: '/documente/formular-petitie.docx',
-                title: 'Formular Petiție către Poliția Locală',
-                content: 'PETIȚIE Către Poliția Locală a Municipiului Slobozia Subsemnatul/Subsemnata ... domiciliat/ă în ... posesor/posesoare al/a C.I. seria ... nr. ... eliberată de ... la data de ... CNP ... telefon ... email ... În conformitate cu prevederile O.G. nr. 27/2002 privind reglementarea activității de soluționare a petițiilor, cu modificările și completările ulterioare, formulez prezenta PETIȚIE prin care vă aduc la cunoștință următoarele: ... (descrierea situației, aspectelor sesizate, data și locul unde s-au produs evenimentele, persoanele implicate, etc.) Menționez că această situație contravine prevederilor ... (se menționează, dacă se cunosc, actele normative considerate a fi încălcate) Față de cele prezentate, vă rog să dispuneți măsurile legale pentru soluționarea aspectelor sesizate și să-mi comunicați modul de soluționare. Anexez prezentei următoarele documente: ... Data: ... Semnătura: ... Notă: Datele cu caracter personal sunt prelucrate în conformitate cu prevederile Regulamentului (UE) nr. 2016/679 privind protecția persoanelor fizice în ceea ce privește prelucrarea datelor cu caracter personal și libera circulație a acestor date.',
-                excerpt: 'PETIȚIE Către Poliția Locală a Municipiului Slobozia Subsemnatul/Subsemnata ... domiciliat/ă în ... posesor/posesoare al/a C.I. seria ... nr. ... eliberată de ... la data de ...',
-                type: 'document',
-                section: 'documente',
-                extension: 'docx'
-            },
-            {
-                id: 'servicii',
-                url: '/servicii/index.html',
-                title: 'Serviciile Poliției Locale Slobozia',
-                content: 'Poliția Locală Slobozia oferă următoarele servicii pentru cetățeni și instituții: 1. Asigurarea ordinii și liniștii publice în zonele și locurile stabilite prin Planul de ordine și siguranță publică; 2. Fluidizarea circulației rutiere și pietonale; 3. Supravegherea parcărilor publice; 4. Verificarea respectării normelor legale privind comerțul stradal; 5. Verificarea respectării normelor legale privind disciplina în construcții; 6. Verificarea respectării normelor de protecție a mediului; 7. Verificarea respectării normelor legale privind afișajul publicitar; 8. Verificarea respectării normelor legale privind evidența persoanelor; 9. Asigurarea protecției personalului din aparatul de specialitate al primarului, din instituțiile sau serviciile publice de interes local; 10. Intervenția la solicitările dispeceratului la evenimentele semnalate prin Serviciul de urgență 112; 11. Primirea și soluționarea petițiilor cetățenilor; 12. Monitorizarea video a domeniului public; 13. Acțiuni comune cu Poliția Națională și alte instituții ale statului; 14. Acțiuni de informare și educare a cetățenilor; 15. Acțiuni de verificare a imobilelor abandonate.',
-                excerpt: 'Poliția Locală Slobozia oferă următoarele servicii pentru cetățeni și instituții: 1. Asigurarea ordinii și liniștii publice în zonele și locurile stabilite prin Planul de ordine și siguranță publică...',
-                type: 'page',
-                section: 'general'
+        /**
+         * Dynamic Search and Web Crawler
+         * This script allows the browser to crawl and search a website in real-time.
+         */
+        
+        // Store indexed content
+        let siteContent = [];
+        let searchIndex = null;
+        let recentSearches = [];
+        
+        // Crawler state
+        const crawlerState = {
+            isRunning: false,
+            urlsToVisit: [],
+            visitedUrls: new Set(),
+            maxPages: 100,
+            currentPage: 0,
+            baseUrl: window.location.origin,
+            startUrl: null,
+            pause: false,
+            documentCount: 0
+        };
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up search form handler
+            setupSearchHandlers();
+            
+            // Set up crawler handlers
+            setupCrawlerHandlers();
+            
+            // Load previous crawl data from localStorage if available
+            loadPreviousCrawlData();
+            
+            // Check URL for search query on page load
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            
+            if (query) {
+                const searchInput = document.getElementById('search-input');
+                if (searchInput) {
+                    searchInput.value = query;
+                }
+                
+                // Only search if we have content
+                if (siteContent.length > 0) {
+                    performSearch(query);
+                } else {
+                    // Show crawler UI if no content
+                    showCrawlerUI();
+                }
+            } else {
+                // Show crawler UI on initial load
+                showCrawlerUI();
             }
-        ];
-
+        });
+        
+        // Load previous crawl data from localStorage
+        function loadPreviousCrawlData() {
+            try {
+                // Load site content
+                const storedContent = localStorage.getItem('pls_site_content');
+                if (storedContent) {
+                    siteContent = JSON.parse(storedContent);
+                    updateCrawlStats();
+                    
+                    // Initialize search index with stored content
+                    initializeSearchIndex();
+                    
+                    console.log(`Loaded ${siteContent.length} pages from previous crawl`);
+                }
+                
+                // Load visited URLs
+                const storedVisitedUrls = localStorage.getItem('pls_visited_urls');
+                if (storedVisitedUrls) {
+                    crawlerState.visitedUrls = new Set(JSON.parse(storedVisitedUrls));
+                }
+                
+                // Load recent searches
+                const storedSearches = localStorage.getItem('pls_recent_searches');
+                if (storedSearches) {
+                    recentSearches = JSON.parse(storedSearches);
+                }
+            } catch (e) {
+                console.warn('Failed to load previous crawl data:', e);
+            }
+        }
+        
+        // Save current crawl data to localStorage
+        function saveCrawlData() {
+            try {
+                // Save site content (limit to 5MB)
+                const contentJson = JSON.stringify(siteContent);
+                if (contentJson.length < 5 * 1024 * 1024) {
+                    localStorage.setItem('pls_site_content', contentJson);
+                } else {
+                    console.warn('Site content too large to store in localStorage');
+                }
+                
+                // Save visited URLs (as array)
+                localStorage.setItem('pls_visited_urls', JSON.stringify([...crawlerState.visitedUrls]));
+                
+                // Save recent searches
+                localStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
+                
+                showToast('save', 'Date salvate', 'Datele de indexare au fost salvate local');
+            } catch (e) {
+                console.warn('Failed to save crawl data:', e);
+                showToast('error', 'Eroare', 'Nu s-au putut salva datele de indexare');
+            }
+        }
+        
         // Initialize FlexSearch
-        const initializeSearchIndex = () => {
+        function initializeSearchIndex() {
             // Create document index
-            const documentIndex = new FlexSearch.Document({
+            searchIndex = new FlexSearch.Document({
                 document: {
                     id: "id",
                     index: [
@@ -1376,68 +1562,519 @@
 
             // Add documents to index
             siteContent.forEach(doc => {
-                documentIndex.add(doc);
+                searchIndex.add(doc);
             });
 
-            return documentIndex;
-        };
-
-        // Initialize search when document is ready
-        let searchIndex;
-        let recentSearches = [];
-        const MAX_RECENT_SEARCHES = 10;
+            return searchIndex;
+        }
         
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize search index
-            searchIndex = initializeSearchIndex();
+        // Set up crawler handlers
+        function setupCrawlerHandlers() {
+            const startCrawlBtn = document.getElementById('start-crawl-btn');
+            const stopCrawlBtn = document.getElementById('stop-crawl-btn');
             
-            // Load recent searches from localStorage
-            try {
-                const storedSearches = localStorage.getItem('pls_recent_searches');
-                if (storedSearches) {
-                    recentSearches = JSON.parse(storedSearches);
-                }
-            } catch (e) {
-                console.warn('Failed to load recent searches from localStorage', e);
+            if (startCrawlBtn) {
+                startCrawlBtn.addEventListener('click', function() {
+                    if (crawlerState.isRunning) {
+                        return;
+                    }
+                    
+                    // Get the starting URL
+                    crawlerState.startUrl = window.location.origin;
+                    
+                    // Start the crawler
+                    startCrawler();
+                });
             }
             
-            // Set up search form handler
-            setupSearchHandlers();
-            
-            // Check URL for search query on page load
-            const urlParams = new URLSearchParams(window.location.search);
-            const query = urlParams.get('q');
-            
-            if (query) {
-                const searchInput = document.getElementById('search-input');
-                if (searchInput) {
-                    searchInput.value = query;
-                }
-                performSearch(query);
-            }
-        });
-
-        // Store recent searches
-        function addToRecentSearches(query) {
-            if (!query || query.length < 3) return;
-            
-            // Remove if already exists and add to beginning
-            recentSearches = recentSearches.filter(item => item !== query);
-            recentSearches.unshift(query);
-            
-            // Limit size
-            if (recentSearches.length > MAX_RECENT_SEARCHES) {
-                recentSearches = recentSearches.slice(0, MAX_RECENT_SEARCHES);
-            }
-            
-            // Store in localStorage
-            try {
-                localStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
-            } catch (e) {
-                console.warn('Failed to save recent searches to localStorage', e);
+            if (stopCrawlBtn) {
+                stopCrawlBtn.addEventListener('click', function() {
+                    if (crawlerState.isRunning) {
+                        if (crawlerState.pause) {
+                            // Resume
+                            crawlerState.pause = false;
+                            stopCrawlBtn.innerHTML = '<i class="material-icons">pause</i> Pauză';
+                            showToast('play_arrow', 'Indexare reluată', 'Procesul de indexare continuă');
+                        } else {
+                            // Pause
+                            crawlerState.pause = true;
+                            stopCrawlBtn.innerHTML = '<i class="material-icons">play_arrow</i> Continuă';
+                            showToast('pause', 'Indexare în pauză', 'Procesul de indexare a fost întrerupt temporar');
+                        }
+                    }
+                });
             }
         }
-
+        
+        // Show crawler UI
+        function showCrawlerUI() {
+            const crawlProgress = document.getElementById('crawl-progress');
+            if (crawlProgress) {
+                crawlProgress.classList.add('active');
+            }
+        }
+        
+        // Hide crawler UI
+        function hideCrawlerUI() {
+            const crawlProgress = document.getElementById('crawl-progress');
+            if (crawlProgress) {
+                crawlProgress.classList.remove('active');
+            }
+        }
+        
+        // Start the crawler
+        function startCrawler() {
+            // Set crawler state
+            crawlerState.isRunning = true;
+            crawlerState.pause = false;
+            
+            // Update UI
+            updateStartButton('Indexare în progres...', true);
+            showCrawlerUI();
+            
+            // Queue the start URL if we have no content
+            if (siteContent.length === 0 && crawlerState.urlsToVisit.length === 0) {
+                crawlerState.urlsToVisit.push({
+                    url: crawlerState.startUrl,
+                    depth: 0
+                });
+            }
+            
+            // Start crawling
+            crawlNextUrl();
+        }
+        
+        // Update start button
+        function updateStartButton(text, disabled) {
+            const startCrawlBtn = document.getElementById('start-crawl-btn');
+            if (startCrawlBtn) {
+                startCrawlBtn.innerHTML = `<i class="material-icons">play_arrow</i> ${text}`;
+                startCrawlBtn.disabled = disabled;
+                if (disabled) {
+                    startCrawlBtn.style.opacity = '0.7';
+                    startCrawlBtn.style.cursor = 'not-allowed';
+                } else {
+                    startCrawlBtn.style.opacity = '1';
+                    startCrawlBtn.style.cursor = 'pointer';
+                }
+            }
+        }
+        
+        // Update crawler statistics
+        function updateCrawlStats() {
+            // Update pages count
+            const pagesCount = document.getElementById('crawl-pages-count');
+            if (pagesCount) {
+                pagesCount.textContent = siteContent.length;
+            }
+            
+            // Update queue count
+            const queueCount = document.getElementById('crawl-queue-count');
+            if (queueCount) {
+                queueCount.textContent = crawlerState.urlsToVisit.length;
+            }
+            
+            // Update docs count
+            const docsCount = document.getElementById('crawl-docs-count');
+            if (docsCount) {
+                docsCount.textContent = crawlerState.documentCount;
+            }
+            
+            // Update progress percentage
+            const percentage = Math.min(100, Math.round((crawlerState.currentPage / crawlerState.maxPages) * 100));
+            const percentageElement = document.getElementById('crawl-percentage');
+            if (percentageElement) {
+                percentageElement.textContent = `${percentage}%`;
+            }
+            
+            // Update progress bar
+            const progressFill = document.getElementById('crawl-progress-fill');
+            if (progressFill) {
+                progressFill.style.width = `${percentage}%`;
+            }
+        }
+        
+        // Process the next URL in the queue
+        async function crawlNextUrl() {
+            // Check if we should stop
+            if (!crawlerState.isRunning || crawlerState.currentPage >= crawlerState.maxPages) {
+                finishCrawling();
+                return;
+            }
+            
+            // Check if paused
+            if (crawlerState.pause) {
+                setTimeout(crawlNextUrl, 500);
+                return;
+            }
+            
+            // Check if there are URLs to visit
+            if (crawlerState.urlsToVisit.length === 0) {
+                finishCrawling();
+                return;
+            }
+            
+            // Get the next URL from the queue
+            const { url, depth } = crawlerState.urlsToVisit.shift();
+            
+            // Skip if already visited
+            if (crawlerState.visitedUrls.has(url)) {
+                crawlNextUrl();
+                return;
+            }
+            
+            // Mark as visited
+            crawlerState.visitedUrls.add(url);
+            crawlerState.currentPage++;
+            
+            // Update UI
+            updateCrawlStats();
+            
+            // Show current URL
+            const currentUrlElement = document.getElementById('crawl-current-url');
+            if (currentUrlElement) {
+                currentUrlElement.textContent = `Procesare: ${shortenUrl(url)}`;
+            }
+            
+            try {
+                // Fetch and process the page
+                const pageData = await fetchAndProcessPage(url);
+                
+                if (pageData) {
+                    // Add to index
+                    siteContent.push(pageData);
+                    
+                    if (searchIndex) {
+                        searchIndex.add(pageData);
+                    }
+                    
+                    // Update document count
+                    if (pageData.type === 'document') {
+                        crawlerState.documentCount++;
+                    }
+                    
+                    // Add links to queue if not at max depth
+                    if (depth < 10) { // Max depth of 10
+                        for (const link of pageData.links || []) {
+                            if (!crawlerState.visitedUrls.has(link) && 
+                                !crawlerState.urlsToVisit.some(item => item.url === link) && 
+                                isSameDomain(link, url)) {
+                                crawlerState.urlsToVisit.push({
+                                    url: link,
+                                    depth: depth + 1
+                                });
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error(`Error crawling ${url}:`, error);
+            }
+            
+            // Save data periodically (every 10 pages)
+            if (crawlerState.currentPage % 10 === 0) {
+                saveCrawlData();
+            }
+            
+            // Small delay to avoid overwhelming the browser
+            setTimeout(crawlNextUrl, 200);
+        }
+        
+        // Finish crawling
+        function finishCrawling() {
+            crawlerState.isRunning = false;
+            updateStartButton('Reîmprospătează indexul', false);
+            
+            // Update UI
+            updateCrawlStats();
+            
+            // Save final data
+            saveCrawlData();
+            
+            // Initialize search index if not already done
+            if (!searchIndex) {
+                initializeSearchIndex();
+            }
+            
+            // Show toast notification
+            showToast('check_circle', 'Indexare completă', `S-au indexat ${siteContent.length} pagini`);
+            
+            // Hide crawler UI after a delay
+            setTimeout(hideCrawlerUI, 3000);
+        }
+        
+        // Fetch and process a page
+        async function fetchAndProcessPage(url) {
+            try {
+                // Create a unique ID for the page
+                const id = generatePageId(url);
+                
+                // Determine type based on URL
+                const extension = url.split('.').pop().toLowerCase();
+                const isDocument = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'].includes(extension);
+                
+                // If it's a document type, we can't extract content from the browser
+                // Just create a placeholder
+                if (isDocument) {
+                    return {
+                        id,
+                        url,
+                        title: getFilenameFromUrl(url),
+                        content: `Document: ${getFilenameFromUrl(url)}`,
+                        excerpt: `Document: ${getFilenameFromUrl(url)}`,
+                        type: 'document',
+                        section: getPageSection(url),
+                        extension: extension,
+                        links: []
+                    };
+                }
+                
+                // Fetch the page
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch ${url}: ${response.status}`);
+                }
+                
+                const html = await response.text();
+                
+                // Create a DOM parser
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Extract page information
+                const title = doc.querySelector('title')?.textContent || getFilenameFromUrl(url);
+                const content = extractPageContent(doc);
+                const links = extractLinks(doc, url);
+                
+                // Determine page type
+                const type = determinePageType(url, doc);
+                
+                // Create excerpt
+                const excerpt = createExcerpt(content, 200);
+                
+                // Determine section
+                const section = getPageSection(url);
+                
+                return {
+                    id,
+                    url,
+                    title,
+                    content,
+                    excerpt,
+                    type,
+                    section,
+                    links
+                };
+            } catch (error) {
+                console.error(`Error processing page ${url}:`, error);
+                return null;
+            }
+        }
+        
+        // Extract content from page
+        function extractPageContent(doc) {
+            // Create a clone to avoid modifying the original document
+            const docClone = doc.cloneNode(true);
+            
+            // Remove script, style, and other non-content elements
+            const elementsToRemove = docClone.querySelectorAll('script, style, meta, link, noscript, svg, iframe');
+            elementsToRemove.forEach(el => {
+                if (el.parentNode) {
+                    el.parentNode.removeChild(el);
+                }
+            });
+            
+            // Extract text from main content areas
+            const mainContent = docClone.querySelector('main') || 
+                              docClone.querySelector('article') ||
+                              docClone.querySelector('.content') || 
+                              docClone.querySelector('.main') ||
+                              docClone.body;
+            
+            // Get text content
+            let text = mainContent ? mainContent.textContent || '' : '';
+            
+            // Clean up text
+            text = text.replace(/\s+/g, ' ').trim();
+            
+            return text;
+        }
+        
+        // Extract links from page
+        function extractLinks(doc, baseUrl) {
+            const links = [];
+            const anchors = doc.querySelectorAll('a[href]');
+            
+            anchors.forEach(anchor => {
+                let href = anchor.getAttribute('href');
+                
+                // Skip empty links, javascript: links, hash links, etc.
+                if (!href || href.startsWith('javascript:') || href === '#' || href.startsWith('tel:') || href.startsWith('mailto:')) {
+                    return;
+                }
+                
+                try {
+                    // Resolve relative URLs
+                    const absoluteUrl = new URL(href, baseUrl).href;
+                    
+                    // Add if it's an HTML page or document
+                    const extension = absoluteUrl.split('.').pop().toLowerCase();
+                    const allowedExtensions = ['', 'html', 'htm', 'php', 'asp', 'aspx', 'jsp', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
+                    
+                    if (allowedExtensions.includes(extension)) {
+                        links.push(absoluteUrl);
+                    }
+                } catch (e) {
+                    console.warn(`Invalid URL: ${href}`);
+                }
+            });
+            
+            return links;
+        }
+        
+        // Generate a page ID from URL
+        function generatePageId(url) {
+            try {
+                // Convert URL to a path-like string
+                const urlObj = new URL(url);
+                let path = urlObj.pathname;
+                if (path === '/') path = '/home';
+                
+                // Clean up the path to make a valid ID
+                return path.replace(/^\/+|\/+$/g, '')  // Remove leading/trailing slashes
+                           .replace(/[^a-z0-9-_]/gi, '_')  // Replace non-alphanumeric chars
+                           .toLowerCase()
+                           || 'home';  // Fallback to 'home' if empty
+            } catch (e) {
+                // If URL parsing fails, generate a random ID
+                return 'page_' + Math.random().toString(36).substring(2, 10);
+            }
+        }
+        
+        // Get filename from URL
+        function getFilenameFromUrl(url) {
+            try {
+                const urlObj = new URL(url);
+                const pathname = urlObj.pathname;
+                const filename = pathname.split('/').pop();
+                
+                // If no filename (ends with /), use pathname
+                if (!filename) {
+                    return pathname.split('/').filter(Boolean).pop() || 'Pagină';
+                }
+                
+                return filename;
+            } catch (e) {
+                return 'Document';
+            }
+        }
+        
+        // Determine page type
+        function determinePageType(url, doc) {
+            // Check file extension
+            const extension = url.split('.').pop().toLowerCase();
+            if (['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'].includes(extension)) {
+                return 'document';
+            }
+            
+            // Check if URL contains indicators of document
+            if (url.includes('/documente/') || 
+                url.includes('/documents/') || 
+                url.includes('/acte/') ||
+                url.includes('/formulare/')) {
+                return 'document';
+            }
+            
+            // Check page content for clues
+            const h1 = doc.querySelector('h1')?.textContent || '';
+            if (h1.includes('Document') || 
+                h1.includes('Regulament') || 
+                h1.includes('Hotărâre') || 
+                h1.includes('Lege') ||
+                h1.includes('Formular') ||
+                h1.includes('Cerere')) {
+                return 'document';
+            }
+            
+            // Default to page
+            return 'page';
+        }
+        
+        // Determine page section
+        function getPageSection(url) {
+            try {
+                const urlObj = new URL(url);
+                const pathname = urlObj.pathname;
+                
+                if (pathname.includes('/despre/')) {
+                    return 'despre';
+                } else if (pathname.includes('/contact/')) {
+                    return 'contact';
+                } else if (pathname.includes('/documente/') || pathname.includes('/documents/') || pathname.includes('/acte/')) {
+                    return 'documente';
+                }
+                
+                // Default to general
+                return 'general';
+            } catch (e) {
+                return 'general';
+            }
+        }
+        
+        // Check if URL is on the same domain
+        function isSameDomain(url, baseUrl) {
+            try {
+                const urlObj = new URL(url);
+                const baseUrlObj = new URL(baseUrl);
+                return urlObj.hostname === baseUrlObj.hostname;
+            } catch (e) {
+                // If URL parsing fails, assume it's a relative URL (same domain)
+                return true;
+            }
+        }
+        
+        // Create a text excerpt
+        function createExcerpt(text, maxLength = 200) {
+            if (!text) return '';
+            
+            // Truncate text and add ellipsis if needed
+            if (text.length > maxLength) {
+                let excerpt = text.substring(0, maxLength);
+                
+                // Find last space to avoid cutting words
+                const lastSpace = excerpt.lastIndexOf(' ');
+                if (lastSpace > 0) {
+                    excerpt = excerpt.substring(0, lastSpace);
+                }
+                
+                return excerpt + '...';
+            }
+            
+            return text;
+        }
+        
+        // Shorten URL for display
+        function shortenUrl(url) {
+            try {
+                const urlObj = new URL(url);
+                let path = urlObj.pathname;
+                
+                // If path is too long, shorten it
+                if (path.length > 30) {
+                    const parts = path.split('/').filter(Boolean);
+                    if (parts.length > 2) {
+                        path = '/' + parts[0] + '/.../' + parts[parts.length - 1];
+                    } else {
+                        path = '/' + parts[0] + '/...';
+                    }
+                }
+                
+                return urlObj.hostname + path;
+            } catch (e) {
+                return url;
+            }
+        }
+        
         // Set up search event handlers
         function setupSearchHandlers() {
             const searchForm = document.getElementById('search-form');
@@ -1531,7 +2168,28 @@
                 });
             });
         }
-
+        
+        // Store recent searches
+        function addToRecentSearches(query) {
+            if (!query || query.length < 3) return;
+            
+            // Remove if already exists and add to beginning
+            recentSearches = recentSearches.filter(item => item !== query);
+            recentSearches.unshift(query);
+            
+            // Limit size
+            if (recentSearches.length > 10) {
+                recentSearches = recentSearches.slice(0, 10);
+            }
+            
+            // Store in localStorage
+            try {
+                localStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
+            } catch (e) {
+                console.warn('Failed to save recent searches to localStorage', e);
+            }
+        }
+        
         // Get search suggestions
         function getSearchSuggestions(query, maxSuggestions = 5) {
             if (!query || query.length < 2) return [];
@@ -1566,7 +2224,7 @@
             
             return Array.from(suggestions).slice(0, maxSuggestions);
         }
-
+        
         // Render search suggestions
         function renderSuggestions(suggestions) {
             const container = document.getElementById('search-suggestions');
@@ -1593,7 +2251,7 @@
             
             container.appendChild(ul);
         }
-
+        
         // Perform search
         function performSearch(query, page = 1) {
             // Update URL
@@ -1608,8 +2266,16 @@
                 suggestionsContainer.classList.remove('active');
             }
             
+            // Hide crawler UI
+            hideCrawlerUI();
+            
             // Show loading state
             showSearchLoading();
+            
+            // Check if we need to initialize search index
+            if (!searchIndex && siteContent.length > 0) {
+                searchIndex = initializeSearchIndex();
+            }
             
             // Add to recent searches
             addToRecentSearches(query);
@@ -1633,61 +2299,64 @@
             });
             
             // Perform search
-            const results = searchIndex.search(query, {
-                limit: 100,
-                suggest: true, // Enable suggestions (fuzzy search)
-                enrich: true // Return full document data
-            });
-            
-            // Process results
-            let allResults = [];
-            
-            // Combine results from all fields
-            results.forEach(resultSet => {
-                resultSet.result.forEach(result => {
-                    // Add if not already in results
-                    if (!allResults.some(r => r.id === result.id)) {
-                        allResults.push(result);
-                    }
+            if (searchIndex) {
+                const results = searchIndex.search(query, {
+                    limit: 100,
+                    suggest: true, // Enable suggestions (fuzzy search)
+                    enrich: true // Return full document data
                 });
-            });
-            
-            // Apply filters
-            if (typeFilter) {
-                allResults = allResults.filter(result => result.type === typeFilter);
-            }
-            
-            if (sectionFilter) {
-                allResults = allResults.filter(result => result.section === sectionFilter);
-            }
-            
-            // Sort by relevance (assuming first results are most relevant)
-            
-            // Pagination
-            const perPage = 10;
-            const totalResults = allResults.length;
-            const totalPages = Math.ceil(totalResults / perPage);
-            const startIndex = (page - 1) * perPage;
-            const endIndex = Math.min(startIndex + perPage, totalResults);
-            
-            // Get current page results
-            const paginatedResults = allResults.slice(startIndex, endIndex);
-            
-            // Render results
-            setTimeout(() => {
-                renderSearchResults({
-                    query,
-                    results: paginatedResults,
-                    totalResults,
-                    currentPage: page,
-                    totalPages,
-                    perPage,
-                    // Identify direct match (first result with high relevance)
-                    directMatch: allResults.length > 0 ? allResults[0] : null
+                
+                // Process results
+                let allResults = [];
+                
+                // Combine results from all fields
+                results.forEach(resultSet => {
+                    resultSet.result.forEach(result => {
+                        // Add if not already in results
+                        if (!allResults.some(r => r.id === result.id)) {
+                            allResults.push(result);
+                        }
+                    });
                 });
-            }, 500); // Small delay to show loading animation
+                
+                // Apply filters
+                if (typeFilter) {
+                    allResults = allResults.filter(result => result.type === typeFilter);
+                }
+                
+                if (sectionFilter) {
+                    allResults = allResults.filter(result => result.section === sectionFilter);
+                }
+                
+                // Pagination
+                const perPage = 10;
+                const totalResults = allResults.length;
+                const totalPages = Math.ceil(totalResults / perPage);
+                const startIndex = (page - 1) * perPage;
+                const endIndex = Math.min(startIndex + perPage, totalResults);
+                
+                // Get current page results
+                const paginatedResults = allResults.slice(startIndex, endIndex);
+                
+                // Render results
+                setTimeout(() => {
+                    renderSearchResults({
+                        query,
+                        results: paginatedResults,
+                        totalResults,
+                        currentPage: page,
+                        totalPages,
+                        perPage,
+                        // Identify direct match (first result with high relevance)
+                        directMatch: allResults.length > 0 ? allResults[0] : null
+                    });
+                }, 500); // Small delay to show loading animation
+            } else {
+                // No search index, show start crawling prompt
+                showNoCrawlDataState();
+            }
         }
-
+        
         // Show loading state
         function showSearchLoading() {
             const resultList = document.getElementById('result-list');
@@ -1710,7 +2379,25 @@
                 directMatchContainer.innerHTML = '';
             }
         }
-
+        
+        // Show no crawl data state
+        function showNoCrawlDataState() {
+            const resultList = document.getElementById('result-list');
+            if (resultList) {
+                resultList.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon"><i class="material-icons">travel_explore</i></div>
+                        <h3>Nu există date indexate</h3>
+                        <p>Nu au fost găsite date de căutare. Vă rugăm să indexați site-ul înainte de a efectua căutări.</p>
+                        <button class="direct-match-link" onclick="showCrawlerUI()">
+                            Începe indexarea
+                            <i class="material-icons">arrow_forward</i>
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
         // Render search results
         function renderSearchResults(result) {
             // Update summary
@@ -1734,7 +2421,7 @@
                         <div class="direct-match-content">
                             <h3>Rezultat exact găsit</h3>
                             <p>${highlightSearchTerms(directMatch.title, result.query)}</p>
-                            <a href="${directMatch.url}" class="direct-match-link">
+                            <a href="${directMatch.url}" class="direct-match-link" target="_blank">
                                 Accesează direct
                                 <i class="material-icons">arrow_forward</i>
                             </a>
@@ -1757,7 +2444,7 @@
             // Show toast notification
             showToast('search', 'Căutare finalizată', `S-au găsit ${result.totalResults} rezultate`);
         }
-
+        
         // Update filter counts
         function updateFilterCounts(result) {
             // Count by type
@@ -1774,19 +2461,6 @@
                 }
             });
             
-            // Also count from all results (not just paginated)
-            siteContent.forEach(item => {
-                // Check if this item matches the search query
-                const searchIndex = initializeSearchIndex();
-                const queryResults = searchIndex.search(result.query);
-                const isMatch = queryResults.some(rs => rs.result.some(r => r.id === item.id));
-                
-                if (isMatch) {
-                    if (item.type === 'page') typeCounts.page++;
-                    if (item.type === 'document') typeCounts.document++;
-                }
-            });
-            
             // Update DOM
             Object.keys(typeCounts).forEach(type => {
                 const countElement = document.getElementById(`count-${type}`);
@@ -1795,7 +2469,7 @@
                 }
             });
         }
-
+        
         // Display search results
         function displaySearchResults(result) {
             const resultList = document.getElementById('result-list');
@@ -1842,12 +2516,12 @@
                         <div class="result-type">
                             <i class="material-icons">${typeIcon}</i>${typeLabel}
                         </div>
-                        <a href="${hit.url}" class="result-url" title="${hit.url}">${hit.url}</a>
+                        <a href="${hit.url}" class="result-url" title="${hit.url}" target="_blank">${hit.url}</a>
                     </div>
-                    <h3 class="result-title"><a href="${hit.url}">${highlightedTitle}</a></h3>
+                    <h3 class="result-title"><a href="${hit.url}" target="_blank">${highlightedTitle}</a></h3>
                     <div class="result-excerpt">${highlightedExcerpt}</div>
                     <div class="result-actions">
-                        <a href="${hit.url}" class="result-action">
+                        <a href="${hit.url}" class="result-action" target="_blank">
                             <i class="material-icons">open_in_new</i> Vizitează
                         </a>
                         <a href="#" class="result-action" onclick="shareResult('${hit.url}', '${escapeHtml(hit.title)}'); return false;">
@@ -1859,7 +2533,7 @@
                 resultList.appendChild(resultCard);
             });
         }
-
+        
         // Highlight search terms in text
         function highlightSearchTerms(text, query) {
             if (!text || !query) return text;
@@ -1879,19 +2553,19 @@
             
             return highlightedText;
         }
-
+        
         // Helper function to escape special characters in regex
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
-
+        
         // Helper function to escape HTML
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-
+        
         // Display pagination
         function displayPagination(totalPages, currentPage) {
             const paginationContainer = document.getElementById('search-pagination');
@@ -1955,106 +2629,109 @@
                 `;
             }
             
-            // Next page button
-            const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
-            paginationHtml += `
-                <a href="#" onclick="navigateToPage(${currentPage + 1}); return false;" 
-                   class="pagination-nav ${nextDisabled}">
-                  <i class="material-icons">chevron_right</i>
-                </a>
-            `;
-            
-            paginationContainer.innerHTML = paginationHtml;
-        }
+// Next page button
+const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
+paginationHtml += `
+    <a href="#" onclick="navigateToPage(${currentPage + 1}); return false;" 
+       class="pagination-nav ${nextDisabled}">
+      <i class="material-icons">chevron_right</i>
+    </a>
+`;
 
-        // Show no results state
-        function showNoResultsState(query) {
-            const resultList = document.getElementById('result-list');
-            if (!resultList) return;
-            
-            resultList.innerHTML = `
-                <div class="no-results">
-                    <div class="no-results-icon"><i class="material-icons">search_off</i></div>
-                    <h3>Nu s-au găsit rezultate</h3>
-                    <p>Nu am găsit niciun rezultat pentru <strong>"${query}"</strong>.</p>
-                    <p>Sugestii:</p>
-                    <ul>
-                        <li>Verificați ortografia cuvintelor cheie.</li>
-                        <li>Încercați cuvinte cheie diferite.</li>
-                        <li>Încercați cuvinte cheie mai generale.</li>
-                    </ul>
-                </div>
-            `;
-        }
+paginationContainer.innerHTML = paginationHtml;
+}
 
-        // Navigation function for pagination
-        function navigateToPage(page) {
-            const url = new URL(window.location);
-            const query = url.searchParams.get('q') || '';
-            
-            // Update URL parameters
-            url.searchParams.set('page', page);
-            window.history.pushState({}, '', url);
-            
-            // Execute search with updated page
-            performSearch(query, page);
-        }
+// Show no results state
+function showNoResultsState(query) {
+    const resultList = document.getElementById('result-list');
+    if (!resultList) return;
+    
+    resultList.innerHTML = `
+        <div class="no-results">
+            <div class="no-results-icon"><i class="material-icons">search_off</i></div>
+            <h3>Nu s-au găsit rezultate</h3>
+            <p>Nu am găsit niciun rezultat pentru <strong>"${query}"</strong>.</p>
+            <p>Sugestii:</p>
+            <ul>
+                <li>Verificați ortografia cuvintelor cheie.</li>
+                <li>Încercați cuvinte cheie diferite.</li>
+                <li>Încercați cuvinte cheie mai generale.</li>
+                <li>Asigurați-vă că site-ul a fost indexat complet.</li>
+            </ul>
+        </div>
+    `;
+}
 
-        // Share result function
-        function shareResult(url, title) {
-            if (navigator.share) {
-                navigator.share({
-                    title: title,
-                    url: url
-                }).catch(err => {
-                    console.error('Share failed:', err);
-                    copyToClipboard(url);
-                });
-            } else {
-                copyToClipboard(url);
-            }
-        }
+// Navigation function for pagination
+function navigateToPage(page) {
+    const url = new URL(window.location);
+    const query = url.searchParams.get('q') || '';
+    
+    // Update URL parameters
+    url.searchParams.set('page', page);
+    window.history.pushState({}, '', url);
+    
+    // Execute search with updated page
+    performSearch(query, page);
+}
 
-        // Copy to clipboard
-        function copyToClipboard(text) {
-            const tempInput = document.createElement('input');
-            document.body.appendChild(tempInput);
-            tempInput.value = text;
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            
-            showToast('content_copy', 'Link copiat', 'Link-ul a fost copiat în clipboard!');
-        }
+// Share result function
+function shareResult(url, title) {
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            url: url
+        }).catch(err => {
+            console.error('Share failed:', err);
+            copyToClipboard(url);
+        });
+    } else {
+        copyToClipboard(url);
+    }
+}
 
-        // Show toast notification
-        function showToast(icon, title, message) {
-            const toastContainer = document.getElementById('toast-container');
-            if (!toastContainer) return;
-            
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = `
-                <div class="toast-icon">
-                    <i class="material-icons">${icon}</i>
-                </div>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
-            `;
-            
-            toastContainer.appendChild(toast);
-            
-            // Auto-remove toast after animation completes
-            setTimeout(() => {
-                toast.remove();
-            }, 3500);
-        }
+// Copy to clipboard
+function copyToClipboard(text) {
+    const tempInput = document.createElement('input');
+    document.body.appendChild(tempInput);
+    tempInput.value = text;
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    
+    showToast('content_copy', 'Link copiat', 'Link-ul a fost copiat în clipboard!');
+}
 
-        // Make functions available globally
-        window.navigateToPage = navigateToPage;
-        window.shareResult = shareResult;
-    </script>
+// Show toast notification
+function showToast(icon, title, message) {
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+        <div class="toast-icon">
+            <i class="material-icons">${icon}</i>
+        </div>
+        <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Auto-remove toast after animation completes
+    setTimeout(() => {
+        toast.remove();
+    }, 3500);
+}
+
+// Make functions available globally
+window.navigateToPage = navigateToPage;
+window.shareResult = shareResult;
+window.showCrawlerUI = showCrawlerUI;
+
+            </script>
 </body>
 </html>
