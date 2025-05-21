@@ -6,7 +6,7 @@
     <title>Inovații și Investiții - Poliția Locală Slobozia</title>
     
     <!-- Import components.js for header and footer -->
-    <script src="components.js"></script>
+    <script src="../components.js"></script>
     
     <!-- Material icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -341,6 +341,11 @@
             padding: 5rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
+            display: none; /* Hide all sections by default */
+        }
+        
+        .content-section.active {
+            display: block; /* Show only active section */
         }
         
         .section-title {
@@ -410,7 +415,7 @@
             border-radius: 50%;
             margin: -40px auto 20px;
             color: white;
-            font-size: 2rem;
+            font-size: 1.8rem; /* Smaller icon size */
             box-shadow: 0 8px 25px rgba(30, 136, 229, 0.3);
             transition: all 0.4s ease;
         }
@@ -606,13 +611,14 @@
             content: '';
             position: absolute;
             left: -2rem;
-            top: 4px;
+            top: 7px; /* Adjusted for better alignment */
             width: 16px;
             height: 16px;
             border-radius: 50%;
             background-color: var(--secondary-color);
             border: 3px solid white;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transform: translateX(-1px); /* Small adjustment for perfect centering */
         }
         
         .timeline-date {
@@ -630,6 +636,42 @@
         .timeline-content p {
             color: var(--text-secondary);
             line-height: 1.7;
+        }
+        
+        /* Investment Info Box */
+        .investment-box {
+            background: linear-gradient(135deg, rgba(26, 47, 95, 0.06) 0%, rgba(30, 136, 229, 0.06) 100%);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin: 2rem 0 3rem;
+            border-left: 4px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .investment-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-right: 1.5rem;
+        }
+        
+        .investment-content h4 {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .investment-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .investment-period {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
         
         /* Video Container */
@@ -655,33 +697,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-        }
-        
-        /* Responsiveness */
-        @media (max-width: 992px) {
-            .slide-content {
-                width: 80%;
-            }
-            
-            .slide-title {
-                font-size: 2.2rem;
-            }
-            
-            .nav-tab {
-                padding: 1.2rem 0.8rem;
-            }
-            
-            .nav-tab-icon {
-                font-size: 1.3rem;
-            }
-            
-            .nav-tab-text {
-                font-size: 1rem;
-            }
-            
-            .info-content {
-                padding: 2rem;
-            }
         }
         
         @media (max-width: 768px) {
@@ -845,8 +860,19 @@
     </div>
 
     <!-- Poligon Section -->
-    <section id="poligon" class="content-section">
+    <section id="poligon" class="content-section active">
         <h2 class="section-title">Poligonul de Tragere</h2>
+        
+        <div class="investment-box">
+            <div class="investment-icon">
+                <i class="material-icons">monetization_on</i>
+            </div>
+            <div class="investment-content">
+                <h4>Investiție Totală:</h4>
+                <div class="investment-amount">4.700.000 RON</div>
+                <div class="investment-period">Finanțare din bugetul local (2020-2023)</div>
+            </div>
+        </div>
         
         <div class="info-block">
             <div class="info-image">
@@ -947,6 +973,17 @@
     <!-- CCTV Section -->
     <section id="cctv" class="content-section">
         <h2 class="section-title">Sistemul de Supraveghere Video</h2>
+        
+        <div class="investment-box">
+            <div class="investment-icon">
+                <i class="material-icons">monetization_on</i>
+            </div>
+            <div class="investment-content">
+                <h4>Investiție Totală:</h4>
+                <div class="investment-amount">6.850.000 RON</div>
+                <div class="investment-period">Proiect multi-anual cu finanțare continuă (2018-2024)</div>
+            </div>
+        </div>
         
         <div class="info-block">
             <div class="info-image">
@@ -1068,6 +1105,17 @@
     <!-- Digital Infrastructure Section -->
     <section id="infrastructura" class="content-section">
         <h2 class="section-title">Infrastructură Digitală</h2>
+        
+        <div class="investment-box">
+            <div class="investment-icon">
+                <i class="material-icons">monetization_on</i>
+            </div>
+            <div class="investment-content">
+                <h4>Investiție Totală:</h4>
+                <div class="investment-amount">3.200.000 RON</div>
+                <div class="investment-period">Modernizare continuă a infrastructurii (2019-2024)</div>
+            </div>
+        </div>
         
         <div class="info-block">
             <div class="info-image">
@@ -1233,6 +1281,10 @@
             
             // Navigation tabs functionality
             const navTabs = document.querySelectorAll('.nav-tab');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            // Show first tab content by default
+            contentSections[0].classList.add('active');
             
             navTabs.forEach(tab => {
                 tab.addEventListener('click', function(e) {
@@ -1244,11 +1296,19 @@
                     // Add active class to clicked tab
                     this.classList.add('active');
                     
-                    // Scroll to the target section
+                    // Hide all content sections
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    
+                    // Show the target section
                     const targetId = this.getAttribute('href');
                     const targetSection = document.querySelector(targetId);
                     
                     if (targetSection) {
+                        targetSection.classList.add('active');
+                        
+                        // Scroll to the top of the section with offset for header
                         const headerOffset = 140;
                         const elementPosition = targetSection.getBoundingClientRect().top;
                         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -1291,11 +1351,10 @@
             window.addEventListener('scroll', function() {
                 const scrollPosition = window.scrollY;
                 
-                // Get all sections
-                const sections = document.querySelectorAll('.content-section');
+                // Only check visible sections
+                const visibleSections = document.querySelectorAll('.content-section.active');
                 
-                // Find the current section
-                sections.forEach(section => {
+                visibleSections.forEach(section => {
                     const sectionTop = section.offsetTop - 150;
                     const sectionBottom = sectionTop + section.offsetHeight;
                     
