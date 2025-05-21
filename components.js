@@ -1,4 +1,4 @@
-// COMPONENTS.JS - Fixed version without header size changes on scroll
+// COMPONENTS.JS - Enhanced version with one-line header optimization
 // Simply include this file in your HTML pages to automatically load the header and footer
 
 // CSS for header and footer as a string
@@ -344,12 +344,20 @@ const COMPONENTS_CSS = `
 }
 
 /* ENHANCED NAVIGATION STYLES */
+.main-nav {
+    position: relative;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+}
+
 .main-nav ul {
     display: flex;
     list-style: none;
     margin: 0;
     padding: 0;
     align-items: center;
+    flex-wrap: nowrap;
 }
 
 .main-nav ul li {
@@ -370,6 +378,12 @@ const COMPONENTS_CSS = `
     align-items: center;
     height: 40px;
     line-height: 1;
+    white-space: nowrap;
+}
+
+/* Support for menu text that can be hidden/shown */
+.menu-text, .menu-text-optional {
+    display: inline-block;
 }
 
 /* Icon in main menu */
@@ -382,6 +396,7 @@ const COMPONENTS_CSS = `
     align-items: center;
     justify-content: center;
     height: 24px;
+    flex-shrink: 0;
 }
 
 .main-nav ul li a:hover {
@@ -619,6 +634,60 @@ const COMPONENTS_CSS = `
 
 .mobile-menu-toggle:hover {
     color: var(--secondary-color);
+}
+
+/* Tooltip for icon-only menu items */
+.icon-only {
+    position: relative;
+}
+
+.icon-only::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 1001;
+    pointer-events: none;
+}
+
+.icon-only::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent rgba(0,0,0,0.8) transparent;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    pointer-events: none;
+}
+
+.icon-only:hover::before,
+.icon-only:hover::after {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Overflow menu for responsive header */
+.overflow-menu-item {
+    display: none; /* Hidden by default */
+}
+
+.overflow-menu-container .dropdown-menu {
+    min-width: 220px !important;
 }
 
 /* Footer styles */
@@ -916,126 +985,261 @@ footer {
     opacity: 0.7;
 }
 
-/* 1920x1080 Resolution Optimizations */
-@media screen and (max-width: 1920px) {
-    /* Header padding adjustments */
+/* Dynamic Header Adjustments for Single-Line Menu */
+/* Media queries for ensuring one-line header at all resolutions */
+@media screen and (min-width: 993px) and (max-width: 1920px) {
+    /* Base adjustments for all desktop/laptop sizes */
     .header-top,
     .header-main {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
     }
     
-    /* Reduced menu item spacing */
-    .main-nav ul li {
-        margin: 0 0.5rem;
-    }
-    
-    /* Smaller font size for menu items */
-    .main-nav ul li a {
-        font-size: 0.85rem;
-    }
-    
-    /* Smaller icons with reduced margin */
-    .menu-icon {
-        margin-right: 0.3rem;
-        font-size: 1.1rem;
-    }
-    
-    /* Reduce dropdown icon size */
-    .main-nav ul li.has-dropdown > a .dropdown-icon {
-        font-size: 0.9rem;
-    }
-    
-    /* Slightly narrow search bar */
-    .search-bar {
-        width: 220px;
-    }
-    
-    /* Reduce utility item spacing */
-    .utility-item {
-        margin-left: 1rem;
-        font-size: 0.75rem;
-    }
-    
-    /* Smaller emergency button */
-    .utility-item.emergency {
-        padding: 0.6rem 1rem;
-    }
-    
-    /* Reduce logo size */
-    .logo h1 {
-        font-size: 1.2rem;
-    }
-    
-    .logo-badge {
-        width: 45px;
-        height: 52px;
-    }
-    
-    /* Reduce logo subtitle size */
-    .logo-subtitle {
-        font-size: 0.75rem;
-    }
-    
-    /* Ensure header items are properly aligned when wrapped */
     .header-main {
-        flex-wrap: wrap;
-        align-items: center;
-        row-gap: 8px; /* Spacing between rows if header wraps */
+        flex-wrap: nowrap !important;
     }
     
-    /* Fix for main nav wrapping */
     .main-nav {
-        flex-grow: 1;
-        display: flex;
-        align-items: center;
+        flex: 1 1 0 !important;
     }
     
-    /* Better alignment when menu wraps */
     .main-nav ul {
-        flex-wrap: wrap;
-        row-gap: 5px; /* Space between wrapped menu rows */
-        align-items: center;
-        justify-content: flex-start;
+        justify-content: space-between !important;
+        width: 100% !important;
     }
     
-    /* Ensure all dropdown menus have consistent position */
-    .dropdown-menu {
-        top: 40px !important; /* Consistent distance from parent */
-    }
-}
-
-/* Additional fixes for even smaller screens but before mobile breakpoint */
-@media screen and (max-width: 1366px) {
-    /* Further reduce padding */
-    .header-top,
-    .header-main {
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-    
-    /* Tighter menu spacing */
     .main-nav ul li {
-        margin: 0 0.3rem;
+        margin: 0 0.2rem !important;
     }
     
-    /* Even smaller font */
     .main-nav ul li a {
-        font-size: 0.8rem;
+        padding: 0.4rem 0 !important;
+        white-space: nowrap !important;
     }
     
-    /* Smaller search bar */
-    .search-bar {
-        width: 180px;
-    }
-    
-    /* Minimize icon margins */
     .menu-icon {
-        margin-right: 0.2rem;
+        margin-right: 0.2rem !important;
+    }
+    
+    .main-nav ul li.has-dropdown > a .dropdown-icon {
+        margin-left: 0.1rem !important;
+    }
+    
+    /* Breakpoint-specific adjustments */
+    
+    /* Extra Large: 1600-1920px */
+    @media screen and (min-width: 1600px) and (max-width: 1920px) {
+        .logo h1 {
+            font-size: 1.1rem !important;
+        }
+        
+        .logo-badge {
+            width: 42px !important;
+            height: 48px !important;
+            margin-right: 0.8rem !important;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.7rem !important;
+        }
+        
+        .main-nav ul li a {
+            font-size: 0.82rem !important;
+            letter-spacing: -0.2px !important;
+        }
+        
+        .menu-icon {
+            font-size: 1rem !important;
+        }
+        
+        .search-bar {
+            width: 180px !important;
+        }
+        
+        .utility-item {
+            margin-left: 0.8rem !important;
+            font-size: 0.7rem !important;
+        }
+        
+        .utility-item.emergency {
+            padding: 0.5rem 0.7rem !important;
+        }
+    }
+    
+    /* Large: 1367-1599px */
+    @media screen and (min-width: 1367px) and (max-width: 1599px) {
+        .logo h1 {
+            font-size: 1rem !important;
+        }
+        
+        .logo-badge {
+            width: 38px !important;
+            height: 44px !important;
+            margin-right: 0.6rem !important;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.65rem !important;
+        }
+        
+        .main-nav ul li a {
+            font-size: 0.78rem !important;
+            letter-spacing: -0.3px !important;
+        }
+        
+        .menu-icon {
+            font-size: 0.95rem !important;
+        }
+        
+        .search-bar {
+            width: 160px !important;
+        }
+        
+        .search-bar input {
+            padding: 0.6rem 1rem 0.6rem 2.3rem !important;
+        }
+        
+        .utility-item {
+            margin-left: 0.7rem !important;
+            font-size: 0.68rem !important;
+        }
+        
+        .utility-item.emergency {
+            padding: 0.45rem 0.65rem !important;
+        }
+        
+        /* Add ellipsis for longer menu items */
+        .main-nav ul li a .menu-text-optional {
+            max-width: 100% !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+    }
+    
+    /* Medium: 1200-1366px */
+    @media screen and (min-width: 1200px) and (max-width: 1366px) {
+        .logo h1 {
+            font-size: 0.95rem !important;
+        }
+        
+        .logo-badge {
+            width: 35px !important;
+            height: 40px !important;
+            margin-right: 0.5rem !important;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.6rem !important;
+        }
+        
+        .main-nav ul li a {
+            font-size: 0.73rem !important;
+            letter-spacing: -0.4px !important;
+        }
+        
+        .menu-icon {
+            font-size: 0.9rem !important;
+            margin-right: 0.1rem !important;
+        }
+        
+        .search-bar {
+            width: 140px !important;
+        }
+        
+        .search-bar input {
+            padding: 0.5rem 0.7rem 0.5rem 2rem !important;
+            font-size: 0.8rem !important;
+        }
+        
+        .utility-item {
+            margin-left: 0.6rem !important;
+            font-size: 0.65rem !important;
+        }
+        
+        .utility-item.emergency {
+            padding: 0.4rem 0.6rem !important;
+        }
+        
+        /* At this size, hide optional text for certain menu items */
+        .main-nav ul li a .menu-text-optional {
+            display: none !important; 
+        }
+        
+        /* Add tooltip for these items */
+        .main-nav ul li a.optional-text-hidden {
+            position: relative !important;
+        }
+    }
+    
+    /* Small: 993-1199px - Last breakpoint before mobile menu */
+    @media screen and (min-width: 993px) and (max-width: 1199px) {
+        .logo h1 {
+            font-size: 0.9rem !important;
+        }
+        
+        .logo-badge {
+            width: 32px !important;
+            height: 37px !important;
+            margin-right: 0.4rem !important;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.55rem !important;
+            display: none !important; /* Hide subtitle at this size */
+        }
+        
+        .main-nav ul li a {
+            font-size: 0.7rem !important;
+            letter-spacing: -0.5px !important;
+            padding: 0.35rem 0 !important;
+        }
+        
+        .menu-icon {
+            font-size: 0.85rem !important;
+            margin-right: 0 !important;
+        }
+        
+        .search-bar {
+            width: 120px !important;
+        }
+        
+        .search-bar input {
+            padding: 0.4rem 0.6rem 0.4rem 1.8rem !important;
+            font-size: 0.75rem !important;
+        }
+        
+        .search-bar i {
+            left: 0.6rem !important;
+            font-size: 0.9rem !important;
+        }
+        
+        .utility-item {
+            margin-left: 0.4rem !important;
+            font-size: 0.6rem !important;
+        }
+        
+        .utility-item.emergency {
+            padding: 0.35rem 0.5rem !important;
+        }
+        
+        /* At this size, we only show icons for most menu items */
+        .main-nav ul li a.icon-only-small .menu-text {
+            display: none !important;
+        }
+        
+        /* Show the overflow menu for lower priority items */
+        .overflow-menu-item {
+            display: flex !important;
+        }
+        
+        /* Hide lower priority menu items */
+        .main-nav ul li.low-priority {
+            display: none !important;
+        }
     }
 }
 
-/* Mobile adjustments */
+/* Mobile menu media queries */
 @media (max-width: 992px) {
     .header-top,
     .header-main {
@@ -1083,6 +1287,28 @@ footer {
     
     .main-nav ul li a::after {
         display: none;
+    }
+    
+    /* Ensure text is shown on mobile menu */
+    .main-nav ul li a .menu-text,
+    .main-nav ul li a .menu-text-optional {
+        display: inline !important;
+    }
+    
+    /* Reset icon-only styles for mobile */
+    .main-nav ul li a.icon-only::before,
+    .main-nav ul li a.icon-only::after {
+        display: none !important;
+    }
+    
+    /* Hide overflow menu on mobile */
+    .main-nav ul li.overflow-menu-item {
+        display: none !important;
+    }
+    
+    /* Show low priority items on mobile */
+    .main-nav ul li.low-priority {
+        display: block !important;
     }
     
     .dropdown-menu {
@@ -1285,10 +1511,16 @@ const HEADER_HTML = `
     <div class="header-main" id="header-main">
         <nav class="main-nav" id="main-nav">
             <ul>
-                <li class="active"><a href="/pls/"><i class="material-icons menu-icon">home</i> Acasă</a></li>
+                <li class="active">
+                    <a href="/pls/" data-tooltip="Acasă">
+                        <i class="material-icons menu-icon">home</i>
+                        <span class="menu-text">Acasă</span>
+                    </a>
+                </li>
                 <li class="has-dropdown">
-                    <a href="/pls/atributii">
-                        <i class="material-icons menu-icon">info</i> Despre Noi
+                    <a href="/pls/atributii" data-tooltip="Despre Noi">
+                        <i class="material-icons menu-icon">info</i>
+                        <span class="menu-text">Despre Noi</span>
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
@@ -1310,8 +1542,9 @@ const HEADER_HTML = `
                     </ul>
                 </li>
                 <li class="has-dropdown">
-                    <a href="/pls/petitii">
-                        <i class="material-icons menu-icon">feedback</i> Petiții
+                    <a href="/pls/petitii" data-tooltip="Petiții">
+                        <i class="material-icons menu-icon">feedback</i>
+                        <span class="menu-text">Petiții</span>
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
@@ -1320,8 +1553,9 @@ const HEADER_HTML = `
                     </ul>
                 </li>
                 <li class="has-dropdown">
-                    <a href="/pls/relatii-cu-publicul">
-                        <i class="material-icons menu-icon">phone</i> Contact
+                    <a href="/pls/relatii-cu-publicul" data-tooltip="Contact">
+                        <i class="material-icons menu-icon">phone</i>
+                        <span class="menu-text">Contact</span>
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
@@ -1332,8 +1566,9 @@ const HEADER_HTML = `
                     </ul>
                 </li>
                 <li class="has-dropdown">
-                    <a href="/pls/integritate">
-                        <i class="material-icons menu-icon">verified_user</i> Integritate instituțională
+                    <a href="/pls/integritate" data-tooltip="Integritate instituțională">
+                        <i class="material-icons menu-icon">verified_user</i>
+                        <span class="menu-text">Integritate instituțională</span>
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
@@ -1343,8 +1578,9 @@ const HEADER_HTML = `
                     </ul>
                 </li>
                 <li class="has-dropdown">
-                    <a href="/pls/transparenta">
-                        <i class="material-icons menu-icon">public</i> Informații de interes public
+                    <a href="/pls/transparenta" data-tooltip="Informații de interes public">
+                        <i class="material-icons menu-icon">public</i>
+                        <span class="menu-text">Informații de interes public</span>
                         <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
                     </a>
                     <ul class="dropdown-menu">
@@ -1368,8 +1604,18 @@ const HEADER_HTML = `
                         </div>
                     </ul>
                 </li>
-                <li><a href="/pls/gdpr"><i class="material-icons menu-icon">security</i> GDPR</a></li>
-                <li><a href="/pls/camere"><i class="material-icons menu-icon">videocam</i> Camere publice</a></li>
+                <li class="low-priority">
+                    <a href="/pls/gdpr" data-tooltip="GDPR" class="icon-only-small">
+                        <i class="material-icons menu-icon">security</i>
+                        <span class="menu-text-optional">GDPR</span>
+                    </a>
+                </li>
+                <li class="low-priority">
+                    <a href="/pls/camere" data-tooltip="Camere publice" class="icon-only-small">
+                        <i class="material-icons menu-icon">videocam</i>
+                        <span class="menu-text-optional">Camere publice</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         <div class="search-bar">
@@ -1519,6 +1765,9 @@ function initializeComponents() {
     
     // Initialize search functionality
     initSearchBar();
+    
+    // Initialize responsive header with new one-line functionality
+    initResponsiveHeader();
 }
 
 // Intro Screen Animation and Removal
@@ -1870,6 +2119,164 @@ function initSearchBar() {
             suggestionsContainer.innerHTML = '';
         }
     });
+}
+
+// New function: Initialize responsive header for single-line menu
+function initResponsiveHeader() {
+    // Wait for the DOM to be fully loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupResponsiveHeader);
+    } else {
+        setupResponsiveHeader();
+    }
+    
+    function setupResponsiveHeader() {
+        // Apply responsive classes based on screen width
+        const applyResponsiveClasses = () => {
+            const screenWidth = window.innerWidth;
+            
+            // Get all menu items with optional text
+            const optionalTextItems = document.querySelectorAll('.main-nav ul li a .menu-text-optional');
+            const iconOnlySmallItems = document.querySelectorAll('.main-nav ul li a.icon-only-small');
+            
+            if (screenWidth <= 1366 && screenWidth > 992) {
+                // Hide optional text between 992-1366px
+                optionalTextItems.forEach(item => {
+                    item.style.display = 'none';
+                });
+                
+                // Add icon-only class
+                iconOnlySmallItems.forEach(item => {
+                    item.classList.add('icon-only');
+                });
+            } else if (screenWidth > 1366) {
+                // Show optional text above 1366px
+                optionalTextItems.forEach(item => {
+                    item.style.display = 'inline';
+                });
+                
+                // Remove icon-only class
+                iconOnlySmallItems.forEach(item => {
+                    item.classList.remove('icon-only');
+                });
+            }
+            
+            // Add overflow menu at smaller sizes
+            if (screenWidth <= 1199 && screenWidth > 992) {
+                // Create overflow menu if it doesn't exist
+                createOverflowMenu();
+            } else {
+                // Remove overflow menu if it exists
+                const overflowMenu = document.querySelector('.overflow-menu-item');
+                if (overflowMenu) {
+                    overflowMenu.style.display = 'none';
+                }
+                
+                // Show all low-priority items
+                const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
+                lowPriorityItems.forEach(item => {
+                    item.style.display = 'flex';
+                });
+            }
+        };
+        
+        // Create overflow menu for smaller screens
+        const createOverflowMenu = () => {
+            // Check if overflow menu already exists
+            let overflowMenu = document.querySelector('.overflow-menu-item');
+            
+            if (!overflowMenu) {
+                // Create new overflow menu
+                const mainNav = document.querySelector('.main-nav ul');
+                if (!mainNav) return;
+                
+                overflowMenu = document.createElement('li');
+                overflowMenu.className = 'has-dropdown overflow-menu-item';
+                
+                const overflowLink = document.createElement('a');
+                overflowLink.href = '#';
+                overflowLink.setAttribute('data-tooltip', 'Mai mult');
+                
+                const moreIcon = document.createElement('i');
+                moreIcon.className = 'material-icons menu-icon';
+                moreIcon.textContent = 'more_horiz';
+                
+                const moreText = document.createElement('span');
+                moreText.className = 'menu-text';
+                moreText.textContent = 'Mai mult';
+                
+                const dropdownIcon = document.createElement('i');
+                dropdownIcon.className = 'material-icons dropdown-icon';
+                dropdownIcon.textContent = 'keyboard_arrow_down';
+                
+                overflowLink.appendChild(moreIcon);
+                overflowLink.appendChild(moreText);
+                overflowLink.appendChild(dropdownIcon);
+                overflowMenu.appendChild(overflowLink);
+                
+                // Create dropdown menu
+                const dropdownMenu = document.createElement('ul');
+                dropdownMenu.className = 'dropdown-menu';
+                overflowMenu.appendChild(dropdownMenu);
+                
+                // Add overflow menu to main nav
+                mainNav.appendChild(overflowMenu);
+                
+                // Populate the dropdown menu
+                updateOverflowMenuItems();
+            } else {
+                // Show existing overflow menu
+                overflowMenu.style.display = 'flex';
+                
+                // Update items in case they've changed
+                updateOverflowMenuItems();
+            }
+            
+            // Hide low-priority items
+            const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
+            lowPriorityItems.forEach(item => {
+                item.style.display = 'none';
+            });
+        };
+        
+        // Update items in overflow menu
+        const updateOverflowMenuItems = () => {
+            const overflowMenu = document.querySelector('.overflow-menu-item');
+            if (!overflowMenu) return;
+            
+            const dropdownMenu = overflowMenu.querySelector('.dropdown-menu');
+            if (!dropdownMenu) return;
+            
+            // Clear existing items
+            dropdownMenu.innerHTML = '';
+            
+            // Clone low-priority items into the dropdown
+            const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
+            lowPriorityItems.forEach(item => {
+                const clonedItem = item.cloneNode(true);
+                // Remove low-priority class to ensure it's visible
+                clonedItem.classList.remove('low-priority');
+                
+                // Ensure text is visible in dropdown
+                const optionalText = clonedItem.querySelector('.menu-text-optional');
+                if (optionalText) {
+                    optionalText.style.display = 'inline';
+                }
+                
+                dropdownMenu.appendChild(clonedItem);
+            });
+        };
+        
+        // Apply responsive classes immediately
+        applyResponsiveClasses();
+        
+        // Add resize listener with debounce
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(applyResponsiveClasses, 100);
+        });
+    }
 }
 
 // Legacy search function - kept for backwards compatibility
