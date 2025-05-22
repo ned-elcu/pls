@@ -1,4 +1,4 @@
-// COMPONENTS.JS - Enhanced version with one-line header optimization
+// COMPONENTS.JS - Enhanced version with search disabled and bigger text
 // Simply include this file in your HTML pages to automatically load the header and footer
 
 // CSS for header and footer as a string
@@ -196,7 +196,6 @@ const COMPONENTS_CSS = `
 }
 
 .header-top.scrolled {
-    /* Removed size-changing properties */
     background-color: var(--primary-dark);
 }
 
@@ -208,9 +207,9 @@ const COMPONENTS_CSS = `
 }
 
 .logo-badge {
-    width: 50px;
-    height: 57px;
-    margin-right: 1rem;
+    width: 60px; /* Increased from 50px */
+    height: 68px; /* Increased from 57px */
+    margin-right: 1.2rem; /* Increased from 1rem */
     transition: var(--transition-fast);
 }
 
@@ -221,7 +220,7 @@ const COMPONENTS_CSS = `
 
 .logo h1 {
     color: var(--text-light);
-    font-size: 1.3rem;
+    font-size: 1.5rem; /* Increased from 1.3rem */
     font-weight: 800;
     letter-spacing: 0.5px;
     margin: 0;
@@ -230,7 +229,7 @@ const COMPONENTS_CSS = `
 
 .logo-subtitle {
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.8rem;
+    font-size: 0.9rem; /* Increased from 0.8rem */
     font-weight: 400;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -244,9 +243,9 @@ const COMPONENTS_CSS = `
 }
 
 .utility-item {
-    margin-left: 1.5rem;
+    margin-left: 2rem; /* Increased from 1.5rem */
     color: rgba(255, 255, 255, 0.8);
-    font-size: 0.8rem;
+    font-size: 0.9rem; /* Increased from 0.8rem */
     font-weight: 500;
     text-decoration: none;
     letter-spacing: 0.5px;
@@ -263,9 +262,10 @@ const COMPONENTS_CSS = `
 .utility-item.emergency {
     background-color: var(--danger-color);
     color: white;
-    padding: 0.7rem 1.2rem;
+    padding: 0.8rem 1.4rem; /* Increased padding */
     border-radius: var(--border-radius-small);
     font-weight: 600;
+    font-size: 1rem; /* Increased from default */
     display: flex;
     align-items: center;
     box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
@@ -306,7 +306,8 @@ const COMPONENTS_CSS = `
 }
 
 .utility-item.emergency i {
-    margin-right: 0.5rem;
+    margin-right: 0.6rem; /* Increased from 0.5rem */
+    font-size: 1.3rem; /* Increased */
     animation: pulse 2s infinite;
 }
 
@@ -333,13 +334,12 @@ const COMPONENTS_CSS = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 3rem;
+    padding: 1.2rem 3rem; /* Increased from 1rem */
     box-shadow: var(--shadow-small);
     transition: background-color 0.3s ease;
 }
 
 .header-main.scrolled {
-    /* Removed size-changing properties */
     box-shadow: var(--shadow-medium);
 }
 
@@ -358,10 +358,12 @@ const COMPONENTS_CSS = `
     padding: 0;
     align-items: center;
     flex-wrap: nowrap;
+    width: 100%; /* Use full width now that search is gone */
+    justify-content: space-between; /* Distribute items evenly */
 }
 
 .main-nav ul li {
-    margin: 0 1rem;
+    margin: 0 1.5rem; /* Increased from 1rem */
     position: relative;
     display: flex;
     align-items: center;
@@ -370,16 +372,16 @@ const COMPONENTS_CSS = `
 .main-nav ul li a {
     color: var(--text-secondary);
     text-decoration: none;
-    font-weight: 500;
-    padding: 0.5rem 0;
+    font-weight: 600; /* Increased from 500 */
+    padding: 0.6rem 0; /* Increased from 0.5rem */
     transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
-    font-size: 0.95rem;
+    font-size: 1.1rem; /* Increased from 0.95rem */
     display: flex;
     align-items: center;
-    height: 40px;
+    height: 45px; /* Increased from 40px */
     line-height: 1;
     white-space: nowrap;
-    position: relative; /* Added for better positioning control */
+    position: relative;
 }
 
 /* Support for menu text that can be hidden/shown */
@@ -388,19 +390,19 @@ const COMPONENTS_CSS = `
     position: relative;
 }
 
-/* Icon in main menu - FIXED ALIGNMENT */
+/* Icon in main menu */
 .menu-icon {
-    margin-right: 0.5rem;
-    font-size: 1.2rem;
+    margin-right: 0.7rem; /* Increased from 0.5rem */
+    font-size: 1.4rem; /* Increased from 1.2rem */
     opacity: 0.8;
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 24px;
+    height: 28px; /* Increased from 24px */
     flex-shrink: 0;
     position: relative;
-    top: 2px; /* Fixed alignment to match text height */
+    top: 2px;
 }
 
 .main-nav ul li a:hover {
@@ -419,7 +421,7 @@ const COMPONENTS_CSS = `
     bottom: -3px;
     left: 0;
     width: 0;
-    height: 2px;
+    height: 3px; /* Increased from 2px */
     background-color: var(--secondary-color);
     transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
@@ -430,7 +432,7 @@ const COMPONENTS_CSS = `
 
 .main-nav ul li.active a {
     color: var(--secondary-color);
-    font-weight: 600;
+    font-weight: 700; /* Increased from 600 */
 }
 
 .main-nav ul li.active a::after {
@@ -446,20 +448,20 @@ const COMPONENTS_CSS = `
 .main-nav ul li.has-dropdown > a {
     display: flex;
     align-items: center;
-    padding-right: 1.2rem;
-    height: 40px;
+    padding-right: 1.4rem; /* Increased from 1.2rem */
+    height: 45px; /* Increased from 40px */
 }
 
 .main-nav ul li.has-dropdown > a .dropdown-icon {
-    margin-left: 0.3rem;
-    font-size: 1rem;
+    margin-left: 0.4rem; /* Increased from 0.3rem */
+    font-size: 1.2rem; /* Increased from 1rem */
     transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 24px;
+    height: 28px; /* Increased from 24px */
     position: relative;
-    top: 2px; /* Fixed alignment to match text height */
+    top: 2px;
 }
 
 .main-nav ul li.has-dropdown:hover > a .dropdown-icon {
@@ -472,10 +474,10 @@ const COMPONENTS_CSS = `
     top: 100% !important;
     left: 0 !important;
     background-color: white !important;
-    min-width: 280px !important;
+    min-width: 320px !important; /* Increased from 280px */
     display: block !important;
     flex-direction: column !important;
-    padding: 0.7rem 0 !important;
+    padding: 0.8rem 0 !important; /* Increased from 0.7rem */
     margin: 0 !important;
     margin-top: 0.5rem !important;
     border-radius: 8px !important;
@@ -508,8 +510,8 @@ const COMPONENTS_CSS = `
 
 /* Group headers in dropdown */
 .dropdown-group-header {
-    padding: 0.5rem 1.5rem;
-    font-size: 0.75rem;
+    padding: 0.6rem 1.7rem; /* Increased padding */
+    font-size: 0.8rem; /* Increased from 0.75rem */
     font-weight: 600;
     color: var(--primary-color);
     text-transform: uppercase;
@@ -548,19 +550,19 @@ const COMPONENTS_CSS = `
     display: flex !important;
     align-items: center !important;
     width: 100% !important;
-    padding: 0.7rem 1.5rem !important;
+    padding: 0.8rem 1.7rem !important; /* Increased padding */
     color: var(--text-secondary) !important;
     text-decoration: none !important;
-    font-size: 0.9rem !important;
-    font-weight: 400 !important;
+    font-size: 1rem !important; /* Increased from 0.9rem */
+    font-weight: 500 !important; /* Increased from 400 */
     transition: all 0.3s ease !important;
     border-left: 3px solid transparent !important;
 }
 
-/* Icon in dropdown menu - FIXED ALIGNMENT */
+/* Icon in dropdown menu */
 .dropdown-icon-item {
-    margin-right: 0.7rem !important;
-    font-size: 1.1rem !important;
+    margin-right: 0.8rem !important; /* Increased from 0.7rem */
+    font-size: 1.3rem !important; /* Increased from 1.1rem */
     color: var(--text-secondary) !important;
     opacity: 0.7 !important;
     transition: all 0.3s ease !important;
@@ -568,7 +570,7 @@ const COMPONENTS_CSS = `
     align-items: center !important;
     justify-content: center !important;
     position: relative !important;
-    top: 2px !important; /* Fixed alignment to match text height */
+    top: 2px !important;
 }
 
 .dropdown-menu li a:hover {
@@ -576,7 +578,7 @@ const COMPONENTS_CSS = `
     color: var(--secondary-color) !important;
     border-left: 3px solid var(--secondary-color) !important;
     transform: translateX(3px) !important;
-    padding-left: 1.7rem !important;
+    padding-left: 1.9rem !important; /* Adjusted for increased base padding */
 }
 
 .dropdown-menu li a:hover .dropdown-icon-item {
@@ -596,41 +598,9 @@ const COMPONENTS_CSS = `
     margin: 0.5rem 0;
 }
 
-/* Search Bar styles */
+/* Search Bar styles - DISABLED */
 .search-bar {
-    position: relative;
-    width: 250px;
-    display: flex;
-    align-items: center;
-}
-
-.search-bar input {
-    width: 100%;
-    padding: 0.7rem 1rem 0.7rem 2.5rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 30px;
-    outline: none;
-    transition: var(--transition-fast);
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.9rem;
-}
-
-.search-bar input:focus {
-    border-color: var(--secondary-color);
-    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
-}
-
-.search-bar i {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9e9e9e;
-    transition: var(--transition-fast);
-}
-
-.search-bar input:focus + i {
-    color: var(--secondary-color);
+    display: none !important; /* Hide the search bar completely */
 }
 
 /* Mobile Menu Toggle */
@@ -639,7 +609,7 @@ const COMPONENTS_CSS = `
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-size: 1.8rem;
+    font-size: 2rem; /* Increased from 1.8rem */
     cursor: pointer;
     transition: var(--transition-fast);
 }
@@ -699,7 +669,7 @@ const COMPONENTS_CSS = `
 }
 
 .overflow-menu-container .dropdown-menu {
-    min-width: 220px !important;
+    min-width: 250px !important; /* Increased from 220px */
 }
 
 /* Footer styles */
@@ -752,13 +722,13 @@ footer {
 }
 
 .footer-logo-badge {
-    width: 50px;
-    height: 57px;
-    margin-right: 1rem;
+    width: 60px; /* Increased from 50px */
+    height: 68px; /* Increased from 57px */
+    margin-right: 1.2rem; /* Increased from 1rem */
 }
 
 .footer-logo-text {
-    font-size: 1.5rem;
+    font-size: 1.7rem; /* Increased from 1.5rem */
     font-weight: 700;
 }
 
@@ -766,6 +736,7 @@ footer {
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.8;
     margin-bottom: 2rem;
+    font-size: 1rem; /* Increased slightly */
 }
 
 .footer-social {
@@ -774,8 +745,8 @@ footer {
 }
 
 .social-icon {
-    width: 40px;
-    height: 40px;
+    width: 45px; /* Increased from 40px */
+    height: 45px; /* Increased from 40px */
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
@@ -784,7 +755,7 @@ footer {
     color: white;
     text-decoration: none;
     transition: var(--transition-fast);
-    font-size: 1.2rem;
+    font-size: 1.4rem; /* Increased from 1.2rem */
 }
 
 .social-icon:hover {
@@ -795,7 +766,7 @@ footer {
 }
 
 .footer-title {
-    font-size: 1.3rem;
+    font-size: 1.5rem; /* Increased from 1.3rem */
     font-weight: 600;
     margin-bottom: 2rem;
     position: relative;
@@ -824,12 +795,14 @@ footer {
     display: flex;
     align-items: center;
     transition: var(--transition-fast);
+    font-size: 1rem; /* Increased slightly */
 }
 
 .footer-link i {
     margin-right: 0.8rem;
     color: var(--accent-color);
     transition: var(--transition-fast);
+    font-size: 1.2rem; /* Increased */
 }
 
 .footer-link:hover {
@@ -850,17 +823,19 @@ footer {
 .footer-contact-icon {
     margin-right: 1rem;
     color: var(--accent-color);
+    font-size: 1.3rem; /* Increased */
 }
 
 .footer-contact-text h4 {
     margin-bottom: 0.3rem;
-    font-size: 1rem;
+    font-size: 1.1rem; /* Increased from 1rem */
     font-weight: 600;
     color: white;
 }
 
 .footer-contact-text p {
     line-height: 1.6;
+    font-size: 1rem; /* Increased slightly */
 }
 
 .footer-form {
@@ -869,13 +844,14 @@ footer {
 
 .footer-form input {
     width: 100%;
-    padding: 1rem;
+    padding: 1.1rem; /* Increased from 1rem */
     background-color: rgba(255, 255, 255, 0.1);
     border: none;
     border-radius: var(--border-radius-medium);
     color: white;
     margin-bottom: 1rem;
     font-family: 'Poppins', sans-serif;
+    font-size: 1rem; /* Increased */
 }
 
 .footer-form input::placeholder {
@@ -886,12 +862,13 @@ footer {
     background-color: var(--accent-color);
     color: var(--primary-color);
     border: none;
-    padding: 1rem 2rem;
+    padding: 1.1rem 2.2rem; /* Increased from 1rem 2rem */
     border-radius: var(--border-radius-medium);
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition-fast);
     font-family: 'Poppins', sans-serif;
+    font-size: 1rem; /* Increased */
 }
 
 .footer-form button:hover {
@@ -910,7 +887,7 @@ footer {
 
 .footer-copyright {
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
+    font-size: 1rem; /* Increased from 0.9rem */
 }
 
 .footer-links-bottom {
@@ -922,7 +899,7 @@ footer {
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
     margin-left: 1.5rem;
-    font-size: 0.9rem;
+    font-size: 1rem; /* Increased from 0.9rem */
     transition: var(--transition-fast);
 }
 
@@ -930,83 +907,7 @@ footer {
     color: var(--accent-color);
 }
 
-/* Header search suggestions styles */
-.header-search-suggestions {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium);
-    box-shadow: var(--shadow-medium);
-    z-index: 1001;
-    margin-top: 5px;
-    overflow: hidden;
-}
-
-.header-search-suggestions:empty {
-    display: none;
-}
-
-.header-search-suggestions ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.header-search-suggestions li {
-    margin: 0;
-    padding: 0;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-}
-
-.header-search-suggestions li:last-child {
-    border-bottom: none;
-}
-
-.header-search-suggestions li.suggestion-header {
-    padding: 0.5rem 1rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--primary-color);
-    background-color: rgba(0,0,0,0.03);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.header-search-suggestions a {
-    display: flex !important;
-    align-items: center !important;
-    padding: 0.8rem 1rem !important;
-    color: var(--text-secondary) !important;
-    text-decoration: none !important;
-    transition: var(--transition-fast) !important;
-}
-
-.header-search-suggestions a:hover {
-    background-color: rgba(30, 136, 229, 0.05);
-    padding-left: 1.3rem !important;
-}
-
-.header-search-suggestions a i {
-    margin-right: 0.8rem;
-    color: var(--secondary-color);
-    font-size: 1.2rem;
-    opacity: 0.7;
-}
-
-/* Extra styles for icon perfect alignment */
-/* These styles ensure exact vertical centering of Material Icons */
-.header-main .main-nav ul li a i {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-/* Material Icons global styling - IMPROVED ALIGNMENT */
+/* Material Icons global styling */
 .material-icons {
     vertical-align: middle;
     line-height: 1;
@@ -1024,14 +925,12 @@ footer {
     top: 2px;
 }
 
-/* Dynamic Header Adjustments for Single-Line Menu */
-/* Media queries for ensuring one-line header at all resolutions */
+/* Responsive adjustments with bigger text */
 @media screen and (min-width: 993px) and (max-width: 1920px) {
-    /* Base adjustments for all desktop/laptop sizes */
     .header-top,
     .header-main {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
+        padding-left: 2rem !important; /* Increased base padding */
+        padding-right: 2rem !important;
     }
     
     .header-main {
@@ -1043,238 +942,25 @@ footer {
     }
     
     .main-nav ul {
-        justify-content: space-between !important;
+        justify-content: space-evenly !important; /* Better distribution */
         width: 100% !important;
     }
     
     .main-nav ul li {
-        margin: 0 0.2rem !important;
+        margin: 0 0.8rem !important; /* Increased from 0.2rem */
     }
     
     .main-nav ul li a {
-        padding: 0.4rem 0 !important;
+        padding: 0.6rem 0 !important; /* Increased from 0.4rem */
         white-space: nowrap !important;
     }
     
     .menu-icon {
-        margin-right: 0.2rem !important;
+        margin-right: 0.6rem !important; /* Increased from 0.2rem */
     }
     
     .main-nav ul li.has-dropdown > a .dropdown-icon {
-        margin-left: 0.1rem !important;
-    }
-    
-    /* Breakpoint-specific adjustments */
-    
-    /* Extra Large: 1600-1920px */
-    @media screen and (min-width: 1600px) and (max-width: 1920px) {
-        .logo h1 {
-            font-size: 1.1rem !important;
-        }
-        
-        .logo-badge {
-            width: 42px !important;
-            height: 48px !important;
-            margin-right: 0.8rem !important;
-        }
-        
-        .logo-subtitle {
-            font-size: 0.7rem !important;
-        }
-        
-        .main-nav ul li a {
-            font-size: 0.82rem !important;
-            letter-spacing: -0.2px !important;
-        }
-        
-        .menu-icon {
-            font-size: 1rem !important;
-        }
-        
-        .search-bar {
-            width: 180px !important;
-        }
-        
-        .utility-item {
-            margin-left: 0.8rem !important;
-            font-size: 0.7rem !important;
-        }
-        
-        .utility-item.emergency {
-            padding: 0.5rem 0.7rem !important;
-        }
-    }
-    
-    /* Large: 1367-1599px */
-    @media screen and (min-width: 1367px) and (max-width: 1599px) {
-        .logo h1 {
-            font-size: 1rem !important;
-        }
-        
-        .logo-badge {
-            width: 38px !important;
-            height: 44px !important;
-            margin-right: 0.6rem !important;
-        }
-        
-        .logo-subtitle {
-            font-size: 0.65rem !important;
-        }
-        
-        .main-nav ul li a {
-            font-size: 0.78rem !important;
-            letter-spacing: -0.3px !important;
-        }
-        
-        .menu-icon {
-            font-size: 0.95rem !important;
-        }
-        
-        .search-bar {
-            width: 160px !important;
-        }
-        
-        .search-bar input {
-            padding: 0.6rem 1rem 0.6rem 2.3rem !important;
-        }
-        
-        .utility-item {
-            margin-left: 0.7rem !important;
-            font-size: 0.68rem !important;
-        }
-        
-        .utility-item.emergency {
-            padding: 0.45rem 0.65rem !important;
-        }
-        
-        /* Add ellipsis for longer menu items */
-        .main-nav ul li a .menu-text-optional {
-            max-width: 100% !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-        }
-    }
-    
-    /* Medium: 1200-1366px */
-    @media screen and (min-width: 1200px) and (max-width: 1366px) {
-        .logo h1 {
-            font-size: 0.95rem !important;
-        }
-        
-        .logo-badge {
-            width: 35px !important;
-            height: 40px !important;
-            margin-right: 0.5rem !important;
-        }
-        
-        .logo-subtitle {
-            font-size: 0.6rem !important;
-        }
-        
-        .main-nav ul li a {
-            font-size: 0.73rem !important;
-            letter-spacing: -0.4px !important;
-        }
-        
-        .menu-icon {
-            font-size: 0.9rem !important;
-            margin-right: 0.1rem !important;
-        }
-        
-        .search-bar {
-            width: 140px !important;
-        }
-        
-        .search-bar input {
-            padding: 0.5rem 0.7rem 0.5rem 2rem !important;
-            font-size: 0.8rem !important;
-        }
-        
-        .utility-item {
-            margin-left: 0.6rem !important;
-            font-size: 0.65rem !important;
-        }
-        
-        .utility-item.emergency {
-            padding: 0.4rem 0.6rem !important;
-        }
-        
-        /* At this size, hide optional text for certain menu items */
-        .main-nav ul li a .menu-text-optional {
-            display: none !important; 
-        }
-        
-        /* Add tooltip for these items */
-        .main-nav ul li a.optional-text-hidden {
-            position: relative !important;
-        }
-    }
-    
-    /* Small: 993-1199px - Last breakpoint before mobile menu */
-    @media screen and (min-width: 993px) and (max-width: 1199px) {
-        .logo h1 {
-            font-size: 0.9rem !important;
-        }
-        
-        .logo-badge {
-            width: 32px !important;
-            height: 37px !important;
-            margin-right: 0.4rem !important;
-        }
-        
-        .logo-subtitle {
-            font-size: 0.55rem !important;
-            display: none !important; /* Hide subtitle at this size */
-        }
-        
-        .main-nav ul li a {
-            font-size: 0.7rem !important;
-            letter-spacing: -0.5px !important;
-            padding: 0.35rem 0 !important;
-        }
-        
-        .menu-icon {
-            font-size: 0.85rem !important;
-            margin-right: 0 !important;
-        }
-        
-        .search-bar {
-            width: 120px !important;
-        }
-        
-        .search-bar input {
-            padding: 0.4rem 0.6rem 0.4rem 1.8rem !important;
-            font-size: 0.75rem !important;
-        }
-        
-        .search-bar i {
-            left: 0.6rem !important;
-            font-size: 0.9rem !important;
-        }
-        
-        .utility-item {
-            margin-left: 0.4rem !important;
-            font-size: 0.6rem !important;
-        }
-        
-        .utility-item.emergency {
-            padding: 0.35rem 0.5rem !important;
-        }
-        
-        /* At this size, we only show icons for most menu items */
-        .main-nav ul li a.icon-only-small .menu-text {
-            display: none !important;
-        }
-        
-        /* Show the overflow menu for lower priority items */
-        .overflow-menu-item {
-            display: flex !important;
-        }
-        
-        /* Hide lower priority menu items */
-        .main-nav ul li.low-priority {
-            display: none !important;
-        }
+        margin-left: 0.4rem !important; /* Increased from 0.1rem */
     }
 }
 
@@ -1294,8 +980,8 @@ footer {
         position: fixed;
         top: var(--header-height);
         left: -100%;
-        width: 80%;
-        max-width: 320px;
+        width: 85%; /* Increased from 80% */
+        max-width: 350px; /* Increased from 320px */
         height: calc(100vh - var(--header-height));
         background-color: white;
         box-shadow: var(--shadow-large);
@@ -1310,7 +996,7 @@ footer {
     
     .main-nav ul {
         flex-direction: column;
-        padding: 1rem 0;
+        padding: 1.2rem 0; /* Increased from 1rem */
     }
     
     .main-nav ul li {
@@ -1320,8 +1006,9 @@ footer {
     
     .main-nav ul li a {
         display: flex;
-        padding: 1rem 2rem;
+        padding: 1.3rem 2.5rem; /* Increased from 1rem 2rem */
         border-bottom: 1px solid rgba(0,0,0,0.05);
+        font-size: 1.2rem; /* Increased for mobile */
     }
     
     .main-nav ul li a::after {
@@ -1385,19 +1072,13 @@ footer {
     }
     
     .dropdown-menu li a {
-        padding-left: 3rem !important;
+        padding-left: 4rem !important; /* Increased from 3rem */
+        font-size: 1.1rem !important; /* Increased for mobile dropdown */
     }
     
     .dropdown-group-header {
-        padding-left: 3rem !important;
-    }
-    
-    .header-search-suggestions {
-        position: fixed;
-        top: var(--header-height);
-        left: 0;
-        width: 100%;
-        border-radius: 0;
+        padding-left: 4rem !important; /* Increased from 3rem */
+        font-size: 0.85rem !important; /* Increased */
     }
 }
 
@@ -1409,7 +1090,11 @@ footer {
     }
     
     .logo h1 {
-        font-size: 1.1rem;
+        font-size: 1.3rem; /* Increased from 1.1rem */
+    }
+    
+    .logo-subtitle {
+        font-size: 0.75rem; /* Increased slightly */
     }
     
     .utility-item {
@@ -1419,6 +1104,7 @@ footer {
     .utility-item.emergency {
         display: flex;
         margin-left: 0;
+        font-size: 0.95rem; /* Increased slightly */
     }
 
     footer {
@@ -1456,7 +1142,7 @@ body {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 12px; /* Increased from 10px */
 }
 
 ::-webkit-scrollbar-track {
@@ -1465,24 +1151,24 @@ body {
 
 ::-webkit-scrollbar-thumb {
     background: var(--secondary-color);
-    border-radius: 5px;
+    border-radius: 6px; /* Increased from 5px */
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--secondary-light);
 }
 
-/* Disable header size changes on scroll */
+/* Disable header size changes on scroll - maintain consistent padding */
 .header-top.scrolled,
 .header-top {
-    padding: 0.8rem 3rem !important; /* Use the same padding regardless of scroll state */
-    transition: background-color 0.3s ease !important; /* Only transition color changes, not size */
+    padding: 0.8rem 3rem !important;
+    transition: background-color 0.3s ease !important;
 }
 
 .header-main.scrolled,
 .header-main {
-    padding: 1rem 3rem !important; /* Use the same padding regardless of scroll state */
-    transition: background-color 0.3s ease !important; /* Only transition color changes, not size */
+    padding: 1.2rem 3rem !important; /* Increased from 1rem */
+    transition: background-color 0.3s ease !important;
 }
 
 /* Maintain consistent padding at different screen sizes */
@@ -1491,8 +1177,8 @@ body {
     .header-top,
     .header-main.scrolled,
     .header-main {
-        padding-left: 1.5rem !important;
-        padding-right: 1.5rem !important;
+        padding-left: 2rem !important; /* Increased from 1.5rem */
+        padding-right: 2rem !important;
     }
 }
 
@@ -1501,13 +1187,13 @@ body {
     .header-top,
     .header-main.scrolled,
     .header-main {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
+        padding-left: 1.5rem !important; /* Increased from 1rem */
+        padding-right: 1.5rem !important;
     }
 }
 `;
 
-// HTML Components as JavaScript strings
+// HTML Components as JavaScript strings - Search bar removed
 const HEADER_HTML = `
 <div class="intro-screen" id="intro-screen">
     <div class="intro-content">
@@ -1651,10 +1337,7 @@ const HEADER_HTML = `
                 </li>
             </ul>
         </nav>
-        <div class="search-bar">
-            <input type="text" placeholder="Caută...">
-            <i class="material-icons">search</i>
-        </div>
+        <!-- Search bar removed - space now used for bigger menu text -->
         <button class="mobile-menu-toggle" id="mobile-menu-toggle">
             <i class="material-icons">menu</i>
         </button>
@@ -1778,16 +1461,16 @@ document.addEventListener('DOMContentLoaded', function() {
     if (headerContainer) headerContainer.innerHTML = HEADER_HTML;
     if (footerContainer) footerContainer.innerHTML = FOOTER_HTML;
     
-    // Initialize components
+    // Initialize components (simplified without search functionality)
     initializeComponents();
 });
 
-// Initialize all component functionality
+// Initialize all component functionality (search removed)
 function initializeComponents() {
     // Initialize intro screen
     initIntroScreen();
     
-    // Initialize header effects - modified to keep consistent size
+    // Initialize header effects
     initHeaderEffects();
     
     // Initialize mobile menu
@@ -1796,10 +1479,7 @@ function initializeComponents() {
     // Initialize dropdown menu
     initDropdownMenu();
     
-    // Initialize search functionality
-    initSearchBar();
-    
-    // Initialize responsive header with new one-line functionality
+    // Initialize responsive header
     initResponsiveHeader();
     
     // Fix icon alignment issues
@@ -1819,7 +1499,7 @@ function initIntroScreen() {
     }
 }
 
-// Header scroll effect - MODIFIED: now only changes background color, not size
+// Header scroll effect - only changes background color, not size
 function initHeaderEffects() {
     const headerTop = document.getElementById('header-top');
     const headerMain = document.getElementById('header-main');
@@ -1901,265 +1581,8 @@ function initDropdownMenu() {
     });
 }
 
-// Initialize search functionality - UPDATED VERSION with fail-safes
-function initSearchBar() {
-    const searchInput = document.querySelector('.search-bar input');
-    
-    if (!searchInput) return;
-    
-    // Create search form if not already wrapped
-    let searchForm = searchInput.closest('form');
-    if (!searchForm) {
-        searchForm = document.createElement('form');
-        searchInput.parentNode.insertBefore(searchForm, searchInput);
-        searchForm.appendChild(searchInput);
-    }
-    
-    // Set form attributes
-    searchForm.setAttribute('action', '/pls/cautare');
-    searchForm.setAttribute('method', 'get');
-    
-    // Add name attribute to the input
-    searchInput.setAttribute('name', 'q');
-    
-    // Create suggestions container
-    const suggestionsContainer = document.createElement('div');
-    suggestionsContainer.className = 'header-search-suggestions';
-    searchInput.parentNode.appendChild(suggestionsContainer);
-    
-    // Fallback for storing recent searches
-    function storeRecentSearch(query) {
-        if (!query || query.length < 3) return;
-        
-        try {
-            // Get existing recent searches
-            let recentSearches = [];
-            const storedSearches = localStorage.getItem('pls_recent_searches');
-            
-            if (storedSearches) {
-                recentSearches = JSON.parse(storedSearches);
-            }
-            
-            // Remove if already exists
-            recentSearches = recentSearches.filter(item => item !== query);
-            
-            // Add to the beginning
-            recentSearches.unshift(query);
-            
-            // Limit size
-            if (recentSearches.length > 10) {
-                recentSearches = recentSearches.slice(0, 10);
-            }
-            
-            // Store in localStorage
-            localStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
-        } catch (e) {
-            console.warn('Failed to save recent searches to localStorage', e);
-        }
-    }
-    
-    // Fallback for getting recent searches
-    function getRecentSearches() {
-        try {
-            const storedSearches = localStorage.getItem('pls_recent_searches');
-            return storedSearches ? JSON.parse(storedSearches) : [];
-        } catch (e) {
-            console.warn('Failed to get recent searches from localStorage', e);
-            return [];
-        }
-    }
-    
-    // Fallback function for search suggestions
-    function getFallbackSuggestions(query) {
-        // Basic fallback suggestions based on common terms
-        const commonTerms = [
-            'gdpr', 'politia locala', 'amenzi', 'contact', 'sesizare', 'petitii', 
-            'cariere', 'documente', 'conducere', 'program', 'regulament'
-        ];
-        
-        // Filter terms that match the query
-        return commonTerms.filter(term => 
-            term.toLowerCase().includes(query.toLowerCase())
-        ).slice(0, 5); // Limit to 5 suggestions
-    }
-    
-    // Display search suggestions with fail-safe
-    function displaySearchSuggestions(suggestions) {
-        if (!suggestions || suggestions.length === 0) {
-            suggestionsContainer.innerHTML = '';
-            return;
-        }
-        
-        try {
-            let html = '<ul>';
-            
-            // Ensure suggestions is an array
-            if (!Array.isArray(suggestions)) {
-                suggestions = [suggestions.toString()];
-            }
-            
-            suggestions.forEach(suggestion => {
-                if (suggestion) {
-                    html += `
-                        <li>
-                            <a href="/pls/cautare?q=${encodeURIComponent(suggestion)}">
-                                <i class="material-icons">search</i>
-                                ${suggestion}
-                            </a>
-                        </li>
-                    `;
-                }
-            });
-            
-            // Add "recent searches" item if available
-            let recentSearches = [];
-            
-            // Try to get from SiteSearch first
-            if (typeof window.siteSearch !== 'undefined' && window.siteSearch.getRecentSearches) {
-                try {
-                    recentSearches = window.siteSearch.getRecentSearches();
-                } catch (e) {
-                    console.warn('Error getting recent searches from SiteSearch:', e);
-                    recentSearches = getRecentSearches();
-                }
-            } else {
-                recentSearches = getRecentSearches();
-            }
-            
-            if (recentSearches && recentSearches.length > 0) {
-                html += '<li class="suggestion-header">Căutări recente</li>';
-                
-                recentSearches.slice(0, 3).forEach(recent => {
-                    if (recent) {
-                        html += `
-                            <li>
-                                <a href="/pls/cautare?q=${encodeURIComponent(recent)}">
-                                    <i class="material-icons">history</i>
-                                    ${recent}
-                                </a>
-                            </li>
-                        `;
-                    }
-                });
-            }
-            
-            html += '</ul>';
-            suggestionsContainer.innerHTML = html;
-        } catch (e) {
-            console.warn('Error displaying suggestions:', e);
-            suggestionsContainer.innerHTML = ''; // Clear in case of error
-        }
-    }
-    
-    // Check for SiteSearch availability
-    let siteSearchChecked = false;
-    
-    // Debounced search function for suggestions
-    let debounceTimer;
-    searchInput.addEventListener('input', function() {
-        const query = this.value.trim();
-        
-        // Clear previous timer
-        clearTimeout(debounceTimer);
-        
-        // Clear suggestions for empty input
-        if (query.length < 2) {
-            suggestionsContainer.innerHTML = '';
-            return;
-        }
-        
-        // Set new timer with fail-safe
-        debounceTimer = setTimeout(function() {
-            try {
-                // Check for SiteSearch if not already checked
-                if (!siteSearchChecked) {
-                    siteSearchChecked = true;
-                    
-                    // If SiteSearch is not available, check for it after a delay
-                    if (typeof window.siteSearch === 'undefined') {
-                        setTimeout(function() {
-                            siteSearchChecked = false; // Reset to check again on next input
-                        }, 1000);
-                    }
-                }
-                
-                // Check if SiteSearch is available for suggestions
-                if (typeof window.siteSearch !== 'undefined' && window.siteSearch.getSearchSuggestions) {
-                    const suggestions = window.siteSearch.getSearchSuggestions(query);
-                    displaySearchSuggestions(suggestions);
-                } else {
-                    // Fallback to basic suggestions
-                    const fallbackSuggestions = getFallbackSuggestions(query);
-                    displaySearchSuggestions(fallbackSuggestions);
-                }
-            } catch (e) {
-                console.warn('Error generating search suggestions:', e);
-                // Fallback to basic suggestions in case of error
-                try {
-                    const fallbackSuggestions = getFallbackSuggestions(query);
-                    displaySearchSuggestions(fallbackSuggestions);
-                } catch (err) {
-                    console.error('Critical error in search suggestions:', err);
-                    suggestionsContainer.innerHTML = '';
-                }
-            }
-        }, 300); // 300ms debounce
-    });
-    
-    // Hide suggestions when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!event.target.closest('.search-bar')) {
-            suggestionsContainer.innerHTML = '';
-        }
-    });
-    
-    // Add event listener for the form submission
-    searchForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const query = searchInput.value.trim();
-        
-        if (query.length >= 2) {
-            // Store in recent searches if available
-            try {
-                if (typeof window.siteSearch !== 'undefined' && window.siteSearch.search) {
-                    // Use SiteSearch if available to record the search
-                    window.siteSearch.search(query, { page: 1 });
-                } else {
-                    // Fallback: Store in localStorage
-                    storeRecentSearch(query);
-                }
-            } catch (e) {
-                console.warn('Error storing search:', e);
-                // Still try the fallback
-                storeRecentSearch(query);
-            }
-            
-            // Redirect to search page with query
-            window.location.href = `/pls/cautare?q=${encodeURIComponent(query)}`;
-        }
-    });
-    
-    // Also add event listener for the icon click
-    const searchIcon = searchInput.parentNode.querySelector('i');
-    if (searchIcon) {
-        searchIcon.style.cursor = 'pointer';
-        searchIcon.addEventListener('click', function() {
-            searchForm.dispatchEvent(new Event('submit'));
-        });
-    }
-    
-    // Focus out when pressing Escape key
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            this.blur();
-            suggestionsContainer.innerHTML = '';
-        }
-    });
-}
-
-// New function: Initialize responsive header for single-line menu
+// Initialize responsive header for single-line menu (simplified without search)
 function initResponsiveHeader() {
-    // Wait for the DOM to be fully loaded
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', setupResponsiveHeader);
     } else {
@@ -2167,7 +1590,6 @@ function initResponsiveHeader() {
     }
     
     function setupResponsiveHeader() {
-        // Apply responsive classes based on screen width
         const applyResponsiveClasses = () => {
             const screenWidth = window.innerWidth;
             
@@ -2199,16 +1621,13 @@ function initResponsiveHeader() {
             
             // Add overflow menu at smaller sizes
             if (screenWidth <= 1199 && screenWidth > 992) {
-                // Create overflow menu if it doesn't exist
                 createOverflowMenu();
             } else {
-                // Remove overflow menu if it exists
                 const overflowMenu = document.querySelector('.overflow-menu-item');
                 if (overflowMenu) {
                     overflowMenu.style.display = 'none';
                 }
                 
-                // Show all low-priority items
                 const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
                 lowPriorityItems.forEach(item => {
                     item.style.display = 'flex';
@@ -2216,13 +1635,10 @@ function initResponsiveHeader() {
             }
         };
         
-        // Create overflow menu for smaller screens
         const createOverflowMenu = () => {
-            // Check if overflow menu already exists
             let overflowMenu = document.querySelector('.overflow-menu-item');
             
             if (!overflowMenu) {
-                // Create new overflow menu
                 const mainNav = document.querySelector('.main-nav ul');
                 if (!mainNav) return;
                 
@@ -2250,32 +1666,23 @@ function initResponsiveHeader() {
                 overflowLink.appendChild(dropdownIcon);
                 overflowMenu.appendChild(overflowLink);
                 
-                // Create dropdown menu
                 const dropdownMenu = document.createElement('ul');
                 dropdownMenu.className = 'dropdown-menu';
                 overflowMenu.appendChild(dropdownMenu);
                 
-                // Add overflow menu to main nav
                 mainNav.appendChild(overflowMenu);
-                
-                // Populate the dropdown menu
                 updateOverflowMenuItems();
             } else {
-                // Show existing overflow menu
                 overflowMenu.style.display = 'flex';
-                
-                // Update items in case they've changed
                 updateOverflowMenuItems();
             }
             
-            // Hide low-priority items
             const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
             lowPriorityItems.forEach(item => {
                 item.style.display = 'none';
             });
         };
         
-        // Update items in overflow menu
         const updateOverflowMenuItems = () => {
             const overflowMenu = document.querySelector('.overflow-menu-item');
             if (!overflowMenu) return;
@@ -2283,17 +1690,13 @@ function initResponsiveHeader() {
             const dropdownMenu = overflowMenu.querySelector('.dropdown-menu');
             if (!dropdownMenu) return;
             
-            // Clear existing items
             dropdownMenu.innerHTML = '';
             
-            // Clone low-priority items into the dropdown
             const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
             lowPriorityItems.forEach(item => {
                 const clonedItem = item.cloneNode(true);
-                // Remove low-priority class to ensure it's visible
                 clonedItem.classList.remove('low-priority');
                 
-                // Ensure text is visible in dropdown
                 const optionalText = clonedItem.querySelector('.menu-text-optional');
                 if (optionalText) {
                     optionalText.style.display = 'inline';
@@ -2303,10 +1706,8 @@ function initResponsiveHeader() {
             });
         };
         
-        // Apply responsive classes immediately
         applyResponsiveClasses();
         
-        // Add resize listener with debounce
         let resizeTimer;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimer);
@@ -2317,35 +1718,30 @@ function initResponsiveHeader() {
 
 // Fix icon alignment
 function fixIconAlignment() {
-    // Wait for DOM to be ready
     setTimeout(function() {
-        // Fix all main menu icons vertical alignment
         const menuIcons = document.querySelectorAll('.menu-icon, .dropdown-icon, .dropdown-icon-item');
         
         if (menuIcons.length > 0) {
             menuIcons.forEach(icon => {
-                // Ensure proper vertical alignment
                 if (icon.classList.contains('menu-icon') || icon.classList.contains('dropdown-icon')) {
                     icon.style.display = 'inline-flex';
                     icon.style.alignItems = 'center';
                     icon.style.justifyContent = 'center';
                     icon.style.position = 'relative';
-                    icon.style.top = '2px'; // This value ensures proper alignment with text
+                    icon.style.top = '2px';
                 }
             });
         }
         
-        // Ensure menu items have consistent height
         const menuItems = document.querySelectorAll('.main-nav ul li a');
         if (menuItems.length > 0) {
             menuItems.forEach(item => {
                 item.style.display = 'inline-flex';
                 item.style.alignItems = 'center';
-                item.style.height = '40px';
+                item.style.height = '45px'; // Increased from 40px
             });
         }
         
-        // Fix alignment in dropdown menus
         const dropdownItems = document.querySelectorAll('.dropdown-menu li a');
         if (dropdownItems.length > 0) {
             dropdownItems.forEach(item => {
@@ -2358,26 +1754,8 @@ function fixIconAlignment() {
                 }
             });
         }
-    }, 100); // Small delay to ensure DOM is fully processed
+    }, 100);
 }
 
-// Legacy search function - kept for backwards compatibility
-function performSearch(query) {
-    // Get the base URL for the search
-    const baseUrl = `/pls/cautare`;
-    
-    // Construct the search URL with the query parameter
-    const searchUrl = `${baseUrl}?q=${encodeURIComponent(query)}`;
-    
-    // Check if we're in development/local environment without a search page
-    const isLocalDev = window.location.hostname === 'localhost' || 
-                       window.location.hostname === '127.0.0.1';
-    
-    if (isLocalDev) {
-        // For local development, show an alert with the search query
-        alert(`Căutare pentru: "${query}"\n\nÎn mediul de producție, această căutare va duce la: ${searchUrl}`);
-    } else {
-        // In production, redirect to the search results page
-        window.location.href = searchUrl;
-    }
-}
+// Legacy search function removed - no longer needed
+// If you need to add search functionality back later, it can be done through a separate module
