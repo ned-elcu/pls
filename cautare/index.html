@@ -1554,70 +1554,100 @@
             }
             
             if (quickAddBtn) {
-                quickAddBtn.addEventListener('click', function() {
+                quickAddBtn.addEventListener('click', async function() {
                     // Detect current site structure if not already detected
                     const siteStructure = crawlerState.siteStructure || detectSiteStructure();
                     
-                    // Use navigation links if available, otherwise fall back to common patterns
-                    let pagesToAdd = [];
+                    // Show loading state
+                    quickAddBtn.innerHTML = '<i class="material-icons">hourglass_empty</i> Detectare...';
+                    quickAddBtn.disabled = true;
                     
-                    if (siteStructure.navigationLinks.length > 0) {
-                        // Use actual navigation structure
-                        debugLog('Using detected navigation structure for quick add');
+                    try {
+                        // Use navigation links if available, otherwise fall back to common patterns
+                        let pagesToAdd = [];
                         
-                        siteStructure.navigationLinks.forEach(navLink => {
-                            const resolvedUrl = resolveUrl(navLink.url, siteStructure);
-                            pagesToAdd.push(resolvedUrl);
-                        });
-                    } else {
-                        // Fall back to common page patterns adapted to current structure
-                        debugLog('Using common page patterns adapted to detected structure');
+                        if (siteStructure.navigationLinks.length > 0) {
+                            // Use actual navigation structure
+                            debugLog('🔗 Using detected navigation structure for quick add');
+                            
+                            siteStructure.navigationLinks.forEach(navLink => {
+                                const resolvedUrl = resolveUrl(navLink.url, siteStructure);
+                                pagesToAdd.push(resolvedUrl);
+                            });
+                        } else {
+                            // Fall back to common page patterns adapted to current structure
+                            debugLog('🔄 Using common page patterns adapted to detected structure');
+                            
+                            const commonPages = [
+                                '', 'index', 'despre', 'contact', 'documente', 'petitii', 
+                                'transparenta', 'atributii', 'conducere', 'relatii-cu-publicul',
+                                'sediu', 'integritate', 'gdpr', 'recrutare', 'audiente',
+                                'organigrama', 'regulament', 'acte-normative', 'raspunsuri'
+                            ];
+                            
+                            commonPages.forEach(page => {
+                                if (page === '') {
+                                    // Root page
+                                    pagesToAdd.push(siteStructure.fullBasePath + '/');
+                                } else if (page === 'index') {
+                                    // Index pages
+                                    pagesToAdd.push(siteStructure.fullBasePath + '/index.html');
+                                } else {
+                                    // Regular pages
+                                    pagesToAdd.push(siteStructure.fullBasePath + '/' + page + '/');
+                                }
+                            });
+                        }
                         
-                        const commonPages = [
-                            '', 'index', 'despre', 'contact', 'documente', 'petitii', 
-                            'transparenta', 'atributii', 'conducere', 'relatii-cu-publicul',
-                            'sediu', 'integritate', 'gdpr', 'recrutare', 'audiente',
-                            'organigrama', 'regulament', 'acte-normative', 'raspunsuri'
-                        ];
+                        // Validate URLs (quick check on first few)
+                        const maxValidations = Math.min(5, pagesToAdd.length);
+                        let validatedCount = 0;
                         
-                        commonPages.forEach(page => {
-                            if (page === '') {
-                                // Root page
-                                pagesToAdd.push(siteStructure.fullBasePath + '/');
-                            } else if (page === 'index') {
-                                // Index pages
-                                pagesToAdd.push(siteStructure.fullBasePath + '/index.html');
-                            } else {
-                                // Regular pages
-                                pagesToAdd.push(siteStructure.fullBasePath + '/' + page + '/');
+                        for (let i = 0; i < maxValidations; i++) {
+                            const url = pagesToAdd[i];
+                            try {
+                                const isValid = await quickUrlCheck(url);
+                                if (isValid) {
+                                    validatedCount++;
+                                }
+                            } catch (e) {
+                                debugLog(`⚠ Quick validation failed for ${url}`);
+                            }
+                        }
+                        
+                        // Add pages to crawl queue
+                        let addedCount = 0;
+                        pagesToAdd.forEach(url => {
+                            if (!crawlerState.urlsToVisit.some(item => item.url === url) && 
+                                !crawlerState.visitedUrls.has(url)) {
+                                crawlerState.urlsToVisit.push({
+                                    url: url,
+                                    depth: 0
+                                });
+                                addedCount++;
                             }
                         });
-                    }
-                    
-                    // Add pages to crawl queue
-                    let addedCount = 0;
-                    pagesToAdd.forEach(url => {
-                        if (!crawlerState.urlsToVisit.some(item => item.url === url) && 
-                            !crawlerState.visitedUrls.has(url)) {
-                            crawlerState.urlsToVisit.push({
-                                url: url,
-                                depth: 0
-                            });
-                            addedCount++;
+                        
+                        updateCrawlStats();
+                        showToast('flash_on', `${addedCount} URL-uri adăugate`, `Paginile detectate automat au fost adăugate (${validatedCount}/${maxValidations} validate)`);
+                        
+                        // Start crawler if not running and we added URLs
+                        if (!crawlerState.isRunning && addedCount > 0) {
+                            debugLog(`🚀 Auto-starting crawler with ${addedCount} intelligently detected pages`);
+                            crawlerState.siteStructure = siteStructure; // Store for crawling
+                            crawlerState.isRunning = true;
+                            updateStartButton('Indexare în progres...', true);
+                            showCrawlerUI();
+                            crawlNextUrl();
                         }
-                    });
-                    
-                    updateCrawlStats();
-                    showToast('flash_on', `${addedCount} URL-uri adăugate`, 'Paginile detectate automat au fost adăugate în coada de indexare');
-                    
-                    // Start crawler if not running and we added URLs
-                    if (!crawlerState.isRunning && addedCount > 0) {
-                        debugLog(`Auto-starting crawler with ${addedCount} intelligently detected pages`);
-                        crawlerState.siteStructure = siteStructure; // Store for crawling
-                        crawlerState.isRunning = true;
-                        updateStartButton('Indexare în progres...', true);
-                        showCrawlerUI();
-                        crawlNextUrl();
+                        
+                    } catch (error) {
+                        debugLog(`❌ Error in quick add: ${error.message}`);
+                        showToast('error', 'Eroare', 'Nu s-au putut detecta automat paginile');
+                    } finally {
+                        // Restore button
+                        quickAddBtn.innerHTML = '<i class="material-icons">flash_on</i> Detectează automat';
+                        quickAddBtn.disabled = false;
                     }
                 });
             }
@@ -1741,30 +1771,49 @@
                     
                     navLinks.forEach(link => {
                         const href = link.getAttribute('href');
-                        if (href && !href.startsWith('javascript:') && !href.startsWith('#')) {
+                        if (href && !href.startsWith('javascript:') && !href.startsWith('#') && !href.startsWith('tel:') && !href.startsWith('mailto:')) {
                             const linkText = link.textContent?.trim() || '';
-                            links.push({
-                                url: href,
-                                text: linkText,
-                                isDropdown: link.closest('.has-dropdown') !== null
-                            });
                             
-                            // Also check for dropdown menu links
-                            const dropdown = link.closest('li')?.querySelector('.dropdown-menu');
-                            if (dropdown) {
-                                const dropdownLinks = dropdown.querySelectorAll('a[href]');
-                                dropdownLinks.forEach(dropLink => {
-                                    const dropHref = dropLink.getAttribute('href');
-                                    if (dropHref && !dropHref.startsWith('javascript:') && !dropHref.startsWith('#')) {
-                                        const dropText = dropLink.textContent?.trim() || '';
-                                        links.push({
-                                            url: dropHref,
-                                            text: dropText,
-                                            isDropdown: true,
-                                            parent: linkText
-                                        });
-                                    }
+                            // Only add links that look like they should exist
+                            // Skip certain patterns that are likely to be 404
+                            const skipPatterns = [
+                                '/amenzi',         // Marked as INDISPONIBIL  
+                                '/termeni',        // Generic footer
+                                '/accesibilitate', // Generic footer
+                                '/sitemap',        // Generic footer
+                                'cautare',         // Search page itself
+                                '#'                // Hash links
+                            ];
+                            
+                            const shouldSkip = skipPatterns.some(pattern => href.includes(pattern));
+                            
+                            if (!shouldSkip) {
+                                links.push({
+                                    url: href,
+                                    text: linkText,
+                                    isDropdown: link.closest('.has-dropdown') !== null
                                 });
+                                
+                                // Also check for dropdown menu links
+                                const dropdown = link.closest('li')?.querySelector('.dropdown-menu');
+                                if (dropdown) {
+                                    const dropdownLinks = dropdown.querySelectorAll('a[href]');
+                                    dropdownLinks.forEach(dropLink => {
+                                        const dropHref = dropLink.getAttribute('href');
+                                        if (dropHref && !dropHref.startsWith('javascript:') && !dropHref.startsWith('#')) {
+                                            const dropShouldSkip = skipPatterns.some(pattern => dropHref.includes(pattern));
+                                            if (!dropShouldSkip) {
+                                                const dropText = dropLink.textContent?.trim() || '';
+                                                links.push({
+                                                    url: dropHref,
+                                                    text: dropText,
+                                                    isDropdown: true,
+                                                    parent: linkText
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
                             }
                         }
                     });
@@ -1774,7 +1823,7 @@
                 
                 // Log some sample links for debugging
                 if (links.length > 0) {
-                    debugLog(`Sample navigation links: ${links.slice(0, 3).map(l => l.url).join(', ')}`);
+                    debugLog(`Sample navigation links: ${links.slice(0, 3).map(l => `${l.text}(${l.url})`).join(', ')}`);
                 }
                 
             } catch (e) {
@@ -1806,30 +1855,30 @@
             }
         }
         
-        // Generate intelligent starting URLs based on detected structure
-        function generateStartingUrls(siteStructure) {
-            const startingUrls = [];
+        // Generate intelligent starting URLs with validation
+        async function generateStartingUrls(siteStructure) {
+            const potentialUrls = [];
             
             // Always try the base paths
-            startingUrls.push(siteStructure.baseUrl + '/');
-            startingUrls.push(siteStructure.baseUrl + '/index.html');
+            potentialUrls.push(siteStructure.baseUrl + '/');
+            potentialUrls.push(siteStructure.baseUrl + '/index.html');
             
             if (siteStructure.isSubfolder) {
-                startingUrls.push(siteStructure.fullBasePath + '/');
-                startingUrls.push(siteStructure.fullBasePath + '/index.html');
+                potentialUrls.push(siteStructure.fullBasePath + '/');
+                potentialUrls.push(siteStructure.fullBasePath + '/index.html');
             }
             
             // Add URLs from detected navigation structure
             siteStructure.navigationLinks.forEach(navLink => {
                 const resolvedUrl = resolveUrl(navLink.url, siteStructure);
-                if (!startingUrls.includes(resolvedUrl)) {
-                    startingUrls.push(resolvedUrl);
+                if (!potentialUrls.includes(resolvedUrl)) {
+                    potentialUrls.push(resolvedUrl);
                 }
             });
             
             // If we found navigation links, prioritize them
             if (siteStructure.navigationLinks.length > 0) {
-                debugLog(`Using ${siteStructure.navigationLinks.length} navigation-based URLs`);
+                debugLog(`🔗 Using ${siteStructure.navigationLinks.length} navigation-based URLs`);
             } else {
                 // Fallback: generate common page patterns based on detected structure
                 const commonPages = [
@@ -1840,22 +1889,88 @@
                 
                 commonPages.forEach(page => {
                     const pageUrl = siteStructure.fullBasePath + '/' + page + '/';
-                    startingUrls.push(pageUrl);
+                    potentialUrls.push(pageUrl);
                 });
                 
-                debugLog(`Generated ${commonPages.length} fallback URLs based on common patterns`);
+                debugLog(`🔄 Generated ${commonPages.length} fallback URLs based on common patterns`);
             }
             
-            return [...new Set(startingUrls)]; // Remove duplicates
+            // Remove duplicates
+            const uniqueUrls = [...new Set(potentialUrls)];
+            
+            // Quick validation - test a few URLs to see which ones exist
+            const validatedUrls = [];
+            let validationCount = 0;
+            const maxValidations = Math.min(10, uniqueUrls.length); // Limit validation to first 10 URLs
+            
+            debugLog(`🔍 Validating ${maxValidations} URLs...`);
+            
+            for (const url of uniqueUrls.slice(0, maxValidations)) {
+                try {
+                    const isValid = await quickUrlCheck(url);
+                    if (isValid) {
+                        validatedUrls.push(url);
+                        debugLog(`✓ Valid: ${url}`);
+                    } else {
+                        debugLog(`✗ Invalid: ${url}`);
+                    }
+                    validationCount++;
+                } catch (e) {
+                    debugLog(`⚠ Validation error for ${url}: ${e.message}`);
+                }
+                
+                // Small delay to avoid overwhelming the server
+                if (validationCount < maxValidations) {
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                }
+            }
+            
+            // Add remaining URLs without validation (for crawling to discover)
+            if (uniqueUrls.length > maxValidations) {
+                const remainingUrls = uniqueUrls.slice(maxValidations);
+                validatedUrls.push(...remainingUrls);
+                debugLog(`📋 Added ${remainingUrls.length} additional URLs without validation`);
+            }
+            
+            debugLog(`📊 Final URL list: ${validatedUrls.length} URLs (${validationCount} validated)`);
+            
+            return validatedUrls;
+        }
+        
+        // Quick URL validation check
+        async function quickUrlCheck(url) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3000); // Quick 3-second timeout
+                
+                const response = await fetch(url, {
+                    method: 'HEAD', // Use HEAD to avoid downloading content
+                    signal: controller.signal,
+                    headers: {
+                        'Accept': 'text/html,application/xhtml+xml',
+                        'User-Agent': 'Mozilla/5.0 (compatible; PLS-Search-Bot/1.0)'
+                    },
+                    mode: 'cors',
+                    credentials: 'same-origin'
+                });
+                
+                clearTimeout(timeoutId);
+                
+                return response.ok; // Returns true for 200-299 status codes
+                
+            } catch (error) {
+                // If HEAD fails, URL likely doesn't exist or has issues
+                return false;
+            }
         }
         
         // Start crawler with dynamic structure detection
         function startCrawler() {
-            debugLog('Starting intelligent crawler...');
+            debugLog('🚀 Starting intelligent crawler...');
             crawlerState.isRunning = true;
             crawlerState.pause = false;
             
-            updateStartButton('Indexare în progres...', true);
+            updateStartButton('Detectare structură...', true);
             showCrawlerUI();
             
             // Clear previous state
@@ -1863,32 +1978,44 @@
             crawlerState.currentPage = 0;
             
             // Wait a moment for components.js to fully load the header
-            setTimeout(() => {
-                // Detect site structure dynamically
-                const siteStructure = detectSiteStructure();
-                crawlerState.siteStructure = siteStructure; // Store for later use
-                
-                debugLog(`🔍 Site structure detected:`);
-                debugLog(`   Base URL: ${siteStructure.baseUrl}`);
-                debugLog(`   Base Path: ${siteStructure.basePath}`);
-                debugLog(`   Is Subfolder: ${siteStructure.isSubfolder}`);
-                debugLog(`   Navigation Links: ${siteStructure.navigationLinks.length}`);
-                
-                // Generate starting URLs based on detected structure
-                const startingUrls = generateStartingUrls(siteStructure);
-                
-                // Add all starting URLs to queue
-                startingUrls.forEach(url => {
-                    crawlerState.urlsToVisit.push({
-                        url: url,
-                        depth: 0
+            setTimeout(async () => {
+                try {
+                    // Detect site structure dynamically
+                    const siteStructure = detectSiteStructure();
+                    crawlerState.siteStructure = siteStructure; // Store for later use
+                    
+                    debugLog(`🔍 Site structure detected:`);
+                    debugLog(`   Base URL: ${siteStructure.baseUrl}`);
+                    debugLog(`   Base Path: ${siteStructure.basePath}`);
+                    debugLog(`   Is Subfolder: ${siteStructure.isSubfolder}`);
+                    debugLog(`   Navigation Links: ${siteStructure.navigationLinks.length}`);
+                    
+                    updateStartButton('Validare URL-uri...', true);
+                    
+                    // Generate and validate starting URLs based on detected structure
+                    const startingUrls = await generateStartingUrls(siteStructure);
+                    
+                    updateStartButton('Indexare în progres...', true);
+                    
+                    // Add all starting URLs to queue
+                    startingUrls.forEach(url => {
+                        crawlerState.urlsToVisit.push({
+                            url: url,
+                            depth: 0
+                        });
                     });
-                });
-                
-                debugLog(`📝 Added ${startingUrls.length} intelligent starting URLs to queue`);
-                debugLog(`🎯 Starting crawl strategy: ${siteStructure.navigationLinks.length > 0 ? 'Navigation-based' : 'Pattern-based'}`);
-                
-                crawlNextUrl();
+                    
+                    debugLog(`📝 Added ${startingUrls.length} intelligent starting URLs to queue`);
+                    debugLog(`🎯 Starting crawl strategy: ${siteStructure.navigationLinks.length > 0 ? 'Navigation-based' : 'Pattern-based'}`);
+                    
+                    // Start the actual crawling
+                    crawlNextUrl();
+                    
+                } catch (error) {
+                    debugLog(`❌ Error during crawler initialization: ${error.message}`);
+                    updateStartButton('Eroare la inițializare', false);
+                    crawlerState.isRunning = false;
+                }
             }, 500); // Give components.js time to load header
         }
         
@@ -2054,7 +2181,7 @@
             setTimeout(hideCrawlerUI, 3000);
         }
         
-        // Fetch and process page
+        // Fetch and process page with better content extraction
         async function fetchAndProcessPage(url) {
             try {
                 const id = generatePageId(url);
@@ -2106,10 +2233,42 @@
                 }
                 
                 const html = await response.text();
+                debugLog(`📄 Fetched ${html.length} chars from: ${shortenUrl(url)}`);
+                
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 
-                const title = doc.querySelector('title')?.textContent?.trim() || getFilenameFromUrl(url);
+                // Enhanced title extraction
+                let title = '';
+                
+                // Try different title sources
+                const titleElement = doc.querySelector('title');
+                if (titleElement && titleElement.textContent) {
+                    title = titleElement.textContent.trim();
+                }
+                
+                // If no title or generic title, try h1
+                if (!title || title === 'Document' || title.length < 3) {
+                    const h1Element = doc.querySelector('h1, .page-title');
+                    if (h1Element && h1Element.textContent) {
+                        title = h1Element.textContent.trim();
+                    }
+                }
+                
+                // If still no title, try meta title
+                if (!title || title.length < 3) {
+                    const metaTitle = doc.querySelector('meta[property="og:title"], meta[name="title"]');
+                    if (metaTitle && metaTitle.getAttribute('content')) {
+                        title = metaTitle.getAttribute('content').trim();
+                    }
+                }
+                
+                // Final fallback
+                if (!title || title.length < 3) {
+                    title = getFilenameFromUrl(url);
+                }
+                
+                // Enhanced content extraction
                 const content = extractPageContent(doc);
                 const links = extractLinks(doc, url);
                 const type = determinePageType(url, doc);
@@ -2127,6 +2286,7 @@
                     links
                 };
                 
+                debugLog(`✓ Processed: "${title}" (${excerpt.length} chars excerpt, ${links.length} links)`);
                 return pageData;
                 
             } catch (error) {
@@ -2142,12 +2302,13 @@
                         });
                         
                         // For no-cors, we can't read the response, so create a basic entry
+                        const basicTitle = getFilenameFromUrl(url) || 'Pagină';
                         return {
                             id: generatePageId(url),
                             url,
-                            title: getFilenameFromUrl(url),
-                            content: `Pagină: ${getFilenameFromUrl(url)}`,
-                            excerpt: `Pagină: ${getFilenameFromUrl(url)}`,
+                            title: basicTitle,
+                            content: `Pagină: ${basicTitle}`,
+                            excerpt: `Pagină disponibilă la ${url}`,
                             type: 'page',
                             section: getPageSection(url),
                             links: []
@@ -2159,7 +2320,6 @@
                 }
                 
                 debugLog(`✗ Error processing ${url}: ${error.message}`);
-                console.error(`Error processing page ${url}:`, error);
                 return null;
             }
         }
