@@ -1684,11 +1684,11 @@ const FOOTER_HTML = `
                 <h3 class="footer-title">Link-uri Rapide</h3>
                 <div class="footer-links">
                     <a href="https://sts.ro/ro/servicii/despre-112/" class="footer-link"><i class="material-icons">arrow_right</i> Servicii de Urgență</a>
-                    <a href="/pls/sesizari" class="footer-link"><i class="material-icons">arrow_right</i> Raportează o Infracțiune</a>
-                    <a href="/pls/amenzi" class="footer-link"><i class="material-icons">arrow_right</i> Plătește Amenzi</a>
+                    <a href="/pls/petitii" class="footer-link"><i class="material-icons">arrow_right</i> Raportează o Infracțiune</a>
+                    <a href="/pls/amenzi" class="footer-link"><i class="material-icons">arrow_right</i> Plătește Amenzi (INDISPONIBIL)</a>
                     <a href="/pls/relatii-cu-publicul/" class="footer-link"><i class="material-icons">arrow_right</i> Solicită Înregistrări</a>
                     <a href="/pls/petitii" class="footer-link"><i class="material-icons">arrow_right</i> Depune o Reclamație</a>
-                    <a href="/pls/cariere" class="footer-link"><i class="material-icons">arrow_right</i> Oportunități de Carieră</a>
+                    <a href="/pls/recrutare" class="footer-link"><i class="material-icons">arrow_right</i> Oportunități de Carieră</a>
                 </div>
             </div>
             
