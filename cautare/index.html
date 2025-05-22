@@ -47,7 +47,6 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding-top: var(--header-height); /* For fixed header */
         }
         
         h1, h2, h3, h4, h5, h6 {
@@ -112,52 +111,6 @@
             font-weight: 800;
             margin-bottom: 0;
             color: white;
-        }
-        
-        /* Header */
-        .header {
-            background-color: white;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: var(--shadow-small);
-        }
-        
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: var(--header-height);
-            padding: 0 1.5rem;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo img {
-            height: 80px;
-            margin-right: 1rem;
-        }
-        
-        .logo-text {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .logo-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--primary-color);
-            line-height: 1.2;
-        }
-        
-        .logo-subtitle {
-            font-size: 1rem;
-            color: var(--text-secondary);
         }
         
         /* Search container */
@@ -1272,18 +1225,8 @@
     </style>
 </head>
 <body>
-    <!-- Simple header since we're in standalone mode -->
-    <header class="header">
-        <div class="container header-container">
-            <div class="logo">
-                <img src="https://upload.wikimedia.org/wikipedia/ro/c/c4/Sigla_Poliția_Locală_România.png" alt="Logo Poliția Locală">
-                <div class="logo-text">
-                    <div class="logo-title">Poliția Locală</div>
-                    <div class="logo-subtitle">Slobozia</div>
-                </div>
-            </div>
-        </div>
-    </header>
+    <!-- Header container - will be populated by components.js -->
+    <div id="header-container"></div>
     
     <!-- Page Title -->
     <div class="page-title-container">
@@ -1410,20 +1353,28 @@
         </div>
     </main>
     
+    <!-- Footer container - will be populated by components.js -->
+    <div id="footer-container"></div>
+    
     <!-- Toast notification container -->
     <div class="toast-container" id="toast-container">
         <!-- Toast notifications will be dynamically added here -->
     </div>
 
-    <!-- Include FlexSearch library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flexsearch/0.7.31/flexsearch.bundle.js"></script>
+    <!-- Include Components.js FIRST -->
+    <script src="../components.js"></script>
+    
+    <!-- Include FlexSearch library - Using jsDelivr instead of CDNJS -->
+    <script src="https://cdn.jsdelivr.net/npm/flexsearch@0.7.31/dist/flexsearch.bundle.js"></script>
     
     <!-- Search implementation -->
     <script>
         /**
-         * Dynamic Search and Web Crawler
+         * Production-Ready Dynamic Search and Web Crawler
          * This script allows the browser to crawl and search a website in real-time.
          */
+        
+        console.log('DOM loaded, initializing search...');
         
         // Store indexed content
         let siteContent = [];
@@ -1435,7 +1386,7 @@
             isRunning: false,
             urlsToVisit: [],
             visitedUrls: new Set(),
-            maxPages: 100,
+            maxPages: 50, // Reduced for production
             currentPage: 0,
             baseUrl: window.location.origin,
             startUrl: null,
@@ -1443,8 +1394,40 @@
             documentCount: 0
         };
         
+        // Safe localStorage wrapper
+        const safeStorage = {
+            getItem: function(key) {
+                try {
+                    return localStorage.getItem(key);
+                } catch (e) {
+                    console.warn('localStorage not available:', e.message);
+                    return null;
+                }
+            },
+            setItem: function(key, value) {
+                try {
+                    localStorage.setItem(key, value);
+                    return true;
+                } catch (e) {
+                    console.warn('localStorage write failed:', e.message);
+                    return false;
+                }
+            },
+            removeItem: function(key) {
+                try {
+                    localStorage.removeItem(key);
+                    return true;
+                } catch (e) {
+                    console.warn('localStorage remove failed:', e.message);
+                    return false;
+                }
+            }
+        };
+        
         // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Search page initializing...');
+            
             // Set up search form handler
             setupSearchHandlers();
             
@@ -1480,8 +1463,10 @@
         // Load previous crawl data from localStorage
         function loadPreviousCrawlData() {
             try {
+                console.log('Loading previous crawl data...');
+                
                 // Load site content
-                const storedContent = localStorage.getItem('pls_site_content');
+                const storedContent = safeStorage.getItem('pls_site_content');
                 if (storedContent) {
                     siteContent = JSON.parse(storedContent);
                     updateCrawlStats();
@@ -1493,13 +1478,13 @@
                 }
                 
                 // Load visited URLs
-                const storedVisitedUrls = localStorage.getItem('pls_visited_urls');
+                const storedVisitedUrls = safeStorage.getItem('pls_visited_urls');
                 if (storedVisitedUrls) {
                     crawlerState.visitedUrls = new Set(JSON.parse(storedVisitedUrls));
                 }
                 
                 // Load recent searches
-                const storedSearches = localStorage.getItem('pls_recent_searches');
+                const storedSearches = safeStorage.getItem('pls_recent_searches');
                 if (storedSearches) {
                     recentSearches = JSON.parse(storedSearches);
                 }
@@ -1514,16 +1499,16 @@
                 // Save site content (limit to 5MB)
                 const contentJson = JSON.stringify(siteContent);
                 if (contentJson.length < 5 * 1024 * 1024) {
-                    localStorage.setItem('pls_site_content', contentJson);
+                    safeStorage.setItem('pls_site_content', contentJson);
                 } else {
-                    console.warn('Site content too large to store in localStorage');
+                    console.warn('Site content too large to store');
                 }
                 
                 // Save visited URLs (as array)
-                localStorage.setItem('pls_visited_urls', JSON.stringify([...crawlerState.visitedUrls]));
+                safeStorage.setItem('pls_visited_urls', JSON.stringify([...crawlerState.visitedUrls]));
                 
                 // Save recent searches
-                localStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
+                safeStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
                 
                 showToast('save', 'Date salvate', 'Datele de indexare au fost salvate local');
             } catch (e) {
@@ -1532,40 +1517,54 @@
             }
         }
         
-        // Initialize FlexSearch
+        // Initialize FlexSearch with error handling
         function initializeSearchIndex() {
-            // Create document index
-            searchIndex = new FlexSearch.Document({
-                document: {
-                    id: "id",
-                    index: [
-                        "title",
-                        "content",
-                        "url"
-                    ],
-                    store: [
-                        "title", 
-                        "url", 
-                        "excerpt", 
-                        "type", 
-                        "section", 
-                        "extension"
-                    ]
-                },
-                tokenize: "forward",
-                charset: "latin:extra",
-                language: "ro", // For Romanian
-                optimize: true,
-                cache: 100,
-                worker: navigator.hardwareConcurrency || 4 // Use available CPU cores
-            });
+            try {
+                if (typeof FlexSearch === 'undefined') {
+                    console.error('FlexSearch library not loaded');
+                    return null;
+                }
+                
+                // Create document index
+                searchIndex = new FlexSearch.Document({
+                    document: {
+                        id: "id",
+                        index: [
+                            "title",
+                            "content",
+                            "url"
+                        ],
+                        store: [
+                            "title", 
+                            "url", 
+                            "excerpt", 
+                            "type", 
+                            "section", 
+                            "extension"
+                        ]
+                    },
+                    tokenize: "forward",
+                    charset: "latin:extra",
+                    language: "ro", // For Romanian
+                    optimize: true,
+                    cache: 100
+                });
 
-            // Add documents to index
-            siteContent.forEach(doc => {
-                searchIndex.add(doc);
-            });
+                // Add documents to index
+                siteContent.forEach(doc => {
+                    try {
+                        searchIndex.add(doc);
+                    } catch (e) {
+                        console.warn('Failed to add document to index:', doc.id, e);
+                    }
+                });
 
-            return searchIndex;
+                console.log('Search index initialized with', siteContent.length, 'documents');
+                return searchIndex;
+            } catch (e) {
+                console.error('Failed to initialize search index:', e);
+                return null;
+            }
         }
         
         // Set up crawler handlers
@@ -1624,6 +1623,8 @@
         
         // Start the crawler
         function startCrawler() {
+            console.log('Starting crawler...');
+            
             // Set crawler state
             crawlerState.isRunning = true;
             crawlerState.pause = false;
@@ -1745,7 +1746,11 @@
                     siteContent.push(pageData);
                     
                     if (searchIndex) {
-                        searchIndex.add(pageData);
+                        try {
+                            searchIndex.add(pageData);
+                        } catch (e) {
+                            console.warn('Failed to add page to search index:', e);
+                        }
                     }
                     
                     // Update document count
@@ -1754,8 +1759,8 @@
                     }
                     
                     // Add links to queue if not at max depth
-                    if (depth < 10) { // Max depth of 10
-                        for (const link of pageData.links || []) {
+                    if (depth < 3 && pageData.links) { // Reduced max depth for production
+                        for (const link of pageData.links) {
                             if (!crawlerState.visitedUrls.has(link) && 
                                 !crawlerState.urlsToVisit.some(item => item.url === link) && 
                                 isSameDomain(link, url)) {
@@ -1771,17 +1776,18 @@
                 console.error(`Error crawling ${url}:`, error);
             }
             
-            // Save data periodically (every 10 pages)
-            if (crawlerState.currentPage % 10 === 0) {
+            // Save data periodically (every 5 pages for production)
+            if (crawlerState.currentPage % 5 === 0) {
                 saveCrawlData();
             }
             
-            // Small delay to avoid overwhelming the browser
-            setTimeout(crawlNextUrl, 200);
+            // Delay to avoid overwhelming the browser/server
+            setTimeout(crawlNextUrl, 500); // Increased delay for production
         }
         
         // Finish crawling
         function finishCrawling() {
+            console.log('Crawling finished');
             crawlerState.isRunning = false;
             updateStartButton('Reîmprospătează indexul', false);
             
@@ -1803,7 +1809,7 @@
             setTimeout(hideCrawlerUI, 3000);
         }
         
-        // Fetch and process a page
+        // Fetch and process a page with better error handling
         async function fetchAndProcessPage(url) {
             try {
                 // Create a unique ID for the page
@@ -1813,8 +1819,7 @@
                 const extension = url.split('.').pop().toLowerCase();
                 const isDocument = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'].includes(extension);
                 
-                // If it's a document type, we can't extract content from the browser
-                // Just create a placeholder
+                // If it's a document type, create a placeholder
                 if (isDocument) {
                     return {
                         id,
@@ -1829,10 +1834,26 @@
                     };
                 }
                 
-                // Fetch the page
-                const response = await fetch(url);
+                // Fetch the page with timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                
+                const response = await fetch(url, {
+                    signal: controller.signal,
+                    headers: {
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+                    }
+                });
+                
+                clearTimeout(timeoutId);
+                
                 if (!response.ok) {
-                    throw new Error(`Failed to fetch ${url}: ${response.status}`);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const contentType = response.headers.get('content-type') || '';
+                if (!contentType.includes('text/html')) {
+                    throw new Error(`Not HTML content: ${contentType}`);
                 }
                 
                 const html = await response.text();
@@ -1842,7 +1863,7 @@
                 const doc = parser.parseFromString(html, 'text/html');
                 
                 // Extract page information
-                const title = doc.querySelector('title')?.textContent || getFilenameFromUrl(url);
+                const title = doc.querySelector('title')?.textContent?.trim() || getFilenameFromUrl(url);
                 const content = extractPageContent(doc);
                 const links = extractLinks(doc, url);
                 
@@ -1873,63 +1894,84 @@
         
         // Extract content from page
         function extractPageContent(doc) {
-            // Create a clone to avoid modifying the original document
-            const docClone = doc.cloneNode(true);
-            
-            // Remove script, style, and other non-content elements
-            const elementsToRemove = docClone.querySelectorAll('script, style, meta, link, noscript, svg, iframe');
-            elementsToRemove.forEach(el => {
-                if (el.parentNode) {
-                    el.parentNode.removeChild(el);
-                }
-            });
-            
-            // Extract text from main content areas
-            const mainContent = docClone.querySelector('main') || 
-                              docClone.querySelector('article') ||
-                              docClone.querySelector('.content') || 
-                              docClone.querySelector('.main') ||
-                              docClone.body;
-            
-            // Get text content
-            let text = mainContent ? mainContent.textContent || '' : '';
-            
-            // Clean up text
-            text = text.replace(/\s+/g, ' ').trim();
-            
-            return text;
+            try {
+                // Create a clone to avoid modifying the original document
+                const docClone = doc.cloneNode(true);
+                
+                // Remove script, style, and other non-content elements
+                const elementsToRemove = docClone.querySelectorAll('script, style, meta, link, noscript, svg, iframe, nav, footer, header, .header, .footer, .nav, .sidebar, .menu');
+                elementsToRemove.forEach(el => {
+                    if (el.parentNode) {
+                        el.parentNode.removeChild(el);
+                    }
+                });
+                
+                // Extract text from main content areas
+                const mainContent = docClone.querySelector('main') || 
+                                  docClone.querySelector('article') ||
+                                  docClone.querySelector('.content') || 
+                                  docClone.querySelector('.main') ||
+                                  docClone.body;
+                
+                // Get text content
+                let text = mainContent ? mainContent.textContent || '' : '';
+                
+                // Clean up text
+                text = text.replace(/\s+/g, ' ').trim();
+                
+                return text;
+            } catch (e) {
+                console.warn('Failed to extract page content:', e);
+                return '';
+            }
         }
         
-        // Extract links from page
+        // Extract links from page with better filtering
         function extractLinks(doc, baseUrl) {
             const links = [];
-            const anchors = doc.querySelectorAll('a[href]');
             
-            anchors.forEach(anchor => {
-                let href = anchor.getAttribute('href');
+            try {
+                const anchors = doc.querySelectorAll('a[href]');
                 
-                // Skip empty links, javascript: links, hash links, etc.
-                if (!href || href.startsWith('javascript:') || href === '#' || href.startsWith('tel:') || href.startsWith('mailto:')) {
-                    return;
-                }
-                
-                try {
-                    // Resolve relative URLs
-                    const absoluteUrl = new URL(href, baseUrl).href;
+                anchors.forEach(anchor => {
+                    let href = anchor.getAttribute('href');
                     
-                    // Add if it's an HTML page or document
-                    const extension = absoluteUrl.split('.').pop().toLowerCase();
-                    const allowedExtensions = ['', 'html', 'htm', 'php', 'asp', 'aspx', 'jsp', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
-                    
-                    if (allowedExtensions.includes(extension)) {
-                        links.push(absoluteUrl);
+                    // Skip empty links, javascript: links, hash links, etc.
+                    if (!href || 
+                        href.startsWith('javascript:') || 
+                        href === '#' || 
+                        href.startsWith('tel:') || 
+                        href.startsWith('mailto:') ||
+                        href.startsWith('ftp:')) {
+                        return;
                     }
-                } catch (e) {
-                    console.warn(`Invalid URL: ${href}`);
-                }
-            });
+                    
+                    try {
+                        // Resolve relative URLs
+                        const absoluteUrl = new URL(href, baseUrl).href;
+                        
+                        // Only include same-domain links
+                        if (!isSameDomain(absoluteUrl, baseUrl)) {
+                            return;
+                        }
+                        
+                        // Add if it's an HTML page or document
+                        const extension = absoluteUrl.split('.').pop().toLowerCase().split('?')[0];
+                        const allowedExtensions = ['', 'html', 'htm', 'php', 'asp', 'aspx', 'jsp'];
+                        
+                        if (allowedExtensions.includes(extension) || !extension.includes('.')) {
+                            links.push(absoluteUrl);
+                        }
+                    } catch (e) {
+                        // Invalid URL, skip
+                    }
+                });
+            } catch (e) {
+                console.warn('Failed to extract links:', e);
+            }
             
-            return links;
+            // Remove duplicates
+            return [...new Set(links)];
         }
         
         // Generate a page ID from URL
@@ -1972,7 +2014,7 @@
         // Determine page type
         function determinePageType(url, doc) {
             // Check file extension
-            const extension = url.split('.').pop().toLowerCase();
+            const extension = url.split('.').pop().toLowerCase().split('?')[0];
             if (['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'].includes(extension)) {
                 return 'document';
             }
@@ -1986,14 +2028,18 @@
             }
             
             // Check page content for clues
-            const h1 = doc.querySelector('h1')?.textContent || '';
-            if (h1.includes('Document') || 
-                h1.includes('Regulament') || 
-                h1.includes('Hotărâre') || 
-                h1.includes('Lege') ||
-                h1.includes('Formular') ||
-                h1.includes('Cerere')) {
-                return 'document';
+            try {
+                const h1 = doc.querySelector('h1')?.textContent || '';
+                if (h1.includes('Document') || 
+                    h1.includes('Regulament') || 
+                    h1.includes('Hotărâre') || 
+                    h1.includes('Lege') ||
+                    h1.includes('Formular') ||
+                    h1.includes('Cerere')) {
+                    return 'document';
+                }
+            } catch (e) {
+                // Ignore parsing errors
             }
             
             // Default to page
@@ -2004,7 +2050,7 @@
         function getPageSection(url) {
             try {
                 const urlObj = new URL(url);
-                const pathname = urlObj.pathname;
+                const pathname = urlObj.pathname.toLowerCase();
                 
                 if (pathname.includes('/despre/')) {
                     return 'despre';
@@ -2028,8 +2074,8 @@
                 const baseUrlObj = new URL(baseUrl);
                 return urlObj.hostname === baseUrlObj.hostname;
             } catch (e) {
-                // If URL parsing fails, assume it's a relative URL (same domain)
-                return true;
+                // If URL parsing fails, assume different domain
+                return false;
             }
         }
         
@@ -2093,17 +2139,23 @@
             
             if (searchInput) {
                 // Set up real-time suggestions
+                let debounceTimer;
                 searchInput.addEventListener('input', function() {
                     const query = this.value.trim();
+                    
+                    clearTimeout(debounceTimer);
+                    
                     if (query.length >= 2) {
-                        // Get suggestions
-                        const suggestions = getSearchSuggestions(query, 5);
-                        if (suggestions.length > 0) {
-                            renderSuggestions(suggestions);
-                            suggestionsDropdown.classList.add('active');
-                        } else {
-                            suggestionsDropdown.classList.remove('active');
-                        }
+                        debounceTimer = setTimeout(() => {
+                            // Get suggestions
+                            const suggestions = getSearchSuggestions(query, 5);
+                            if (suggestions.length > 0) {
+                                renderSuggestions(suggestions);
+                                suggestionsDropdown.classList.add('active');
+                            } else {
+                                suggestionsDropdown.classList.remove('active');
+                            }
+                        }, 300);
                     } else {
                         suggestionsDropdown.classList.remove('active');
                     }
@@ -2183,11 +2235,7 @@
             }
             
             // Store in localStorage
-            try {
-                localStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
-            } catch (e) {
-                console.warn('Failed to save recent searches to localStorage', e);
-            }
+            safeStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
         }
         
         // Get search suggestions
@@ -2211,7 +2259,7 @@
             
             // Add from site content titles
             siteContent.forEach(item => {
-                if (item.title.toLowerCase().includes(normalizedQuery)) {
+                if (item.title && item.title.toLowerCase().includes(normalizedQuery)) {
                     const titleParts = item.title.split(' ');
                     for (let i = 0; i < titleParts.length; i++) {
                         const phrase = titleParts.slice(i, Math.min(i + 3, titleParts.length)).join(' ');
@@ -2254,6 +2302,8 @@
         
         // Perform search
         function performSearch(query, page = 1) {
+            console.log('Performing search for:', query);
+            
             // Update URL
             const url = new URL(window.location);
             url.searchParams.set('q', query);
@@ -2300,57 +2350,66 @@
             
             // Perform search
             if (searchIndex) {
-                const results = searchIndex.search(query, {
-                    limit: 100,
-                    suggest: true, // Enable suggestions (fuzzy search)
-                    enrich: true // Return full document data
-                });
-                
-                // Process results
-                let allResults = [];
-                
-                // Combine results from all fields
-                results.forEach(resultSet => {
-                    resultSet.result.forEach(result => {
-                        // Add if not already in results
-                        if (!allResults.some(r => r.id === result.id)) {
-                            allResults.push(result);
-                        }
+                try {
+                    const results = searchIndex.search(query, {
+                        limit: 100,
+                        suggest: true, // Enable suggestions (fuzzy search)
+                        enrich: true // Return full document data
                     });
-                });
-                
-                // Apply filters
-                if (typeFilter) {
-                    allResults = allResults.filter(result => result.type === typeFilter);
+                    
+                    // Process results
+                    let allResults = [];
+                    
+                    // Combine results from all fields
+                    if (Array.isArray(results)) {
+                        results.forEach(resultSet => {
+                            if (resultSet.result && Array.isArray(resultSet.result)) {
+                                resultSet.result.forEach(result => {
+                                    // Add if not already in results
+                                    if (!allResults.some(r => r.id === result.id)) {
+                                        allResults.push(result);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    
+                    // Apply filters
+                    if (typeFilter) {
+                        allResults = allResults.filter(result => result.type === typeFilter);
+                    }
+                    
+                    if (sectionFilter) {
+                        allResults = allResults.filter(result => result.section === sectionFilter);
+                    }
+                    
+                    // Pagination
+                    const perPage = 10;
+                    const totalResults = allResults.length;
+                    const totalPages = Math.ceil(totalResults / perPage);
+                    const startIndex = (page - 1) * perPage;
+                    const endIndex = Math.min(startIndex + perPage, totalResults);
+                    
+                    // Get current page results
+                    const paginatedResults = allResults.slice(startIndex, endIndex);
+                    
+                    // Render results
+                    setTimeout(() => {
+                        renderSearchResults({
+                            query,
+                            results: paginatedResults,
+                            totalResults,
+                            currentPage: page,
+                            totalPages,
+                            perPage,
+                            // Identify direct match (first result with high relevance)
+                            directMatch: allResults.length > 0 ? allResults[0] : null
+                        });
+                    }, 500); // Small delay to show loading animation
+                } catch (e) {
+                    console.error('Search error:', e);
+                    showNoResultsState(query);
                 }
-                
-                if (sectionFilter) {
-                    allResults = allResults.filter(result => result.section === sectionFilter);
-                }
-                
-                // Pagination
-                const perPage = 10;
-                const totalResults = allResults.length;
-                const totalPages = Math.ceil(totalResults / perPage);
-                const startIndex = (page - 1) * perPage;
-                const endIndex = Math.min(startIndex + perPage, totalResults);
-                
-                // Get current page results
-                const paginatedResults = allResults.slice(startIndex, endIndex);
-                
-                // Render results
-                setTimeout(() => {
-                    renderSearchResults({
-                        query,
-                        results: paginatedResults,
-                        totalResults,
-                        currentPage: page,
-                        totalPages,
-                        perPage,
-                        // Identify direct match (first result with high relevance)
-                        directMatch: allResults.length > 0 ? allResults[0] : null
-                    });
-                }, 500); // Small delay to show loading animation
             } else {
                 // No search index, show start crawling prompt
                 showNoCrawlDataState();
@@ -2506,10 +2565,10 @@
                 }
                 
                 // Format title with highlighting
-                const highlightedTitle = highlightSearchTerms(hit.title, result.query);
+                const highlightedTitle = highlightSearchTerms(hit.title || 'Fără titlu', result.query);
                 
                 // Format content excerpt with highlighting
-                const highlightedExcerpt = highlightSearchTerms(hit.excerpt, result.query);
+                const highlightedExcerpt = highlightSearchTerms(hit.excerpt || 'Fără descriere', result.query);
                 
                 resultCard.innerHTML = `
                     <div class="result-meta">
@@ -2524,7 +2583,7 @@
                         <a href="${hit.url}" class="result-action" target="_blank">
                             <i class="material-icons">open_in_new</i> Vizitează
                         </a>
-                        <a href="#" class="result-action" onclick="shareResult('${hit.url}', '${escapeHtml(hit.title)}'); return false;">
+                        <a href="#" class="result-action" onclick="shareResult('${hit.url}', '${escapeHtml(hit.title || 'Fără titlu')}'); return false;">
                             <i class="material-icons">share</i> Distribuie
                         </a>
                     </div>
@@ -2578,7 +2637,7 @@
             
             let paginationHtml = '';
             
-            // Previous page button
+// Previous page button
             const prevDisabled = currentPage <= 1 ? 'disabled' : '';
             paginationHtml += `
                 <a href="#" onclick="navigateToPage(${currentPage - 1}); return false;" 
@@ -2629,109 +2688,232 @@
                 `;
             }
             
-// Next page button
-const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
-paginationHtml += `
-    <a href="#" onclick="navigateToPage(${currentPage + 1}); return false;" 
-       class="pagination-nav ${nextDisabled}">
-      <i class="material-icons">chevron_right</i>
-    </a>
-`;
-
-paginationContainer.innerHTML = paginationHtml;
-}
-
-// Show no results state
-function showNoResultsState(query) {
-    const resultList = document.getElementById('result-list');
-    if (!resultList) return;
-    
-    resultList.innerHTML = `
-        <div class="no-results">
-            <div class="no-results-icon"><i class="material-icons">search_off</i></div>
-            <h3>Nu s-au găsit rezultate</h3>
-            <p>Nu am găsit niciun rezultat pentru <strong>"${query}"</strong>.</p>
-            <p>Sugestii:</p>
-            <ul>
-                <li>Verificați ortografia cuvintelor cheie.</li>
-                <li>Încercați cuvinte cheie diferite.</li>
-                <li>Încercați cuvinte cheie mai generale.</li>
-                <li>Asigurați-vă că site-ul a fost indexat complet.</li>
-            </ul>
-        </div>
-    `;
-}
-
-// Navigation function for pagination
-function navigateToPage(page) {
-    const url = new URL(window.location);
-    const query = url.searchParams.get('q') || '';
-    
-    // Update URL parameters
-    url.searchParams.set('page', page);
-    window.history.pushState({}, '', url);
-    
-    // Execute search with updated page
-    performSearch(query, page);
-}
-
-// Share result function
-function shareResult(url, title) {
-    if (navigator.share) {
-        navigator.share({
-            title: title,
-            url: url
-        }).catch(err => {
-            console.error('Share failed:', err);
-            copyToClipboard(url);
+            // Next page button
+            const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
+            paginationHtml += `
+                <a href="#" onclick="navigateToPage(${currentPage + 1}); return false;" 
+                   class="pagination-nav ${nextDisabled}">
+                  <i class="material-icons">chevron_right</i>
+                </a>
+            `;
+            
+            paginationContainer.innerHTML = paginationHtml;
+        }
+        
+        // Show no results state
+        function showNoResultsState(query) {
+            const resultList = document.getElementById('result-list');
+            if (!resultList) return;
+            
+            resultList.innerHTML = `
+                <div class="no-results">
+                    <div class="no-results-icon"><i class="material-icons">search_off</i></div>
+                    <h3>Nu s-au găsit rezultate</h3>
+                    <p>Nu am găsit niciun rezultat pentru <strong>"${query}"</strong>.</p>
+                    <p>Sugestii:</p>
+                    <ul>
+                        <li>Verificați ortografia cuvintelor cheie.</li>
+                        <li>Încercați cuvinte cheie diferite.</li>
+                        <li>Încercați cuvinte cheie mai generale.</li>
+                        <li>Asigurați-vă că site-ul a fost indexat complet.</li>
+                    </ul>
+                </div>
+            `;
+        }
+        
+        // Navigation function for pagination
+        function navigateToPage(page) {
+            const url = new URL(window.location);
+            const query = url.searchParams.get('q') || '';
+            
+            // Update URL parameters
+            url.searchParams.set('page', page);
+            window.history.pushState({}, '', url);
+            
+            // Execute search with updated page
+            performSearch(query, page);
+        }
+        
+        // Share result function
+        function shareResult(url, title) {
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: url
+                }).catch(err => {
+                    console.error('Share failed:', err);
+                    copyToClipboard(url);
+                });
+            } else {
+                copyToClipboard(url);
+            }
+        }
+        
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('content_copy', 'Link copiat', 'Link-ul a fost copiat în clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    fallbackCopyTextToClipboard(text);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text);
+            }
+        }
+        
+        // Fallback copy method
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            
+            // Avoid scrolling to bottom
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('content_copy', 'Link copiat', 'Link-ul a fost copiat în clipboard!');
+                } else {
+                    showToast('error', 'Eroare', 'Nu s-a putut copia link-ul');
+                }
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+                showToast('error', 'Eroare', 'Nu s-a putut copia link-ul');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // Show toast notification
+        function showToast(icon, title, message) {
+            const toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) return;
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="material-icons">${icon}</i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Auto-remove toast after animation completes
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 3500);
+        }
+        
+        // Make functions available globally
+        window.navigateToPage = navigateToPage;
+        window.shareResult = shareResult;
+        window.showCrawlerUI = showCrawlerUI;
+        
+        // Additional event listeners for better UX
+        document.addEventListener('click', function(event) {
+            // Hide suggestions when clicking outside search
+            if (!event.target.closest('.search-header')) {
+                const suggestionsContainer = document.getElementById('search-suggestions');
+                if (suggestionsContainer) {
+                    suggestionsContainer.classList.remove('active');
+                }
+            }
         });
-    } else {
-        copyToClipboard(url);
-    }
-}
-
-// Copy to clipboard
-function copyToClipboard(text) {
-    const tempInput = document.createElement('input');
-    document.body.appendChild(tempInput);
-    tempInput.value = text;
-    tempInput.select();
-    document.execCommand('copy');
-    document.body.removeChild(tempInput);
-    
-    showToast('content_copy', 'Link copiat', 'Link-ul a fost copiat în clipboard!');
-}
-
-// Show toast notification
-function showToast(icon, title, message) {
-    const toastContainer = document.getElementById('toast-container');
-    if (!toastContainer) return;
-    
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = `
-        <div class="toast-icon">
-            <i class="material-icons">${icon}</i>
-        </div>
-        <div class="toast-content">
-            <div class="toast-title">${title}</div>
-            <div class="toast-message">${message}</div>
-        </div>
-    `;
-    
-    toastContainer.appendChild(toast);
-    
-    // Auto-remove toast after animation completes
-    setTimeout(() => {
-        toast.remove();
-    }, 3500);
-}
-
-// Make functions available globally
-window.navigateToPage = navigateToPage;
-window.shareResult = shareResult;
-window.showCrawlerUI = showCrawlerUI;
-
-            </script>
+        
+        // Handle ESC key to close suggestions
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const suggestionsContainer = document.getElementById('search-suggestions');
+                if (suggestionsContainer) {
+                    suggestionsContainer.classList.remove('active');
+                }
+            }
+        });
+        
+        // Handle browser back/forward navigation
+        window.addEventListener('popstate', function(event) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            const page = parseInt(urlParams.get('page')) || 1;
+            
+            if (query) {
+                const searchInput = document.getElementById('search-input');
+                if (searchInput) {
+                    searchInput.value = query;
+                }
+                
+                if (siteContent.length > 0) {
+                    performSearch(query, page);
+                }
+            }
+        });
+        
+        // Performance monitoring
+        console.log('Search engine initialized successfully');
+        
+        // Auto-start demo mode if no content is available (for demonstration)
+        setTimeout(() => {
+            if (siteContent.length === 0 && !crawlerState.isRunning) {
+                console.log('Auto-starting demo crawler...');
+                // Only auto-start if we're in a development environment
+                if (window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1' ||
+                    window.location.search.includes('demo=true')) {
+                    
+                    // Add some demo content for testing
+                    const demoContent = [
+                        {
+                            id: 'demo-1',
+                            url: '/pls/',
+                            title: 'Poliția Locală Slobozia - Acasă',
+                            content: 'Pagina principală a Poliției Locale Slobozia. Informații despre serviciile noastre și misiunea de a servi comunitatea.',
+                            excerpt: 'Pagina principală a Poliției Locale Slobozia cu informații despre servicii și misiune.',
+                            type: 'page',
+                            section: 'general'
+                        },
+                        {
+                            id: 'demo-2',
+                            url: '/pls/contact',
+                            title: 'Contact - Poliția Locală Slobozia',
+                            content: 'Informații de contact pentru Poliția Locală Slobozia. Telefon, adresa și program de lucru.',
+                            excerpt: 'Informații de contact: telefon, adresa și program de lucru.',
+                            type: 'page',
+                            section: 'contact'
+                        },
+                        {
+                            id: 'demo-3',
+                            url: '/pls/documente/regulament.pdf',
+                            title: 'Regulamentul de Organizare și Funcționare',
+                            content: 'Document: Regulamentul de Organizare și Funcționare al Poliției Locale Slobozia',
+                            excerpt: 'Document oficial cu regulamentul de organizare și funcționare.',
+                            type: 'document',
+                            section: 'documente',
+                            extension: 'pdf'
+                        }
+                    ];
+                    
+                    siteContent = demoContent;
+                    initializeSearchIndex();
+                    updateCrawlStats();
+                    showToast('info', 'Demo Content', 'S-au încărcat date demo pentru testare');
+                }
+            }
+        }, 2000);
+    </script>
 </body>
 </html>
