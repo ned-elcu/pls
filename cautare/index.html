@@ -1161,7 +1161,7 @@
                     </button>
                     <button class="crawl-action secondary" id="quick-add-btn">
                         <i class="material-icons">flash_on</i>
-                        Adaugă rapid PLS
+                        Detectează automat
                     </button>
                 </div>
                 
@@ -1288,7 +1288,8 @@
             baseUrl: window.location.origin,
             startUrl: null,
             pause: false,
-            documentCount: 0
+            documentCount: 0,
+            siteStructure: null // Will store detected site structure
         };
         
         // Safe localStorage wrapper
@@ -1554,31 +1555,48 @@
             
             if (quickAddBtn) {
                 quickAddBtn.addEventListener('click', function() {
-                    // Add known PLS pages quickly
-                    const baseUrl = window.location.origin;
-                    const plsPages = [
-                        baseUrl + '/pls/',
-                        baseUrl + '/pls/atributii/',
-                        baseUrl + '/pls/contact/',
-                        baseUrl + '/pls/documente/',
-                        baseUrl + '/pls/petitii/',
-                        baseUrl + '/pls/transparenta/',
-                        baseUrl + '/pls/despre/',
-                        baseUrl + '/pls/conducere/',
-                        baseUrl + '/pls/relatii-cu-publicul/',
-                        baseUrl + '/pls/sediu/',
-                        baseUrl + '/pls/integritate/',
-                        baseUrl + '/pls/gdpr/',
-                        baseUrl + '/pls/recrutare/',
-                        baseUrl + '/pls/audiente/',
-                        baseUrl + '/pls/organigrama/',
-                        baseUrl + '/pls/regulament/',
-                        baseUrl + '/pls/acte-normative/',
-                        baseUrl + '/pls/raspunsuri/'
-                    ];
+                    // Detect current site structure if not already detected
+                    const siteStructure = crawlerState.siteStructure || detectSiteStructure();
                     
+                    // Use navigation links if available, otherwise fall back to common patterns
+                    let pagesToAdd = [];
+                    
+                    if (siteStructure.navigationLinks.length > 0) {
+                        // Use actual navigation structure
+                        debugLog('Using detected navigation structure for quick add');
+                        
+                        siteStructure.navigationLinks.forEach(navLink => {
+                            const resolvedUrl = resolveUrl(navLink.url, siteStructure);
+                            pagesToAdd.push(resolvedUrl);
+                        });
+                    } else {
+                        // Fall back to common page patterns adapted to current structure
+                        debugLog('Using common page patterns adapted to detected structure');
+                        
+                        const commonPages = [
+                            '', 'index', 'despre', 'contact', 'documente', 'petitii', 
+                            'transparenta', 'atributii', 'conducere', 'relatii-cu-publicul',
+                            'sediu', 'integritate', 'gdpr', 'recrutare', 'audiente',
+                            'organigrama', 'regulament', 'acte-normative', 'raspunsuri'
+                        ];
+                        
+                        commonPages.forEach(page => {
+                            if (page === '') {
+                                // Root page
+                                pagesToAdd.push(siteStructure.fullBasePath + '/');
+                            } else if (page === 'index') {
+                                // Index pages
+                                pagesToAdd.push(siteStructure.fullBasePath + '/index.html');
+                            } else {
+                                // Regular pages
+                                pagesToAdd.push(siteStructure.fullBasePath + '/' + page + '/');
+                            }
+                        });
+                    }
+                    
+                    // Add pages to crawl queue
                     let addedCount = 0;
-                    plsPages.forEach(url => {
+                    pagesToAdd.forEach(url => {
                         if (!crawlerState.urlsToVisit.some(item => item.url === url) && 
                             !crawlerState.visitedUrls.has(url)) {
                             crawlerState.urlsToVisit.push({
@@ -1590,11 +1608,12 @@
                     });
                     
                     updateCrawlStats();
-                    showToast('flash_on', `${addedCount} URL-uri adăugate`, 'Paginile principale PLS au fost adăugate în coada de indexare');
+                    showToast('flash_on', `${addedCount} URL-uri adăugate`, 'Paginile detectate automat au fost adăugate în coada de indexare');
                     
                     // Start crawler if not running and we added URLs
                     if (!crawlerState.isRunning && addedCount > 0) {
-                        debugLog(`Auto-starting crawler with ${addedCount} PLS pages`);
+                        debugLog(`Auto-starting crawler with ${addedCount} intelligently detected pages`);
+                        crawlerState.siteStructure = siteStructure; // Store for crawling
                         crawlerState.isRunning = true;
                         updateStartButton('Indexare în progres...', true);
                         showCrawlerUI();
@@ -1669,9 +1688,170 @@
             }
         }
         
-        // Start crawler
+        // Detect site structure dynamically
+        function detectSiteStructure() {
+            const currentUrl = window.location.href;
+            const currentPath = window.location.pathname;
+            
+            debugLog(`Detecting site structure from: ${currentUrl}`);
+            
+            // Determine base path by analyzing current location
+            let basePath = '';
+            let baseUrl = window.location.origin;
+            
+            // If we're in a subfolder (like /pls/), detect it
+            const pathParts = currentPath.split('/').filter(Boolean);
+            
+            if (pathParts.length > 0) {
+                // Check if we're in a subfolder structure
+                if (pathParts[0] && pathParts.length > 1) {
+                    // We're likely in a subfolder like /pls/cautare/
+                    basePath = '/' + pathParts[0];
+                    debugLog(`Detected subfolder structure: ${basePath}`);
+                } else if (pathParts[0] && !pathParts[0].includes('.')) {
+                    // We might be in a single-level subfolder
+                    basePath = '/' + pathParts[0];
+                    debugLog(`Detected possible subfolder: ${basePath}`);
+                }
+            }
+            
+            // Try to extract navigation links from the loaded header
+            const navigationLinks = extractNavigationStructure();
+            
+            return {
+                baseUrl,
+                basePath,
+                fullBasePath: baseUrl + basePath,
+                currentPath,
+                navigationLinks,
+                isSubfolder: basePath !== ''
+            };
+        }
+        
+        // Extract navigation structure from the actual loaded header
+        function extractNavigationStructure() {
+            const links = [];
+            
+            try {
+                // Wait a moment for components.js to load the header
+                const mainNav = document.querySelector('.main-nav ul');
+                
+                if (mainNav) {
+                    const navLinks = mainNav.querySelectorAll('a[href]');
+                    
+                    navLinks.forEach(link => {
+                        const href = link.getAttribute('href');
+                        if (href && !href.startsWith('javascript:') && !href.startsWith('#')) {
+                            const linkText = link.textContent?.trim() || '';
+                            links.push({
+                                url: href,
+                                text: linkText,
+                                isDropdown: link.closest('.has-dropdown') !== null
+                            });
+                            
+                            // Also check for dropdown menu links
+                            const dropdown = link.closest('li')?.querySelector('.dropdown-menu');
+                            if (dropdown) {
+                                const dropdownLinks = dropdown.querySelectorAll('a[href]');
+                                dropdownLinks.forEach(dropLink => {
+                                    const dropHref = dropLink.getAttribute('href');
+                                    if (dropHref && !dropHref.startsWith('javascript:') && !dropHref.startsWith('#')) {
+                                        const dropText = dropLink.textContent?.trim() || '';
+                                        links.push({
+                                            url: dropHref,
+                                            text: dropText,
+                                            isDropdown: true,
+                                            parent: linkText
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+                
+                debugLog(`Extracted ${links.length} navigation links from header`);
+                
+                // Log some sample links for debugging
+                if (links.length > 0) {
+                    debugLog(`Sample navigation links: ${links.slice(0, 3).map(l => l.url).join(', ')}`);
+                }
+                
+            } catch (e) {
+                debugLog(`Failed to extract navigation: ${e.message}`);
+            }
+            
+            return links;
+        }
+        
+        // Resolve URL relative to detected site structure
+        function resolveUrl(url, siteStructure) {
+            try {
+                // If it's already an absolute URL, return as-is
+                if (url.startsWith('http://') || url.startsWith('https://')) {
+                    return url;
+                }
+                
+                // If it starts with /, it's relative to domain root
+                if (url.startsWith('/')) {
+                    return siteStructure.baseUrl + url;
+                }
+                
+                // Otherwise, it's relative to current base path
+                return siteStructure.fullBasePath + (url.startsWith('/') ? url : '/' + url);
+                
+            } catch (e) {
+                debugLog(`Failed to resolve URL ${url}: ${e.message}`);
+                return url;
+            }
+        }
+        
+        // Generate intelligent starting URLs based on detected structure
+        function generateStartingUrls(siteStructure) {
+            const startingUrls = [];
+            
+            // Always try the base paths
+            startingUrls.push(siteStructure.baseUrl + '/');
+            startingUrls.push(siteStructure.baseUrl + '/index.html');
+            
+            if (siteStructure.isSubfolder) {
+                startingUrls.push(siteStructure.fullBasePath + '/');
+                startingUrls.push(siteStructure.fullBasePath + '/index.html');
+            }
+            
+            // Add URLs from detected navigation structure
+            siteStructure.navigationLinks.forEach(navLink => {
+                const resolvedUrl = resolveUrl(navLink.url, siteStructure);
+                if (!startingUrls.includes(resolvedUrl)) {
+                    startingUrls.push(resolvedUrl);
+                }
+            });
+            
+            // If we found navigation links, prioritize them
+            if (siteStructure.navigationLinks.length > 0) {
+                debugLog(`Using ${siteStructure.navigationLinks.length} navigation-based URLs`);
+            } else {
+                // Fallback: generate common page patterns based on detected structure
+                const commonPages = [
+                    'despre', 'contact', 'documente', 'petitii', 'transparenta',
+                    'atributii', 'conducere', 'relatii-cu-publicul', 'sediu', 
+                    'integritate', 'gdpr', 'recrutare'
+                ];
+                
+                commonPages.forEach(page => {
+                    const pageUrl = siteStructure.fullBasePath + '/' + page + '/';
+                    startingUrls.push(pageUrl);
+                });
+                
+                debugLog(`Generated ${commonPages.length} fallback URLs based on common patterns`);
+            }
+            
+            return [...new Set(startingUrls)]; // Remove duplicates
+        }
+        
+        // Start crawler with dynamic structure detection
         function startCrawler() {
-            debugLog('Starting crawler...');
+            debugLog('Starting intelligent crawler...');
             crawlerState.isRunning = true;
             crawlerState.pause = false;
             
@@ -1682,52 +1862,34 @@
             crawlerState.urlsToVisit = [];
             crawlerState.currentPage = 0;
             
-            // Determine starting URLs based on current location
-            const currentPath = window.location.pathname;
-            const isInPLSFolder = currentPath.includes('/pls/');
-            
-            let startingUrls;
-            
-            if (isInPLSFolder) {
-                // We're in the /pls/ folder, so start from known PLS pages
-                const baseUrl = window.location.origin;
-                startingUrls = [
-                    baseUrl + '/pls/',
-                    baseUrl + '/pls/index.html',
-                    baseUrl + '/pls/atributii/',
-                    baseUrl + '/pls/contact/',
-                    baseUrl + '/pls/documente/',
-                    baseUrl + '/pls/petitii/',
-                    baseUrl + '/pls/transparenta/',
-                    baseUrl + '/pls/despre/',
-                    baseUrl + '/pls/conducere/',
-                    baseUrl + '/pls/relatii-cu-publicul/',
-                    baseUrl + '/pls/sediu/',
-                    baseUrl + '/pls/integritate/',
-                    baseUrl + '/pls/gdpr/',
-                    baseUrl + '/pls/recrutare/'
-                ];
-            } else {
-                // Try root level first, then PLS folder
-                startingUrls = [
-                    window.location.origin + '/',
-                    window.location.origin + '/index.html',
-                    window.location.origin + '/pls/',
-                    window.location.origin + '/pls/index.html'
-                ];
-            }
-            
-            // Add all starting URLs to queue
-            startingUrls.forEach(url => {
-                crawlerState.urlsToVisit.push({
-                    url: url,
-                    depth: 0
+            // Wait a moment for components.js to fully load the header
+            setTimeout(() => {
+                // Detect site structure dynamically
+                const siteStructure = detectSiteStructure();
+                crawlerState.siteStructure = siteStructure; // Store for later use
+                
+                debugLog(`🔍 Site structure detected:`);
+                debugLog(`   Base URL: ${siteStructure.baseUrl}`);
+                debugLog(`   Base Path: ${siteStructure.basePath}`);
+                debugLog(`   Is Subfolder: ${siteStructure.isSubfolder}`);
+                debugLog(`   Navigation Links: ${siteStructure.navigationLinks.length}`);
+                
+                // Generate starting URLs based on detected structure
+                const startingUrls = generateStartingUrls(siteStructure);
+                
+                // Add all starting URLs to queue
+                startingUrls.forEach(url => {
+                    crawlerState.urlsToVisit.push({
+                        url: url,
+                        depth: 0
+                    });
                 });
-            });
-            
-            debugLog(`Starting URLs added to queue: ${startingUrls.join(', ')}`);
-            
-            crawlNextUrl();
+                
+                debugLog(`📝 Added ${startingUrls.length} intelligent starting URLs to queue`);
+                debugLog(`🎯 Starting crawl strategy: ${siteStructure.navigationLinks.length > 0 ? 'Navigation-based' : 'Pattern-based'}`);
+                
+                crawlNextUrl();
+            }, 500); // Give components.js time to load header
         }
         
         // Update start button
@@ -2030,9 +2192,10 @@
             }
         }
         
-        // Extract links from page
+        // Extract links from page with intelligent structure awareness
         function extractLinks(doc, baseUrl) {
             const links = [];
+            const siteStructure = crawlerState.siteStructure;
             
             try {
                 const anchors = doc.querySelectorAll('a[href]');
@@ -2040,7 +2203,7 @@
                 anchors.forEach((anchor, index) => {
                     let href = anchor.getAttribute('href');
                     
-                    // Skip empty links, javascript: links, hash links, etc.
+                    // Skip unwanted links
                     if (!href || 
                         href.startsWith('javascript:') || 
                         href === '#' || 
@@ -2049,54 +2212,45 @@
                         href.startsWith('ftp:') ||
                         href.includes('facebook.com') ||
                         href.includes('youtube.com') ||
-                        href.includes('twitter.com')) {
+                        href.includes('twitter.com') ||
+                        href.includes('instagram.com')) {
                         return;
                     }
                     
                     try {
-                        // Resolve relative URLs
-                        const absoluteUrl = new URL(href, baseUrl).href;
+                        // Resolve URL using our intelligent resolver
+                        const absoluteUrl = resolveUrl(href, siteStructure);
                         
                         // Check if it's same domain
-                        const currentDomain = new URL(baseUrl).hostname;
                         const linkDomain = new URL(absoluteUrl).hostname;
+                        const currentDomain = new URL(baseUrl).hostname;
                         
                         if (linkDomain !== currentDomain) {
                             return; // Skip external links
                         }
                         
-                        // Get the path to check if it's likely to exist
+                        // Get the path to analyze
                         const urlPath = new URL(absoluteUrl).pathname;
                         
-                        // Skip certain paths that are likely to not exist
-                        const skipPaths = [
-                            '/amenzi',    // (INDISPONIBIL) in footer
-                            '/termeni',   // Generic footer link
-                            '/accesibilitate', // Generic footer link
-                            '/sitemap'    // Generic footer link
+                        // Skip paths that commonly don't exist or are placeholders
+                        const skipPatterns = [
+                            '/amenzi',        // Marked as INDISPONIBIL
+                            '/termeni',       // Generic footer link
+                            '/accesibilitate', // Generic footer link  
+                            '/sitemap',       // Generic footer link
+                            '/search',        // Search page itself
+                            '/cautare',       // Search page itself
                         ];
                         
-                        if (skipPaths.some(skip => urlPath.includes(skip))) {
+                        if (skipPatterns.some(pattern => urlPath.includes(pattern))) {
                             return;
                         }
                         
-                        // If we're in a GitHub Pages /pls/ setup, prioritize /pls/ paths
-                        const currentPath = new URL(baseUrl).pathname;
-                        if (currentPath.includes('/pls/')) {
-                            // If the link doesn't start with /pls/ and it's a relative path
-                            if (urlPath.startsWith('/') && !urlPath.startsWith('/pls/') && !urlPath.startsWith('/index')) {
-                                // Convert to /pls/ path
-                                const plsUrl = new URL(absoluteUrl);
-                                plsUrl.pathname = '/pls' + urlPath;
-                                return; // Skip the original, we'll add PLS version manually later
-                            }
-                        }
-                        
-                        // Get file extension (if any)
+                        // Check file extension
                         const lastDot = urlPath.lastIndexOf('.');
                         const extension = lastDot > -1 ? urlPath.substring(lastDot + 1).toLowerCase().split('?')[0] : '';
                         
-                        // Allow HTML pages and common web extensions
+                        // Allow web pages and documents
                         const allowedExtensions = ['', 'html', 'htm', 'php', 'asp', 'aspx', 'jsp'];
                         const allowedDocuments = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
                         
@@ -2116,43 +2270,70 @@
                             }
                         }
                     } catch (e) {
-                        // Invalid URL, skip
+                        debugLog(`⚠ Invalid URL found: ${href}`);
                     }
                 });
                 
-                // If we're in /pls/ folder and found few links, add some known PLS structure pages
-                const currentPath = new URL(baseUrl).pathname;
-                if (currentPath.includes('/pls/') && links.length < 5) {
-                    const baseDomain = new URL(baseUrl).origin;
-                    const plsPaths = [
-                        '/pls/',
-                        '/pls/atributii/',
-                        '/pls/contact/',
-                        '/pls/documente/',
-                        '/pls/petitii/',
-                        '/pls/transparenta/',
-                        '/pls/despre/',
-                        '/pls/conducere/',
-                        '/pls/relatii-cu-publicul/',
-                        '/pls/sediu/',
-                        '/pls/integritate/',
-                        '/pls/gdpr/'
-                    ];
-                    
-                    plsPaths.forEach(path => {
-                        const testUrl = baseDomain + path;
-                        if (!links.includes(testUrl)) {
-                            links.push(testUrl);
+                // If we found few links, try to discover more based on site structure
+                if (links.length < 3 && siteStructure) {
+                    const discoveredLinks = discoverAdditionalLinks(siteStructure, baseUrl);
+                    discoveredLinks.forEach(link => {
+                        if (!links.includes(link)) {
+                            links.push(link);
                         }
                     });
+                    
+                    if (discoveredLinks.length > 0) {
+                        debugLog(`Added ${discoveredLinks.length} structure-based discovery links`);
+                    }
                 }
                 
             } catch (e) {
                 debugLog(`⚠ Failed to extract links from ${baseUrl}: ${e.message}`);
             }
             
-            // Remove duplicates and return
             return [...new Set(links)];
+        }
+        
+        // Discover additional links based on site structure patterns
+        function discoverAdditionalLinks(siteStructure, currentUrl) {
+            const links = [];
+            
+            try {
+                // Try to find sibling pages by analyzing URL patterns
+                const currentPath = new URL(currentUrl).pathname;
+                const pathParts = currentPath.split('/').filter(Boolean);
+                
+                if (pathParts.length > 0) {
+                    // Remove the last part (current page) to get parent directory
+                    const parentParts = pathParts.slice(0, -1);
+                    const parentPath = '/' + parentParts.join('/') + '/';
+                    
+                    // Common page names that might exist as siblings
+                    const commonPages = [
+                        'index', 'despre', 'contact', 'documente', 'petitii', 
+                        'transparenta', 'atributii', 'conducere', 'relatii-cu-publicul',
+                        'sediu', 'integritate', 'gdpr', 'recrutare', 'audiente',
+                        'organigrama', 'regulament', 'acte-normative', 'raspunsuri'
+                    ];
+                    
+                    commonPages.forEach(page => {
+                        const pageUrl = siteStructure.baseUrl + parentPath + page + '/';
+                        links.push(pageUrl);
+                    });
+                }
+                
+                // Also add any navigation links we haven't processed yet
+                siteStructure.navigationLinks.forEach(navLink => {
+                    const resolvedUrl = resolveUrl(navLink.url, siteStructure);
+                    links.push(resolvedUrl);
+                });
+                
+            } catch (e) {
+                debugLog(`Failed to discover additional links: ${e.message}`);
+            }
+            
+            return links;
         }
         
         // Helper functions
