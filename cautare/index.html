@@ -396,134 +396,6 @@
             opacity: 0.7;
         }
         
-        /* Sorting options */
-        .sorting-options {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            background-color: white;
-            padding: 0.8rem 1.2rem;
-            border-radius: var(--border-radius-medium);
-            box-shadow: var(--shadow-small);
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeInUp 0.5s forwards 0.5s;
-        }
-        
-        .sorting-options label {
-            margin-right: 0.8rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        
-        .sorting-options select {
-            padding: 0.5rem 2rem 0.5rem 1rem;
-            border: 1px solid #e0e0e0;
-            border-radius: var(--border-radius-small);
-            background-color: white;
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23424242' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.7rem center;
-            background-size: 1rem;
-            font-family: 'Poppins', sans-serif;
-            transition: var(--transition-fast);
-        }
-        
-        .sorting-options select:focus {
-            outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
-        }
-        
-        /* Direct match */
-        .direct-match {
-            background-color: rgba(30, 136, 229, 0.05);
-            border-radius: var(--border-radius-medium);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--secondary-color);
-            display: flex;
-            align-items: center;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.6s forwards 0.7s;
-            box-shadow: var(--shadow-small);
-            transition: var(--transition-medium);
-        }
-        
-        .direct-match:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        .direct-match-icon {
-            font-size: 2.5rem;
-            color: var(--secondary-color);
-            margin-right: 1.5rem;
-            flex-shrink: 0;
-            animation: pulse 2s infinite;
-        }
-        
-        .direct-match-content {
-            flex: 1;
-        }
-        
-        .direct-match-content h3 {
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-        
-        .direct-match-content p {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-        
-        .direct-match-link {
-            display: inline-flex;
-            align-items: center;
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 0.7rem 1.5rem;
-            border-radius: var(--border-radius-small);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition-fast);
-            box-shadow: var(--shadow-small);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .direct-match-link:before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-        }
-        
-        .direct-match-link:hover:before {
-            width: 300%;
-            height: 300%;
-        }
-        
-        .direct-match-link:hover {
-            background-color: var(--secondary-light);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-medium);
-        }
-        
-        .direct-match-link i {
-            margin-left: 0.5rem;
-        }
-        
         /* Search results */
         .search-results {
             display: flex;
@@ -1137,16 +1009,6 @@
                 font-size: 1.8rem;
             }
             
-            .sorting-options {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-            
-            .sorting-options select {
-                width: 100%;
-            }
-            
             .direct-match {
                 flex-direction: column;
                 text-align: center;
@@ -1364,17 +1226,14 @@
     <!-- Include Components.js FIRST -->
     <script src="../components.js"></script>
     
-    <!-- Include FlexSearch library - Using jsDelivr instead of CDNJS -->
+    <!-- Include FlexSearch library -->
     <script src="https://cdn.jsdelivr.net/npm/flexsearch@0.7.31/dist/flexsearch.bundle.js"></script>
     
     <!-- Search implementation -->
     <script>
         /**
-         * Production-Ready Dynamic Search and Web Crawler
-         * This script allows the browser to crawl and search a website in real-time.
+         * Production Search and Web Crawler
          */
-        
-        console.log('DOM loaded, initializing search...');
         
         // Store indexed content
         let siteContent = [];
@@ -1386,7 +1245,7 @@
             isRunning: false,
             urlsToVisit: [],
             visitedUrls: new Set(),
-            maxPages: 50, // Reduced for production
+            maxPages: 50,
             currentPage: 0,
             baseUrl: window.location.origin,
             startUrl: null,
@@ -1400,7 +1259,6 @@
                 try {
                     return localStorage.getItem(key);
                 } catch (e) {
-                    console.warn('localStorage not available:', e.message);
                     return null;
                 }
             },
@@ -1409,7 +1267,6 @@
                     localStorage.setItem(key, value);
                     return true;
                 } catch (e) {
-                    console.warn('localStorage write failed:', e.message);
                     return false;
                 }
             },
@@ -1418,7 +1275,6 @@
                     localStorage.removeItem(key);
                     return true;
                 } catch (e) {
-                    console.warn('localStorage remove failed:', e.message);
                     return false;
                 }
             }
@@ -1426,15 +1282,13 @@
         
         // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Search page initializing...');
-            
             // Set up search form handler
             setupSearchHandlers();
             
             // Set up crawler handlers
             setupCrawlerHandlers();
             
-            // Load previous crawl data from localStorage if available
+            // Load previous crawl data
             loadPreviousCrawlData();
             
             // Check URL for search query on page load
@@ -1447,43 +1301,31 @@
                     searchInput.value = query;
                 }
                 
-                // Only search if we have content
                 if (siteContent.length > 0) {
                     performSearch(query);
                 } else {
-                    // Show crawler UI if no content
                     showCrawlerUI();
                 }
             } else {
-                // Show crawler UI on initial load
                 showCrawlerUI();
             }
         });
         
-        // Load previous crawl data from localStorage
+        // Load previous crawl data
         function loadPreviousCrawlData() {
             try {
-                console.log('Loading previous crawl data...');
-                
-                // Load site content
                 const storedContent = safeStorage.getItem('pls_site_content');
                 if (storedContent) {
                     siteContent = JSON.parse(storedContent);
                     updateCrawlStats();
-                    
-                    // Initialize search index with stored content
                     initializeSearchIndex();
-                    
-                    console.log(`Loaded ${siteContent.length} pages from previous crawl`);
                 }
                 
-                // Load visited URLs
                 const storedVisitedUrls = safeStorage.getItem('pls_visited_urls');
                 if (storedVisitedUrls) {
                     crawlerState.visitedUrls = new Set(JSON.parse(storedVisitedUrls));
                 }
                 
-                // Load recent searches
                 const storedSearches = safeStorage.getItem('pls_recent_searches');
                 if (storedSearches) {
                     recentSearches = JSON.parse(storedSearches);
@@ -1493,31 +1335,24 @@
             }
         }
         
-        // Save current crawl data to localStorage
+        // Save crawl data
         function saveCrawlData() {
             try {
-                // Save site content (limit to 5MB)
                 const contentJson = JSON.stringify(siteContent);
                 if (contentJson.length < 5 * 1024 * 1024) {
                     safeStorage.setItem('pls_site_content', contentJson);
-                } else {
-                    console.warn('Site content too large to store');
                 }
                 
-                // Save visited URLs (as array)
                 safeStorage.setItem('pls_visited_urls', JSON.stringify([...crawlerState.visitedUrls]));
-                
-                // Save recent searches
                 safeStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
                 
                 showToast('save', 'Date salvate', 'Datele de indexare au fost salvate local');
             } catch (e) {
                 console.warn('Failed to save crawl data:', e);
-                showToast('error', 'Eroare', 'Nu s-au putut salva datele de indexare');
             }
         }
         
-        // Initialize FlexSearch with error handling
+        // Initialize FlexSearch
         function initializeSearchIndex() {
             try {
                 if (typeof FlexSearch === 'undefined') {
@@ -1525,32 +1360,19 @@
                     return null;
                 }
                 
-                // Create document index
                 searchIndex = new FlexSearch.Document({
                     document: {
                         id: "id",
-                        index: [
-                            "title",
-                            "content",
-                            "url"
-                        ],
-                        store: [
-                            "title", 
-                            "url", 
-                            "excerpt", 
-                            "type", 
-                            "section", 
-                            "extension"
-                        ]
+                        index: ["title", "content", "url"],
+                        store: ["title", "url", "excerpt", "type", "section", "extension"]
                     },
                     tokenize: "forward",
                     charset: "latin:extra",
-                    language: "ro", // For Romanian
+                    language: "ro",
                     optimize: true,
                     cache: 100
                 });
 
-                // Add documents to index
                 siteContent.forEach(doc => {
                     try {
                         searchIndex.add(doc);
@@ -1559,7 +1381,6 @@
                     }
                 });
 
-                console.log('Search index initialized with', siteContent.length, 'documents');
                 return searchIndex;
             } catch (e) {
                 console.error('Failed to initialize search index:', e);
@@ -1574,14 +1395,9 @@
             
             if (startCrawlBtn) {
                 startCrawlBtn.addEventListener('click', function() {
-                    if (crawlerState.isRunning) {
-                        return;
-                    }
+                    if (crawlerState.isRunning) return;
                     
-                    // Get the starting URL
                     crawlerState.startUrl = window.location.origin;
-                    
-                    // Start the crawler
                     startCrawler();
                 });
             }
@@ -1590,12 +1406,10 @@
                 stopCrawlBtn.addEventListener('click', function() {
                     if (crawlerState.isRunning) {
                         if (crawlerState.pause) {
-                            // Resume
                             crawlerState.pause = false;
                             stopCrawlBtn.innerHTML = '<i class="material-icons">pause</i> Pauză';
                             showToast('play_arrow', 'Indexare reluată', 'Procesul de indexare continuă');
                         } else {
-                            // Pause
                             crawlerState.pause = true;
                             stopCrawlBtn.innerHTML = '<i class="material-icons">play_arrow</i> Continuă';
                             showToast('pause', 'Indexare în pauză', 'Procesul de indexare a fost întrerupt temporar');
@@ -1605,7 +1419,7 @@
             }
         }
         
-        // Show crawler UI
+        // Show/hide crawler UI
         function showCrawlerUI() {
             const crawlProgress = document.getElementById('crawl-progress');
             if (crawlProgress) {
@@ -1613,7 +1427,6 @@
             }
         }
         
-        // Hide crawler UI
         function hideCrawlerUI() {
             const crawlProgress = document.getElementById('crawl-progress');
             if (crawlProgress) {
@@ -1621,19 +1434,14 @@
             }
         }
         
-        // Start the crawler
+        // Start crawler
         function startCrawler() {
-            console.log('Starting crawler...');
-            
-            // Set crawler state
             crawlerState.isRunning = true;
             crawlerState.pause = false;
             
-            // Update UI
             updateStartButton('Indexare în progres...', true);
             showCrawlerUI();
             
-            // Queue the start URL if we have no content
             if (siteContent.length === 0 && crawlerState.urlsToVisit.length === 0) {
                 crawlerState.urlsToVisit.push({
                     url: crawlerState.startUrl,
@@ -1641,7 +1449,6 @@
                 });
             }
             
-            // Start crawling
             crawlNextUrl();
         }
         
@@ -1651,98 +1458,68 @@
             if (startCrawlBtn) {
                 startCrawlBtn.innerHTML = `<i class="material-icons">play_arrow</i> ${text}`;
                 startCrawlBtn.disabled = disabled;
-                if (disabled) {
-                    startCrawlBtn.style.opacity = '0.7';
-                    startCrawlBtn.style.cursor = 'not-allowed';
-                } else {
-                    startCrawlBtn.style.opacity = '1';
-                    startCrawlBtn.style.cursor = 'pointer';
-                }
+                startCrawlBtn.style.opacity = disabled ? '0.7' : '1';
+                startCrawlBtn.style.cursor = disabled ? 'not-allowed' : 'pointer';
             }
         }
         
         // Update crawler statistics
         function updateCrawlStats() {
-            // Update pages count
             const pagesCount = document.getElementById('crawl-pages-count');
-            if (pagesCount) {
-                pagesCount.textContent = siteContent.length;
-            }
+            if (pagesCount) pagesCount.textContent = siteContent.length;
             
-            // Update queue count
             const queueCount = document.getElementById('crawl-queue-count');
-            if (queueCount) {
-                queueCount.textContent = crawlerState.urlsToVisit.length;
-            }
+            if (queueCount) queueCount.textContent = crawlerState.urlsToVisit.length;
             
-            // Update docs count
             const docsCount = document.getElementById('crawl-docs-count');
-            if (docsCount) {
-                docsCount.textContent = crawlerState.documentCount;
-            }
+            if (docsCount) docsCount.textContent = crawlerState.documentCount;
             
-            // Update progress percentage
             const percentage = Math.min(100, Math.round((crawlerState.currentPage / crawlerState.maxPages) * 100));
             const percentageElement = document.getElementById('crawl-percentage');
-            if (percentageElement) {
-                percentageElement.textContent = `${percentage}%`;
-            }
+            if (percentageElement) percentageElement.textContent = `${percentage}%`;
             
-            // Update progress bar
             const progressFill = document.getElementById('crawl-progress-fill');
-            if (progressFill) {
-                progressFill.style.width = `${percentage}%`;
-            }
+            if (progressFill) progressFill.style.width = `${percentage}%`;
         }
         
-        // Process the next URL in the queue
+        // Process next URL in queue
         async function crawlNextUrl() {
-            // Check if we should stop
             if (!crawlerState.isRunning || crawlerState.currentPage >= crawlerState.maxPages) {
                 finishCrawling();
                 return;
             }
             
-            // Check if paused
             if (crawlerState.pause) {
                 setTimeout(crawlNextUrl, 500);
                 return;
             }
             
-            // Check if there are URLs to visit
             if (crawlerState.urlsToVisit.length === 0) {
                 finishCrawling();
                 return;
             }
             
-            // Get the next URL from the queue
             const { url, depth } = crawlerState.urlsToVisit.shift();
             
-            // Skip if already visited
             if (crawlerState.visitedUrls.has(url)) {
                 crawlNextUrl();
                 return;
             }
             
-            // Mark as visited
             crawlerState.visitedUrls.add(url);
             crawlerState.currentPage++;
             
-            // Update UI
             updateCrawlStats();
             
-            // Show current URL
             const currentUrlElement = document.getElementById('crawl-current-url');
             if (currentUrlElement) {
                 currentUrlElement.textContent = `Procesare: ${shortenUrl(url)}`;
             }
             
             try {
-                // Fetch and process the page
                 const pageData = await fetchAndProcessPage(url);
                 
                 if (pageData) {
-                    // Add to index
                     siteContent.push(pageData);
                     
                     if (searchIndex) {
@@ -1753,13 +1530,11 @@
                         }
                     }
                     
-                    // Update document count
                     if (pageData.type === 'document') {
                         crawlerState.documentCount++;
                     }
                     
-                    // Add links to queue if not at max depth
-                    if (depth < 3 && pageData.links) { // Reduced max depth for production
+                    if (depth < 3 && pageData.links) {
                         for (const link of pageData.links) {
                             if (!crawlerState.visitedUrls.has(link) && 
                                 !crawlerState.urlsToVisit.some(item => item.url === link) && 
@@ -1776,50 +1551,37 @@
                 console.error(`Error crawling ${url}:`, error);
             }
             
-            // Save data periodically (every 5 pages for production)
             if (crawlerState.currentPage % 5 === 0) {
                 saveCrawlData();
             }
             
-            // Delay to avoid overwhelming the browser/server
-            setTimeout(crawlNextUrl, 500); // Increased delay for production
+            setTimeout(crawlNextUrl, 500);
         }
         
         // Finish crawling
         function finishCrawling() {
-            console.log('Crawling finished');
             crawlerState.isRunning = false;
             updateStartButton('Reîmprospătează indexul', false);
             
-            // Update UI
             updateCrawlStats();
-            
-            // Save final data
             saveCrawlData();
             
-            // Initialize search index if not already done
             if (!searchIndex) {
                 initializeSearchIndex();
             }
             
-            // Show toast notification
             showToast('check_circle', 'Indexare completă', `S-au indexat ${siteContent.length} pagini`);
             
-            // Hide crawler UI after a delay
             setTimeout(hideCrawlerUI, 3000);
         }
         
-        // Fetch and process a page with better error handling
+        // Fetch and process page
         async function fetchAndProcessPage(url) {
             try {
-                // Create a unique ID for the page
                 const id = generatePageId(url);
-                
-                // Determine type based on URL
                 const extension = url.split('.').pop().toLowerCase();
                 const isDocument = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'].includes(extension);
                 
-                // If it's a document type, create a placeholder
                 if (isDocument) {
                     return {
                         id,
@@ -1834,9 +1596,8 @@
                     };
                 }
                 
-                // Fetch the page with timeout
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
                 
                 const response = await fetch(url, {
                     signal: controller.signal,
@@ -1857,23 +1618,14 @@
                 }
                 
                 const html = await response.text();
-                
-                // Create a DOM parser
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 
-                // Extract page information
                 const title = doc.querySelector('title')?.textContent?.trim() || getFilenameFromUrl(url);
                 const content = extractPageContent(doc);
                 const links = extractLinks(doc, url);
-                
-                // Determine page type
                 const type = determinePageType(url, doc);
-                
-                // Create excerpt
                 const excerpt = createExcerpt(content, 200);
-                
-                // Determine section
                 const section = getPageSection(url);
                 
                 return {
@@ -1895,10 +1647,8 @@
         // Extract content from page
         function extractPageContent(doc) {
             try {
-                // Create a clone to avoid modifying the original document
                 const docClone = doc.cloneNode(true);
                 
-                // Remove script, style, and other non-content elements
                 const elementsToRemove = docClone.querySelectorAll('script, style, meta, link, noscript, svg, iframe, nav, footer, header, .header, .footer, .nav, .sidebar, .menu');
                 elementsToRemove.forEach(el => {
                     if (el.parentNode) {
@@ -1906,17 +1656,13 @@
                     }
                 });
                 
-                // Extract text from main content areas
                 const mainContent = docClone.querySelector('main') || 
                                   docClone.querySelector('article') ||
                                   docClone.querySelector('.content') || 
                                   docClone.querySelector('.main') ||
                                   docClone.body;
                 
-                // Get text content
                 let text = mainContent ? mainContent.textContent || '' : '';
-                
-                // Clean up text
                 text = text.replace(/\s+/g, ' ').trim();
                 
                 return text;
@@ -1926,7 +1672,7 @@
             }
         }
         
-        // Extract links from page with better filtering
+        // Extract links from page
         function extractLinks(doc, baseUrl) {
             const links = [];
             
@@ -1936,7 +1682,6 @@
                 anchors.forEach(anchor => {
                     let href = anchor.getAttribute('href');
                     
-                    // Skip empty links, javascript: links, hash links, etc.
                     if (!href || 
                         href.startsWith('javascript:') || 
                         href === '#' || 
@@ -1947,15 +1692,12 @@
                     }
                     
                     try {
-                        // Resolve relative URLs
                         const absoluteUrl = new URL(href, baseUrl).href;
                         
-                        // Only include same-domain links
                         if (!isSameDomain(absoluteUrl, baseUrl)) {
                             return;
                         }
                         
-                        // Add if it's an HTML page or document
                         const extension = absoluteUrl.split('.').pop().toLowerCase().split('?')[0];
                         const allowedExtensions = ['', 'html', 'htm', 'php', 'asp', 'aspx', 'jsp'];
                         
@@ -1970,37 +1712,30 @@
                 console.warn('Failed to extract links:', e);
             }
             
-            // Remove duplicates
             return [...new Set(links)];
         }
         
-        // Generate a page ID from URL
+        // Helper functions
         function generatePageId(url) {
             try {
-                // Convert URL to a path-like string
                 const urlObj = new URL(url);
                 let path = urlObj.pathname;
                 if (path === '/') path = '/home';
                 
-                // Clean up the path to make a valid ID
-                return path.replace(/^\/+|\/+$/g, '')  // Remove leading/trailing slashes
-                           .replace(/[^a-z0-9-_]/gi, '_')  // Replace non-alphanumeric chars
-                           .toLowerCase()
-                           || 'home';  // Fallback to 'home' if empty
+                return path.replace(/^\/+|\/+$/g, '')
+                           .replace(/[^a-z0-9-_]/gi, '_')
+                           .toLowerCase() || 'home';
             } catch (e) {
-                // If URL parsing fails, generate a random ID
                 return 'page_' + Math.random().toString(36).substring(2, 10);
             }
         }
         
-        // Get filename from URL
         function getFilenameFromUrl(url) {
             try {
                 const urlObj = new URL(url);
                 const pathname = urlObj.pathname;
                 const filename = pathname.split('/').pop();
                 
-                // If no filename (ends with /), use pathname
                 if (!filename) {
                     return pathname.split('/').filter(Boolean).pop() || 'Pagină';
                 }
@@ -2011,15 +1746,12 @@
             }
         }
         
-        // Determine page type
         function determinePageType(url, doc) {
-            // Check file extension
             const extension = url.split('.').pop().toLowerCase().split('?')[0];
             if (['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'].includes(extension)) {
                 return 'document';
             }
             
-            // Check if URL contains indicators of document
             if (url.includes('/documente/') || 
                 url.includes('/documents/') || 
                 url.includes('/acte/') ||
@@ -2027,7 +1759,6 @@
                 return 'document';
             }
             
-            // Check page content for clues
             try {
                 const h1 = doc.querySelector('h1')?.textContent || '';
                 if (h1.includes('Document') || 
@@ -2042,11 +1773,9 @@
                 // Ignore parsing errors
             }
             
-            // Default to page
             return 'page';
         }
         
-        // Determine page section
         function getPageSection(url) {
             try {
                 const urlObj = new URL(url);
@@ -2060,34 +1789,28 @@
                     return 'documente';
                 }
                 
-                // Default to general
                 return 'general';
             } catch (e) {
                 return 'general';
             }
         }
         
-        // Check if URL is on the same domain
         function isSameDomain(url, baseUrl) {
             try {
                 const urlObj = new URL(url);
                 const baseUrlObj = new URL(baseUrl);
                 return urlObj.hostname === baseUrlObj.hostname;
             } catch (e) {
-                // If URL parsing fails, assume different domain
                 return false;
             }
         }
         
-        // Create a text excerpt
         function createExcerpt(text, maxLength = 200) {
             if (!text) return '';
             
-            // Truncate text and add ellipsis if needed
             if (text.length > maxLength) {
                 let excerpt = text.substring(0, maxLength);
                 
-                // Find last space to avoid cutting words
                 const lastSpace = excerpt.lastIndexOf(' ');
                 if (lastSpace > 0) {
                     excerpt = excerpt.substring(0, lastSpace);
@@ -2099,13 +1822,11 @@
             return text;
         }
         
-        // Shorten URL for display
         function shortenUrl(url) {
             try {
                 const urlObj = new URL(url);
                 let path = urlObj.pathname;
                 
-                // If path is too long, shorten it
                 if (path.length > 30) {
                     const parts = path.split('/').filter(Boolean);
                     if (parts.length > 2) {
@@ -2138,7 +1859,6 @@
             }
             
             if (searchInput) {
-                // Set up real-time suggestions
                 let debounceTimer;
                 searchInput.addEventListener('input', function() {
                     const query = this.value.trim();
@@ -2147,7 +1867,6 @@
                     
                     if (query.length >= 2) {
                         debounceTimer = setTimeout(() => {
-                            // Get suggestions
                             const suggestions = getSearchSuggestions(query, 5);
                             if (suggestions.length > 0) {
                                 renderSuggestions(suggestions);
@@ -2166,23 +1885,17 @@
             document.querySelectorAll('input[name="content-type"]').forEach(input => {
                 input.addEventListener('change', function() {
                     if (this.checked && this.value !== 'all') {
-                        // Uncheck "All" option
                         document.getElementById('filter-all').checked = false;
-                        
-                        // Apply filter
                         const query = searchInput.value.trim();
                         if (query) {
                             performSearch(query);
                         }
                     } else if (this.checked && this.value === 'all') {
-                        // Uncheck other options
                         document.querySelectorAll('input[name="content-type"]').forEach(otherInput => {
                             if (otherInput.value !== 'all') {
                                 otherInput.checked = false;
                             }
                         });
-                        
-                        // Apply filter
                         const query = searchInput.value.trim();
                         if (query) {
                             performSearch(query);
@@ -2191,27 +1904,20 @@
                 });
             });
             
-            // Set up section filter handlers
             document.querySelectorAll('input[name="section"]').forEach(input => {
                 input.addEventListener('change', function() {
                     if (this.checked && this.value !== 'all') {
-                        // Uncheck "All" option
                         document.getElementById('filter-all-sections').checked = false;
-                        
-                        // Apply filter
                         const query = searchInput.value.trim();
                         if (query) {
                             performSearch(query);
                         }
                     } else if (this.checked && this.value === 'all') {
-                        // Uncheck other options
                         document.querySelectorAll('input[name="section"]').forEach(otherInput => {
                             if (otherInput.value !== 'all') {
                                 otherInput.checked = false;
                             }
                         });
-                        
-                        // Apply filter
                         const query = searchInput.value.trim();
                         if (query) {
                             performSearch(query);
@@ -2225,16 +1931,13 @@
         function addToRecentSearches(query) {
             if (!query || query.length < 3) return;
             
-            // Remove if already exists and add to beginning
             recentSearches = recentSearches.filter(item => item !== query);
             recentSearches.unshift(query);
             
-            // Limit size
             if (recentSearches.length > 10) {
                 recentSearches = recentSearches.slice(0, 10);
             }
             
-            // Store in localStorage
             safeStorage.setItem('pls_recent_searches', JSON.stringify(recentSearches));
         }
         
@@ -2245,19 +1948,16 @@
             const normalizedQuery = query.toLowerCase();
             const suggestions = new Set();
             
-            // Add from recent searches
             recentSearches.forEach(search => {
                 if (search.toLowerCase().includes(normalizedQuery)) {
                     suggestions.add(search);
                 }
             });
             
-            // If we have enough suggestions from recent searches, return them
             if (suggestions.size >= maxSuggestions) {
                 return Array.from(suggestions).slice(0, maxSuggestions);
             }
             
-            // Add from site content titles
             siteContent.forEach(item => {
                 if (item.title && item.title.toLowerCase().includes(normalizedQuery)) {
                     const titleParts = item.title.split(' ');
@@ -2280,7 +1980,6 @@
             
             container.innerHTML = '';
             
-            // Create suggestion elements
             const ul = document.createElement('ul');
             suggestions.forEach(suggestion => {
                 const li = document.createElement('li');
@@ -2302,70 +2001,54 @@
         
         // Perform search
         function performSearch(query, page = 1) {
-            console.log('Performing search for:', query);
-            
-            // Update URL
             const url = new URL(window.location);
             url.searchParams.set('q', query);
             url.searchParams.set('page', page);
             window.history.pushState({}, '', url);
             
-            // Clear suggestions
             const suggestionsContainer = document.getElementById('search-suggestions');
             if (suggestionsContainer) {
                 suggestionsContainer.classList.remove('active');
             }
             
-            // Hide crawler UI
             hideCrawlerUI();
-            
-            // Show loading state
             showSearchLoading();
             
-            // Check if we need to initialize search index
             if (!searchIndex && siteContent.length > 0) {
                 searchIndex = initializeSearchIndex();
             }
             
-            // Add to recent searches
             addToRecentSearches(query);
             
-            // Get filter values
             let typeFilter = null;
             let sectionFilter = null;
             
-            // Check if any type filter is selected
             document.querySelectorAll('input[name="content-type"]:checked').forEach(input => {
                 if (input.value !== 'all') {
                     typeFilter = input.value;
                 }
             });
             
-            // Check if any section filter is selected
             document.querySelectorAll('input[name="section"]:checked').forEach(input => {
                 if (input.value !== 'all') {
                     sectionFilter = input.value;
                 }
             });
             
-            // Perform search
             if (searchIndex) {
                 try {
                     const results = searchIndex.search(query, {
                         limit: 100,
-                        suggest: true, // Enable suggestions (fuzzy search)
-                        enrich: true // Return full document data
+                        suggest: true,
+                        enrich: true
                     });
                     
-                    // Process results
                     let allResults = [];
                     
-                    // Combine results from all fields
                     if (Array.isArray(results)) {
                         results.forEach(resultSet => {
                             if (resultSet.result && Array.isArray(resultSet.result)) {
                                 resultSet.result.forEach(result => {
-                                    // Add if not already in results
                                     if (!allResults.some(r => r.id === result.id)) {
                                         allResults.push(result);
                                     }
@@ -2374,7 +2057,6 @@
                         });
                     }
                     
-                    // Apply filters
                     if (typeFilter) {
                         allResults = allResults.filter(result => result.type === typeFilter);
                     }
@@ -2383,17 +2065,14 @@
                         allResults = allResults.filter(result => result.section === sectionFilter);
                     }
                     
-                    // Pagination
                     const perPage = 10;
                     const totalResults = allResults.length;
                     const totalPages = Math.ceil(totalResults / perPage);
                     const startIndex = (page - 1) * perPage;
                     const endIndex = Math.min(startIndex + perPage, totalResults);
                     
-                    // Get current page results
                     const paginatedResults = allResults.slice(startIndex, endIndex);
                     
-                    // Render results
                     setTimeout(() => {
                         renderSearchResults({
                             query,
@@ -2402,16 +2081,14 @@
                             currentPage: page,
                             totalPages,
                             perPage,
-                            // Identify direct match (first result with high relevance)
                             directMatch: allResults.length > 0 ? allResults[0] : null
                         });
-                    }, 500); // Small delay to show loading animation
+                    }, 500);
                 } catch (e) {
                     console.error('Search error:', e);
                     showNoResultsState(query);
                 }
             } else {
-                // No search index, show start crawling prompt
                 showNoCrawlDataState();
             }
         }
@@ -2429,10 +2106,8 @@
                 `;
             }
             
-            // Reset pagination
             document.getElementById('search-pagination').innerHTML = '';
             
-            // Hide direct match
             const directMatchContainer = document.getElementById('direct-match-container');
             if (directMatchContainer) {
                 directMatchContainer.innerHTML = '';
@@ -2459,7 +2134,6 @@
         
         // Render search results
         function renderSearchResults(result) {
-            // Update summary
             const searchSummary = document.getElementById('search-summary');
             if (searchSummary) {
                 searchSummary.innerHTML = `
@@ -2468,31 +2142,6 @@
                 `;
             }
             
-            // Update direct match if exists
-            const directMatchContainer = document.getElementById('direct-match-container');
-            if (directMatchContainer && result.directMatch) {
-                const directMatch = result.directMatch;
-                directMatchContainer.innerHTML = `
-                    <div class="direct-match">
-                        <div class="direct-match-icon">
-                            <i class="material-icons">${directMatch.type === 'document' ? 'description' : 'find_in_page'}</i>
-                        </div>
-                        <div class="direct-match-content">
-                            <h3>Rezultat exact găsit</h3>
-                            <p>${highlightSearchTerms(directMatch.title, result.query)}</p>
-                            <a href="${directMatch.url}" class="direct-match-link" target="_blank">
-                                Accesează direct
-                                <i class="material-icons">arrow_forward</i>
-                            </a>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Update filter counts
-            updateFilterCounts(result);
-            
-            // Display results
             if (result.totalResults > 0) {
                 displaySearchResults(result);
                 displayPagination(result.totalPages, result.currentPage);
@@ -2500,33 +2149,7 @@
                 showNoResultsState(result.query);
             }
             
-            // Show toast notification
             showToast('search', 'Căutare finalizată', `S-au găsit ${result.totalResults} rezultate`);
-        }
-        
-        // Update filter counts
-        function updateFilterCounts(result) {
-            // Count by type
-            const typeCounts = {
-                all: result.totalResults,
-                page: 0,
-                document: 0
-            };
-            
-            // Count from results
-            result.results.forEach(hit => {
-                if (hit.type && typeCounts[hit.type] !== undefined) {
-                    typeCounts[hit.type]++;
-                }
-            });
-            
-            // Update DOM
-            Object.keys(typeCounts).forEach(type => {
-                const countElement = document.getElementById(`count-${type}`);
-                if (countElement) {
-                    countElement.textContent = type === 'all' ? result.totalResults : typeCounts[type];
-                }
-            });
         }
         
         // Display search results
@@ -2536,12 +2159,10 @@
             
             resultList.innerHTML = '';
             
-            // Create result cards
             result.results.forEach(hit => {
                 const resultCard = document.createElement('div');
                 resultCard.className = 'result-card';
                 
-                // Determine icon based on type
                 let typeIcon = 'article';
                 let typeLabel = 'Pagină';
                 
@@ -2549,7 +2170,6 @@
                     typeIcon = 'description';
                     typeLabel = 'Document';
                     
-                    // Specific icon based on extension
                     if (hit.extension) {
                         if (hit.extension === 'pdf') {
                             typeIcon = 'picture_as_pdf';
@@ -2564,10 +2184,7 @@
                     }
                 }
                 
-                // Format title with highlighting
                 const highlightedTitle = highlightSearchTerms(hit.title || 'Fără titlu', result.query);
-                
-                // Format content excerpt with highlighting
                 const highlightedExcerpt = highlightSearchTerms(hit.excerpt || 'Fără descriere', result.query);
                 
                 resultCard.innerHTML = `
@@ -2593,18 +2210,15 @@
             });
         }
         
-        // Highlight search terms in text
+        // Highlight search terms
         function highlightSearchTerms(text, query) {
             if (!text || !query) return text;
             
             const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
-            
             let highlightedText = text;
             
-            // Sort words by length (longest first) to prevent highlighting partial words
             words.sort((a, b) => b.length - a.length);
             
-            // Replace each word with highlighted version
             words.forEach(word => {
                 const regex = new RegExp(`(${escapeRegExp(word)})`, 'gi');
                 highlightedText = highlightedText.replace(regex, '<span class="search-highlight">$1</span>');
@@ -2613,12 +2227,10 @@
             return highlightedText;
         }
         
-        // Helper function to escape special characters in regex
         function escapeRegExp(string) {
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
         
-        // Helper function to escape HTML
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
@@ -2628,16 +2240,13 @@
         // Display pagination
         function displayPagination(totalPages, currentPage) {
             const paginationContainer = document.getElementById('search-pagination');
-            if (!paginationContainer) return;
-            
-            if (totalPages <= 1) {
-                paginationContainer.innerHTML = '';
+            if (!paginationContainer || totalPages <= 1) {
+                if (paginationContainer) paginationContainer.innerHTML = '';
                 return;
             }
             
             let paginationHtml = '';
             
-// Previous page button
             const prevDisabled = currentPage <= 1 ? 'disabled' : '';
             paginationHtml += `
                 <a href="#" onclick="navigateToPage(${currentPage - 1}); return false;" 
@@ -2646,17 +2255,14 @@
                 </a>
             `;
             
-            // Page numbers
             const maxDisplayedPages = 5;
             let startPage = Math.max(1, currentPage - Math.floor(maxDisplayedPages / 2));
             let endPage = Math.min(totalPages, startPage + maxDisplayedPages - 1);
             
-            // Adjust start page if end page is maximum
             if (endPage === totalPages) {
                 startPage = Math.max(1, endPage - maxDisplayedPages + 1);
             }
             
-            // First page
             if (startPage > 1) {
                 paginationHtml += `
                     <a href="#" onclick="navigateToPage(1); return false;" class="pagination-btn">1</a>
@@ -2667,7 +2273,6 @@
                 }
             }
             
-            // Page numbers
             for (let i = startPage; i <= endPage; i++) {
                 const activeClass = i === currentPage ? 'active' : '';
                 paginationHtml += `
@@ -2676,7 +2281,6 @@
                 `;
             }
             
-            // Last page
             if (endPage < totalPages) {
                 if (endPage < totalPages - 1) {
                     paginationHtml += '<span class="pagination-ellipsis">...</span>';
@@ -2688,7 +2292,6 @@
                 `;
             }
             
-            // Next page button
             const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
             paginationHtml += `
                 <a href="#" onclick="navigateToPage(${currentPage + 1}); return false;" 
@@ -2726,11 +2329,9 @@
             const url = new URL(window.location);
             const query = url.searchParams.get('q') || '';
             
-            // Update URL parameters
             url.searchParams.set('page', page);
             window.history.pushState({}, '', url);
             
-            // Execute search with updated page
             performSearch(query, page);
         }
         
@@ -2763,12 +2364,9 @@
             }
         }
         
-        // Fallback copy method
         function fallbackCopyTextToClipboard(text) {
             const textArea = document.createElement("textarea");
             textArea.value = text;
-            
-            // Avoid scrolling to bottom
             textArea.style.top = "0";
             textArea.style.left = "0";
             textArea.style.position = "fixed";
@@ -2811,7 +2409,6 @@
             
             toastContainer.appendChild(toast);
             
-            // Auto-remove toast after animation completes
             setTimeout(() => {
                 if (toast.parentNode) {
                     toast.parentNode.removeChild(toast);
@@ -2819,14 +2416,13 @@
             }, 3500);
         }
         
-        // Make functions available globally
+        // Global functions
         window.navigateToPage = navigateToPage;
         window.shareResult = shareResult;
         window.showCrawlerUI = showCrawlerUI;
         
-        // Additional event listeners for better UX
+        // Additional event listeners
         document.addEventListener('click', function(event) {
-            // Hide suggestions when clicking outside search
             if (!event.target.closest('.search-header')) {
                 const suggestionsContainer = document.getElementById('search-suggestions');
                 if (suggestionsContainer) {
@@ -2835,7 +2431,6 @@
             }
         });
         
-        // Handle ESC key to close suggestions
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 const suggestionsContainer = document.getElementById('search-suggestions');
@@ -2845,7 +2440,6 @@
             }
         });
         
-        // Handle browser back/forward navigation
         window.addEventListener('popstate', function(event) {
             const urlParams = new URLSearchParams(window.location.search);
             const query = urlParams.get('q');
@@ -2862,58 +2456,6 @@
                 }
             }
         });
-        
-        // Performance monitoring
-        console.log('Search engine initialized successfully');
-        
-        // Auto-start demo mode if no content is available (for demonstration)
-        setTimeout(() => {
-            if (siteContent.length === 0 && !crawlerState.isRunning) {
-                console.log('Auto-starting demo crawler...');
-                // Only auto-start if we're in a development environment
-                if (window.location.hostname === 'localhost' || 
-                    window.location.hostname === '127.0.0.1' ||
-                    window.location.search.includes('demo=true')) {
-                    
-                    // Add some demo content for testing
-                    const demoContent = [
-                        {
-                            id: 'demo-1',
-                            url: '/pls/',
-                            title: 'Poliția Locală Slobozia - Acasă',
-                            content: 'Pagina principală a Poliției Locale Slobozia. Informații despre serviciile noastre și misiunea de a servi comunitatea.',
-                            excerpt: 'Pagina principală a Poliției Locale Slobozia cu informații despre servicii și misiune.',
-                            type: 'page',
-                            section: 'general'
-                        },
-                        {
-                            id: 'demo-2',
-                            url: '/pls/contact',
-                            title: 'Contact - Poliția Locală Slobozia',
-                            content: 'Informații de contact pentru Poliția Locală Slobozia. Telefon, adresa și program de lucru.',
-                            excerpt: 'Informații de contact: telefon, adresa și program de lucru.',
-                            type: 'page',
-                            section: 'contact'
-                        },
-                        {
-                            id: 'demo-3',
-                            url: '/pls/documente/regulament.pdf',
-                            title: 'Regulamentul de Organizare și Funcționare',
-                            content: 'Document: Regulamentul de Organizare și Funcționare al Poliției Locale Slobozia',
-                            excerpt: 'Document oficial cu regulamentul de organizare și funcționare.',
-                            type: 'document',
-                            section: 'documente',
-                            extension: 'pdf'
-                        }
-                    ];
-                    
-                    siteContent = demoContent;
-                    initializeSearchIndex();
-                    updateCrawlStats();
-                    showToast('info', 'Demo Content', 'S-au încărcat date demo pentru testare');
-                }
-            }
-        }, 2000);
     </script>
 </body>
 </html>
