@@ -1159,6 +1159,10 @@
                         <i class="material-icons">clear_all</i>
                         Șterge date
                     </button>
+                    <button class="crawl-action secondary" id="quick-add-btn">
+                        <i class="material-icons">flash_on</i>
+                        Adaugă rapid PLS
+                    </button>
                 </div>
                 
                 <!-- Manual URL input -->
@@ -1488,6 +1492,7 @@
             const stopCrawlBtn = document.getElementById('stop-crawl-btn');
             const addUrlBtn = document.getElementById('add-url-btn');
             const clearDataBtn = document.getElementById('clear-data-btn');
+            const quickAddBtn = document.getElementById('quick-add-btn');
             const addManualUrlBtn = document.getElementById('add-manual-url');
             const cancelManualUrlBtn = document.getElementById('cancel-manual-url');
             const manualUrlInput = document.getElementById('manual-url-input');
@@ -1543,6 +1548,57 @@
                         
                         updateCrawlStats();
                         showToast('delete', 'Date șterse', 'Toate datele de indexare au fost șterse');
+                    }
+                });
+            }
+            
+            if (quickAddBtn) {
+                quickAddBtn.addEventListener('click', function() {
+                    // Add known PLS pages quickly
+                    const baseUrl = window.location.origin;
+                    const plsPages = [
+                        baseUrl + '/pls/',
+                        baseUrl + '/pls/atributii/',
+                        baseUrl + '/pls/contact/',
+                        baseUrl + '/pls/documente/',
+                        baseUrl + '/pls/petitii/',
+                        baseUrl + '/pls/transparenta/',
+                        baseUrl + '/pls/despre/',
+                        baseUrl + '/pls/conducere/',
+                        baseUrl + '/pls/relatii-cu-publicul/',
+                        baseUrl + '/pls/sediu/',
+                        baseUrl + '/pls/integritate/',
+                        baseUrl + '/pls/gdpr/',
+                        baseUrl + '/pls/recrutare/',
+                        baseUrl + '/pls/audiente/',
+                        baseUrl + '/pls/organigrama/',
+                        baseUrl + '/pls/regulament/',
+                        baseUrl + '/pls/acte-normative/',
+                        baseUrl + '/pls/raspunsuri/'
+                    ];
+                    
+                    let addedCount = 0;
+                    plsPages.forEach(url => {
+                        if (!crawlerState.urlsToVisit.some(item => item.url === url) && 
+                            !crawlerState.visitedUrls.has(url)) {
+                            crawlerState.urlsToVisit.push({
+                                url: url,
+                                depth: 0
+                            });
+                            addedCount++;
+                        }
+                    });
+                    
+                    updateCrawlStats();
+                    showToast('flash_on', `${addedCount} URL-uri adăugate`, 'Paginile principale PLS au fost adăugate în coada de indexare');
+                    
+                    // Start crawler if not running and we added URLs
+                    if (!crawlerState.isRunning && addedCount > 0) {
+                        debugLog(`Auto-starting crawler with ${addedCount} PLS pages`);
+                        crawlerState.isRunning = true;
+                        updateStartButton('Indexare în progres...', true);
+                        showCrawlerUI();
+                        crawlNextUrl();
                     }
                 });
             }
@@ -1626,13 +1682,40 @@
             crawlerState.urlsToVisit = [];
             crawlerState.currentPage = 0;
             
-            // Determine starting URLs - try multiple entry points
-            const startingUrls = [
-                window.location.origin + '/pls/',
-                window.location.origin + '/pls/index.html',
-                window.location.origin + '/',
-                window.location.origin + '/index.html'
-            ];
+            // Determine starting URLs based on current location
+            const currentPath = window.location.pathname;
+            const isInPLSFolder = currentPath.includes('/pls/');
+            
+            let startingUrls;
+            
+            if (isInPLSFolder) {
+                // We're in the /pls/ folder, so start from known PLS pages
+                const baseUrl = window.location.origin;
+                startingUrls = [
+                    baseUrl + '/pls/',
+                    baseUrl + '/pls/index.html',
+                    baseUrl + '/pls/atributii/',
+                    baseUrl + '/pls/contact/',
+                    baseUrl + '/pls/documente/',
+                    baseUrl + '/pls/petitii/',
+                    baseUrl + '/pls/transparenta/',
+                    baseUrl + '/pls/despre/',
+                    baseUrl + '/pls/conducere/',
+                    baseUrl + '/pls/relatii-cu-publicul/',
+                    baseUrl + '/pls/sediu/',
+                    baseUrl + '/pls/integritate/',
+                    baseUrl + '/pls/gdpr/',
+                    baseUrl + '/pls/recrutare/'
+                ];
+            } else {
+                // Try root level first, then PLS folder
+                startingUrls = [
+                    window.location.origin + '/',
+                    window.location.origin + '/index.html',
+                    window.location.origin + '/pls/',
+                    window.location.origin + '/pls/index.html'
+                ];
+            }
             
             // Add all starting URLs to queue
             startingUrls.forEach(url => {
@@ -1773,10 +1856,12 @@
                         }
                     }
                 } else {
-                    debugLog(`✗ Failed to process: ${url}`);
+                    // Page failed to process, but don't stop the whole crawl
+                    debugLog(`⚠ Failed to process: ${url} - continuing with next URL`);
                 }
             } catch (error) {
-                debugLog(`✗ Error crawling ${url}: ${error.message}`);
+                // Log error but continue crawling
+                debugLog(`✗ Error crawling ${url}: ${error.message} - continuing`);
                 console.error(`Error crawling ${url}:`, error);
             }
             
@@ -1786,8 +1871,8 @@
                 saveCrawlData();
             }
             
-            // Delay to avoid overwhelming the browser/server
-            setTimeout(crawlNextUrl, 1000);
+            // Continue to next URL - don't stop on errors
+            setTimeout(crawlNextUrl, 800);
         }
         
         // Finish crawling
@@ -1961,7 +2046,10 @@
                         href === '#' || 
                         href.startsWith('tel:') || 
                         href.startsWith('mailto:') ||
-                        href.startsWith('ftp:')) {
+                        href.startsWith('ftp:') ||
+                        href.includes('facebook.com') ||
+                        href.includes('youtube.com') ||
+                        href.includes('twitter.com')) {
                         return;
                     }
                     
@@ -1969,23 +2057,47 @@
                         // Resolve relative URLs
                         const absoluteUrl = new URL(href, baseUrl).href;
                         
-                        // Check if it's same domain (or subdomain)
+                        // Check if it's same domain
                         const currentDomain = new URL(baseUrl).hostname;
                         const linkDomain = new URL(absoluteUrl).hostname;
                         
-                        // Allow same domain and subdomains
-                        if (!linkDomain.endsWith(currentDomain.replace('www.', '')) && 
-                            !currentDomain.endsWith(linkDomain.replace('www.', ''))) {
+                        if (linkDomain !== currentDomain) {
+                            return; // Skip external links
+                        }
+                        
+                        // Get the path to check if it's likely to exist
+                        const urlPath = new URL(absoluteUrl).pathname;
+                        
+                        // Skip certain paths that are likely to not exist
+                        const skipPaths = [
+                            '/amenzi',    // (INDISPONIBIL) in footer
+                            '/termeni',   // Generic footer link
+                            '/accesibilitate', // Generic footer link
+                            '/sitemap'    // Generic footer link
+                        ];
+                        
+                        if (skipPaths.some(skip => urlPath.includes(skip))) {
                             return;
                         }
                         
+                        // If we're in a GitHub Pages /pls/ setup, prioritize /pls/ paths
+                        const currentPath = new URL(baseUrl).pathname;
+                        if (currentPath.includes('/pls/')) {
+                            // If the link doesn't start with /pls/ and it's a relative path
+                            if (urlPath.startsWith('/') && !urlPath.startsWith('/pls/') && !urlPath.startsWith('/index')) {
+                                // Convert to /pls/ path
+                                const plsUrl = new URL(absoluteUrl);
+                                plsUrl.pathname = '/pls' + urlPath;
+                                return; // Skip the original, we'll add PLS version manually later
+                            }
+                        }
+                        
                         // Get file extension (if any)
-                        const urlPath = new URL(absoluteUrl).pathname;
                         const lastDot = urlPath.lastIndexOf('.');
                         const extension = lastDot > -1 ? urlPath.substring(lastDot + 1).toLowerCase().split('?')[0] : '';
                         
                         // Allow HTML pages and common web extensions
-                        const allowedExtensions = ['', 'html', 'htm', 'php', 'asp', 'aspx', 'jsp', 'do', 'action'];
+                        const allowedExtensions = ['', 'html', 'htm', 'php', 'asp', 'aspx', 'jsp'];
                         const allowedDocuments = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
                         
                         if (allowedExtensions.includes(extension) || 
@@ -1993,7 +2105,7 @@
                             !extension || 
                             urlPath.endsWith('/')) {
                             
-                            // Clean up the URL (remove fragments, sort query params consistently)
+                            // Clean up the URL
                             const cleanUrl = new URL(absoluteUrl);
                             cleanUrl.hash = '';
                             
@@ -2008,22 +2120,26 @@
                     }
                 });
                 
-                // If no links found, try to add some common paths manually
-                if (links.length === 0) {
+                // If we're in /pls/ folder and found few links, add some known PLS structure pages
+                const currentPath = new URL(baseUrl).pathname;
+                if (currentPath.includes('/pls/') && links.length < 5) {
                     const baseDomain = new URL(baseUrl).origin;
-                    const commonPaths = [
+                    const plsPaths = [
                         '/pls/',
-                        '/pls/index.html',
-                        '/pls/despre/',
+                        '/pls/atributii/',
                         '/pls/contact/',
                         '/pls/documente/',
                         '/pls/petitii/',
                         '/pls/transparenta/',
-                        '/',
-                        '/index.html'
+                        '/pls/despre/',
+                        '/pls/conducere/',
+                        '/pls/relatii-cu-publicul/',
+                        '/pls/sediu/',
+                        '/pls/integritate/',
+                        '/pls/gdpr/'
                     ];
                     
-                    commonPaths.forEach(path => {
+                    plsPaths.forEach(path => {
                         const testUrl = baseDomain + path;
                         if (!links.includes(testUrl)) {
                             links.push(testUrl);
