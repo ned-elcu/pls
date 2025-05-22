@@ -1151,6 +1151,40 @@
                         <i class="material-icons">pause</i>
                         Pauză
                     </button>
+                    <button class="crawl-action secondary" id="add-url-btn">
+                        <i class="material-icons">add</i>
+                        Adaugă URL
+                    </button>
+                    <button class="crawl-action secondary" id="clear-data-btn">
+                        <i class="material-icons">clear_all</i>
+                        Șterge date
+                    </button>
+                </div>
+                
+                <!-- Manual URL input -->
+                <div id="manual-url-input" style="display: none; margin-top: 1rem; padding: 1rem; background-color: rgba(30, 136, 229, 0.05); border-radius: 8px;">
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <input type="url" id="manual-url" placeholder="https://example.com/page" style="flex: 1; padding: 0.5rem; border: 1px solid #e0e0e0; border-radius: 4px;">
+                        <button id="add-manual-url" style="padding: 0.5rem 1rem; background: var(--secondary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">Adaugă</button>
+                        <button id="cancel-manual-url" style="padding: 0.5rem 1rem; background: #ccc; color: black; border: none; border-radius: 4px; cursor: pointer;">Anulează</button>
+                    </div>
+                    <small style="color: var(--text-secondary);">Introduceți URL-ul complet al paginii pe care doriți să o indexați.</small>
+                </div>
+                
+                <!-- Debug console -->
+                <div id="debug-console" style="margin-top: 1rem; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.8rem; display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <strong>Debug Console:</strong>
+                        <button id="clear-debug" style="padding: 0.2rem 0.5rem; background: #ccc; border: none; border-radius: 3px; font-size: 0.7rem; cursor: pointer;">Clear</button>
+                    </div>
+                    <div id="debug-output"></div>
+                </div>
+                
+                <div style="margin-top: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="show-debug" style="margin: 0;">
+                        <span style="font-size: 0.9rem; color: var(--text-secondary);">Afișează consolă debug</span>
+                    </label>
                 </div>
             </div>
             
@@ -1280,8 +1314,56 @@
             }
         };
         
+        // Debug console functionality
+        function debugLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const debugOutput = document.getElementById('debug-output');
+            if (debugOutput) {
+                const entry = document.createElement('div');
+                entry.style.marginBottom = '0.2rem';
+                entry.innerHTML = `<span style="color: #666;">${timestamp}</span> ${message}`;
+                debugOutput.appendChild(entry);
+                
+                // Auto-scroll to bottom
+                const debugConsole = document.getElementById('debug-console');
+                if (debugConsole) {
+                    debugConsole.scrollTop = debugConsole.scrollHeight;
+                }
+                
+                // Limit entries to 100
+                if (debugOutput.children.length > 100) {
+                    debugOutput.removeChild(debugOutput.firstChild);
+                }
+            }
+            
+            // Also log to browser console
+            console.log(`[CRAWLER] ${message}`);
+        }
+        
         // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
+            debugLog('Search page initializing...');
+            
+            // Set up debug console toggle
+            const showDebugCheckbox = document.getElementById('show-debug');
+            const debugConsole = document.getElementById('debug-console');
+            const clearDebugBtn = document.getElementById('clear-debug');
+            
+            if (showDebugCheckbox && debugConsole) {
+                showDebugCheckbox.addEventListener('change', function() {
+                    debugConsole.style.display = this.checked ? 'block' : 'none';
+                });
+            }
+            
+            if (clearDebugBtn) {
+                clearDebugBtn.addEventListener('click', function() {
+                    const debugOutput = document.getElementById('debug-output');
+                    if (debugOutput) {
+                        debugOutput.innerHTML = '';
+                    }
+                });
+            }
+            
             // Set up search form handler
             setupSearchHandlers();
             
@@ -1296,41 +1378,53 @@
             const query = urlParams.get('q');
             
             if (query) {
+                debugLog(`Search query found in URL: ${query}`);
                 const searchInput = document.getElementById('search-input');
                 if (searchInput) {
                     searchInput.value = query;
                 }
                 
                 if (siteContent.length > 0) {
+                    debugLog(`Performing search with ${siteContent.length} indexed pages`);
                     performSearch(query);
                 } else {
+                    debugLog('No indexed content found, showing crawler UI');
                     showCrawlerUI();
                 }
             } else {
+                debugLog('No search query, showing crawler UI');
                 showCrawlerUI();
             }
+            
+            debugLog('Search page initialization complete');
         });
         
         // Load previous crawl data
         function loadPreviousCrawlData() {
             try {
+                debugLog('Loading previous crawl data...');
+                
                 const storedContent = safeStorage.getItem('pls_site_content');
                 if (storedContent) {
                     siteContent = JSON.parse(storedContent);
                     updateCrawlStats();
                     initializeSearchIndex();
+                    debugLog(`Loaded ${siteContent.length} pages from previous crawl`);
                 }
                 
                 const storedVisitedUrls = safeStorage.getItem('pls_visited_urls');
                 if (storedVisitedUrls) {
                     crawlerState.visitedUrls = new Set(JSON.parse(storedVisitedUrls));
+                    debugLog(`Loaded ${crawlerState.visitedUrls.size} visited URLs`);
                 }
                 
                 const storedSearches = safeStorage.getItem('pls_recent_searches');
                 if (storedSearches) {
                     recentSearches = JSON.parse(storedSearches);
+                    debugLog(`Loaded ${recentSearches.length} recent searches`);
                 }
             } catch (e) {
+                debugLog(`Failed to load previous crawl data: ${e.message}`);
                 console.warn('Failed to load previous crawl data:', e);
             }
         }
@@ -1392,6 +1486,12 @@
         function setupCrawlerHandlers() {
             const startCrawlBtn = document.getElementById('start-crawl-btn');
             const stopCrawlBtn = document.getElementById('stop-crawl-btn');
+            const addUrlBtn = document.getElementById('add-url-btn');
+            const clearDataBtn = document.getElementById('clear-data-btn');
+            const addManualUrlBtn = document.getElementById('add-manual-url');
+            const cancelManualUrlBtn = document.getElementById('cancel-manual-url');
+            const manualUrlInput = document.getElementById('manual-url-input');
+            const manualUrlField = document.getElementById('manual-url');
             
             if (startCrawlBtn) {
                 startCrawlBtn.addEventListener('click', function() {
@@ -1417,6 +1517,85 @@
                     }
                 });
             }
+            
+            if (addUrlBtn) {
+                addUrlBtn.addEventListener('click', function() {
+                    manualUrlInput.style.display = manualUrlInput.style.display === 'none' ? 'block' : 'none';
+                    if (manualUrlInput.style.display === 'block') {
+                        manualUrlField.focus();
+                    }
+                });
+            }
+            
+            if (clearDataBtn) {
+                clearDataBtn.addEventListener('click', function() {
+                    if (confirm('Sunteți sigur că doriți să ștergeți toate datele de indexare?')) {
+                        siteContent = [];
+                        crawlerState.visitedUrls.clear();
+                        crawlerState.urlsToVisit = [];
+                        crawlerState.currentPage = 0;
+                        crawlerState.documentCount = 0;
+                        searchIndex = null;
+                        
+                        // Clear localStorage
+                        safeStorage.removeItem('pls_site_content');
+                        safeStorage.removeItem('pls_visited_urls');
+                        
+                        updateCrawlStats();
+                        showToast('delete', 'Date șterse', 'Toate datele de indexare au fost șterse');
+                    }
+                });
+            }
+            
+            if (addManualUrlBtn) {
+                addManualUrlBtn.addEventListener('click', function() {
+                    const url = manualUrlField.value.trim();
+                    if (url) {
+                        try {
+                            new URL(url); // Validate URL
+                            
+                            // Add to crawl queue
+                            crawlerState.urlsToVisit.push({
+                                url: url,
+                                depth: 0
+                            });
+                            
+                            manualUrlField.value = '';
+                            manualUrlInput.style.display = 'none';
+                            updateCrawlStats();
+                            
+                            showToast('add', 'URL adăugat', `URL-ul ${url} a fost adăugat în coada de indexare`);
+                            
+                            // Start crawler if not running
+                            if (!crawlerState.isRunning) {
+                                showToast('info', 'Pornire automată', 'Indexarea a început automat');
+                                crawlerState.isRunning = true;
+                                updateStartButton('Indexare în progres...', true);
+                                showCrawlerUI();
+                                crawlNextUrl();
+                            }
+                        } catch (e) {
+                            showToast('error', 'URL invalid', 'Vă rugăm să introduceți un URL valid');
+                        }
+                    }
+                });
+            }
+            
+            if (cancelManualUrlBtn) {
+                cancelManualUrlBtn.addEventListener('click', function() {
+                    manualUrlField.value = '';
+                    manualUrlInput.style.display = 'none';
+                });
+            }
+            
+            // Allow Enter key in URL input
+            if (manualUrlField) {
+                manualUrlField.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        addManualUrlBtn.click();
+                    }
+                });
+            }
         }
         
         // Show/hide crawler UI
@@ -1436,18 +1615,34 @@
         
         // Start crawler
         function startCrawler() {
+            debugLog('Starting crawler...');
             crawlerState.isRunning = true;
             crawlerState.pause = false;
             
             updateStartButton('Indexare în progres...', true);
             showCrawlerUI();
             
-            if (siteContent.length === 0 && crawlerState.urlsToVisit.length === 0) {
+            // Clear previous state
+            crawlerState.urlsToVisit = [];
+            crawlerState.currentPage = 0;
+            
+            // Determine starting URLs - try multiple entry points
+            const startingUrls = [
+                window.location.origin + '/pls/',
+                window.location.origin + '/pls/index.html',
+                window.location.origin + '/',
+                window.location.origin + '/index.html'
+            ];
+            
+            // Add all starting URLs to queue
+            startingUrls.forEach(url => {
                 crawlerState.urlsToVisit.push({
-                    url: crawlerState.startUrl,
+                    url: url,
                     depth: 0
                 });
-            }
+            });
+            
+            debugLog(`Starting URLs added to queue: ${startingUrls.join(', ')}`);
             
             crawlNextUrl();
         }
@@ -1484,33 +1679,53 @@
         
         // Process next URL in queue
         async function crawlNextUrl() {
+            // Only log every 5th iteration to avoid spam
+            if (crawlerState.currentPage % 5 === 0) {
+                debugLog(`Crawl state: running=${crawlerState.isRunning}, page=${crawlerState.currentPage}/${crawlerState.maxPages}, queue=${crawlerState.urlsToVisit.length}`);
+            }
+            
+            // Check if we should stop
             if (!crawlerState.isRunning || crawlerState.currentPage >= crawlerState.maxPages) {
+                debugLog('Crawling finished - reached limits');
                 finishCrawling();
                 return;
             }
             
+            // Check if paused
             if (crawlerState.pause) {
+                if (crawlerState.currentPage % 10 === 0) { // Only log occasionally when paused
+                    debugLog('Crawling paused, waiting...');
+                }
                 setTimeout(crawlNextUrl, 500);
                 return;
             }
             
+            // Check if there are URLs to visit
             if (crawlerState.urlsToVisit.length === 0) {
+                debugLog('No more URLs to visit, finishing crawl');
                 finishCrawling();
                 return;
             }
             
+            // Get the next URL from the queue
             const { url, depth } = crawlerState.urlsToVisit.shift();
+            debugLog(`Processing URL: ${url} (depth: ${depth})`);
             
+            // Skip if already visited
             if (crawlerState.visitedUrls.has(url)) {
+                debugLog(`URL already visited: ${url}`);
                 crawlNextUrl();
                 return;
             }
             
+            // Mark as visited
             crawlerState.visitedUrls.add(url);
             crawlerState.currentPage++;
             
+            // Update UI
             updateCrawlStats();
             
+            // Show current URL
             const currentUrlElement = document.getElementById('crawl-current-url');
             if (currentUrlElement) {
                 currentUrlElement.textContent = `Procesare: ${shortenUrl(url)}`;
@@ -1520,13 +1735,16 @@
                 const pageData = await fetchAndProcessPage(url);
                 
                 if (pageData) {
+                    debugLog(`✓ Successfully processed: ${pageData.title}`);
+                    
+                    // Add to index
                     siteContent.push(pageData);
                     
                     if (searchIndex) {
                         try {
                             searchIndex.add(pageData);
                         } catch (e) {
-                            console.warn('Failed to add page to search index:', e);
+                            debugLog(`✗ Failed to add to search index: ${e.message}`);
                         }
                     }
                     
@@ -1534,28 +1752,42 @@
                         crawlerState.documentCount++;
                     }
                     
-                    if (depth < 3 && pageData.links) {
+                    // Add links to queue if not at max depth
+                    if (depth < 3 && pageData.links && pageData.links.length > 0) {
+                        let addedCount = 0;
+                        
                         for (const link of pageData.links) {
                             if (!crawlerState.visitedUrls.has(link) && 
-                                !crawlerState.urlsToVisit.some(item => item.url === link) && 
-                                isSameDomain(link, url)) {
+                                !crawlerState.urlsToVisit.some(item => item.url === link)) {
+                                
                                 crawlerState.urlsToVisit.push({
                                     url: link,
                                     depth: depth + 1
                                 });
+                                addedCount++;
                             }
                         }
+                        
+                        if (addedCount > 0) {
+                            debugLog(`Added ${addedCount} new URLs to queue from ${pageData.links.length} found links`);
+                        }
                     }
+                } else {
+                    debugLog(`✗ Failed to process: ${url}`);
                 }
             } catch (error) {
+                debugLog(`✗ Error crawling ${url}: ${error.message}`);
                 console.error(`Error crawling ${url}:`, error);
             }
             
+            // Save data periodically
             if (crawlerState.currentPage % 5 === 0) {
+                debugLog('Saving crawl data...');
                 saveCrawlData();
             }
             
-            setTimeout(crawlNextUrl, 500);
+            // Delay to avoid overwhelming the browser/server
+            setTimeout(crawlNextUrl, 1000);
         }
         
         // Finish crawling
@@ -1597,24 +1829,33 @@
                 }
                 
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                const timeoutId = setTimeout(() => {
+                    debugLog(`⏱ Timeout for: ${url}`);
+                    controller.abort();
+                }, 10000);
                 
                 const response = await fetch(url, {
                     signal: controller.signal,
                     headers: {
-                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-                    }
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                        'User-Agent': 'Mozilla/5.0 (compatible; PLS-Search-Bot/1.0)'
+                    },
+                    mode: 'cors',
+                    credentials: 'same-origin'
                 });
                 
                 clearTimeout(timeoutId);
                 
                 if (!response.ok) {
+                    debugLog(`✗ HTTP ${response.status} for: ${url}`);
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
                 const contentType = response.headers.get('content-type') || '';
+                
                 if (!contentType.includes('text/html')) {
-                    throw new Error(`Not HTML content: ${contentType}`);
+                    debugLog(`⚠ Skipping non-HTML content (${contentType}): ${url}`);
+                    return null;
                 }
                 
                 const html = await response.text();
@@ -1628,7 +1869,7 @@
                 const excerpt = createExcerpt(content, 200);
                 const section = getPageSection(url);
                 
-                return {
+                const pageData = {
                     id,
                     url,
                     title,
@@ -1638,7 +1879,39 @@
                     section,
                     links
                 };
+                
+                return pageData;
+                
             } catch (error) {
+                // If CORS fails, try same-origin mode
+                if (error.name === 'TypeError' && error.message.includes('cors')) {
+                    debugLog(`🔄 Retrying ${url} with no-cors mode...`);
+                    try {
+                        const response = await fetch(url, {
+                            mode: 'no-cors',
+                            headers: {
+                                'Accept': 'text/html'
+                            }
+                        });
+                        
+                        // For no-cors, we can't read the response, so create a basic entry
+                        return {
+                            id: generatePageId(url),
+                            url,
+                            title: getFilenameFromUrl(url),
+                            content: `Pagină: ${getFilenameFromUrl(url)}`,
+                            excerpt: `Pagină: ${getFilenameFromUrl(url)}`,
+                            type: 'page',
+                            section: getPageSection(url),
+                            links: []
+                        };
+                    } catch (e) {
+                        debugLog(`✗ No-cors also failed for ${url}: ${e.message}`);
+                        return null;
+                    }
+                }
+                
+                debugLog(`✗ Error processing ${url}: ${error.message}`);
                 console.error(`Error processing page ${url}:`, error);
                 return null;
             }
@@ -1679,9 +1952,10 @@
             try {
                 const anchors = doc.querySelectorAll('a[href]');
                 
-                anchors.forEach(anchor => {
+                anchors.forEach((anchor, index) => {
                     let href = anchor.getAttribute('href');
                     
+                    // Skip empty links, javascript: links, hash links, etc.
                     if (!href || 
                         href.startsWith('javascript:') || 
                         href === '#' || 
@@ -1692,26 +1966,76 @@
                     }
                     
                     try {
+                        // Resolve relative URLs
                         const absoluteUrl = new URL(href, baseUrl).href;
                         
-                        if (!isSameDomain(absoluteUrl, baseUrl)) {
+                        // Check if it's same domain (or subdomain)
+                        const currentDomain = new URL(baseUrl).hostname;
+                        const linkDomain = new URL(absoluteUrl).hostname;
+                        
+                        // Allow same domain and subdomains
+                        if (!linkDomain.endsWith(currentDomain.replace('www.', '')) && 
+                            !currentDomain.endsWith(linkDomain.replace('www.', ''))) {
                             return;
                         }
                         
-                        const extension = absoluteUrl.split('.').pop().toLowerCase().split('?')[0];
-                        const allowedExtensions = ['', 'html', 'htm', 'php', 'asp', 'aspx', 'jsp'];
+                        // Get file extension (if any)
+                        const urlPath = new URL(absoluteUrl).pathname;
+                        const lastDot = urlPath.lastIndexOf('.');
+                        const extension = lastDot > -1 ? urlPath.substring(lastDot + 1).toLowerCase().split('?')[0] : '';
                         
-                        if (allowedExtensions.includes(extension) || !extension.includes('.')) {
-                            links.push(absoluteUrl);
+                        // Allow HTML pages and common web extensions
+                        const allowedExtensions = ['', 'html', 'htm', 'php', 'asp', 'aspx', 'jsp', 'do', 'action'];
+                        const allowedDocuments = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'];
+                        
+                        if (allowedExtensions.includes(extension) || 
+                            allowedDocuments.includes(extension) || 
+                            !extension || 
+                            urlPath.endsWith('/')) {
+                            
+                            // Clean up the URL (remove fragments, sort query params consistently)
+                            const cleanUrl = new URL(absoluteUrl);
+                            cleanUrl.hash = '';
+                            
+                            const finalUrl = cleanUrl.href;
+                            
+                            if (!links.includes(finalUrl)) {
+                                links.push(finalUrl);
+                            }
                         }
                     } catch (e) {
                         // Invalid URL, skip
                     }
                 });
+                
+                // If no links found, try to add some common paths manually
+                if (links.length === 0) {
+                    const baseDomain = new URL(baseUrl).origin;
+                    const commonPaths = [
+                        '/pls/',
+                        '/pls/index.html',
+                        '/pls/despre/',
+                        '/pls/contact/',
+                        '/pls/documente/',
+                        '/pls/petitii/',
+                        '/pls/transparenta/',
+                        '/',
+                        '/index.html'
+                    ];
+                    
+                    commonPaths.forEach(path => {
+                        const testUrl = baseDomain + path;
+                        if (!links.includes(testUrl)) {
+                            links.push(testUrl);
+                        }
+                    });
+                }
+                
             } catch (e) {
-                console.warn('Failed to extract links:', e);
+                debugLog(`⚠ Failed to extract links from ${baseUrl}: ${e.message}`);
             }
             
+            // Remove duplicates and return
             return [...new Set(links)];
         }
         
