@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polița Locală Slobozia - Sistem Alertă Automat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .auto-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .auto-indicator.active {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .auto-indicator.checking {
+            background: rgba(255, 193, 7, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .auto-indicator.error {
+            background: rgba(220, 53, 69, 0.3);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .status-panel {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .status-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .status-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .status-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 3px;
+        }
+
+        .alert-section {
+            margin-bottom: 30px;
+        }
+
+        .national-alert, .local-alert {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #007bff;
+            transition: all 0.3s ease;
+        }
+
+        .local-alert {
+            border-left-color: #28a745;
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .alert-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #28a745;
+            position: relative;
+        }
+
+        .status-indicator.checking {
+            background: #ffc107;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.error {
+            background: #dc3545;
+        }
+
+        .status-indicator.stale {
+            background: #6c757d;
+        }
+
+        .alert-level {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .level-display {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 16px;
+            min-width: 160px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .level-display.verde { background: #28a745; }
+        .level-display.albastru { background: #007bff; }
+        .level-display.galben { background: #ffc107; color: #212529; }
+        .level-display.portocaliu { background: #fd7e14; }
+        .level-display.rosu { background: #dc3545; }
+
+        .level-bars {
+            display: flex;
+            gap: 5px;
+        }
+
+        .bar {
+            width: 25px;
+            height: 25px;
+            border: 2px solid #dee2e6;
+            border-radius: 4px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .bar.active {
+            background: #007bff;
+            border-color: #007bff;
+            box-shadow: 0 0 10px rgba(0,123,255,0.5);
+        }
+
+        .alert-description {
+            color: #6c757d;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .source-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .source-list {
+            font-size: 11px;
+            color: #adb5bd;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            color: #6c757d;
+            transition: all 0.2s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+
+        .logs-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .logs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .logs-container {
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+
+        .log-entry.success { color: #28a745; }
+        .log-entry.error { color: #dc3545; }
+        .log-entry.info { color: #17a2b8; }
+        .log-entry.warning { color: #ffc107; }
+
+        .emergency-contacts {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .emergency-contacts h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .emergency-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .contact-info {
+            margin-top: 15px;
+            opacity: 0.9;
+        }
+
+        .admin-controls {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .admin-controls h4 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .level-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .level-btn {
+            padding: 8px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .level-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .level-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .change-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .change-notification.show {
+            transform: translateX(0);
+        }
+
+        .toggle-logs {
+            background: none;
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .status-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .alert-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .level-buttons {
+                justify-content: center;
+            }
+
+            .auto-indicator {
+                position: static;
+                margin-top: 10px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="auto-indicator" id="autoStatus">
+                <span>🤖</span>
+                <span id="autoText">Auto-Scanning...</span>
+            </div>
+            <h1>🏛️ Polița Locală Slobozia</h1>
+            <p>Sistem de Monitorizare Alertă Automată</p>
+        </div>
+
+        <div class="content">
+            <!-- Status Panel -->
+            <div class="status-panel">
+                <div class="status-grid">
+                    <div class="status-item">
+                        <div class="status-value" id="lastCheck">--:--</div>
+                        <div class="status-label">Ultima verificare</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-value" id="sourceCount">0/3</div>
+                        <div class="status-label">Surse active</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-value" id="successRate">0%</div>
+                        <div class="status-label">Rata de succes</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-value" id="nextCheck">--:--</div>
+                        <div class="status-label">Următoarea verificare</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- National Alert Level -->
+            <div class="alert-section">
+                <div class="national-alert">
+                    <div class="alert-header">
+                        <div class="alert-title">📡 Nivel Național (SRI/SNAT)</div>
+                        <div class="status-indicator" id="nationalStatus"></div>
+                    </div>
+                    
+                    <div class="alert-level">
+                        <div class="level-display albastru" id="nationalLevel">NIVEL PRECAUT</div>
+                        <div class="level-bars">
+                            <div class="bar" id="nat-bar-1"></div>
+                            <div class="bar active" id="nat-bar-2"></div>
+                            <div class="bar" id="nat-bar-3"></div>
+                            <div class="bar" id="nat-bar-4"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-description" id="nationalDesc">
+                        Sistemul Național de Alertă Teroristă - detectează automat modificările...
+                    </div>
+                    
+                    <div class="source-info">
+                        <span id="nationalTime">Loading...</span>
+                        <div>
+                            <span class="source-list" id="sourcesUsed">Surse: --</span>
+                            <button class="refresh-btn" onclick="forceCheck()">🔄 Forțează verificarea</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Local Alert Level -->
+            <div class="alert-section">
+                <div class="local-alert">
+                    <div class="alert-header">
+                        <div class="alert-title">🏠 Nivel Local (Polița Slobozia)</div>
+                        <div class="status-indicator" id="localStatus"></div>
+                    </div>
+                    
+                    <div class="alert-level">
+                        <div class="level-display verde" id="localLevel">NIVEL NORMAL</div>
+                        <div class="level-bars">
+                            <div class="bar active" id="loc-bar-1"></div>
+                            <div class="bar" id="loc-bar-2"></div>
+                            <div class="bar" id="loc-bar-3"></div>
+                            <div class="bar" id="loc-bar-4"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-description" id="localDesc">
+                        Situația de ordine publică în municipiul Slobozia este normală.
+                    </div>
+                    
+                    <div class="source-info">
+                        <span id="localTime">--</span>
+                        <button class="refresh-btn" onclick="updateLocalDisplay()">🔄 Actualizează</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Logs -->
+            <div class="logs-section">
+                <div class="logs-header">
+                    <h4>📊 Activitate Monitor</h4>
+                    <button class="toggle-logs" onclick="toggleLogs()">👁️ Afișează/Ascunde</button>
+                </div>
+                <div class="logs-container" id="logsContainer" style="display: none;">
+                    <div class="log-entry info">System initialized - starting automatic monitoring...</div>
+                </div>
+            </div>
+
+            <!-- Admin Controls -->
+            <div class="admin-controls" id="adminPanel">
+                <h4>⚙️ Administrare Nivel Local</h4>
+                <div class="level-buttons">
+                    <button class="level-btn active" onclick="setLocalLevel(1)">🟢 NORMAL</button>
+                    <button class="level-btn" onclick="setLocalLevel(2)">🔵 PRECAUT</button>
+                    <button class="level-btn" onclick="setLocalLevel(3)">🟡 RIDICAT</button>
+                    <button class="level-btn" onclick="setLocalLevel(4)">🔴 CRITIC</button>
+                </div>
+            </div>
+
+            <!-- Emergency Contacts -->
+            <div class="emergency-contacts">
+                <h3>🚨 Urgențe</h3>
+                <div class="emergency-number">112</div>
+                <div class="contact-info">
+                    <strong>Polția Locală Slobozia:</strong> 0243 230 330<br>
+                    <strong>Linie directă:</strong> 0800 100 200
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Notification -->
+    <div class="change-notification" id="changeNotification">
+        <strong>🚨 ALERT LEVEL CHANGED!</strong><br>
+        <span id="changeDetails">--</span>
+    </div>
+
+    <script>
+        // ============================================================================
+        // AUTOMATIC ALERT LEVEL DETECTION SYSTEM
+        // ============================================================================
+
+        // Configuration
+        const CONFIG = {
+            checkInterval: 5 * 60 * 1000, // Check every 5 minutes
+            sources: [
+                {
+                    name: 'SRI Direct',
+                    url: 'https://www.sri.ro/',
+                    proxy: 'https://api.allorigins.win/raw?url=',
+                    type: 'html',
+                    parser: 'sri'
+                },
+                {
+                    name: 'Police Site',
+                    url: 'https://politiaromana.ro/ro/',
+                    proxy: 'https://corsproxy.io/?',
+                    type: 'html', 
+                    parser: 'police'
+                },
+                {
+                    name: 'News Feed',
+                    url: 'https://www.digi24.ro/rss',
+                    proxy: 'https://api.rss2json.com/v1/api.json?rss_url=',
+                    type: 'rss',
+                    parser: 'news'
+                }
+            ],
+            alertLevels: {
+                'SCĂZUT': { level: 1, color: 'verde', name: 'SCĂZUT' },
+                'PRECAUT': { level: 2, color: 'albastru', name: 'PRECAUT' },
+                'MODERAT': { level: 3, color: 'galben', name: 'MODERAT' },
+                'RIDICAT': { level: 4, color: 'portocaliu', name: 'RIDICAT' },
+                'CRITIC': { level: 5, color: 'rosu', name: 'CRITIC' }
+            },
+            localLevels: {
+                1: { name: 'NORMAL', color: 'verde', description: 'Situația de ordine publică în municipiul Slobozia este normală.' },
+                2: { name: 'PRECAUT', color: 'albastru', description: 'Risc scăzut identificat în anumite zone din Slobozia.' },
+                3: { name: 'RIDICAT', color: 'portocaliu', description: 'Risc crescut pentru ordinea publică în Slobozia.' },
+                4: { name: 'CRITIC', color: 'rosu', description: 'Situație de urgență în Slobozia. Toate efectivele mobilizate.' }
+            }
+        };
+
+        // Global state
+        let currentNationalLevel = { level: 2, name: 'PRECAUT', color: 'albastru', lastUpdated: null, source: 'cache' };
+        let currentLocalLevel = 1;
+        let checkStats = { total: 0, success: 0, lastCheck: null, activeSources: 0 };
+        let autoCheckTimer = null;
+        let logs = [];
+
+        // ============================================================================
+        // LOGGING SYSTEM
+        // ============================================================================
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('ro-RO');
+            const entry = { time: timestamp, message, type };
+            logs.push(entry);
+            
+            // Keep only last 100 logs
+            if (logs.length > 100) {
+                logs = logs.slice(-100);
+            }
+            
+            // Update logs display if visible
+            const logsContainer = document.getElementById('logsContainer');
+            if (logsContainer.style.display !== 'none') {
+                updateLogsDisplay();
+            }
+            
+            console.log(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
+        }
+
+        function updateLogsDisplay() {
+            const container = document.getElementById('logsContainer');
+            container.innerHTML = logs.map(entry => 
+                `<div class="log-entry ${entry.type}">[${entry.time}] ${entry.message}</div>`
+            ).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function toggleLogs() {
+            const container = document.getElementById('logsContainer');
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                updateLogsDisplay();
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        // ============================================================================
+        // PARSING FUNCTIONS
+        // ============================================================================
+
+        function parseSRIContent(html) {
+            try {
+                // Look for alert level indicators
+                const patterns = [
+                    /NIVEL\s+(SCĂZUT|PRECAUT|MODERAT|RIDICAT|CRITIC)/gi,
+                    /nivel.*?([a-z]+).*?alertă/gi,
+                    /alertă.*?([a-z]+)/gi
+                ];
+
+                for (const pattern of patterns) {
+                    const match = html.match(pattern);
+                    if (match) {
+                        const levelText = match[0].toUpperCase();
+                        for (const [key, value] of Object.entries(CONFIG.alertLevels)) {
+                            if (levelText.includes(key)) {
+                                log(`Detected level from SRI: ${key}`, 'success');
+                                return {
+                                    level: value.level,
+                                    name: value.name,
+                                    color: value.color,
+                                    source: 'SRI Website',
+                                    confidence: 0.9
+                                };
+                            }
+                        }
+                    }
+                }
+
+                // Check for graph bars or other indicators
+                if (html.includes('graph-2') && html.includes('active')) {
+                    log('Detected PRECAUT level from graph indicators', 'success');
+                    return {
+                        level: 2,
+                        name: 'PRECAUT',
+                        color: 'albastru',
+                        source: 'SRI Graph',
+                        confidence: 0.8
+                    };
+                }
+
+                return null;
+            } catch (error) {
+                log(`Error parsing SRI content: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        function parsePoliceContent(html) {
+            try {
+                // Look for SNAT indicators on police site
+                const patterns = [
+                    /nivelCurent_snat([A-Z])/g,
+                    /NIVEL\s+(SCĂZUT|PRECAUT|MODERAT|RIDICAT|CRITIC)/gi
+                ];
+
+                for (const pattern of patterns) {
+                    const match = html.match(pattern);
+                    if (match) {
+                        // Map snat indicators to levels
+                        const colorMap = {
+                            'G': 'SCĂZUT',
+                            'B': 'PRECAUT', 
+                            'Y': 'MODERAT',
+                            'O': 'RIDICAT',
+                            'R': 'CRITIC'
+                        };
+
+                        const detected = match[0];
+                        for (const [code, levelName] of Object.entries(colorMap)) {
+                            if (detected.includes(code) || detected.includes(levelName)) {
+                                log(`Detected level from Police: ${levelName}`, 'success');
+                                return {
+                                    level: CONFIG.alertLevels[levelName].level,
+                                    name: levelName,
+                                    color: CONFIG.alertLevels[levelName].color,
+                                    source: 'Police Website',
+                                    confidence: 0.85
+                                };
+                            }
+                        }
+                    }
+                }
+
+                return null;
+            } catch (error) {
+                log(`Error parsing Police content: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        function parseNewsContent(data) {
+            try {
+                if (data.items) {
+                    // Search recent news for alert level mentions
+                    const recentNews = data.items.slice(0, 10);
+                    for (const item of recentNews) {
+                        const text = (item.title + ' ' + item.description).toLowerCase();
+                        
+                        if (text.includes('alertă') && text.includes('terorist')) {
+                            for (const [levelName] of Object.entries(CONFIG.alertLevels)) {
+                                if (text.includes(levelName.toLowerCase())) {
+                                    log(`News mentions alert level: ${levelName}`, 'info');
+                                    return {
+                                        level: CONFIG.alertLevels[levelName].level,
+                                        name: levelName,
+                                        color: CONFIG.alertLevels[levelName].color,
+                                        source: 'News Feed',
+                                        confidence: 0.6,
+                                        newsTitle: item.title
+                                    };
+                                }
+                            }
+                        }
+                    }
+                }
+                return null;
+            } catch (error) {
+                log(`Error parsing news content: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        // ============================================================================
+        // FETCHING FUNCTIONS
+        // ============================================================================
+
+        async function fetchFromSource(source) {
+            try {
+                log(`Fetching from ${source.name}...`, 'info');
+                
+                const proxyUrl = source.proxy + encodeURIComponent(source.url);
+                const response = await fetch(proxyUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                        'User-Agent': 'Mozilla/5.0 (compatible; AlertMonitor/1.0)'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const content = await response.text();
+                log(`Successfully fetched from ${source.name} (${content.length} chars)`, 'success');
+
+                // Parse based on source type
+                let parsed = null;
+                switch (source.parser) {
+                    case 'sri':
+                        parsed = parseSRIContent(content);
+                        break;
+                    case 'police':
+                        parsed = parsePoliceContent(content);
+                        break;
+                    case 'news':
+                        try {
+                            const jsonData = JSON.parse(content);
+                            parsed = parseNewsContent(jsonData);
+                        } catch (e) {
+                            log(`Failed to parse JSON from ${source.name}`, 'error');
+                        }
+                        break;
+                }
+
+                if (parsed) {
+                    parsed.sourceUrl = source.url;
+                    parsed.fetchTime = new Date().toISOString();
+                }
+
+                return parsed;
+
+            } catch (error) {
+                log(`Failed to fetch from ${source.name}: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        // ============================================================================
+        // MAIN CHECK FUNCTION
+        // ============================================================================
+
+        async function checkAllSources() {
+            updateAutoStatus('checking');
+            log('Starting automated check of all sources...', 'info');
+            
+            checkStats.total++;
+            checkStats.lastCheck = new Date();
+            checkStats.activeSources = 0;
+            
+            const results = [];
+            
+            // Check all sources in parallel
+            const promises = CONFIG.sources.map(source => fetchFromSource(source));
+            const responses = await Promise.allSettled(promises);
+            
+            // Process results
+            for (let i = 0; i < responses.length; i++) {
+                const result = responses[i];
+                if (result.status === 'fulfilled' && result.value) {
+                    results.push(result.value);
+                    checkStats.activeSources++;
+                }
+            }
+            
+            // Determine best result
+            if (results.length > 0) {
+                // Sort by confidence
+                results.sort((a, b) => b.confidence - a.confidence);
+                const bestResult = results[0];
+                
+                // Check if level changed
+                if (bestResult.level !== currentNationalLevel.level) {
+                    log(`🚨 ALERT LEVEL CHANGED: ${currentNationalLevel.name} → ${bestResult.name}`, 'warning');
+                    showChangeNotification(currentNationalLevel.name, bestResult.name);
+                    currentNationalLevel = bestResult;
+                } else {
+                    log(`Level confirmed: ${bestResult.name} (confidence: ${bestResult.confidence})`, 'success');
+                    currentNationalLevel = { ...currentNationalLevel, ...bestResult };
+                }
+                
+                checkStats.success++;
+                updateAutoStatus('active');
+            } else {
+                log('All sources failed - using cached data', 'warning');
+                updateAutoStatus('error');
+            }
+            
+            // Update displays
+            updateNationalDisplay();
+            updateStatusPanel();
+            
+            // Schedule next check
+            scheduleNextCheck();
+        }
+
+        // ============================================================================
+        // UI UPDATE FUNCTIONS
+        // ============================================================================
+
+        function updateAutoStatus(status) {
+            const indicator = document.getElementById('autoStatus');
+            const text = document.getElementById('autoText');
+            
+            indicator.className = `auto-indicator ${status}`;
+            
+            switch (status) {
+                case 'active':
+                    text.textContent = 'Auto-Monitor Activ';
+                    break;
+                case 'checking':
+                    text.textContent = 'Verifică surse...';
+                    break;
+                case 'error':
+                    text.textContent = 'Eroare conexiune';
+                    break;
+                default:
+                    text.textContent = 'Auto-Scanning...';
+            }
+        }
+
+        function updateStatusPanel() {
+            document.getElementById('lastCheck').textContent = 
+                checkStats.lastCheck ? checkStats.lastCheck.toLocaleTimeString('ro-RO') : '--:--';
+            
+            document.getElementById('sourceCount').textContent = 
+                `${checkStats.activeSources}/${CONFIG.sources.length}`;
+            
+            document.getElementById('successRate').textContent = 
+                checkStats.total > 0 ? Math.round((checkStats.success / checkStats.total) * 100) + '%' : '0%';
+            
+            const nextCheck = new Date(Date.now() + CONFIG.checkInterval);
+            document.getElementById('nextCheck').textContent = nextCheck.toLocaleTimeString('ro-RO');
+        }
+
+        function updateNationalDisplay() {
+            const level = currentNationalLevel;
+            
+            document.getElementById('nationalLevel').textContent = `NIVEL ${level.name}`;
+            document.getElementById('nationalLevel').className = `level-display ${level.color}`;
+            
+            const descriptions = {
+                'SCĂZUT': 'Risc foarte scăzut - probabilitate minimă de atac terorist.',
+                'PRECAUT': 'Risc scăzut - există risc de producere a unui act de terorism dar probabilitatea este scăzută.',
+                'MODERAT': 'Risc general - există risc terorist general, fiind posibil un atac terorist.',
+                'RIDICAT': 'Risc crescut - probabilitate ridicată de comitere a unui atac terorist.',
+                'CRITIC': 'Risc iminent - risc iminent de producere a unui act de terorism.'
+            };
+            
+            document.getElementById('nationalDesc').textContent = descriptions[level.name] || 'Sistem automat de detecție a nivelului de alertă.';
+            
+            document.getElementById('nationalTime').textContent = 
+                `Actualizat: ${level.fetchTime ? new Date(level.fetchTime).toLocaleString('ro-RO') : 'În curs...'}`;
+            
+            document.getElementById('sourcesUsed').textContent = 
+                `Surse: ${level.source || 'Multiple'}`;
+            
+            // Update bars
+            for (let i = 1; i <= 4; i++) {
+                const bar = document.getElementById(`nat-bar-${i}`);
+                bar.classList.toggle('active', i === level.level);
+            }
+            
+            // Update status indicator
+            const status = document.getElementById('nationalStatus');
+            if (level.fetchTime) {
+                const age = Date.now() - new Date(level.fetchTime).getTime();
+                if (age < 30 * 60 * 1000) { // Less than 30 minutes
+                    status.className = 'status-indicator';
+                } else {
+                    status.className = 'status-indicator stale';
+                }
+            } else {
+                status.className = 'status-indicator error';
+            }
+        }
+
+        function updateLocalDisplay() {
+            const level = CONFIG.localLevels[currentLocalLevel];
+            
+            document.getElementById('localLevel').textContent = `NIVEL ${level.name}`;
+            document.getElementById('localLevel').className = `level-display ${level.color}`;
+            document.getElementById('localDesc').textContent = level.description;
+            document.getElementById('localTime').textContent = 
+                `Actualizat: ${new Date().toLocaleString('ro-RO')}`;
+            
+            // Update bars
+            for (let i = 1; i <= 4; i++) {
+                const bar = document.getElementById(`loc-bar-${i}`);
+                bar.classList.toggle('active', i === currentLocalLevel);
+            }
+            
+            // Update admin buttons
+            document.querySelectorAll('.level-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', index + 1 === currentLocalLevel);
+            });
+            
+            document.getElementById('localStatus').className = 'status-indicator';
+        }
+
+        function showChangeNotification(oldLevel, newLevel) {
+            const notification = document.getElementById('changeNotification');
+            const details = document.getElementById('changeDetails');
+            
+            details.textContent = `${oldLevel} → ${newLevel}`;
+            notification.classList.add('show');
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 10000);
+        }
+
+        // ============================================================================
+        // ADMIN FUNCTIONS
+        // ============================================================================
+
+        function setLocalLevel(level) {
+            currentLocalLevel = level;
+            localStorage.setItem('localAlertLevel', level.toString());
+            localStorage.setItem('localLevelTime', new Date().toISOString());
+            
+            updateLocalDisplay();
+            log(`Local level changed to ${CONFIG.localLevels[level].name}`, 'info');
+            
+            if (level >= 3) {
+                showChangeNotification('LOCAL', CONFIG.localLevels[level].name);
+            }
+        }
+
+        function forceCheck() {
+            log('Manual check requested', 'info');
+            checkAllSources();
+        }
+
+        function scheduleNextCheck() {
+            if (autoCheckTimer) {
+                clearTimeout(autoCheckTimer);
+            }
+            
+            autoCheckTimer = setTimeout(() => {
+                checkAllSources();
+            }, CONFIG.checkInterval);
+            
+            log(`Next check scheduled in ${CONFIG.checkInterval / 60000} minutes`, 'info');
+        }
+
+        // ============================================================================
+        // INITIALIZATION
+        // ============================================================================
+
+        function init() {
+            log('Alert monitoring system starting up...', 'info');
+            
+            // Load saved settings
+            const savedLocal = localStorage.getItem('localAlertLevel');
+            if (savedLocal) {
+                currentLocalLevel = parseInt(savedLocal);
+            }
+            
+            // Enable admin mode if saved
+            if (localStorage.getItem('adminMode') === 'true') {
+                document.getElementById('adminPanel').style.display = 'block';
+                log('Admin mode enabled', 'info');
+            }
+            
+            // Initial display update
+            updateLocalDisplay();
+            updateStatusPanel();
+            
+            // Start monitoring
+            setTimeout(() => {
+                log('Starting automatic monitoring...', 'info');
+                checkAllSources();
+            }, 1000);
+            
+            // Handle page visibility for efficient checking
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    // Page became visible, check if we need an update
+                    const timeSinceLastCheck = Date.now() - (checkStats.lastCheck?.getTime() || 0);
+                    if (timeSinceLastCheck > CONFIG.checkInterval / 2) {
+                        log('Page visible - performing check', 'info');
+                        checkAllSources();
+                    }
+                }
+            });
+        }
+
+        // Admin mode toggle
+        document.querySelector('.header h1').addEventListener('dblclick', function() {
+            document.getElementById('adminPanel').style.display = 'block';
+            localStorage.setItem('adminMode', 'true');
+            log('Admin mode enabled via double-click', 'info');
+        });
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
