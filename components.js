@@ -1,5 +1,5 @@
-// COMPONENTS.JS - Enhanced version with search disabled and bigger text
-// Simply include this file in your HTML pages to automatically load the header and footer
+// COMPONENTS.JS - Enhanced version with search disabled, bigger text, and weather alert integration
+// Simply include this file in your HTML pages to automatically load the header, footer, and weather alerts
 
 // CSS for header and footer as a string
 const COMPONENTS_CSS = `
@@ -1627,6 +1627,46 @@ const FOOTER_HTML = `
 </footer>
 `;
 
+// Load Weather Alert System
+function loadWeatherAlertSystem() {
+    // Check if already loaded
+    if (document.getElementById('weather-alert-script')) return;
+    
+    const script = document.createElement('script');
+    script.id = 'weather-alert-script';
+    script.src = 'weather-alert.js'; // Adjust path as needed - change this if your file is in a subfolder
+    script.async = true;
+    script.onerror = () => {
+        console.warn('Weather alert system could not be loaded - check if weather-alert.js is in the correct path');
+    };
+    script.onload = () => {
+        console.log('Weather alert script loaded successfully');
+    };
+    document.head.appendChild(script);
+}
+
+// Initialize Weather Alert System
+function initWeatherAlert() {
+    // Wait for the weather alert script to load and initialize
+    const checkWeatherSystem = () => {
+        if (window.WeatherAlertSystem) {
+            try {
+                // Initialize weather alert system
+                window.weatherAlert = new WeatherAlertSystem();
+                console.log('Weather Alert System initialized successfully');
+            } catch (error) {
+                console.error('Error initializing Weather Alert System:', error);
+            }
+        } else {
+            // Check again in 100ms if not loaded yet
+            setTimeout(checkWeatherSystem, 100);
+        }
+    };
+    
+    // Start checking after components are loaded
+    setTimeout(checkWeatherSystem, 500);
+}
+
 // Auto-install the components when the document is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Add favicon first
@@ -1654,6 +1694,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(iconLink);
     }
     
+    // Load weather alert system early
+    loadWeatherAlertSystem();
+    
     // Load header and footer
     const headerContainer = document.getElementById('header-container');
     const footerContainer = document.getElementById('footer-container');
@@ -1662,11 +1705,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (headerContainer) headerContainer.innerHTML = HEADER_HTML;
     if (footerContainer) footerContainer.innerHTML = FOOTER_HTML;
     
-    // Initialize components (simplified without search functionality)
+    // Initialize components
     initializeComponents();
 });
 
-// Initialize all component functionality (search removed)
+// Initialize all component functionality
 function initializeComponents() {
     // Initialize intro screen
     initIntroScreen();
@@ -1685,6 +1728,9 @@ function initializeComponents() {
     
     // Fix icon alignment issues
     fixIconAlignment();
+    
+    // Initialize weather alert system after other components are ready
+    initWeatherAlert();
 }
 
 // Intro Screen Animation and Removal
@@ -1782,7 +1828,7 @@ function initDropdownMenu() {
     });
 }
 
-// Initialize responsive header for single-line menu (simplified without search)
+// Initialize responsive header for single-line menu
 function initResponsiveHeader() {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', setupResponsiveHeader);
@@ -1939,7 +1985,7 @@ function fixIconAlignment() {
             menuItems.forEach(item => {
                 item.style.display = 'inline-flex';
                 item.style.alignItems = 'center';
-                item.style.height = '45px'; // Increased from 40px
+                item.style.height = '45px';
             });
         }
         
@@ -1957,6 +2003,3 @@ function fixIconAlignment() {
         }
     }, 100);
 }
-
-// Legacy search function removed - no longer needed
-// If you need to add search functionality back later, it can be done through a separate module
