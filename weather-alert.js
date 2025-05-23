@@ -15,8 +15,9 @@ class WeatherAlertSystem {
         this.currentWeatherData = null;
         this.updateTimer = null;
         this.hideTimer = null;
+        this.lastSuccessfulData = null;
         
-        // Weather condition mappings
+        // Weather condition mappings - Updated with correct WMO codes
         this.weatherConditions = {
             0: { icon: 'wb_sunny', name: 'Senin', animation: 'sunny' },
             1: { icon: 'partly_cloudy_day', name: 'Parțial înnorat', animation: 'partly-cloudy' },
@@ -27,15 +28,25 @@ class WeatherAlertSystem {
             51: { icon: 'grain', name: 'Burniță ușoară', animation: 'drizzle' },
             53: { icon: 'grain', name: 'Burniță moderată', animation: 'drizzle' },
             55: { icon: 'grain', name: 'Burniță densă', animation: 'drizzle' },
+            56: { icon: 'ac_unit', name: 'Burniță înghețată ușoară', animation: 'drizzle' },
+            57: { icon: 'ac_unit', name: 'Burniță înghețată densă', animation: 'drizzle' },
             61: { icon: 'rainy', name: 'Ploaie ușoară', animation: 'rainy' },
             63: { icon: 'rainy', name: 'Ploaie moderată', animation: 'rainy' },
             65: { icon: 'rainy', name: 'Ploaie torențială', animation: 'heavy-rain' },
+            66: { icon: 'ac_unit', name: 'Ploaie înghețată ușoară', animation: 'rainy' },
+            67: { icon: 'ac_unit', name: 'Ploaie înghețată puternică', animation: 'heavy-rain' },
             71: { icon: 'weather_snowy', name: 'Ninsoare ușoară', animation: 'snowy' },
             73: { icon: 'weather_snowy', name: 'Ninsoare moderată', animation: 'snowy' },
             75: { icon: 'weather_snowy', name: 'Ninsoare abundentă', animation: 'heavy-snow' },
+            77: { icon: 'weather_snowy', name: 'Ninsoare cu boabe', animation: 'snowy' },
+            80: { icon: 'rainy', name: 'Averse ușoare', animation: 'rainy' },
+            81: { icon: 'rainy', name: 'Averse moderate', animation: 'rainy' },
+            82: { icon: 'rainy', name: 'Averse violente', animation: 'heavy-rain' },
+            85: { icon: 'weather_snowy', name: 'Averse de zăpadă ușoare', animation: 'snowy' },
+            86: { icon: 'weather_snowy', name: 'Averse de zăpadă puternice', animation: 'heavy-snow' },
             95: { icon: 'thunderstorm', name: 'Furtună', animation: 'thunderstorm' },
-            96: { icon: 'thunderstorm', name: 'Furtună cu grindină', animation: 'thunderstorm' },
-            99: { icon: 'thunderstorm', name: 'Furtună severă', animation: 'severe-thunderstorm' }
+            96: { icon: 'thunderstorm', name: 'Furtună cu grindină ușoară', animation: 'thunderstorm' },
+            99: { icon: 'thunderstorm', name: 'Furtună cu grindină puternică', animation: 'severe-thunderstorm' }
         };
         
         // Initialize after DOM is ready
@@ -60,25 +71,25 @@ class WeatherAlertSystem {
         }, 3000);
     }
     
-    // Inject CSS styles for the weather alert system
+    // Inject CSS styles for the weather alert system - FIXED TRANSPARENCY
     injectCSS() {
         if (document.getElementById('weather-alert-css')) return;
         
         const css = `
-        /* Weather Alert System Styles */
+        /* Weather Alert System Styles - IMPROVED VISIBILITY */
         .weather-alert-floating {
             position: fixed;
             top: calc(var(--header-height) + 1rem);
             right: 1.5rem;
-            width: 256px; /* 20% smaller than 320px */
-            height: 64px; /* 20% smaller than 80px */
-            background: rgba(26, 47, 95, 0.95);
+            width: 256px;
+            height: 64px;
+            background: rgba(26, 47, 95, 0.98); /* Increased from 0.95 to 0.98 */
             backdrop-filter: blur(12px);
             border-radius: var(--border-radius-large);
             color: var(--text-light);
             font-family: 'Poppins', sans-serif;
-            box-shadow: var(--shadow-large);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4); /* Stronger shadow */
+            border: 2px solid rgba(255, 255, 255, 0.2); /* More visible border */
             z-index: 999;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -93,18 +104,19 @@ class WeatherAlertSystem {
         }
         
         .weather-alert-floating.hidden {
-            opacity: 0.3;
+            opacity: 0.6; /* Increased from 0.3 to 0.6 for better visibility when hidden */
             pointer-events: none;
         }
         
         .weather-alert-floating.expanded {
-            height: 96px; /* 20% smaller than 120px */
-            width: 304px; /* 20% smaller than 380px */
+            height: 96px;
+            width: 304px;
         }
         
         .weather-alert-floating:hover {
             transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5); /* Enhanced hover shadow */
+            background: rgba(26, 47, 95, 1); /* Fully opaque on hover */
         }
         
         .weather-content {
@@ -113,6 +125,8 @@ class WeatherAlertSystem {
             padding: 0.8rem;
             height: 100%;
             position: relative;
+            background: rgba(255, 255, 255, 0.05); /* Subtle inner background */
+            border-radius: var(--border-radius-large);
         }
         
         .weather-icon-container {
@@ -123,12 +137,16 @@ class WeatherAlertSystem {
             justify-content: center;
             margin-right: 0.8rem;
             position: relative;
+            background: rgba(255, 255, 255, 0.1); /* Background for icon */
+            border-radius: 50%;
+            backdrop-filter: blur(8px);
         }
         
         .weather-icon {
             font-size: 2.2rem;
             color: var(--accent-color);
             transition: all 0.3s ease;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Text shadow for better visibility */
         }
         
         .weather-info {
@@ -140,27 +158,33 @@ class WeatherAlertSystem {
         }
         
         .temperature-display {
-            font-size: 1.1rem; /* 20% smaller than 1.4rem */
+            font-size: 1.1rem;
             font-weight: 700;
             line-height: 1;
             margin-bottom: 0.1rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3); /* Better text visibility */
+            color: #ffffff; /* Ensure pure white text */
         }
         
         .condition-text {
-            font-size: 0.7rem; /* 20% smaller than 0.9rem */
+            font-size: 0.7rem;
             font-weight: 500;
-            opacity: 0.8;
+            opacity: 0.9; /* Increased from 0.8 */
             line-height: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            color: rgba(255, 255, 255, 0.95); /* More visible */
         }
         
         .location-indicator {
-            font-size: 0.6rem; /* 20% smaller than 0.8rem */
+            font-size: 0.6rem;
             font-weight: 400;
-            opacity: 0.6;
+            opacity: 0.8; /* Increased from 0.6 */
             margin-top: 0.1rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            color: rgba(255, 255, 255, 0.85);
         }
         
         .alert-banner {
@@ -178,6 +202,7 @@ class WeatherAlertSystem {
             letter-spacing: 0.5px;
             transform: translateY(-100%);
             transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         
         .alert-banner.visible {
@@ -205,24 +230,34 @@ class WeatherAlertSystem {
             bottom: 4px;
             right: 6px;
             font-size: 0.8rem;
-            opacity: 0.5;
+            opacity: 0.7; /* Increased from 0.5 */
             transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px;
+            border-radius: 4px;
         }
         
         .weather-alert-floating:hover .expand-indicator {
-            opacity: 0.8;
+            opacity: 1;
             transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
         }
         
         .loading-skeleton {
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0.1), 
+                rgba(255,255,255,0.3), 
+                rgba(255,255,255,0.1)
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
+            color: rgba(255, 255, 255, 0.8);
         }
         
         .error-state {
             border: 2px solid var(--danger-color);
             animation: errorPulse 2s infinite;
+            background: rgba(229, 57, 53, 0.2); /* Red tinted background for errors */
         }
         
         .update-indicator {
@@ -235,6 +270,7 @@ class WeatherAlertSystem {
             border-radius: 50%;
             opacity: 0;
             animation: updateFlash 0.6s ease-out;
+            box-shadow: 0 0 4px var(--success-color);
         }
         
         /* Weather Icon Animations */
@@ -379,12 +415,13 @@ class WeatherAlertSystem {
                 top: calc(var(--header-height) + 0.5rem);
                 left: 1rem;
                 right: auto;
-                width: 176px; /* 20% smaller than mobile 220px */
-                height: 48px; /* 20% smaller than mobile 60px */
+                width: 176px;
+                height: 48px;
+                background: rgba(26, 47, 95, 0.98); /* Keep high opacity on mobile */
             }
             
             .weather-alert-floating.expanded {
-                height: 72px; /* 20% smaller than mobile expanded */
+                height: 72px;
                 width: 200px;
             }
             
@@ -428,8 +465,8 @@ class WeatherAlertSystem {
         /* High Contrast Support */
         @media (prefers-contrast: high) {
             .weather-alert-floating {
-                border: 2px solid white;
-                background: rgba(0, 0, 0, 0.9);
+                border: 3px solid white;
+                background: rgba(0, 0, 0, 0.95);
             }
         }
         `;
@@ -597,44 +634,73 @@ class WeatherAlertSystem {
         }, this.updateInterval);
     }
     
-    // Fetch weather data from Open-Meteo API
+    // Fetch weather data from Open-Meteo API - IMPROVED ERROR HANDLING
     async fetchWeatherData() {
         try {
             const params = new URLSearchParams({
                 latitude: this.coordinates.latitude,
                 longitude: this.coordinates.longitude,
-                current_weather: true,
-                hourly: 'weather_code,temperature_2m,precipitation_probability,wind_speed_10m',
+                current: 'temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m', // Updated parameter name
+                hourly: 'temperature_2m,precipitation_probability,weather_code', // Simplified
                 daily: 'weather_code,temperature_2m_max,temperature_2m_min',
                 timezone: 'Europe/Bucharest',
                 forecast_days: 1
             });
             
-            const response = await fetch(`${this.apiBaseUrl}?${params}`);
+            const url = `${this.apiBaseUrl}?${params}`;
+            console.log('Fetching weather from:', url);
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
             
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
             }
             
             const data = await response.json();
+            console.log('Weather API Response:', data);
+            
+            // Validate data structure
+            if (!data.current) {
+                throw new Error('Invalid API response: missing current weather data');
+            }
+            
             this.currentWeatherData = data;
+            this.lastSuccessfulData = data; // Store for fallback
             this.updateWeatherDisplay(data);
             this.checkWeatherAlerts(data);
             this.showUpdateIndicator();
             
+            // Remove error state if it was present
+            if (this.weatherContainer) {
+                this.weatherContainer.classList.remove('error-state');
+            }
+            
         } catch (error) {
             console.error('Weather fetch error:', error);
-            this.handleWeatherError();
+            this.handleWeatherError(error);
         }
     }
     
-    // Update weather display
+    // Update weather display - IMPROVED DATA HANDLING
     updateWeatherDisplay(data) {
-        if (!this.weatherContainer || !data.current_weather) return;
+        if (!this.weatherContainer || !data.current) {
+            console.error('Cannot update weather display: missing container or data');
+            return;
+        }
         
-        const current = data.current_weather;
-        const condition = this.weatherConditions[current.weathercode] || 
-                         this.weatherConditions[0];
+        const current = data.current;
+        console.log('Current weather data:', current);
+        
+        // Get weather condition with fallback
+        const weatherCode = current.weather_code || 0;
+        const condition = this.weatherConditions[weatherCode] || this.weatherConditions[0];
+        
+        console.log(`Weather code: ${weatherCode}, Condition:`, condition);
         
         // Remove loading skeleton
         const elements = this.weatherContainer.querySelectorAll('.loading-skeleton');
@@ -642,59 +708,71 @@ class WeatherAlertSystem {
         
         // Update temperature
         const tempDisplay = this.weatherContainer.querySelector('.temperature-display');
-        if (tempDisplay) {
-            tempDisplay.textContent = `${Math.round(current.temperature)}°C`;
+        if (tempDisplay && typeof current.temperature_2m === 'number') {
+            tempDisplay.textContent = `${Math.round(current.temperature_2m)}°C`;
+            console.log(`Temperature updated: ${Math.round(current.temperature_2m)}°C`);
         }
         
         // Update condition text
         const conditionText = this.weatherContainer.querySelector('.condition-text');
         if (conditionText) {
             conditionText.textContent = condition.name;
+            console.log(`Condition updated: ${condition.name}`);
         }
         
         // Update weather icon
         const weatherIcon = this.weatherContainer.querySelector('.weather-icon');
         if (weatherIcon) {
             weatherIcon.textContent = condition.icon;
-            // Remove all animation classes
-            weatherIcon.className = 'material-icons weather-icon ' + condition.animation;
+            // Remove all animation classes first
+            weatherIcon.className = 'material-icons weather-icon';
+            // Add new animation class
+            weatherIcon.classList.add(condition.animation);
+            console.log(`Icon updated: ${condition.icon} with animation: ${condition.animation}`);
         }
         
-        // Remove error state
-        this.weatherContainer.classList.remove('error-state');
+        // Log successful update
+        console.log('Weather display updated successfully');
     }
     
-    // Check for weather alerts
+    // Check for weather alerts - IMPROVED LOGIC
     checkWeatherAlerts(data) {
-        if (!data.current_weather || !data.hourly) return;
+        if (!data.current) {
+            console.log('No current weather data for alerts');
+            return;
+        }
         
-        const current = data.current_weather;
-        const hourly = data.hourly;
+        const current = data.current;
         const alerts = [];
         
+        console.log('Checking weather alerts for:', current);
+        
         // Temperature alerts
-        if (current.temperature < -5) {
-            alerts.push({
-                type: 'critical',
-                message: 'ALERTĂ ÎNGHEȚ SEVER'
-            });
-        } else if (current.temperature > 35) {
-            alerts.push({
-                type: 'critical',
-                message: 'ALERTĂ CANICULĂ'
-            });
+        if (typeof current.temperature_2m === 'number') {
+            if (current.temperature_2m < -5) {
+                alerts.push({
+                    type: 'critical',
+                    message: 'ALERTĂ ÎNGHEȚ SEVER'
+                });
+            } else if (current.temperature_2m > 35) {
+                alerts.push({
+                    type: 'critical',
+                    message: 'ALERTĂ CANICULĂ'
+                });
+            }
         }
         
         // Wind alerts
-        if (current.windspeed > 25) {
+        if (typeof current.wind_speed_10m === 'number' && current.wind_speed_10m > 25) {
             alerts.push({
                 type: 'warning',
                 message: 'VÂNT PUTERNIC'
             });
         }
         
-        // Severe weather alerts
-        if ([95, 96, 99].includes(current.weathercode)) {
+        // Severe weather alerts based on weather code
+        const severeWeatherCodes = [95, 96, 99]; // Thunderstorms
+        if (severeWeatherCodes.includes(current.weather_code)) {
             alerts.push({
                 type: 'critical',
                 message: 'ALERTĂ FURTUNĂ'
@@ -702,14 +780,17 @@ class WeatherAlertSystem {
         }
         
         // Precipitation alerts
-        const maxPrecipitation = Math.max(...(hourly.precipitation_probability || [0]));
-        if (maxPrecipitation > 80) {
-            alerts.push({
-                type: 'info',
-                message: 'RISC PRECIPITAȚII'
-            });
+        if (data.hourly && data.hourly.precipitation_probability) {
+            const maxPrecipitation = Math.max(...data.hourly.precipitation_probability.slice(0, 12)); // Next 12 hours
+            if (maxPrecipitation > 80) {
+                alerts.push({
+                    type: 'info',
+                    message: 'RISC PRECIPITAȚII'
+                });
+            }
         }
         
+        console.log('Weather alerts found:', alerts);
         this.displayAlert(alerts[0]); // Show most critical alert
     }
     
@@ -719,32 +800,59 @@ class WeatherAlertSystem {
         if (!alertBanner) return;
         
         if (alert) {
+            console.log('Displaying alert:', alert);
             alertBanner.textContent = alert.message;
             alertBanner.className = `alert-banner visible ${alert.type}`;
             this.isExpanded = true;
             this.updateExpandedState();
         } else {
             alertBanner.classList.remove('visible');
+            alertBanner.className = 'alert-banner';
         }
     }
     
-    // Handle weather API errors
-    handleWeatherError() {
+    // Handle weather API errors - IMPROVED ERROR HANDLING
+    handleWeatherError(error) {
+        console.error('Weather error details:', error);
+        
         if (!this.weatherContainer) return;
         
         // Add error state styling
         this.weatherContainer.classList.add('error-state');
         
-        // Update display with error message
-        const tempDisplay = this.weatherContainer.querySelector('.temperature-display');
-        const conditionText = this.weatherContainer.querySelector('.condition-text');
-        
-        if (tempDisplay) tempDisplay.textContent = '--°C';
-        if (conditionText) conditionText.textContent = 'Eroare conexiune';
+        // Try to use last successful data if available
+        if (this.lastSuccessfulData) {
+            console.log('Using cached weather data due to error');
+            this.updateWeatherDisplay(this.lastSuccessfulData);
+            
+            // Show error indicator but keep data
+            const conditionText = this.weatherContainer.querySelector('.condition-text');
+            if (conditionText) {
+                conditionText.textContent = conditionText.textContent + ' (Cache)';
+            }
+        } else {
+            // No cached data available - show error message
+            const tempDisplay = this.weatherContainer.querySelector('.temperature-display');
+            const conditionText = this.weatherContainer.querySelector('.condition-text');
+            const weatherIcon = this.weatherContainer.querySelector('.weather-icon');
+            
+            if (tempDisplay) tempDisplay.textContent = '--°C';
+            if (conditionText) conditionText.textContent = 'Eroare conexiune';
+            if (weatherIcon) {
+                weatherIcon.textContent = 'cloud_off';
+                weatherIcon.className = 'material-icons weather-icon';
+            }
+        }
         
         // Remove loading skeleton
         const elements = this.weatherContainer.querySelectorAll('.loading-skeleton');
         elements.forEach(el => el.classList.remove('loading-skeleton'));
+        
+        // Show error alert
+        this.displayAlert({
+            type: 'warning',
+            message: 'EROARE METEO'
+        });
     }
     
     // Show update indicator
@@ -758,12 +866,20 @@ class WeatherAlertSystem {
         }
     }
     
-    // Make weather alert visible with animation
-    showWeatherAlert() {
+    // Make weather alert visible with animation - RENAMED TO AVOID CONFLICT
+    makeVisible() {
         if (this.weatherContainer) {
             setTimeout(() => {
                 this.weatherContainer.classList.add('visible');
+                console.log('Weather alert made visible');
             }, 100);
+        }
+    }
+    
+    // Initial appearance method (called after delay)
+    showWeatherAlert() {
+        if (!this.isHidden) {
+            this.makeVisible();
         }
     }
     
@@ -778,6 +894,7 @@ class WeatherAlertSystem {
         if (this.weatherContainer) {
             this.weatherContainer.remove();
         }
+        console.log('Weather Alert System destroyed');
     }
 }
 
