@@ -1,4 +1,4 @@
-// WEATHER-ALERT.JS - Floating Weather Alert System for Poliția Locală Slobozia
+// WEATHER-ALERT.JS - Fixed Weather Alert System for Poliția Locală Slobozia
 // This module provides real-time weather information and alerts using Open-Meteo API
 
 class WeatherAlertSystem {
@@ -17,7 +17,7 @@ class WeatherAlertSystem {
         this.hideTimer = null;
         this.lastSuccessfulData = null;
         
-        // Weather condition mappings - Updated with correct WMO codes
+        // Fixed weather condition mappings with correct Material Icons
         this.weatherConditions = {
             0: { icon: 'wb_sunny', name: 'Senin', animation: 'sunny' },
             1: { icon: 'partly_cloudy_day', name: 'Parțial înnorat', animation: 'partly-cloudy' },
@@ -30,24 +30,27 @@ class WeatherAlertSystem {
             55: { icon: 'grain', name: 'Burniță densă', animation: 'drizzle' },
             56: { icon: 'ac_unit', name: 'Burniță înghețată ușoară', animation: 'drizzle' },
             57: { icon: 'ac_unit', name: 'Burniță înghețată densă', animation: 'drizzle' },
-            61: { icon: 'rainy', name: 'Ploaie ușoară', animation: 'rainy' },
-            63: { icon: 'rainy', name: 'Ploaie moderată', animation: 'rainy' },
-            65: { icon: 'rainy', name: 'Ploaie torențială', animation: 'heavy-rain' },
+            61: { icon: 'water_drop', name: 'Ploaie ușoară', animation: 'rainy' },
+            63: { icon: 'water_drop', name: 'Ploaie moderată', animation: 'rainy' },
+            65: { icon: 'water_drop', name: 'Ploaie torențială', animation: 'heavy-rain' },
             66: { icon: 'ac_unit', name: 'Ploaie înghețată ușoară', animation: 'rainy' },
             67: { icon: 'ac_unit', name: 'Ploaie înghețată puternică', animation: 'heavy-rain' },
-            71: { icon: 'weather_snowy', name: 'Ninsoare ușoară', animation: 'snowy' },
-            73: { icon: 'weather_snowy', name: 'Ninsoare moderată', animation: 'snowy' },
-            75: { icon: 'weather_snowy', name: 'Ninsoare abundentă', animation: 'heavy-snow' },
-            77: { icon: 'weather_snowy', name: 'Ninsoare cu boabe', animation: 'snowy' },
-            80: { icon: 'rainy', name: 'Averse ușoare', animation: 'rainy' },
-            81: { icon: 'rainy', name: 'Averse moderate', animation: 'rainy' },
-            82: { icon: 'rainy', name: 'Averse violente', animation: 'heavy-rain' },
-            85: { icon: 'weather_snowy', name: 'Averse de zăpadă ușoare', animation: 'snowy' },
-            86: { icon: 'weather_snowy', name: 'Averse de zăpadă puternice', animation: 'heavy-snow' },
+            71: { icon: 'ac_unit', name: 'Ninsoare ușoară', animation: 'snowy' },
+            73: { icon: 'ac_unit', name: 'Ninsoare moderată', animation: 'snowy' },
+            75: { icon: 'ac_unit', name: 'Ninsoare abundentă', animation: 'heavy-snow' },
+            77: { icon: 'ac_unit', name: 'Ninsoare cu boabe', animation: 'snowy' },
+            80: { icon: 'water_drop', name: 'Averse ușoare', animation: 'rainy' },
+            81: { icon: 'water_drop', name: 'Averse moderate', animation: 'rainy' },
+            82: { icon: 'water_drop', name: 'Averse violente', animation: 'heavy-rain' },
+            85: { icon: 'ac_unit', name: 'Averse de zăpadă ușoare', animation: 'snowy' },
+            86: { icon: 'ac_unit', name: 'Averse de zăpadă puternice', animation: 'heavy-snow' },
             95: { icon: 'thunderstorm', name: 'Furtună', animation: 'thunderstorm' },
             96: { icon: 'thunderstorm', name: 'Furtună cu grindină ușoară', animation: 'thunderstorm' },
             99: { icon: 'thunderstorm', name: 'Furtună cu grindină puternică', animation: 'severe-thunderstorm' }
         };
+        
+        // Add console testing interface
+        this.setupConsoleInterface();
         
         // Initialize after DOM is ready
         if (document.readyState === 'loading') {
@@ -55,6 +58,80 @@ class WeatherAlertSystem {
         } else {
             this.init();
         }
+    }
+    
+    // Setup console testing interface
+    setupConsoleInterface() {
+        window.weatherTest = {
+            cycleWeather: () => this.cycleWeatherModes(),
+            setWeather: (code) => this.setTestWeather(code),
+            listCodes: () => this.listWeatherCodes(),
+            show: () => this.showWeatherAlert(),
+            hide: () => this.hideWeatherAlert(),
+            expand: () => this.toggleExpanded(),
+            destroy: () => this.destroy()
+        };
+        
+        console.log('🌤️ Weather testing commands available:');
+        console.log('weatherTest.cycleWeather() - Cycle through all weather conditions');
+        console.log('weatherTest.setWeather(code) - Set specific weather code (0-99)');
+        console.log('weatherTest.listCodes() - List all weather codes');
+        console.log('weatherTest.show() / weatherTest.hide() - Show/hide widget');
+        console.log('weatherTest.expand() - Toggle expanded state');
+        console.log('weatherTest.destroy() - Remove widget');
+    }
+    
+    // Cycle through weather modes for testing
+    cycleWeatherModes() {
+        const codes = Object.keys(this.weatherConditions).map(Number);
+        let index = 0;
+        
+        const cycle = () => {
+            if (index >= codes.length) {
+                console.log('🌤️ Weather cycle completed');
+                return;
+            }
+            
+            const code = codes[index];
+            console.log(`🌤️ Testing weather code ${code}: ${this.weatherConditions[code].name}`);
+            this.setTestWeather(code);
+            index++;
+            setTimeout(cycle, 2000); // 2 seconds per condition
+        };
+        
+        console.log('🌤️ Starting weather cycle...');
+        cycle();
+    }
+    
+    // Set test weather condition
+    setTestWeather(code) {
+        const condition = this.weatherConditions[code];
+        if (!condition) {
+            console.error(`❌ Invalid weather code: ${code}`);
+            return;
+        }
+        
+        const testData = {
+            current: {
+                temperature_2m: 20 + Math.random() * 15, // Random temp 20-35°C
+                weather_code: code,
+                wind_speed_10m: Math.random() * 20,
+                precipitation: Math.random() * 5,
+                cloud_cover: Math.random() * 100,
+                relative_humidity_2m: 50 + Math.random() * 40
+            }
+        };
+        
+        this.updateWeatherDisplay(testData);
+        console.log(`🌤️ Set weather to: ${condition.name} (${condition.icon})`);
+    }
+    
+    // List all weather codes
+    listWeatherCodes() {
+        console.log('🌤️ Available weather codes:');
+        Object.entries(this.weatherConditions).forEach(([code, condition]) => {
+            console.log(`${code}: ${condition.name} (${condition.icon})`);
+        });
     }
     
     // Initialize the weather alert system
@@ -67,39 +144,41 @@ class WeatherAlertSystem {
         
         // Delay appearance by 3 seconds (after intro screen)
         setTimeout(() => {
-            this.showWeatherAlert();
+            this.makeVisible();
         }, 3000);
     }
     
-    // Inject CSS styles for the weather alert system - FIXED TRANSPARENCY
+    // Inject CSS styles - FIXED TRANSPARENCY AND POSITIONING
     injectCSS() {
         if (document.getElementById('weather-alert-css')) return;
         
         const css = `
-        /* Weather Alert System Styles - MAXIMUM VISIBILITY */
+        /* Weather Alert System Styles - FIXED VISIBILITY */
         .weather-alert-floating {
             position: fixed;
-            top: calc(var(--header-height) + 0.5rem);
-            right: 1rem;
-            width: 280px; /* Increased size to match header scale */
-            height: 70px; /* Increased height */
+            top: 120px; /* Better position below header */
+            left: 20px; /* Left side for better visibility */
+            width: 300px;
+            height: 75px;
             background: linear-gradient(135deg, 
-                rgba(26, 47, 95, 1) 0%, 
-                rgba(15, 26, 54, 1) 100%); /* Solid gradient background */
-            border-radius: var(--border-radius-large);
+                rgba(30, 136, 229, 0.95) 0%, 
+                rgba(26, 47, 95, 0.95) 100%); /* Semi-transparent blue gradient */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
             color: #ffffff;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             box-shadow: 
-                0 8px 32px rgba(0,0,0,0.6),
-                0 0 0 1px rgba(255, 255, 255, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1); /* Multiple shadows for depth */
-            border: 2px solid rgba(30, 136, 229, 0.3); /* Blue accent border */
-            z-index: 999;
+                0 8px 32px rgba(0,0,0,0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             overflow: hidden;
             opacity: 0;
-            transform: translateX(100%) scale(0.9);
+            transform: translateX(-100%) scale(0.9);
         }
         
         .weather-alert-floating.visible {
@@ -108,58 +187,70 @@ class WeatherAlertSystem {
         }
         
         .weather-alert-floating.hidden {
-            opacity: 0.8; /* Much more visible when hidden */
+            opacity: 0.95;
             pointer-events: none;
         }
         
         .weather-alert-floating.expanded {
-            height: 105px; /* Larger expanded size */
-            width: 320px;
+            height: 110px;
+            width: 340px;
         }
         
         .weather-alert-floating:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 
-                0 12px 40px rgba(0,0,0,0.7),
-                0 0 0 1px rgba(30, 136, 229, 0.4),
+                0 12px 40px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            border-color: rgba(30, 136, 229, 0.5);
+            background: linear-gradient(135deg, 
+                rgba(30, 136, 229, 0.98) 0%, 
+                rgba(26, 47, 95, 0.98) 100%);
         }
         
         .weather-content {
             display: flex;
             align-items: center;
-            padding: 1rem; /* Increased padding */
+            padding: 1rem;
             height: 100%;
             position: relative;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.08) 0%, 
-                rgba(255, 255, 255, 0.02) 100%); /* Subtle inner glow */
-            border-radius: var(--border-radius-large);
         }
         
         .weather-icon-container {
-            width: 52px; /* Larger icon container */
-            height: 52px;
+            width: 55px;
+            height: 55px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 1rem;
             position: relative;
             background: linear-gradient(135deg, 
-                rgba(30, 136, 229, 0.2) 0%, 
-                rgba(255, 202, 40, 0.1) 100%);
+                rgba(255, 255, 255, 0.15) 0%, 
+                rgba(255, 255, 255, 0.05) 100%);
             border-radius: 50%;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .weather-icon {
-            font-size: 2.4rem; /* Larger icon */
-            color: #ffca28; /* Bright accent color */
+            font-size: 2.2rem;
+            color: #ffeb3b;
             transition: all 0.3s ease;
             text-shadow: 
-                0 2px 4px rgba(0,0,0,0.5),
-                0 0 8px rgba(255, 202, 40, 0.3); /* Enhanced text shadow */
+                0 2px 4px rgba(0,0,0,0.3),
+                0 0 8px rgba(255, 235, 59, 0.3);
+            font-family: 'Material Icons' !important;
+            font-weight: normal;
+            font-style: normal;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            -moz-osx-font-smoothing: grayscale;
+            font-feature-settings: 'liga';
         }
         
         .weather-info {
@@ -171,33 +262,33 @@ class WeatherAlertSystem {
         }
         
         .temperature-display {
-            font-size: 1.3rem; /* Larger temperature */
+            font-size: 1.4rem;
             font-weight: 700;
             line-height: 1;
-            margin-bottom: 0.2rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 0.3rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
             color: #ffffff;
         }
         
         .condition-text {
-            font-size: 0.8rem; /* Larger condition text */
+            font-size: 0.85rem;
             font-weight: 500;
-            opacity: 1; /* Full opacity */
+            opacity: 0.95;
             line-height: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-            color: rgba(255, 255, 255, 1);
+            color: rgba(255, 255, 255, 0.95);
         }
         
         .location-indicator {
-            font-size: 0.65rem; /* Larger location text */
+            font-size: 0.7rem;
             font-weight: 400;
-            opacity: 0.9;
-            margin-top: 0.1rem;
+            opacity: 0.8;
+            margin-top: 0.2rem;
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.8);
         }
         
         .alert-banner {
@@ -205,17 +296,18 @@ class WeatherAlertSystem {
             top: 0;
             left: 0;
             right: 0;
-            height: 24px;
+            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             transform: translateY(-100%);
             transition: transform 0.3s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border-radius: 12px 12px 0 0;
         }
         
         .alert-banner.visible {
@@ -223,37 +315,46 @@ class WeatherAlertSystem {
         }
         
         .alert-banner.critical {
-            background: var(--danger-color);
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
             animation: criticalPulse 2s infinite;
         }
         
         .alert-banner.warning {
-            background: var(--accent-color);
-            color: var(--primary-color);
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
             animation: warningPulse 3s infinite;
         }
         
         .alert-banner.info {
-            background: var(--secondary-color);
+            background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
             animation: infoPulse 4s infinite;
         }
         
         .expand-indicator {
             position: absolute;
-            bottom: 4px;
-            right: 6px;
-            font-size: 0.8rem;
-            opacity: 0.7; /* Increased from 0.5 */
+            bottom: 6px;
+            right: 8px;
+            font-size: 1rem;
+            opacity: 0.8;
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.1);
-            padding: 2px;
-            border-radius: 4px;
+            padding: 4px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            pointer-events: auto;
         }
         
-        .weather-alert-floating:hover .expand-indicator {
+        .expand-indicator:hover {
             opacity: 1;
             transform: scale(1.1);
             background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .expand-indicator i {
+            font-family: 'Material Icons' !important;
+            font-size: 1rem;
+            color: white;
         }
         
         .loading-skeleton {
@@ -268,70 +369,81 @@ class WeatherAlertSystem {
         }
         
         .error-state {
-            border: 2px solid var(--danger-color);
+            border: 2px solid #f44336;
             animation: errorPulse 2s infinite;
-            background: rgba(229, 57, 53, 0.2); /* Red tinted background for errors */
+            background: linear-gradient(135deg, 
+                rgba(244, 67, 54, 0.2) 0%, 
+                rgba(26, 47, 95, 0.95) 100%);
         }
         
         .update-indicator {
             position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 6px;
-            height: 6px;
-            background: var(--success-color);
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: #4caf50;
             border-radius: 50%;
             opacity: 0;
             animation: updateFlash 0.6s ease-out;
-            box-shadow: 0 0 4px var(--success-color);
+            box-shadow: 0 0 4px #4caf50;
         }
         
         /* Weather Icon Animations */
         .weather-icon.sunny {
             animation: sunnyRotate 20s linear infinite;
-            filter: drop-shadow(0 0 8px rgba(255, 202, 40, 0.6));
+            color: #ffeb3b;
         }
         
         .weather-icon.partly-cloudy {
             animation: gentleFloat 4s ease-in-out infinite;
+            color: #90a4ae;
         }
         
         .weather-icon.cloudy {
             animation: cloudDrift 6s ease-in-out infinite;
+            color: #78909c;
         }
         
         .weather-icon.rainy {
             animation: rainyBounce 1.5s ease-in-out infinite;
-            filter: drop-shadow(0 0 4px rgba(30, 136, 229, 0.4));
+            color: #2196f3;
         }
         
         .weather-icon.heavy-rain {
             animation: heavyRainShake 0.8s ease-in-out infinite;
-            filter: drop-shadow(0 0 6px rgba(30, 136, 229, 0.6));
+            color: #1976d2;
         }
         
         .weather-icon.snowy {
             animation: snowySway 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+            color: #e3f2fd;
+        }
+        
+        .weather-icon.heavy-snow {
+            animation: snowySway 2s ease-in-out infinite;
+            color: #ffffff;
         }
         
         .weather-icon.thunderstorm {
             animation: thunderstormShake 0.3s ease-in-out infinite;
-            filter: drop-shadow(0 0 8px rgba(229, 57, 53, 0.6));
+            color: #f44336;
         }
         
         .weather-icon.severe-thunderstorm {
             animation: severeThunderstormShake 0.2s ease-in-out infinite;
-            filter: drop-shadow(0 0 12px rgba(229, 57, 53, 0.8));
+            color: #d32f2f;
         }
         
         .weather-icon.foggy {
             animation: foggyFade 2.5s ease-in-out infinite;
-            opacity: 0.7;
+            color: #90a4ae;
+            opacity: 0.8;
         }
         
         .weather-icon.drizzle {
             animation: drizzleFloat 2s ease-in-out infinite;
+            color: #64b5f6;
         }
         
         /* Keyframe Animations */
@@ -382,8 +494,8 @@ class WeatherAlertSystem {
         }
         
         @keyframes foggyFade {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 0.8; }
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.9; }
         }
         
         @keyframes drizzleFloat {
@@ -392,18 +504,18 @@ class WeatherAlertSystem {
         }
         
         @keyframes criticalPulse {
-            0%, 100% { background-color: var(--danger-color); }
-            50% { background-color: #ff5722; }
+            0%, 100% { background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); }
+            50% { background: linear-gradient(135deg, #ff5722 0%, #f44336 100%); }
         }
         
         @keyframes warningPulse {
-            0%, 100% { background-color: var(--accent-color); }
-            50% { background-color: #ffc107; }
+            0%, 100% { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); }
+            50% { background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); }
         }
         
         @keyframes infoPulse {
-            0%, 100% { background-color: var(--secondary-color); }
-            50% { background-color: #2196f3; }
+            0%, 100% { background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); }
+            50% { background: linear-gradient(135deg, #03a9f4 0%, #2196f3 100%); }
         }
         
         @keyframes shimmer {
@@ -412,7 +524,7 @@ class WeatherAlertSystem {
         }
         
         @keyframes errorPulse {
-            0%, 100% { border-color: var(--danger-color); }
+            0%, 100% { border-color: #f44336; }
             50% { border-color: #ff1744; }
         }
         
@@ -422,22 +534,18 @@ class WeatherAlertSystem {
             100% { opacity: 0; transform: scale(1); }
         }
         
-        /* Responsive Design - ENHANCED VISIBILITY */
+        /* Responsive Design */
         @media (max-width: 768px) {
             .weather-alert-floating {
-                top: calc(var(--header-height) + 0.5rem);
-                left: 1rem;
-                right: auto;
-                width: 200px; /* Larger mobile size */
-                height: 56px;
-                background: linear-gradient(135deg, 
-                    rgba(26, 47, 95, 1) 0%, 
-                    rgba(15, 26, 54, 1) 100%); /* Same solid background on mobile */
+                top: 90px;
+                left: 10px;
+                width: 260px;
+                height: 65px;
             }
             
             .weather-alert-floating.expanded {
-                height: 80px;
-                width: 240px;
+                height: 90px;
+                width: 280px;
             }
             
             .weather-content {
@@ -445,25 +553,33 @@ class WeatherAlertSystem {
             }
             
             .weather-icon-container {
-                width: 40px;
-                height: 40px;
+                width: 45px;
+                height: 45px;
                 margin-right: 0.8rem;
             }
             
             .weather-icon {
-                font-size: 2rem; /* Larger mobile icon */
+                font-size: 1.8rem;
             }
             
             .temperature-display {
-                font-size: 1rem; /* Larger mobile temperature */
+                font-size: 1.2rem;
             }
             
             .condition-text {
-                font-size: 0.7rem; /* Larger mobile condition */
+                font-size: 0.75rem;
             }
             
             .location-indicator {
-                font-size: 0.6rem; /* Larger mobile location */
+                font-size: 0.65rem;
+            }
+        }
+        
+        /* High Contrast Support */
+        @media (prefers-contrast: high) {
+            .weather-alert-floating {
+                border: 3px solid white;
+                background: rgba(0, 0, 0, 0.95);
             }
         }
         
@@ -476,14 +592,6 @@ class WeatherAlertSystem {
                 transition: opacity 0.3s ease !important;
             }
         }
-        
-        /* High Contrast Support */
-        @media (prefers-contrast: high) {
-            .weather-alert-floating {
-                border: 3px solid white;
-                background: rgba(0, 0, 0, 0.95);
-            }
-        }
         `;
         
         const styleEl = document.createElement('style');
@@ -492,7 +600,7 @@ class WeatherAlertSystem {
         document.head.appendChild(styleEl);
     }
     
-    // Create the weather container HTML
+    // Create the weather container HTML - FIXED EXPAND BUTTON
     async createWeatherContainer() {
         this.weatherContainer = document.createElement('div');
         this.weatherContainer.className = 'weather-alert-floating';
@@ -511,7 +619,7 @@ class WeatherAlertSystem {
                     <div class="location-indicator">Slobozia, IL</div>
                 </div>
                 <div class="alert-banner" role="alert" aria-live="assertive"></div>
-                <div class="expand-indicator">
+                <div class="expand-indicator" role="button" aria-label="Expandează informații meteo" tabindex="0">
                     <i class="material-icons">expand_more</i>
                 </div>
                 <div class="update-indicator"></div>
@@ -521,14 +629,34 @@ class WeatherAlertSystem {
         document.body.appendChild(this.weatherContainer);
     }
     
-    // Setup event listeners
+    // Setup event listeners - FIXED EXPAND BUTTON
     setupEventListeners() {
-        // Click to expand/collapse
-        this.weatherContainer.addEventListener('click', () => {
-            this.toggleExpanded();
+        // Click to expand/collapse - main container
+        this.weatherContainer.addEventListener('click', (e) => {
+            // Don't trigger on expand indicator clicks
+            if (!e.target.closest('.expand-indicator')) {
+                this.toggleExpanded();
+            }
         });
         
-        // Keyboard support
+        // Separate handler for expand indicator
+        const expandIndicator = this.weatherContainer.querySelector('.expand-indicator');
+        if (expandIndicator) {
+            expandIndicator.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleExpanded();
+            });
+            
+            expandIndicator.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.toggleExpanded();
+                }
+            });
+        }
+        
+        // Keyboard support for main container
         this.weatherContainer.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -624,10 +752,11 @@ class WeatherAlertSystem {
         }
     }
     
-    // Toggle expanded state
+    // Toggle expanded state - IMPROVED
     toggleExpanded() {
         this.isExpanded = !this.isExpanded;
         this.updateExpandedState();
+        console.log(`🌤️ Weather widget ${this.isExpanded ? 'expanded' : 'collapsed'}`);
     }
     
     // Update expanded state
@@ -649,10 +778,9 @@ class WeatherAlertSystem {
         }, this.updateInterval);
     }
     
-    // Fetch weather data from Open-Meteo API - COMPLETELY REVISED
+    // Fetch weather data from Open-Meteo API
     async fetchWeatherData() {
         try {
-            // Use the correct Open-Meteo API URL structure
             const params = new URLSearchParams({
                 latitude: this.coordinates.latitude.toString(),
                 longitude: this.coordinates.longitude.toString(),
@@ -660,7 +788,7 @@ class WeatherAlertSystem {
                 hourly: 'temperature_2m,precipitation_probability,precipitation,weather_code,wind_speed_10m',
                 daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum',
                 timezone: 'Europe/Bucharest',
-                forecast_days: 3 // Get more data for better accuracy
+                forecast_days: 3
             });
             
             const url = `${this.apiBaseUrl}?${params}`;
@@ -672,7 +800,7 @@ class WeatherAlertSystem {
                     'Accept': 'application/json',
                     'User-Agent': 'Politia-Locala-Slobozia-Weather/1.0'
                 },
-                cache: 'no-cache' // Always get fresh data
+                cache: 'no-cache'
             });
             
             if (!response.ok) {
@@ -683,18 +811,13 @@ class WeatherAlertSystem {
             const data = await response.json();
             console.log('🌤️ Raw weather API response:', data);
             
-            // Validate the response structure
             if (!data.current || typeof data.current.temperature_2m !== 'number') {
                 console.error('❌ Invalid API response structure:', data);
                 throw new Error('Invalid weather data structure received from API');
             }
             
-            // Log current conditions for debugging
             console.log('🌡️ Current temperature:', data.current.temperature_2m, '°C');
             console.log('🌦️ Weather code:', data.current.weather_code);
-            console.log('💧 Precipitation:', data.current.precipitation, 'mm');
-            console.log('☁️ Cloud cover:', data.current.cloud_cover, '%');
-            console.log('💨 Wind speed:', data.current.wind_speed_10m, 'km/h');
             
             this.currentWeatherData = data;
             this.lastSuccessfulData = data;
@@ -702,7 +825,6 @@ class WeatherAlertSystem {
             this.checkWeatherAlerts(data);
             this.showUpdateIndicator();
             
-            // Remove error state
             if (this.weatherContainer) {
                 this.weatherContainer.classList.remove('error-state');
             }
@@ -715,7 +837,7 @@ class WeatherAlertSystem {
         }
     }
     
-    // Update weather display - ENHANCED WITH BETTER DATA HANDLING
+    // Update weather display - FIXED ICON DISPLAY
     updateWeatherDisplay(data) {
         if (!this.weatherContainer || !data.current) {
             console.error('❌ Cannot update display: missing container or current data');
@@ -725,7 +847,6 @@ class WeatherAlertSystem {
         const current = data.current;
         console.log('🔄 Updating weather display with:', current);
         
-        // Get weather condition - ensure we have the correct mapping
         const weatherCode = parseInt(current.weather_code) || 0;
         const condition = this.weatherConditions[weatherCode] || {
             icon: 'help_outline',
@@ -739,7 +860,7 @@ class WeatherAlertSystem {
         const elements = this.weatherContainer.querySelectorAll('.loading-skeleton');
         elements.forEach(el => el.classList.remove('loading-skeleton'));
         
-        // Update temperature with proper rounding
+        // Update temperature
         const tempDisplay = this.weatherContainer.querySelector('.temperature-display');
         if (tempDisplay && typeof current.temperature_2m === 'number') {
             const temperature = Math.round(current.temperature_2m);
@@ -754,20 +875,22 @@ class WeatherAlertSystem {
             console.log(`📝 Condition text updated: ${condition.name}`);
         }
         
-        // Update weather icon with proper class management
+        // Update weather icon - FIXED
         const weatherIcon = this.weatherContainer.querySelector('.weather-icon');
         if (weatherIcon) {
-            weatherIcon.textContent = condition.icon;
-            // Clear all existing animation classes
+            // Clear all classes first
             weatherIcon.className = 'material-icons weather-icon';
-            // Add the specific animation class
+            weatherIcon.textContent = condition.icon;
+            
+            // Add animation class after a short delay
             setTimeout(() => {
                 weatherIcon.classList.add(condition.animation);
-            }, 50);
+            }, 100);
+            
             console.log(`🎭 Icon updated: ${condition.icon} with animation: ${condition.animation}`);
         }
         
-        // Add current time and conditions to aria-label for accessibility
+        // Update accessibility
         if (this.weatherContainer) {
             const now = new Date().toLocaleTimeString('ro-RO', { 
                 hour: '2-digit', 
@@ -781,7 +904,7 @@ class WeatherAlertSystem {
         console.log('✅ Weather display update completed successfully');
     }
     
-    // Check for weather alerts - IMPROVED LOGIC
+    // Check for weather alerts
     checkWeatherAlerts(data) {
         if (!data.current) {
             console.log('No current weather data for alerts');
@@ -816,8 +939,8 @@ class WeatherAlertSystem {
             });
         }
         
-        // Severe weather alerts based on weather code
-        const severeWeatherCodes = [95, 96, 99]; // Thunderstorms
+        // Severe weather alerts
+        const severeWeatherCodes = [95, 96, 99];
         if (severeWeatherCodes.includes(current.weather_code)) {
             alerts.push({
                 type: 'critical',
@@ -827,7 +950,7 @@ class WeatherAlertSystem {
         
         // Precipitation alerts
         if (data.hourly && data.hourly.precipitation_probability) {
-            const maxPrecipitation = Math.max(...data.hourly.precipitation_probability.slice(0, 12)); // Next 12 hours
+            const maxPrecipitation = Math.max(...data.hourly.precipitation_probability.slice(0, 12));
             if (maxPrecipitation > 80) {
                 alerts.push({
                     type: 'info',
@@ -837,7 +960,7 @@ class WeatherAlertSystem {
         }
         
         console.log('Weather alerts found:', alerts);
-        this.displayAlert(alerts[0]); // Show most critical alert
+        this.displayAlert(alerts[0]);
     }
     
     // Display weather alert
@@ -857,27 +980,23 @@ class WeatherAlertSystem {
         }
     }
     
-    // Handle weather API errors - IMPROVED ERROR HANDLING
+    // Handle weather API errors
     handleWeatherError(error) {
         console.error('Weather error details:', error);
         
         if (!this.weatherContainer) return;
         
-        // Add error state styling
         this.weatherContainer.classList.add('error-state');
         
-        // Try to use last successful data if available
         if (this.lastSuccessfulData) {
             console.log('Using cached weather data due to error');
             this.updateWeatherDisplay(this.lastSuccessfulData);
             
-            // Show error indicator but keep data
             const conditionText = this.weatherContainer.querySelector('.condition-text');
             if (conditionText) {
                 conditionText.textContent = conditionText.textContent + ' (Cache)';
             }
         } else {
-            // No cached data available - show error message
             const tempDisplay = this.weatherContainer.querySelector('.temperature-display');
             const conditionText = this.weatherContainer.querySelector('.condition-text');
             const weatherIcon = this.weatherContainer.querySelector('.weather-icon');
@@ -890,11 +1009,9 @@ class WeatherAlertSystem {
             }
         }
         
-        // Remove loading skeleton
         const elements = this.weatherContainer.querySelectorAll('.loading-skeleton');
         elements.forEach(el => el.classList.remove('loading-skeleton'));
         
-        // Show error alert
         this.displayAlert({
             type: 'warning',
             message: 'EROARE METEO'
@@ -912,20 +1029,13 @@ class WeatherAlertSystem {
         }
     }
     
-    // Make weather alert visible with animation - RENAMED TO AVOID CONFLICT
+    // Make weather alert visible
     makeVisible() {
         if (this.weatherContainer) {
             setTimeout(() => {
                 this.weatherContainer.classList.add('visible');
-                console.log('Weather alert made visible');
+                console.log('🌤️ Weather alert made visible');
             }, 100);
-        }
-    }
-    
-    // Initial appearance method (called after delay)
-    showWeatherAlert() {
-        if (!this.isHidden) {
-            this.makeVisible();
         }
     }
     
@@ -940,9 +1050,15 @@ class WeatherAlertSystem {
         if (this.weatherContainer) {
             this.weatherContainer.remove();
         }
-        console.log('Weather Alert System destroyed');
+        
+        // Clean up console interface
+        delete window.weatherTest;
+        
+        console.log('🌤️ Weather Alert System destroyed');
     }
 }
 
 // Export for use in components.js
 window.WeatherAlertSystem = WeatherAlertSystem;
+
+console.log('🌤️ Weather Alert System loaded. Use weatherTest.* commands in console for testing.');
