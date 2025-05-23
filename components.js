@@ -622,7 +622,7 @@ const COMPONENTS_CSS = `
 /* More noticeable attention-grabbing animation for Innovations menu item */
 .main-nav ul li a[href="/pls/inovatii"] {
     position: relative;
-    /* Remove overflow hidden to allow effects to extend beyond button */
+    overflow: hidden; /* Contain shine effects within button */
 }
 
 .main-nav ul li a[href="/pls/inovatii"] .menu-icon {
@@ -654,19 +654,19 @@ const COMPONENTS_CSS = `
     }
 }
 
-/* More visible background glow effect */
+/* More visible background glow effect - contained within button */
 .main-nav ul li a[href="/pls/inovatii"]::before {
     content: '';
     position: absolute;
-    top: -2px;
-    left: -4px;
-    right: -4px;
-    bottom: -2px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(45deg, transparent 20%, rgba(255, 202, 40, 0.15) 50%, transparent 80%);
     transform: translateX(-120%);
     animation: innovationShine 4s ease-in-out infinite;
-    z-index: -1;
-    border-radius: 8px;
+    z-index: 0;
+    border-radius: 6px;
 }
 
 /* More pronounced shine effect */
@@ -692,24 +692,25 @@ const COMPONENTS_CSS = `
     }
 }
 
-/* Enhanced hover state with unrestricted light effects */
+/* Enhanced hover state with contained light effects */
 .main-nav ul li a[href="/pls/inovatii"]:hover {
     background-color: rgba(255, 202, 40, 0.12);
     border-radius: 6px;
     transition: all 0.3s ease;
     position: relative;
-    z-index: 2;
+    z-index: 1;
+    overflow: hidden; /* Ensure hover effects stay contained */
 }
 
 .main-nav ul li a[href="/pls/inovatii"]:hover::after {
     content: '';
     position: absolute;
-    top: -8px;
-    left: -8px;
-    right: -8px;
-    bottom: -8px;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
     background: radial-gradient(circle, rgba(255, 202, 40, 0.2) 0%, transparent 70%);
-    border-radius: 12px;
+    border-radius: 8px;
     z-index: -1;
     animation: innovationHoverGlow 0.6s ease-out;
 }
@@ -733,6 +734,7 @@ const COMPONENTS_CSS = `
     animation: innovationHover 0.6s ease-in-out;
     color: var(--accent-color);
     filter: drop-shadow(0 0 15px rgba(255, 202, 40, 1));
+    z-index: 2;
 }
 
 /* More dramatic hover animation */
@@ -751,28 +753,27 @@ const COMPONENTS_CSS = `
     }
 }
 
-/* Add periodic text glow to make it even more noticeable */
+/* Remove text glow - only lightbulb should animate */
 .main-nav ul li a[href="/pls/inovatii"] .menu-text-optional {
-    animation: innovationTextGlow 5s ease-in-out infinite;
-}
-
-@keyframes innovationTextGlow {
-    0%, 85%, 100% {
-        color: inherit;
-        text-shadow: none;
-    }
-    10% {
-        color: var(--accent-color);
-        text-shadow: 0 0 8px rgba(255, 202, 40, 0.6);
-    }
+    /* No animation - text stays normal */
+    position: relative;
+    z-index: 2;
 }
 
 /* Mobile-specific innovation animations - also more noticeable */
 @media (max-width: 992px) {
+    .main-nav ul li a[href="/pls/inovatii"] {
+        overflow: hidden; /* Ensure mobile effects are contained */
+    }
+    
     .main-nav ul li a[href="/pls/inovatii"]::before {
-        /* Keep shine effect on mobile but simpler */
+        /* Keep shine effect on mobile but contained */
         background: linear-gradient(45deg, transparent 30%, rgba(255, 202, 40, 0.2) 50%, transparent 70%);
         animation: innovationShine 5s ease-in-out infinite;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
     }
     
     .main-nav ul li a[href="/pls/inovatii"] .menu-icon {
@@ -797,6 +798,7 @@ const COMPONENTS_CSS = `
 /* Dropdown menu innovation item animation - more noticeable */
 .dropdown-menu li a[href="/pls/inovatii"] {
     position: relative;
+    overflow: hidden; /* Contain dropdown effects too */
 }
 
 .dropdown-menu li a[href="/pls/inovatii"] .dropdown-icon-item {
