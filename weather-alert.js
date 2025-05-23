@@ -76,20 +76,24 @@ class WeatherAlertSystem {
         if (document.getElementById('weather-alert-css')) return;
         
         const css = `
-        /* Weather Alert System Styles - IMPROVED VISIBILITY */
+        /* Weather Alert System Styles - MAXIMUM VISIBILITY */
         .weather-alert-floating {
             position: fixed;
-            top: calc(var(--header-height) + 1rem);
-            right: 1.5rem;
-            width: 256px;
-            height: 64px;
-            background: rgba(26, 47, 95, 0.98); /* Increased from 0.95 to 0.98 */
-            backdrop-filter: blur(12px);
+            top: calc(var(--header-height) + 0.5rem);
+            right: 1rem;
+            width: 280px; /* Increased size to match header scale */
+            height: 70px; /* Increased height */
+            background: linear-gradient(135deg, 
+                rgba(26, 47, 95, 1) 0%, 
+                rgba(15, 26, 54, 1) 100%); /* Solid gradient background */
             border-radius: var(--border-radius-large);
-            color: var(--text-light);
+            color: #ffffff;
             font-family: 'Poppins', sans-serif;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); /* Stronger shadow */
-            border: 2px solid rgba(255, 255, 255, 0.2); /* More visible border */
+            box-shadow: 
+                0 8px 32px rgba(0,0,0,0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1); /* Multiple shadows for depth */
+            border: 2px solid rgba(30, 136, 229, 0.3); /* Blue accent border */
             z-index: 999;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -104,49 +108,58 @@ class WeatherAlertSystem {
         }
         
         .weather-alert-floating.hidden {
-            opacity: 0.6; /* Increased from 0.3 to 0.6 for better visibility when hidden */
+            opacity: 0.8; /* Much more visible when hidden */
             pointer-events: none;
         }
         
         .weather-alert-floating.expanded {
-            height: 96px;
-            width: 304px;
+            height: 105px; /* Larger expanded size */
+            width: 320px;
         }
         
         .weather-alert-floating:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5); /* Enhanced hover shadow */
-            background: rgba(26, 47, 95, 1); /* Fully opaque on hover */
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 40px rgba(0,0,0,0.7),
+                0 0 0 1px rgba(30, 136, 229, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border-color: rgba(30, 136, 229, 0.5);
         }
         
         .weather-content {
             display: flex;
             align-items: center;
-            padding: 0.8rem;
+            padding: 1rem; /* Increased padding */
             height: 100%;
             position: relative;
-            background: rgba(255, 255, 255, 0.05); /* Subtle inner background */
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.08) 0%, 
+                rgba(255, 255, 255, 0.02) 100%); /* Subtle inner glow */
             border-radius: var(--border-radius-large);
         }
         
         .weather-icon-container {
-            width: 48px;
-            height: 48px;
+            width: 52px; /* Larger icon container */
+            height: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 0.8rem;
+            margin-right: 1rem;
             position: relative;
-            background: rgba(255, 255, 255, 0.1); /* Background for icon */
+            background: linear-gradient(135deg, 
+                rgba(30, 136, 229, 0.2) 0%, 
+                rgba(255, 202, 40, 0.1) 100%);
             border-radius: 50%;
-            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .weather-icon {
-            font-size: 2.2rem;
-            color: var(--accent-color);
+            font-size: 2.4rem; /* Larger icon */
+            color: #ffca28; /* Bright accent color */
             transition: all 0.3s ease;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Text shadow for better visibility */
+            text-shadow: 
+                0 2px 4px rgba(0,0,0,0.5),
+                0 0 8px rgba(255, 202, 40, 0.3); /* Enhanced text shadow */
         }
         
         .weather-info {
@@ -158,33 +171,33 @@ class WeatherAlertSystem {
         }
         
         .temperature-display {
-            font-size: 1.1rem;
+            font-size: 1.3rem; /* Larger temperature */
             font-weight: 700;
             line-height: 1;
-            margin-bottom: 0.1rem;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3); /* Better text visibility */
-            color: #ffffff; /* Ensure pure white text */
+            margin-bottom: 0.2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            color: #ffffff;
         }
         
         .condition-text {
-            font-size: 0.7rem;
+            font-size: 0.8rem; /* Larger condition text */
             font-weight: 500;
-            opacity: 0.9; /* Increased from 0.8 */
+            opacity: 1; /* Full opacity */
             line-height: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-            color: rgba(255, 255, 255, 0.95); /* More visible */
+            color: rgba(255, 255, 255, 1);
         }
         
         .location-indicator {
-            font-size: 0.6rem;
+            font-size: 0.65rem; /* Larger location text */
             font-weight: 400;
-            opacity: 0.8; /* Increased from 0.6 */
+            opacity: 0.9;
             margin-top: 0.1rem;
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-            color: rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.9);
         }
         
         .alert-banner {
@@ -409,46 +422,48 @@ class WeatherAlertSystem {
             100% { opacity: 0; transform: scale(1); }
         }
         
-        /* Responsive Design */
+        /* Responsive Design - ENHANCED VISIBILITY */
         @media (max-width: 768px) {
             .weather-alert-floating {
                 top: calc(var(--header-height) + 0.5rem);
                 left: 1rem;
                 right: auto;
-                width: 176px;
-                height: 48px;
-                background: rgba(26, 47, 95, 0.98); /* Keep high opacity on mobile */
+                width: 200px; /* Larger mobile size */
+                height: 56px;
+                background: linear-gradient(135deg, 
+                    rgba(26, 47, 95, 1) 0%, 
+                    rgba(15, 26, 54, 1) 100%); /* Same solid background on mobile */
             }
             
             .weather-alert-floating.expanded {
-                height: 72px;
-                width: 200px;
+                height: 80px;
+                width: 240px;
             }
             
             .weather-content {
-                padding: 0.6rem;
+                padding: 0.8rem;
             }
             
             .weather-icon-container {
-                width: 36px;
-                height: 36px;
-                margin-right: 0.6rem;
+                width: 40px;
+                height: 40px;
+                margin-right: 0.8rem;
             }
             
             .weather-icon {
-                font-size: 1.8rem;
+                font-size: 2rem; /* Larger mobile icon */
             }
             
             .temperature-display {
-                font-size: 0.9rem;
+                font-size: 1rem; /* Larger mobile temperature */
             }
             
             .condition-text {
-                font-size: 0.6rem;
+                font-size: 0.7rem; /* Larger mobile condition */
             }
             
             .location-indicator {
-                font-size: 0.5rem;
+                font-size: 0.6rem; /* Larger mobile location */
             }
         }
         
@@ -634,105 +649,136 @@ class WeatherAlertSystem {
         }, this.updateInterval);
     }
     
-    // Fetch weather data from Open-Meteo API - IMPROVED ERROR HANDLING
+    // Fetch weather data from Open-Meteo API - COMPLETELY REVISED
     async fetchWeatherData() {
         try {
+            // Use the correct Open-Meteo API URL structure
             const params = new URLSearchParams({
-                latitude: this.coordinates.latitude,
-                longitude: this.coordinates.longitude,
-                current: 'temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m', // Updated parameter name
-                hourly: 'temperature_2m,precipitation_probability,weather_code', // Simplified
-                daily: 'weather_code,temperature_2m_max,temperature_2m_min',
+                latitude: this.coordinates.latitude.toString(),
+                longitude: this.coordinates.longitude.toString(),
+                current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m',
+                hourly: 'temperature_2m,precipitation_probability,precipitation,weather_code,wind_speed_10m',
+                daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum',
                 timezone: 'Europe/Bucharest',
-                forecast_days: 1
+                forecast_days: 3 // Get more data for better accuracy
             });
             
             const url = `${this.apiBaseUrl}?${params}`;
-            console.log('Fetching weather from:', url);
+            console.log('🌤️ Fetching weather data from:', url);
             
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
-                    'Accept': 'application/json'
-                }
+                    'Accept': 'application/json',
+                    'User-Agent': 'Politia-Locala-Slobozia-Weather/1.0'
+                },
+                cache: 'no-cache' // Always get fresh data
             });
             
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+                const errorText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
             }
             
             const data = await response.json();
-            console.log('Weather API Response:', data);
+            console.log('🌤️ Raw weather API response:', data);
             
-            // Validate data structure
-            if (!data.current) {
-                throw new Error('Invalid API response: missing current weather data');
+            // Validate the response structure
+            if (!data.current || typeof data.current.temperature_2m !== 'number') {
+                console.error('❌ Invalid API response structure:', data);
+                throw new Error('Invalid weather data structure received from API');
             }
             
+            // Log current conditions for debugging
+            console.log('🌡️ Current temperature:', data.current.temperature_2m, '°C');
+            console.log('🌦️ Weather code:', data.current.weather_code);
+            console.log('💧 Precipitation:', data.current.precipitation, 'mm');
+            console.log('☁️ Cloud cover:', data.current.cloud_cover, '%');
+            console.log('💨 Wind speed:', data.current.wind_speed_10m, 'km/h');
+            
             this.currentWeatherData = data;
-            this.lastSuccessfulData = data; // Store for fallback
+            this.lastSuccessfulData = data;
             this.updateWeatherDisplay(data);
             this.checkWeatherAlerts(data);
             this.showUpdateIndicator();
             
-            // Remove error state if it was present
+            // Remove error state
             if (this.weatherContainer) {
                 this.weatherContainer.classList.remove('error-state');
             }
             
+            console.log('✅ Weather data updated successfully');
+            
         } catch (error) {
-            console.error('Weather fetch error:', error);
+            console.error('❌ Weather fetch error:', error);
             this.handleWeatherError(error);
         }
     }
     
-    // Update weather display - IMPROVED DATA HANDLING
+    // Update weather display - ENHANCED WITH BETTER DATA HANDLING
     updateWeatherDisplay(data) {
         if (!this.weatherContainer || !data.current) {
-            console.error('Cannot update weather display: missing container or data');
+            console.error('❌ Cannot update display: missing container or current data');
             return;
         }
         
         const current = data.current;
-        console.log('Current weather data:', current);
+        console.log('🔄 Updating weather display with:', current);
         
-        // Get weather condition with fallback
-        const weatherCode = current.weather_code || 0;
-        const condition = this.weatherConditions[weatherCode] || this.weatherConditions[0];
+        // Get weather condition - ensure we have the correct mapping
+        const weatherCode = parseInt(current.weather_code) || 0;
+        const condition = this.weatherConditions[weatherCode] || {
+            icon: 'help_outline',
+            name: `Cod necunoscut (${weatherCode})`,
+            animation: 'sunny'
+        };
         
-        console.log(`Weather code: ${weatherCode}, Condition:`, condition);
+        console.log(`🌦️ Weather mapping: Code ${weatherCode} → ${condition.name} (${condition.icon})`);
         
         // Remove loading skeleton
         const elements = this.weatherContainer.querySelectorAll('.loading-skeleton');
         elements.forEach(el => el.classList.remove('loading-skeleton'));
         
-        // Update temperature
+        // Update temperature with proper rounding
         const tempDisplay = this.weatherContainer.querySelector('.temperature-display');
         if (tempDisplay && typeof current.temperature_2m === 'number') {
-            tempDisplay.textContent = `${Math.round(current.temperature_2m)}°C`;
-            console.log(`Temperature updated: ${Math.round(current.temperature_2m)}°C`);
+            const temperature = Math.round(current.temperature_2m);
+            tempDisplay.textContent = `${temperature}°C`;
+            console.log(`🌡️ Temperature display updated: ${temperature}°C`);
         }
         
         // Update condition text
         const conditionText = this.weatherContainer.querySelector('.condition-text');
         if (conditionText) {
             conditionText.textContent = condition.name;
-            console.log(`Condition updated: ${condition.name}`);
+            console.log(`📝 Condition text updated: ${condition.name}`);
         }
         
-        // Update weather icon
+        // Update weather icon with proper class management
         const weatherIcon = this.weatherContainer.querySelector('.weather-icon');
         if (weatherIcon) {
             weatherIcon.textContent = condition.icon;
-            // Remove all animation classes first
+            // Clear all existing animation classes
             weatherIcon.className = 'material-icons weather-icon';
-            // Add new animation class
-            weatherIcon.classList.add(condition.animation);
-            console.log(`Icon updated: ${condition.icon} with animation: ${condition.animation}`);
+            // Add the specific animation class
+            setTimeout(() => {
+                weatherIcon.classList.add(condition.animation);
+            }, 50);
+            console.log(`🎭 Icon updated: ${condition.icon} with animation: ${condition.animation}`);
         }
         
-        // Log successful update
-        console.log('Weather display updated successfully');
+        // Add current time and conditions to aria-label for accessibility
+        if (this.weatherContainer) {
+            const now = new Date().toLocaleTimeString('ro-RO', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            this.weatherContainer.setAttribute('aria-label', 
+                `Informații meteo actuale pentru Slobozia: ${condition.name}, ${Math.round(current.temperature_2m)}°C, actualizat la ${now}`
+            );
+        }
+        
+        console.log('✅ Weather display update completed successfully');
     }
     
     // Check for weather alerts - IMPROVED LOGIC
