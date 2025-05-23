@@ -1,5 +1,5 @@
 // WEATHER-ALERT.JS - Municipal Weather Warning System for Poliția Locală Slobozia
-// Professional weather monitoring and safety advisory system
+// Professional weather monitoring and safety advisory system - Production Version
 
 class WeatherAlertSystem {
     constructor() {
@@ -345,6 +345,11 @@ class WeatherAlertSystem {
             animation: criticalPulse 3s infinite;
         }
         
+        .weather-alert-floating.critical.expanded {
+            min-height: 200px;
+            width: 360px;
+        }
+        
         .weather-alert-floating.expanded {
             min-height: 140px;
             width: 340px;
@@ -378,10 +383,12 @@ class WeatherAlertSystem {
             background: rgba(255, 255, 255, 0.08);
             border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            flex-shrink: 0;
         }
         
         .weather-icon {
-            font-size: 24px;
+            font-size: 22px;
             color: #e3f2fd;
             transition: all 0.3s ease;
             font-family: 'Material Icons' !important;
@@ -398,6 +405,7 @@ class WeatherAlertSystem {
             text-rendering: optimizeLegibility;
             -moz-osx-font-smoothing: grayscale;
             font-feature-settings: 'liga';
+            text-align: center;
         }
         
         .weather-text-info {
@@ -509,33 +517,40 @@ class WeatherAlertSystem {
         
         .expand-indicator {
             position: absolute;
-            bottom: 8px;
-            right: 12px;
-            font-size: 16px;
-            opacity: 0.6;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
             transition: all 0.3s ease;
             cursor: pointer;
             z-index: 10;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 4px;
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            backdrop-filter: blur(4px);
         }
         
         .expand-indicator:hover {
             opacity: 1;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
         }
         
         .expand-indicator i {
             font-family: 'Material Icons' !important;
-            font-size: 16px;
+            font-size: 18px;
             color: white;
         }
         
         .update-indicator {
             position: absolute;
             top: 8px;
-            right: 8px;
+            right: 44px;
             width: 6px;
             height: 6px;
             background: #4caf50;
@@ -710,6 +725,11 @@ class WeatherAlertSystem {
                 min-height: 120px;
             }
             
+            .weather-alert-floating.critical.expanded {
+                width: 320px;
+                min-height: 180px;
+            }
+            
             .weather-content {
                 padding: 10px 12px;
             }
@@ -721,7 +741,7 @@ class WeatherAlertSystem {
             }
             
             .weather-icon {
-                font-size: 20px;
+                font-size: 18px;
             }
             
             .temperature-display {
@@ -833,6 +853,7 @@ class WeatherAlertSystem {
             } else if (e.key === 'Escape') {
                 this.isExpanded = false;
                 this.updateExpandedState();
+                this.hideSafetyRecommendations();
             }
         });
         
@@ -902,9 +923,11 @@ class WeatherAlertSystem {
         this.isExpanded = !this.isExpanded;
         this.updateExpandedState();
         
-        // Auto-show safety recommendations when expanded
+        // Properly handle safety recommendations visibility
         if (this.isExpanded && this.currentAlertLevel !== 'normal') {
             this.showSafetyRecommendations();
+        } else {
+            this.hideSafetyRecommendations();
         }
         
         console.log(`🏛️ Municipal weather ${this.isExpanded ? 'expanded' : 'collapsed'}`);
@@ -918,6 +941,22 @@ class WeatherAlertSystem {
             if (expandIcon) {
                 expandIcon.textContent = this.isExpanded ? 'expand_less' : 'expand_more';
             }
+        }
+    }
+    
+    // Show safety recommendations
+    showSafetyRecommendations() {
+        const safetyRecommendations = this.weatherContainer.querySelector('.safety-recommendations');
+        if (safetyRecommendations) {
+            safetyRecommendations.classList.add('visible');
+        }
+    }
+    
+    // Hide safety recommendations
+    hideSafetyRecommendations() {
+        const safetyRecommendations = this.weatherContainer.querySelector('.safety-recommendations');
+        if (safetyRecommendations) {
+            safetyRecommendations.classList.remove('visible');
         }
     }
     
@@ -1120,22 +1159,17 @@ class WeatherAlertSystem {
             emergencyContact.classList.toggle('visible', alert.level === 'critical');
         }
         
-        // Auto-expand for warnings and critical alerts
+        // Auto-expand for warnings and critical alerts with proper timing
         if ((alert.level === 'warning' || alert.level === 'critical') && !this.isExpanded) {
-            this.isExpanded = true;
-            this.updateExpandedState();
-            this.showSafetyRecommendations();
+            console.log(`🚨 Auto-expanding for ${alert.level} alert`);
+            setTimeout(() => {
+                this.isExpanded = true;
+                this.updateExpandedState();
+                this.showSafetyRecommendations();
+            }, 300); // Delay to ensure CSS transitions work properly
         }
         
         console.log(`🚨 Municipal alert: ${alert.level} - ${alert.title}`);
-    }
-    
-    // Show safety recommendations
-    showSafetyRecommendations() {
-        const safetyRecommendations = this.weatherContainer.querySelector('.safety-recommendations');
-        if (safetyRecommendations) {
-            safetyRecommendations.classList.add('visible');
-        }
     }
     
     // Clear alert state
@@ -1153,6 +1187,12 @@ class WeatherAlertSystem {
         if (alertHeader) alertHeader.classList.remove('visible');
         if (safetyRecommendations) safetyRecommendations.classList.remove('visible');
         if (emergencyContact) emergencyContact.classList.remove('visible');
+        
+        // Reset expansion state when clearing alerts
+        if (this.isExpanded) {
+            this.isExpanded = false;
+            this.updateExpandedState();
+        }
     }
     
     // Handle errors
@@ -1219,6 +1259,11 @@ class WeatherAlertSystem {
             this.weatherContainer.remove();
         }
         
+        const cssElement = document.getElementById('municipal-weather-css');
+        if (cssElement) {
+            cssElement.remove();
+        }
+        
         delete window.weatherTest;
         console.log('🏛️ Municipal weather system deactivated');
     }
@@ -1226,6 +1271,15 @@ class WeatherAlertSystem {
 
 // Initialize Municipal Weather Warning System
 window.WeatherAlertSystem = WeatherAlertSystem;
+
+// Auto-initialize if document is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        new WeatherAlertSystem();
+    });
+} else {
+    new WeatherAlertSystem();
+}
 
 console.log('🏛️ Municipal Weather Warning System loaded for Poliția Locală Slobozia');
 console.log('📋 Use weatherTest.* commands for municipal testing');
