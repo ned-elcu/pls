@@ -1,5 +1,6 @@
 // WEATHER-ALERT.JS - Municipal Weather Warning System for Poliția Locală Slobozia
 // Professional weather monitoring and safety advisory system - Production Version
+// Now includes Emergency Monitoring (Earthquakes, Air Quality, Floods)
 
 class WeatherAlertSystem {
     constructor() {
@@ -21,8 +22,8 @@ class WeatherAlertSystem {
         // Municipal weather conditions with safety guidance
         this.weatherConditions = {
             0: { icon: 'wb_sunny', name: 'Senin', animation: 'sunny', advice: null },
-            1: { icon: 'partly_cloudy_day', name: 'Parțial înnorat', animation: 'partly-cloudy', advice: null },
-            2: { icon: 'partly_cloudy_day', name: 'Parțial înnorat', animation: 'partly-cloudy', advice: null },
+            1: { icon: 'foggy', name: 'Parțial înnorat', animation: 'foggy', advice: null },
+            2: { icon: 'foggy', name: 'Parțial înnorat', animation: 'foggy', advice: null },
             3: { icon: 'cloud', name: 'Înnorat', animation: 'cloudy', advice: null },
             45: { icon: 'foggy', name: 'Ceață', animation: 'foggy', advice: 'visibility' },
             48: { icon: 'foggy', name: 'Ceață cu chiciură', animation: 'foggy', advice: 'ice_safety' },
@@ -68,8 +69,8 @@ class WeatherAlertSystem {
                 recommendations: [
                     'Atenție la carosabilul umed',
                     'Folosiți umbrela la deplasări',
-                    'Verificați sistemele de scurgere',
-                    'Evitați zonele cu risc de inundații'
+                    'Verificați gutierele și scurgerile',
+                    'Evitați zonele cu risc de băltire'
                 ]
             },
             heavy_rain: {
@@ -79,7 +80,7 @@ class WeatherAlertSystem {
                     'Evitați deplasările neesențiale',
                     'Nu traversați zonele inundate',
                     'Verificați acoperișurile și jgheaburile',
-                    'Țineți la îndemână numerele de urgență',
+                    'Aveți la îndemână numerele de urgență',
                     'Urmăriți comunicatele oficiale'
                 ]
             },
@@ -90,7 +91,7 @@ class WeatherAlertSystem {
                     'Echipați vehiculele pentru iarnă',
                     'Atenție la drumurile alunecoase',
                     'Purtați încălțăminte adecvată',
-                    'Verificați încălzirea locuinței'
+                    'Verificați funcționarea încălzirii'
                 ]
             },
             heavy_snow: {
@@ -102,7 +103,7 @@ class WeatherAlertSystem {
                     'Asigurați-vă rezerve de alimente',
                     'Verificați sistemul de încălzire',
                     'Curățați zăpada de pe acoperișuri',
-                    'Contactați vecinii în vârstă'
+                    'Verificați vecinii în vârstă'
                 ]
             },
             ice_safety: {
@@ -172,6 +173,37 @@ class WeatherAlertSystem {
                     'Atenție la căderea crengilor',
                     'Verificați acoperișurile',
                     'Evitați parcarea sub copaci'
+                ]
+            },
+            // Emergency alert types
+            earthquake: {
+                level: 'warning',
+                title: 'ALERTĂ SEISMICĂ',
+                recommendations: [
+                    'Verificați integritatea locuinței',
+                    'Pregătiți-vă pentru posibile replici',
+                    'Urmăriți comunicatele oficiale',
+                    'Apelați 112 pentru urgențe'
+                ]
+            },
+            air_quality: {
+                level: 'advisory',
+                title: 'ATENȚIE - CALITATEA AERULUI',
+                recommendations: [
+                    'Limitați activitățile în aer liber',
+                    'Persoanele sensibile să rămână în interior',
+                    'Folosiți filtre de aer în locuință',
+                    'Evitați zonele cu trafic intens'
+                ]
+            },
+            flood_risk: {
+                level: 'warning',
+                title: 'RISC DE INUNDAȚII',
+                recommendations: [
+                    'Urmăriți nivelul apelor',
+                    'Pregătiți planul de evacuare',
+                    'Mutați obiectele de valoare la etaj',
+                    'Nu traversați zonele inundate'
                 ]
             }
         };
@@ -284,6 +316,32 @@ class WeatherAlertSystem {
         setTimeout(() => {
             this.makeVisible();
         }, 2000);
+        
+        // Store reference for emergency system
+        window.municipalWeatherSystem = this;
+    }
+    
+    // Method to handle emergency alerts from the emergency monitoring system
+    displayEmergencyAlert(type, protocol) {
+        console.log(`🚨 Emergency alert received: ${type} - ${protocol.level}`);
+        
+        // Integrate emergency alert with existing safety advice system
+        const emergencyAlert = {
+            level: protocol.level,
+            title: protocol.title,
+            recommendations: protocol.actions || protocol.recommendations || []
+        };
+        
+        this.displaySafetyAlert(emergencyAlert);
+        
+        // Force expansion for critical emergency alerts
+        if (protocol.level === 'critical' && !this.isExpanded) {
+            setTimeout(() => {
+                this.isExpanded = true;
+                this.updateExpandedState();
+                this.showSafetyRecommendations();
+            }, 300);
+        }
     }
     
     // Inject municipal-appropriate CSS
@@ -1265,7 +1323,618 @@ class WeatherAlertSystem {
         }
         
         delete window.weatherTest;
+        delete window.municipalWeatherSystem;
         console.log('🏛️ Municipal weather system deactivated');
+    }
+}
+
+// EMERGENCY MONITORING SYSTEM INTEGRATION
+// Extends the municipal weather system with earthquake, air quality, and flood monitoring
+
+class EmergencyMonitoringSystem {
+    constructor() {
+        this.coordinates = {
+            latitude: 44.5667,  // Slobozia, Romania
+            longitude: 27.3667
+        };
+        
+        // API endpoints - all publicly accessible
+        this.apis = {
+            earthquake: {
+                url: 'https://earthquake.usgs.gov/fdsnws/event/1/query',
+                name: 'USGS Earthquake API',
+                keyRequired: false
+            },
+            airQuality: {
+                url: 'https://api.open-meteo.com/v1/air-quality',
+                name: 'Open-Meteo Air Quality',
+                keyRequired: false
+            },
+            flood: {
+                url: 'https://api.open-meteo.com/v1/flood',
+                name: 'Open-Meteo Flood API',
+                keyRequired: false
+            }
+        };
+        
+        // Emergency thresholds for municipal alerts
+        this.emergencyThresholds = {
+            earthquake: {
+                minor: 3.0,     // Local awareness
+                moderate: 4.5,  // Municipal preparation
+                major: 6.0,     // Emergency response
+                radius: 100     // km from Slobozia
+            },
+            airQuality: {
+                good: 50,
+                moderate: 100,
+                unhealthy: 150,
+                dangerous: 300
+            },
+            flood: {
+                watch: 50,      // m³/s - monitoring threshold
+                warning: 100,   // m³/s - preparation threshold
+                emergency: 200  // m³/s - emergency response
+            }
+        };
+        
+        // Municipal emergency responses
+        this.emergencyProtocols = {
+            earthquake: {
+                minor: {
+                    level: 'advisory',
+                    title: 'INFORMARE SEISMICĂ',
+                    recommendations: [
+                        'Rămâneți calmi și verificați dacă există avarii',
+                        'Verificați integritatea locuinței',
+                        'Urmăriți comunicatele oficiale',
+                        'Pregătiți-vă pentru posibile replici'
+                    ]
+                },
+                moderate: {
+                    level: 'warning',
+                    title: 'ALERTĂ SEISMICĂ',
+                    recommendations: [
+                        'Evacuați clădirea dacă observați fisuri',
+                        'Verificați conductele de gaz și apă',
+                        'Aveți pregătită trusa de urgență',
+                        'Contactați autoritățile dacă sunt pagube',
+                        'Rămâneți în zone sigure, departe de geamuri'
+                    ]
+                },
+                major: {
+                    level: 'critical',
+                    title: 'SITUAȚIE DE URGENȚĂ SEISMICĂ',
+                    recommendations: [
+                        'EVACUAȚI CLĂDIREA IMEDIAT',
+                        'Adăpostiți-vă în spații deschise',
+                        'Apelați 112 pentru urgențe',
+                        'Nu folosiți ascensorul',
+                        'Aveți grijă de copii și persoane în vârstă',
+                        'Urmăriți instrucțiunile autorităților'
+                    ]
+                }
+            },
+            airQuality: {
+                moderate: {
+                    level: 'advisory',
+                    title: 'ATENȚIE - CALITATEA AERULUI',
+                    recommendations: [
+                        'Limitați activitățile fizice în exterior',
+                        'Persoanele sensibile să rămână în interior',
+                        'Închideți ferestrele în timpul zilei',
+                        'Folosiți purificatoare de aer dacă aveți'
+                    ]
+                },
+                unhealthy: {
+                    level: 'warning',
+                    title: 'AVERTIZARE CALITATE AER',
+                    recommendations: [
+                        'Evitați ieșirile neesențiale',
+                        'Purtați mască de protecție în exterior',
+                        'Copiii și vârstnicii să rămână în interior',
+                        'Contactați medicul dacă aveți probleme respiratorii',
+                        'Évitați zonele cu trafic intens'
+                    ]
+                },
+                dangerous: {
+                    level: 'critical',
+                    title: 'ALERTĂ POLUARE SEVERĂ',
+                    recommendations: [
+                        'RĂMÂNEȚI ÎN INTERIOR OBLIGATORIU',
+                        'Sigilați ferestrele și ușile',
+                        'Folosiți purificatoare de aer',
+                        'Apelați medicul la primele simptome',
+                        'Nu faceți exerciții fizice',
+                        'Beți multă apă pentru hidratare'
+                    ]
+                }
+            },
+            flood: {
+                watch: {
+                    level: 'advisory',
+                    title: 'MONITORIZARE HIDRROLOGICĂ',
+                    recommendations: [
+                        'Urmăriți nivelul apelor din zonă',
+                        'Pregătiți documente importante',
+                        'Identificați rutele de evacuare',
+                        'Verificați asigurarea locuinței'
+                    ]
+                },
+                warning: {
+                    level: 'warning',
+                    title: 'ATENȚIONARE INUNDAȚII',
+                    recommendations: [
+                        'Mutați obiectele de valoare la etaj',
+                        'Pregătiți provizii pentru 72 de ore',
+                        'Aveți pregătit un plan de evacuare',
+                        'Evitați deplasările în zonele cu risc',
+                        'Țineți vehiculul cu rezervorul plin'
+                    ]
+                },
+                emergency: {
+                    level: 'critical',
+                    title: 'ALERTĂ INUNDAȚII',
+                    recommendations: [
+                        'EVACUAȚI IMEDIAT ZONA DACĂ ESTE NECESAR',
+                        'Nu traversați apele curgătoare',
+                        'Urcați-vă la etajele superioare',
+                        'Apelați 112 pentru salvare',
+                        'Semnalizați prezența voastră',
+                        'Nu intrați în subsoluri inundate'
+                    ]
+                }
+            }
+        };
+        
+        this.lastUpdate = {
+            earthquake: null,
+            airQuality: null,
+            flood: null
+        };
+        
+        this.currentAlerts = new Set();
+        this.updateInterval = 10 * 60 * 1000; // 10 minutes for emergency monitoring
+        this.activeTimers = [];
+        
+        this.init();
+    }
+    
+    async init() {
+        console.log('🚨 Initializing Emergency Monitoring System for Slobozia');
+        
+        // Wait for weather system to be ready
+        setTimeout(() => {
+            // Initial data fetch
+            this.fetchAllEmergencyData();
+            
+            // Setup periodic monitoring
+            this.startEmergencyMonitoring();
+            
+            // Setup console interface for testing
+            this.setupEmergencyTestInterface();
+        }, 3000);
+    }
+    
+    setupEmergencyTestInterface() {
+        window.emergencyTest = {
+            testEarthquake: (magnitude, distance) => this.testEarthquakeAlert(magnitude, distance),
+            testAirQuality: (aqi) => this.testAirQualityAlert(aqi),
+            testFlood: (discharge) => this.testFloodAlert(discharge),
+            checkAll: () => this.fetchAllEmergencyData(),
+            showAlerts: () => console.log('Active alerts:', Array.from(this.currentAlerts)),
+            clearAlerts: () => this.clearAllAlerts()
+        };
+        
+        console.log('🧪 Emergency testing commands available:');
+        console.log('emergencyTest.testEarthquake(5.2, 45) - Test earthquake alert');
+        console.log('emergencyTest.testAirQuality(180) - Test air quality alert');
+        console.log('emergencyTest.testFlood(150) - Test flood alert');
+        console.log('emergencyTest.checkAll() - Fetch all emergency data');
+    }
+    
+    async fetchAllEmergencyData() {
+        console.log('🔍 Fetching emergency data for Slobozia...');
+        
+        try {
+            // Fetch all emergency data in parallel
+            const [earthquakeData, airQualityData, floodData] = await Promise.allSettled([
+                this.fetchEarthquakeData(),
+                this.fetchAirQualityData(),
+                this.fetchFloodData()
+            ]);
+            
+            // Process results
+            if (earthquakeData.status === 'fulfilled') {
+                this.processEarthquakeData(earthquakeData.value);
+            } else {
+                console.warn('❌ Earthquake data fetch failed:', earthquakeData.reason);
+            }
+            
+            if (airQualityData.status === 'fulfilled') {
+                this.processAirQualityData(airQualityData.value);
+            } else {
+                console.warn('❌ Air quality data fetch failed:', airQualityData.reason);
+            }
+            
+            if (floodData.status === 'fulfilled') {
+                this.processFloodData(floodData.value);
+            } else {
+                console.warn('❌ Flood data fetch failed:', floodData.reason);
+            }
+            
+            console.log('✅ Emergency monitoring update completed');
+            
+        } catch (error) {
+            console.error('❌ Emergency monitoring system error:', error);
+        }
+    }
+    
+    async fetchEarthquakeData() {
+        const params = new URLSearchParams({
+            format: 'geojson',
+            starttime: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Last 24 hours
+            latitude: this.coordinates.latitude,
+            longitude: this.coordinates.longitude,
+            maxradiuskm: this.emergencyThresholds.earthquake.radius,
+            minmagnitude: this.emergencyThresholds.earthquake.minor,
+            orderby: 'time'
+        });
+        
+        const url = `${this.apis.earthquake.url}?${params}`;
+        console.log('🌍 Fetching earthquake data:', url);
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'User-Agent': 'Politia-Locala-Slobozia-Emergency/1.0'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`USGS API error: ${response.status}`);
+        }
+        
+        return await response.json();
+    }
+    
+    async fetchAirQualityData() {
+        const params = new URLSearchParams({
+            latitude: this.coordinates.latitude.toString(),
+            longitude: this.coordinates.longitude.toString(),
+            hourly: 'pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone',
+            timezone: 'Europe/Bucharest'
+        });
+        
+        const url = `${this.apis.airQuality.url}?${params}`;
+        console.log('🌬️ Fetching air quality data:', url);
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Open-Meteo Air Quality API error: ${response.status}`);
+        }
+        
+        return await response.json();
+    }
+    
+    async fetchFloodData() {
+        const params = new URLSearchParams({
+            latitude: this.coordinates.latitude.toString(),
+            longitude: this.coordinates.longitude.toString(),
+            daily: 'river_discharge',
+            timezone: 'Europe/Bucharest'
+        });
+        
+        const url = `${this.apis.flood.url}?${params}`;
+        console.log('🌊 Fetching flood data:', url);
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Open-Meteo Flood API error: ${response.status}`);
+        }
+        
+        return await response.json();
+    }
+    
+    processEarthquakeData(data) {
+        if (!data.features || data.features.length === 0) {
+            console.log('🟢 No significant earthquakes in the last 24 hours');
+            this.clearAlert('earthquake');
+            return;
+        }
+        
+        // Find the most significant earthquake
+        const significantEarthquake = data.features.reduce((max, current) => {
+            return current.properties.mag > max.properties.mag ? current : max;
+        });
+        
+        const magnitude = significantEarthquake.properties.mag;
+        const distance = this.calculateDistance(
+            this.coordinates.latitude,
+            this.coordinates.longitude,
+            significantEarthquake.geometry.coordinates[1], // lat
+            significantEarthquake.geometry.coordinates[0]  // lon
+        );
+        
+        console.log(`🌍 Earthquake detected: M${magnitude} at ${distance.toFixed(1)}km from Slobozia`);
+        
+        this.evaluateEarthquakeAlert(magnitude, distance, significantEarthquake.properties);
+    }
+    
+    processAirQualityData(data) {
+        if (!data.hourly) {
+            console.warn('⚠️ Invalid air quality data structure');
+            return;
+        }
+        
+        // Get current hour index (most recent data)
+        const currentIndex = 0;
+        const airData = {
+            pm25: data.hourly.pm2_5?.[currentIndex] || 0,
+            pm10: data.hourly.pm10?.[currentIndex] || 0,
+            co: data.hourly.carbon_monoxide?.[currentIndex] || 0,
+            no2: data.hourly.nitrogen_dioxide?.[currentIndex] || 0,
+            so2: data.hourly.sulphur_dioxide?.[currentIndex] || 0,
+            o3: data.hourly.ozone?.[currentIndex] || 0
+        };
+        
+        // Calculate simplified AQI based on PM2.5 (most health-relevant)
+        const aqi = this.calculateSimpleAQI(airData.pm25);
+        
+        console.log(`🌬️ Air Quality: PM2.5=${airData.pm25}µg/m³, AQI≈${aqi}`);
+        
+        this.evaluateAirQualityAlert(aqi, airData);
+    }
+    
+    processFloodData(data) {
+        if (!data.daily || !data.daily.river_discharge) {
+            console.warn('⚠️ No flood data available for this location');
+            return;
+        }
+        
+        // Get most recent discharge data
+        const discharge = data.daily.river_discharge[0] || 0;
+        
+        console.log(`🌊 River discharge: ${discharge} m³/s`);
+        
+        this.evaluateFloodAlert(discharge);
+    }
+    
+    evaluateEarthquakeAlert(magnitude, distance, properties) {
+        let alertLevel = null;
+        
+        if (magnitude >= this.emergencyThresholds.earthquake.major) {
+            alertLevel = 'major';
+        } else if (magnitude >= this.emergencyThresholds.earthquake.moderate) {
+            alertLevel = 'moderate';
+        } else if (magnitude >= this.emergencyThresholds.earthquake.minor) {
+            alertLevel = 'minor';
+        }
+        
+        if (alertLevel) {
+            const protocol = this.emergencyProtocols.earthquake[alertLevel];
+            this.triggerEmergencyAlert('earthquake', {
+                ...protocol,
+                data: {
+                    magnitude: magnitude,
+                    distance: distance.toFixed(1),
+                    location: properties.place,
+                    time: new Date(properties.time).toLocaleString('ro-RO')
+                }
+            });
+        } else {
+            this.clearAlert('earthquake');
+        }
+    }
+    
+    evaluateAirQualityAlert(aqi, airData) {
+        let alertLevel = null;
+        
+        if (aqi >= this.emergencyThresholds.airQuality.dangerous) {
+            alertLevel = 'dangerous';
+        } else if (aqi >= this.emergencyThresholds.airQuality.unhealthy) {
+            alertLevel = 'unhealthy';
+        } else if (aqi >= this.emergencyThresholds.airQuality.moderate) {
+            alertLevel = 'moderate';
+        }
+        
+        if (alertLevel) {
+            const protocol = this.emergencyProtocols.airQuality[alertLevel];
+            this.triggerEmergencyAlert('airQuality', {
+                ...protocol,
+                data: {
+                    aqi: aqi,
+                    pm25: airData.pm25?.toFixed(1) || 'N/A',
+                    pm10: airData.pm10?.toFixed(1) || 'N/A',
+                    recommendation: this.getAirQualityRecommendation(aqi)
+                }
+            });
+        } else {
+            this.clearAlert('airQuality');
+        }
+    }
+    
+    evaluateFloodAlert(discharge) {
+        let alertLevel = null;
+        
+        if (discharge >= this.emergencyThresholds.flood.emergency) {
+            alertLevel = 'emergency';
+        } else if (discharge >= this.emergencyThresholds.flood.warning) {
+            alertLevel = 'warning';
+        } else if (discharge >= this.emergencyThresholds.flood.watch) {
+            alertLevel = 'watch';
+        }
+        
+        if (alertLevel) {
+            const protocol = this.emergencyProtocols.flood[alertLevel];
+            this.triggerEmergencyAlert('flood', {
+                ...protocol,
+                data: {
+                    discharge: discharge.toFixed(1),
+                    risk: this.getFloodRiskLevel(discharge),
+                    trend: 'monitoring'
+                }
+            });
+        } else {
+            this.clearAlert('flood');
+        }
+    }
+    
+    triggerEmergencyAlert(type, protocol) {
+        const alertId = `${type}_${protocol.level}`;
+        
+        if (this.currentAlerts.has(alertId)) {
+            console.log(`🔄 Updating existing ${type} alert`);
+        } else {
+            console.log(`🚨 NEW EMERGENCY ALERT: ${type} - ${protocol.level}`);
+            this.currentAlerts.add(alertId);
+        }
+        
+        // Integrate with existing weather system
+        if (window.municipalWeatherSystem && window.municipalWeatherSystem.displayEmergencyAlert) {
+            window.municipalWeatherSystem.displayEmergencyAlert(type, protocol);
+        } else {
+            // Standalone alert display
+            this.displayEmergencyAlert(type, protocol);
+        }
+        
+        // Log for municipal records
+        this.logEmergencyEvent(type, protocol);
+    }
+    
+    displayEmergencyAlert(type, protocol) {
+        console.log('🚨 EMERGENCY ALERT SYSTEM');
+        console.log(`Type: ${type.toUpperCase()}`);
+        console.log(`Level: ${protocol.level.toUpperCase()}`);
+        console.log(`Title: ${protocol.title}`);
+        console.log('Actions Required:');
+        protocol.recommendations.forEach((action, index) => {
+            console.log(`  ${index + 1}. ${action}`);
+        });
+        
+        if (protocol.data) {
+            console.log('Data:', protocol.data);
+        }
+    }
+    
+    logEmergencyEvent(type, protocol) {
+        const event = {
+            timestamp: new Date().toISOString(),
+            location: 'Slobozia, Ialomița',
+            type: type,
+            level: protocol.level,
+            title: protocol.title,
+            data: protocol.data || {},
+            actions: protocol.recommendations
+        };
+        
+        // In a real implementation, this would be sent to municipal systems
+        console.log('📋 MUNICIPAL LOG ENTRY:', JSON.stringify(event, null, 2));
+    }
+    
+    clearAlert(type) {
+        const alertsToRemove = Array.from(this.currentAlerts).filter(alert => alert.startsWith(type));
+        alertsToRemove.forEach(alert => this.currentAlerts.delete(alert));
+        
+        if (alertsToRemove.length > 0) {
+            console.log(`✅ Cleared ${type} alerts:`, alertsToRemove);
+        }
+    }
+    
+    clearAllAlerts() {
+        this.currentAlerts.clear();
+        console.log('✅ All emergency alerts cleared');
+    }
+    
+    // Utility methods
+    calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth's radius in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+    
+    calculateSimpleAQI(pm25) {
+        // Simplified AQI calculation based on PM2.5
+        if (pm25 <= 12) return 50;
+        if (pm25 <= 35.4) return 100;
+        if (pm25 <= 55.4) return 150;
+        if (pm25 <= 150.4) return 200;
+        if (pm25 <= 250.4) return 300;
+        return 400;
+    }
+    
+    getAirQualityRecommendation(aqi) {
+        if (aqi <= 50) return 'Calitate bună - activități normale';
+        if (aqi <= 100) return 'Moderată - persoane sensibile să limiteze efortul';
+        if (aqi <= 150) return 'Nesănătoasă pentru grupuri sensibile';
+        if (aqi <= 200) return 'Nesănătoasă - limitați activitățile în exterior';
+        if (aqi <= 300) return 'Foarte nesănătoasă - evitați activitățile în exterior';
+        return 'Periculoasă - rămâneți în interior';
+    }
+    
+    getFloodRiskLevel(discharge) {
+        if (discharge < 50) return 'Normal';
+        if (discharge < 100) return 'Monitorizare';
+        if (discharge < 200) return 'Atenționare';
+        return 'Pericol';
+    }
+    
+    startEmergencyMonitoring() {
+        // Main monitoring loop
+        const timer = setInterval(() => {
+            this.fetchAllEmergencyData();
+        }, this.updateInterval);
+        
+        this.activeTimers.push(timer);
+        console.log(`🔄 Emergency monitoring started (${this.updateInterval/1000/60} min intervals)`);
+    }
+    
+    // Testing methods
+    testEarthquakeAlert(magnitude, distance) {
+        console.log(`🧪 Testing earthquake alert: M${magnitude} at ${distance}km`);
+        this.evaluateEarthquakeAlert(magnitude, distance, {
+            place: 'Test earthquake near Slobozia',
+            time: Date.now()
+        });
+    }
+    
+    testAirQualityAlert(aqi) {
+        console.log(`🧪 Testing air quality alert: AQI ${aqi}`);
+        this.evaluateAirQualityAlert(aqi, {
+            pm25: aqi * 0.5,
+            pm10: aqi * 0.8,
+            co: 100,
+            no2: 20,
+            so2: 10,
+            o3: 80
+        });
+    }
+    
+    testFloodAlert(discharge) {
+        console.log(`🧪 Testing flood alert: ${discharge} m³/s`);
+        this.evaluateFloodAlert(discharge);
+    }
+    
+    destroy() {
+        this.activeTimers.forEach(timer => clearInterval(timer));
+        this.activeTimers = [];
+        this.clearAllAlerts();
+        delete window.emergencyTest;
+        console.log('🚨 Emergency monitoring system deactivated');
     }
 }
 
@@ -1281,5 +1950,12 @@ if (document.readyState === 'loading') {
     new WeatherAlertSystem();
 }
 
+// Initialize Emergency Monitoring System after weather system is ready
+setTimeout(() => {
+    window.emergencySystem = new EmergencyMonitoringSystem();
+    console.log('🚨 Emergency monitoring system started for Slobozia');
+}, 5000); // Wait 5 seconds to ensure weather system is fully loaded
+
 console.log('🏛️ Municipal Weather Warning System loaded for Poliția Locală Slobozia');
 console.log('📋 Use weatherTest.* commands for municipal testing');
+console.log('🚨 Use emergencyTest.* commands for emergency system testing');
