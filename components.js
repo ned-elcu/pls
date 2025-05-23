@@ -619,137 +619,200 @@ const COMPONENTS_CSS = `
 }
 
 /* INNOVATION MENU ANIMATIONS */
-/* Subtle attention-grabbing animation for Innovations menu item */
+/* More noticeable attention-grabbing animation for Innovations menu item */
 .main-nav ul li a[href="/pls/inovatii"] {
     position: relative;
-    overflow: hidden;
+    /* Remove overflow hidden to allow effects to extend beyond button */
 }
 
 .main-nav ul li a[href="/pls/inovatii"] .menu-icon {
-    animation: innovationPulse 4s ease-in-out infinite;
-    filter: drop-shadow(0 0 2px rgba(255, 202, 40, 0.3));
+    animation: innovationPulse 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 3px rgba(255, 202, 40, 0.4));
 }
 
-/* Lightbulb pulse animation - suggests "bright ideas" */
+/* Much more noticeable lightbulb pulse animation */
 @keyframes innovationPulse {
     0% {
         transform: scale(1);
-        filter: drop-shadow(0 0 2px rgba(255, 202, 40, 0.3));
+        filter: drop-shadow(0 0 3px rgba(255, 202, 40, 0.4));
+        color: var(--text-secondary);
     }
-    15% {
-        transform: scale(1.1);
-        filter: drop-shadow(0 0 6px rgba(255, 202, 40, 0.6));
+    20% {
+        transform: scale(1.15);
+        filter: drop-shadow(0 0 12px rgba(255, 202, 40, 0.8));
+        color: var(--accent-color);
     }
-    30% {
+    40% {
         transform: scale(1);
-        filter: drop-shadow(0 0 2px rgba(255, 202, 40, 0.3));
+        filter: drop-shadow(0 0 3px rgba(255, 202, 40, 0.4));
+        color: var(--text-secondary);
     }
     100% {
         transform: scale(1);
-        filter: drop-shadow(0 0 2px rgba(255, 202, 40, 0.3));
+        filter: drop-shadow(0 0 3px rgba(255, 202, 40, 0.4));
+        color: var(--text-secondary);
     }
 }
 
-/* Subtle glow effect that appears periodically */
+/* More visible background glow effect */
 .main-nav ul li a[href="/pls/inovatii"]::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, transparent 30%, rgba(255, 202, 40, 0.1) 50%, transparent 70%);
-    transform: translateX(-100%);
-    animation: innovationShine 6s ease-in-out infinite;
+    top: -2px;
+    left: -4px;
+    right: -4px;
+    bottom: -2px;
+    background: linear-gradient(45deg, transparent 20%, rgba(255, 202, 40, 0.15) 50%, transparent 80%);
+    transform: translateX(-120%);
+    animation: innovationShine 4s ease-in-out infinite;
     z-index: -1;
-    border-radius: 4px;
+    border-radius: 8px;
 }
 
-/* Shine effect that moves across the button periodically */
+/* More pronounced shine effect */
 @keyframes innovationShine {
     0% {
-        transform: translateX(-100%);
+        transform: translateX(-120%);
         opacity: 0;
     }
-    20% {
+    15% {
         opacity: 1;
     }
-    40% {
-        transform: translateX(100%);
+    35% {
+        transform: translateX(120%);
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(120%);
         opacity: 0;
     }
     100% {
-        transform: translateX(100%);
+        transform: translateX(120%);
         opacity: 0;
     }
 }
 
-/* Enhanced hover state for innovations */
+/* Enhanced hover state with unrestricted light effects */
 .main-nav ul li a[href="/pls/inovatii"]:hover {
-    background-color: rgba(255, 202, 40, 0.08);
+    background-color: rgba(255, 202, 40, 0.12);
     border-radius: 6px;
     transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.main-nav ul li a[href="/pls/inovatii"]:hover::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    background: radial-gradient(circle, rgba(255, 202, 40, 0.2) 0%, transparent 70%);
+    border-radius: 12px;
+    z-index: -1;
+    animation: innovationHoverGlow 0.6s ease-out;
+}
+
+@keyframes innovationHoverGlow {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
 }
 
 .main-nav ul li a[href="/pls/inovatii"]:hover .menu-icon {
     animation: innovationHover 0.6s ease-in-out;
     color: var(--accent-color);
-    filter: drop-shadow(0 0 8px rgba(255, 202, 40, 0.8));
+    filter: drop-shadow(0 0 15px rgba(255, 202, 40, 1));
 }
 
-/* Hover animation - more pronounced lightbulb effect */
+/* More dramatic hover animation */
 @keyframes innovationHover {
     0% {
         transform: scale(1);
     }
-    50% {
-        transform: scale(1.2) rotate(5deg);
+    30% {
+        transform: scale(1.3) rotate(8deg);
+    }
+    60% {
+        transform: scale(1.2) rotate(-3deg);
     }
     100% {
-        transform: scale(1.1) rotate(0deg);
+        transform: scale(1.15) rotate(0deg);
     }
 }
 
-/* Mobile-specific innovation animations */
+/* Add periodic text glow to make it even more noticeable */
+.main-nav ul li a[href="/pls/inovatii"] .menu-text-optional {
+    animation: innovationTextGlow 5s ease-in-out infinite;
+}
+
+@keyframes innovationTextGlow {
+    0%, 85%, 100% {
+        color: inherit;
+        text-shadow: none;
+    }
+    10% {
+        color: var(--accent-color);
+        text-shadow: 0 0 8px rgba(255, 202, 40, 0.6);
+    }
+}
+
+/* Mobile-specific innovation animations - also more noticeable */
 @media (max-width: 992px) {
     .main-nav ul li a[href="/pls/inovatii"]::before {
-        display: none; /* Disable shine effect on mobile for performance */
+        /* Keep shine effect on mobile but simpler */
+        background: linear-gradient(45deg, transparent 30%, rgba(255, 202, 40, 0.2) 50%, transparent 70%);
+        animation: innovationShine 5s ease-in-out infinite;
     }
     
     .main-nav ul li a[href="/pls/inovatii"] .menu-icon {
-        animation: innovationPulseMobile 5s ease-in-out infinite;
+        animation: innovationPulseMobile 3s ease-in-out infinite;
     }
     
-    /* Simpler mobile animation */
+    /* More noticeable mobile animation */
     @keyframes innovationPulseMobile {
-        0%, 80%, 100% {
+        0%, 70%, 100% {
             transform: scale(1);
-            opacity: 0.8;
+            filter: drop-shadow(0 0 2px rgba(255, 202, 40, 0.3));
+            color: var(--text-secondary);
         }
-        10% {
-            transform: scale(1.05);
-            opacity: 1;
+        15% {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(255, 202, 40, 0.8));
+            color: var(--accent-color);
         }
     }
 }
 
-/* Dropdown menu innovation item animation */
+/* Dropdown menu innovation item animation - more noticeable */
 .dropdown-menu li a[href="/pls/inovatii"] {
     position: relative;
 }
 
 .dropdown-menu li a[href="/pls/inovatii"] .dropdown-icon-item {
-    animation: innovationDropdownPulse 3s ease-in-out infinite;
+    animation: innovationDropdownPulse 4s ease-in-out infinite;
 }
 
 @keyframes innovationDropdownPulse {
-    0%, 90%, 100% {
+    0%, 80%, 100% {
         color: var(--text-secondary);
         filter: none;
+        transform: scale(1);
     }
-    5% {
+    10% {
         color: var(--accent-color);
-        filter: drop-shadow(0 0 3px rgba(255, 202, 40, 0.5));
+        filter: drop-shadow(0 0 6px rgba(255, 202, 40, 0.7));
+        transform: scale(1.1);
     }
 }
 
