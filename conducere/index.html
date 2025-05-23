@@ -47,6 +47,7 @@
             overflow-x: hidden;
             background-color: var(--background-light);
             padding-top: var(--header-height);
+            scroll-behavior: smooth;
         }
         
         h1, h2, h3, h4, h5, h6 {
@@ -189,6 +190,37 @@
         .breadcrumbs .current {
             color: var(--accent-color);
             font-weight: 500;
+        }
+        
+        .quick-nav {
+            margin-top: 1.5rem;
+        }
+        
+        .quick-nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+        
+        .quick-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .quick-nav-link i {
+            font-size: 1.1rem;
+            color: var(--accent-color);
         }
 
         /* Content Section */
@@ -949,6 +981,11 @@
             box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
         }
 
+        /* Anchor Links Offset */
+        #program-de-audiente {
+            scroll-margin-top: calc(var(--header-height) + 2rem);
+        }
+
         /* Animation */
         @keyframes fadeIn {
             from {
@@ -1001,6 +1038,15 @@
             
             .page-title {
                 font-size: 1.8rem;
+            }
+            
+            .quick-nav {
+                margin-top: 1rem;
+            }
+            
+            .quick-nav-link {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.85rem;
             }
             
             .content-section {
@@ -1071,6 +1117,13 @@
                     <a href="#">Despre Noi</a>
                     <span class="separator"><i class="material-icons">chevron_right</i></span>
                     <span class="current">Conducere</span>
+                </div>
+                
+                <div class="quick-nav">
+                    <a href="#program-de-audiente" class="quick-nav-link">
+                        <i class="material-icons">schedule</i>
+                        <span>Saltă la Program de audiențe</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -1167,7 +1220,7 @@
             </div>
 
             <!-- Audience Program Section -->
-            <div class="audience-program-section">
+            <div id="program-de-audiente" class="audience-program-section">
                 <h2 class="audience-program-heading">Program de audiențe</h2>
                 
                 <div class="audience-intro">
@@ -1308,7 +1361,7 @@
                         <div class="related-icon"><i class="material-icons">schedule</i></div>
                         <h4 class="related-title">Program de audiențe</h4>
                         <p class="related-description">Programul de audiențe al conducerii Poliției Locale Slobozia și modalitatea de înscriere.</p>
-                        <a href="../program-de-audiente/" class="related-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="#program-de-audiente" class="related-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                 </div>
             </div>
@@ -1321,7 +1374,7 @@
                     <p class="cta-description">Dacă ai întrebări sau ai nevoie de informații suplimentare despre activitatea Poliției Locale Slobozia, echipa noastră îți stă la dispoziție.</p>
                     <div class="cta-buttons">
                         <a href="../relatii-cu-publicul/" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
-                        <a href="../program-de-audiente/" class="btn btn-secondary">Program audiențe <i class="material-icons">event</i></a>
+                        <a href="#program-de-audiente" class="btn btn-secondary">Program audiențe <i class="material-icons">event</i></a>
                     </div>
                 </div>
             </div>
