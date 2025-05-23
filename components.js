@@ -1281,7 +1281,7 @@ const HEADER_HTML = `
                         <li><a href="/pls/conducere"><i class="material-icons dropdown-icon-item">supervisor_account</i> Conducere</a></li>
                         <li><a href="/pls/relatii-cu-publicul"><i class="material-icons dropdown-icon-item">people</i> Relații cu publicul</a></li>
                         <li><a href="/pls/sediu"><i class="material-icons dropdown-icon-item">location_on</i> Sediul operativ și administrativ</a></li>
-                        <li><a href="/pls/audiente"><i class="material-icons dropdown-icon-item">event</i> Program de audiențe</a></li>
+                        <li><a href="/pls/conducere/#program-de-audiente"><i class="material-icons dropdown-icon-item">event</i> Program de audiențe</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
