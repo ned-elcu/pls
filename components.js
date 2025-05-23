@@ -1294,6 +1294,7 @@ const HEADER_HTML = `
                         <li><a href="/pls/integritate/#strategie-anticoruptie"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
                         <li><a href="/pls/integritate/#cod-etic"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
                         <li><a href="/pls/integritate/#declarare-cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Declararea cadourilor</a></li>
+                        <li><a href="/pls/gdpr"><i class="material-icons dropdown-icon-item">security</i> GDPR</a></li>
                     </ul>
                 </li>
                 <li class="has-dropdown">
@@ -1324,15 +1325,15 @@ const HEADER_HTML = `
                     </ul>
                 </li>
                 <li class="low-priority">
-                    <a href="/pls/gdpr" data-tooltip="GDPR" class="icon-only-small">
-                        <i class="material-icons menu-icon">security</i>
-                        <span class="menu-text-optional">GDPR</span>
+                    <a href="/pls/inovatii" data-tooltip="Inovații" class="icon-only-small">
+                        <i class="material-icons menu-icon">lightbulb</i>
+                        <span class="menu-text-optional">Inovații</span>
                     </a>
                 </li>
                 <li class="low-priority">
-                    <a href="/pls/camere" data-tooltip="Camere publice" class="icon-only-small">
+                    <a href="/pls/camere" data-tooltip="CCTV Public" class="icon-only-small">
                         <i class="material-icons menu-icon">videocam</i>
-                        <span class="menu-text-optional">Camere publice</span>
+                        <span class="menu-text-optional">CCTV Public</span>
                     </a>
                 </li>
             </ul>
