@@ -2093,8 +2093,8 @@ class EmergencyMonitoringSystem {
             },
             airQuality: {
                 good: 50,
-                moderate: 100,
-                unhealthy: 150,
+                moderate: 120,
+                unhealthy: 155,
                 dangerous: 300
             }
         };
