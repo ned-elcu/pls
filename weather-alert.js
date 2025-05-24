@@ -32,7 +32,7 @@ class WeatherAlertSystem {
         // Enhanced accessibility features
         this.accessibilityMode = localStorage.getItem('weather-accessibility-mode') === 'true';
         this.fontScale = parseInt(localStorage.getItem('weather-font-scale')) || 1;
-        this.highContrast = localStorage.getItem('weather-high-contrast') === 'true';
+        this.highContrast = localStorage.getItem('weather-high-contrast') === 'true' || this.accessibilityMode;
         
         // Enhanced UI state management
         this.uiState = {
@@ -254,9 +254,14 @@ class WeatherAlertSystem {
     toggleAccessibilityMode() {
         this.accessibilityMode = !this.accessibilityMode;
         this.uiState.accessibility = this.accessibilityMode ? 'enhanced' : 'normal';
+        
+        // Automatically enable high contrast when accessibility mode is on
+        this.highContrast = this.accessibilityMode;
+        
         localStorage.setItem('weather-accessibility-mode', this.accessibilityMode.toString());
+        localStorage.setItem('weather-high-contrast', this.highContrast.toString());
         this.updateAccessibilityFeatures();
-        console.log(`♿ Accessibility mode: ${this.accessibilityMode ? 'Enhanced' : 'Normal'}`);
+        console.log(`♿ Accessibility mode: ${this.accessibilityMode ? 'Enhanced with High Contrast' : 'Normal'}`);
     }
     
     setFontScale(scale) {
@@ -298,9 +303,9 @@ class WeatherAlertSystem {
                 accessButton.setAttribute('aria-label', 'Comutare la modul normal');
                 accessButton.classList.add('active');
             } else {
-                icon.textContent = 'zoom_in';
-                label.textContent = 'TEXT MARE';
-                accessButton.setAttribute('aria-label', 'Activare text mare pentru citire');
+                icon.textContent = 'visibility_off';
+                label.textContent = 'VIZIBILITATE';
+                accessButton.setAttribute('aria-label', 'Activare mod vizibilitate îmbunătățită');
                 accessButton.classList.remove('active');
             }
         }
@@ -531,30 +536,72 @@ class WeatherAlertSystem {
         .weather-alert-floating.font-scale-3 { font-size: 18px; }
         .weather-alert-floating.font-scale-4 { font-size: 20px; }
         
-        /* Enhanced High Contrast Mode */
-        .weather-alert-floating.high-contrast {
-            background: #000000;
-            border: 3px solid #ffffff;
-            color: #ffffff;
-            box-shadow: 0 0 0 3px #ffff00;
+        /* Enhanced High Contrast Mode - Affects Entire Interface */
+        .weather-alert-floating.high-contrast,
+        .weather-alert-floating.accessibility-enhanced {
+            background: #000000 !important;
+            border: 3px solid #ffffff !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 0 3px #ffff00 !important;
         }
         
-        .weather-alert-floating.high-contrast .control-button {
-            background: #ffffff;
-            color: #000000;
-            border: 2px solid #ffff00;
-            box-shadow: 0 0 5px #ffff00;
+        .weather-alert-floating.high-contrast *,
+        .weather-alert-floating.accessibility-enhanced * {
+            color: #ffffff !important;
         }
         
-        .weather-alert-floating.high-contrast .control-button:hover {
-            background: #ffff00;
-            color: #000000;
-            box-shadow: 0 0 10px #ffff00;
+        .weather-alert-floating.high-contrast .control-button,
+        .weather-alert-floating.accessibility-enhanced .control-button {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border: 2px solid #ffff00 !important;
+            box-shadow: 0 0 5px #ffff00 !important;
         }
         
-        .weather-alert-floating.high-contrast .control-button:focus {
-            outline: 3px solid #00ff00;
+        .weather-alert-floating.high-contrast .control-button:hover,
+        .weather-alert-floating.accessibility-enhanced .control-button:hover {
+            background: #ffff00 !important;
+            color: #000000 !important;
+            box-shadow: 0 0 10px #ffff00 !important;
+        }
+        
+        .weather-alert-floating.high-contrast .control-button:focus,
+        .weather-alert-floating.accessibility-enhanced .control-button:focus {
+            outline: 3px solid #00ff00 !important;
             outline-offset: 2px;
+        }
+        
+        .weather-alert-floating.high-contrast .weather-icon-container,
+        .weather-alert-floating.accessibility-enhanced .weather-icon-container {
+            background: #333333 !important;
+            border: 2px solid #ffffff !important;
+        }
+        
+        .weather-alert-floating.high-contrast .activity-row,
+        .weather-alert-floating.accessibility-enhanced .activity-row {
+            background: #333333 !important;
+            border: 2px solid #ffffff !important;
+        }
+        
+        .weather-alert-floating.high-contrast .activity-item-compact,
+        .weather-alert-floating.accessibility-enhanced .activity-item-compact {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border: 2px solid #ffff00 !important;
+        }
+        
+        .weather-alert-floating.high-contrast .weather-summary-compact,
+        .weather-alert-floating.accessibility-enhanced .weather-summary-compact {
+            background: #333333 !important;
+            border: 2px solid #ffffff !important;
+            color: #ffffff !important;
+        }
+        
+        .weather-alert-floating.high-contrast .emergency-contact,
+        .weather-alert-floating.accessibility-enhanced .emergency-contact {
+            background: #ff0000 !important;
+            border: 2px solid #ffffff !important;
+            color: #ffffff !important;
         }
         
         /* Accessibility Enhanced Mode */
@@ -1429,10 +1476,10 @@ class WeatherAlertSystem {
             <div class="control-panel">
                 <button class="control-button accessibility-button" 
                         type="button" 
-                        aria-label="Activare text mare pentru citire" 
-                        title="Comutare text mare">
-                    <i class="material-icons button-icon">zoom_in</i>
-                    <span class="button-label">TEXT MARE</span>
+                        aria-label="Activare mod vizibilitate îmbunătățită" 
+                        title="Comutare vizibilitate îmbunătățită">
+                    <i class="material-icons button-icon">visibility_off</i>
+                    <span class="button-label">VIZIBILITATE</span>
                 </button>
                 <button class="control-button expand-button" 
                         type="button" 
@@ -1552,10 +1599,10 @@ class WeatherAlertSystem {
             <div class="control-panel">
                 <button class="control-button accessibility-button" 
                         type="button" 
-                        aria-label="Activare text mare pentru citire" 
-                        title="Comutare text mare">
-                    <i class="material-icons button-icon">zoom_in</i>
-                    <span class="button-label">TEXT MARE</span>
+                        aria-label="Activare mod vizibilitate îmbunătățită" 
+                        title="Comutare vizibilitate îmbunătățită">
+                    <i class="material-icons button-icon">visibility_off</i>
+                    <span class="button-label">VIZIBILITATE</span>
                 </button>
                 <button class="control-button expand-button locked" 
                         type="button" 
@@ -1685,10 +1732,10 @@ class WeatherAlertSystem {
             <div class="control-panel">
                 <button class="control-button accessibility-button" 
                         type="button" 
-                        aria-label="Activare text mare pentru citire" 
-                        title="Comutare text mare">
-                    <i class="material-icons button-icon">zoom_in</i>
-                    <span class="button-label">TEXT MARE</span>
+                        aria-label="Activare mod vizibilitate îmbunătățită" 
+                        title="Comutare vizibilitate îmbunătățită">
+                    <i class="material-icons button-icon">visibility_off</i>
+                    <span class="button-label">VIZIBILITATE</span>
                 </button>
                 <button class="control-button expand-button" 
                         type="button" 
