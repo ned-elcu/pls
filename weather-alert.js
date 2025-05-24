@@ -550,6 +550,7 @@ class WeatherAlertSystem {
             color: #ffffff !important;
         }
         
+        /* Button specific fixes - readable text on white buttons */
         .weather-alert-floating.high-contrast .control-button,
         .weather-alert-floating.accessibility-enhanced .control-button {
             background: #ffffff !important;
@@ -558,11 +559,21 @@ class WeatherAlertSystem {
             box-shadow: 0 0 5px #ffff00 !important;
         }
         
+        .weather-alert-floating.high-contrast .control-button *,
+        .weather-alert-floating.accessibility-enhanced .control-button * {
+            color: #000000 !important;
+        }
+        
         .weather-alert-floating.high-contrast .control-button:hover,
         .weather-alert-floating.accessibility-enhanced .control-button:hover {
             background: #ffff00 !important;
             color: #000000 !important;
             box-shadow: 0 0 10px #ffff00 !important;
+        }
+        
+        .weather-alert-floating.high-contrast .control-button:hover *,
+        .weather-alert-floating.accessibility-enhanced .control-button:hover * {
+            color: #000000 !important;
         }
         
         .weather-alert-floating.high-contrast .control-button:focus,
@@ -588,6 +599,11 @@ class WeatherAlertSystem {
             background: #ffffff !important;
             color: #000000 !important;
             border: 2px solid #ffff00 !important;
+        }
+        
+        .weather-alert-floating.high-contrast .activity-item-compact *,
+        .weather-alert-floating.accessibility-enhanced .activity-item-compact * {
+            color: #000000 !important;
         }
         
         .weather-alert-floating.high-contrast .weather-summary-compact,
