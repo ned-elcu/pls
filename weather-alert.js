@@ -316,14 +316,15 @@ class WeatherAlertSystem {
         // Activate emergency mode
         this.emergencyAlertActive = true;
         
-        // Create enhanced emergency alert
+        // Create enhanced emergency alert with proper data structure
         const emergencyAlert = {
             level: 'emergency_' + protocol.level,
             title: protocol.title,
             recommendations: protocol.actions || protocol.recommendations || [],
             emergency: true,
             emergencyType: type,
-            emergencyData: protocol.data
+            emergencyData: protocol.data || {},
+            activities: protocol.activities || null
         };
         
         this.displaySafetyAlert(emergencyAlert);
@@ -606,6 +607,100 @@ class WeatherAlertSystem {
             font-size: 14px;
             font-weight: 600;
             line-height: 1.2;
+        }
+        
+        /* Activity Recommendations */
+        .activity-recommendations {
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .activity-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+        
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 6px;
+        }
+        
+        .activity-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 6px 4px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            border-left: 3px solid;
+            min-height: 50px;
+            justify-content: center;
+        }
+        
+        .activity-icon-wrapper {
+            position: relative;
+            margin-bottom: 4px;
+        }
+        
+        .activity-icon {
+            font-size: 16px;
+            font-family: 'Material Icons';
+        }
+        
+        .activity-status {
+            position: absolute;
+            top: -2px;
+            right: -6px;
+            font-size: 12px;
+            font-family: 'Material Icons';
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            padding: 1px;
+        }
+        
+        .activity-label {
+            font-size: 9px;
+            font-weight: 500;
+            line-height: 1.1;
+        }
+        
+        /* Emergency Activity Colors for Different Alert Levels */
+        .weather-alert-floating.emergency_advisory .activity-recommendations {
+            background: rgba(0, 0, 0, 0.1);
+            border-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        .weather-alert-floating.emergency_advisory .activity-title,
+        .weather-alert-floating.emergency_advisory .activity-label {
+            color: #000;
+        }
+        
+        .weather-alert-floating.emergency_advisory .activity-icon {
+            color: #333;
+        }
+        
+        .weather-alert-floating.emergency_advisory .activity-item {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .weather-alert-floating.emergency_warning .activity-recommendations,
+        .weather-alert-floating.emergency_critical .activity-recommendations {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .weather-alert-floating.emergency_warning .activity-icon,
+        .weather-alert-floating.emergency_critical .activity-icon {
+            color: #fff;
         }
         
         /* Weather Summary in Emergency Mode */
@@ -1104,6 +1199,31 @@ class WeatherAlertSystem {
             .temperature-display {
                 font-size: 18px;
             }
+            
+            /* Mobile Activity Grid */
+            .activity-grid {
+                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+                gap: 4px;
+            }
+            
+            .activity-item {
+                padding: 4px 2px;
+                min-height: 40px;
+            }
+            
+            .activity-icon {
+                font-size: 14px;
+            }
+            
+            .activity-status {
+                font-size: 10px;
+                top: -1px;
+                right: -4px;
+            }
+            
+            .activity-label {
+                font-size: 8px;
+            }
         }
         
         /* Accessibility */
@@ -1179,56 +1299,77 @@ class WeatherAlertSystem {
     
     // Create emergency layout
     createEmergencyLayout(emergencyData) {
-        const { emergencyType, level, title, data } = emergencyData;
+        // Add error handling for undefined data
+        if (!emergencyData) {
+            console.error('❌ Emergency data is undefined');
+            return this.createErrorLayout();
+        }
+        
+        const { emergencyType, level, title, data, activities } = emergencyData;
+        
+        if (!emergencyType || !level || !title) {
+            console.error('❌ Missing required emergency data fields');
+            return this.createErrorLayout();
+        }
         
         let emergencyIcon = 'warning';
         let detailsHTML = '';
+        let activitiesHTML = '';
         
         // Determine icon and details based on emergency type
         if (emergencyType === 'earthquake') {
             emergencyIcon = 'warning';
-            detailsHTML = `
-                <div class="emergency-details">
-                    <div class="detail-item">
-                        <div class="detail-label">Magnitudine</div>
-                        <div class="detail-value">M${data.magnitude}</div>
+            if (data) {
+                detailsHTML = `
+                    <div class="emergency-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Magnitudine</div>
+                            <div class="detail-value">M${data.magnitude || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Distanță</div>
+                            <div class="detail-value">${data.distance || 'N/A'} km</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Locația</div>
+                            <div class="detail-value">${data.location || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Ora</div>
+                            <div class="detail-value">${data.time || 'N/A'}</div>
+                        </div>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Distanță</div>
-                        <div class="detail-value">${data.distance} km</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Locația</div>
-                        <div class="detail-value">${data.location}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Ora</div>
-                        <div class="detail-value">${data.time}</div>
-                    </div>
-                </div>
-            `;
+                `;
+            }
         } else if (emergencyType === 'airQuality') {
             emergencyIcon = 'masks';
-            detailsHTML = `
-                <div class="emergency-details">
-                    <div class="detail-item">
-                        <div class="detail-label">AQI</div>
-                        <div class="detail-value">${data.aqi}</div>
+            if (data) {
+                detailsHTML = `
+                    <div class="emergency-details">
+                        <div class="detail-item">
+                            <div class="detail-label">AQI</div>
+                            <div class="detail-value">${data.aqi || 'N/A'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">PM2.5</div>
+                            <div class="detail-value">${data.pm25 || 'N/A'} μg/m³</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">PM10</div>
+                            <div class="detail-value">${data.pm10 || 'N/A'} μg/m³</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Nivel</div>
+                            <div class="detail-value">${data.aqi ? this.getAQILevel(data.aqi) : 'N/A'}</div>
+                        </div>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-label">PM2.5</div>
-                        <div class="detail-value">${data.pm25} μg/m³</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">PM10</div>
-                        <div class="detail-value">${data.pm10} μg/m³</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Nivel</div>
-                        <div class="detail-value">${this.getAQILevel(data.aqi)}</div>
-                    </div>
-                </div>
-            `;
+                `;
+            }
+            
+            // Add activity recommendations for air quality
+            if (activities) {
+                activitiesHTML = this.createActivityRecommendations(activities);
+            }
         }
         
         // Get current weather for summary
@@ -1241,6 +1382,7 @@ class WeatherAlertSystem {
                     <div class="emergency-title">${title}</div>
                 </div>
                 ${detailsHTML}
+                ${activitiesHTML}
             </div>
             
             <div class="weather-summary">
@@ -1260,6 +1402,96 @@ class WeatherAlertSystem {
                 </p>
             </div>
         `;
+    }
+    
+    // Create error layout for missing data
+    createErrorLayout() {
+        return `
+            <div class="emergency-content">
+                <div class="emergency-header">
+                    <i class="material-icons emergency-icon">error</i>
+                    <div class="emergency-title">EROARE DATE URGENȚĂ</div>
+                </div>
+                <div class="emergency-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">Date indisponibile</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="weather-summary">
+                ${this.createWeatherSummary()}
+            </div>
+            
+            <div class="emergency-contact-full">
+                <p class="emergency-text">
+                    <i class="material-icons" style="font-size: 14px; vertical-align: middle; margin-right: 4px;">phone</i>
+                    Urgențe: 112 | Poliția Locală: (0243) 955
+                </p>
+            </div>
+        `;
+    }
+    
+    // Create activity recommendations for air quality
+    createActivityRecommendations(activities) {
+        if (!activities || typeof activities !== 'object') return '';
+        
+        const activityIcons = {
+            outdoor_sports: 'sports_soccer',
+            bring_baby_out: 'child_friendly',
+            eating_outside: 'restaurant',
+            jogging: 'directions_run',
+            cycling: 'directions_bike',
+            windows_open: 'sensor_window'
+        };
+        
+        const activityLabels = {
+            outdoor_sports: 'Sport exterior',
+            bring_baby_out: 'Copii afară',
+            eating_outside: 'Mâncare afară',
+            jogging: 'Alergare',
+            cycling: 'Ciclism',
+            windows_open: 'Ferestre deschise'
+        };
+        
+        const statusColors = {
+            ok: '#4caf50',      // Green
+            limited: '#ff9800',  // Orange
+            caution: '#ff5722',  // Red-orange
+            no: '#f44336',       // Red
+            danger: '#9c27b0'    // Purple
+        };
+        
+        const statusIcons = {
+            ok: 'check_circle',
+            limited: 'warning',
+            caution: 'error',
+            no: 'cancel',
+            danger: 'dangerous'
+        };
+        
+        let activitiesHtml = '<div class="activity-recommendations"><div class="activity-title">Recomandări activități:</div><div class="activity-grid">';
+        
+        Object.entries(activities).forEach(([activity, status]) => {
+            const icon = activityIcons[activity] || 'help';
+            const label = activityLabels[activity] || activity;
+            const color = statusColors[status] || '#666';
+            const statusIcon = statusIcons[status] || 'help';
+            
+            activitiesHtml += `
+                <div class="activity-item" style="border-left: 3px solid ${color};">
+                    <div class="activity-icon-wrapper">
+                        <i class="material-icons activity-icon">${icon}</i>
+                        <i class="material-icons activity-status" style="color: ${color};">${statusIcon}</i>
+                    </div>
+                    <div class="activity-label">${label}</div>
+                </div>
+            `;
+        });
+        
+        activitiesHtml += '</div></div>';
+        return activitiesHtml;
     }
     
     // Create weather summary for emergency layout
@@ -1622,14 +1854,31 @@ class WeatherAlertSystem {
         
         // Check if this is an emergency alert
         if (alert.emergency) {
-            // Switch to emergency layout
-            this.weatherContainer.innerHTML = this.createEmergencyLayout(alert);
+            // Prepare emergency data structure for layout creation
+            const emergencyLayoutData = {
+                emergencyType: alert.emergencyType,
+                level: alert.level,
+                title: alert.title,
+                data: alert.emergencyData || {},
+                activities: alert.activities
+            };
             
-            // Update container class for emergency
-            this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
-            
-            // Re-setup expand indicator event (since we replaced innerHTML)
-            this.setupExpandIndicatorEvents();
+            try {
+                // Switch to emergency layout
+                this.weatherContainer.innerHTML = this.createEmergencyLayout(emergencyLayoutData);
+                
+                // Update container class for emergency
+                this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
+                
+                // Re-setup expand indicator event (since we replaced innerHTML)
+                this.setupExpandIndicatorEvents();
+                
+                console.log('✅ Emergency layout created successfully');
+            } catch (error) {
+                console.error('❌ Error creating emergency layout:', error);
+                // Fallback to regular alert display
+                this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
+            }
         } else {
             // Regular alert layout
             this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
@@ -1645,7 +1894,7 @@ class WeatherAlertSystem {
         
         // Prepare safety recommendations
         const safetyList = this.weatherContainer.querySelector('.safety-list');
-        if (safetyList) {
+        if (safetyList && alert.recommendations) {
             safetyList.innerHTML = '';
             alert.recommendations.forEach(rec => {
                 const li = document.createElement('li');
@@ -1896,7 +2145,15 @@ class EmergencyMonitoringSystem {
                         'Persoanele sensibile să rămână în interior',
                         'Închideți ferestrele în timpul zilei',
                         'Folosiți purificatoare de aer dacă aveți'
-                    ]
+                    ],
+                    activities: {
+                        outdoor_sports: 'limited', // Limited outdoor sports
+                        bring_baby_out: 'caution', // Caution with babies
+                        eating_outside: 'ok', // OK to eat outside
+                        jogging: 'limited', // Limited jogging
+                        cycling: 'limited', // Limited cycling
+                        windows_open: 'no' // Don't open windows
+                    }
                 },
                 unhealthy: {
                     level: 'warning',
@@ -1907,7 +2164,15 @@ class EmergencyMonitoringSystem {
                         'Copiii și vârstnicii să rămână în interior',
                         'Contactați medicul dacă aveți probleme respiratorii',
                         'Evitați zonele cu trafic intens'
-                    ]
+                    ],
+                    activities: {
+                        outdoor_sports: 'no', // No outdoor sports
+                        bring_baby_out: 'no', // Don't bring babies out
+                        eating_outside: 'no', // Don't eat outside
+                        jogging: 'no', // No jogging
+                        cycling: 'no', // No cycling
+                        windows_open: 'no' // Keep windows closed
+                    }
                 },
                 dangerous: {
                     level: 'critical',
@@ -1919,7 +2184,15 @@ class EmergencyMonitoringSystem {
                         'Apelați medicul la primele simptome',
                         'Nu faceți exerciții fizice',
                         'Beți multă apă pentru hidratare'
-                    ]
+                    ],
+                    activities: {
+                        outdoor_sports: 'danger', // Dangerous for outdoor sports
+                        bring_baby_out: 'danger', // Dangerous for babies
+                        eating_outside: 'danger', // Dangerous to eat outside
+                        jogging: 'danger', // Dangerous jogging
+                        cycling: 'danger', // Dangerous cycling
+                        windows_open: 'danger' // Dangerous to open windows
+                    }
                 }
             }
         };
@@ -1982,6 +2255,7 @@ class EmergencyMonitoringSystem {
         window.emergencyTest = {
             testEarthquake: (magnitude, distance) => this.testEarthquakeAlert(magnitude, distance),
             testAirQuality: (aqi) => this.testAirQualityAlert(aqi),
+            testActivities: () => this.testActivityRecommendations(),
             checkAll: () => this.fetchAllEmergencyData(),
             showAlerts: () => console.log('Active alerts:', Array.from(this.currentAlerts)),
             clearAlerts: () => this.clearAllAlerts(),
@@ -2005,9 +2279,35 @@ class EmergencyMonitoringSystem {
         
         console.log('🧪 Emergency testing commands:');
         console.log('emergencyTest.testEarthquake(5.2, 45) - Test earthquake');
-        console.log('emergencyTest.testAirQuality(180) - Test air quality');
+        console.log('emergencyTest.testAirQuality(180) - Test air quality with activities');
+        console.log('emergencyTest.testActivities() - Test all activity levels');
         console.log('emergencyTest.clearEmergency() - Clear emergency alert');
         console.log('emergencyTest.debug() - Show debug info');
+    }
+    
+    // Test activity recommendations at different levels
+    testActivityRecommendations() {
+        console.log('🧪 Testing activity recommendations...');
+        
+        // Test moderate air quality
+        setTimeout(() => {
+            console.log('Testing moderate AQI (85)');
+            this.testAirQualityAlert(85);
+        }, 1000);
+        
+        // Test unhealthy air quality
+        setTimeout(() => {
+            console.log('Testing unhealthy AQI (165)');
+            this.testAirQualityAlert(165);
+        }, 5000);
+        
+        // Test dangerous air quality
+        setTimeout(() => {
+            console.log('Testing dangerous AQI (285)');
+            this.testAirQualityAlert(285);
+        }, 9000);
+        
+        console.log('🧪 Activity test cycle started - will run for 12 seconds');
     }
     
     async fetchAllEmergencyData() {
@@ -2164,15 +2464,18 @@ class EmergencyMonitoringSystem {
         }
         
         if (alertLevel) {
-            const protocol = this.emergencyProtocols.airQuality[alertLevel];
-            this.triggerEmergencyAlert('airQuality', {
-                ...protocol,
+            const baseProtocol = this.emergencyProtocols.airQuality[alertLevel];
+            const protocol = {
+                ...baseProtocol,
                 data: {
                     aqi: Math.round(aqi),
                     pm25: components.pm2_5?.toFixed(1) || 'N/A',
                     pm10: components.pm10?.toFixed(1) || 'N/A'
-                }
-            });
+                },
+                activities: baseProtocol.activities || null
+            };
+            
+            this.triggerEmergencyAlert('airQuality', protocol);
         } else {
             this.clearAlert('airQuality');
         }
