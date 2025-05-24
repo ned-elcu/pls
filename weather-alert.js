@@ -1745,9 +1745,6 @@ class EmergencyMonitoringSystem {
         // Check if OpenWeatherMap API key is configured
         if (this.apis.airQuality.apiKey === 'YOUR_OPENWEATHERMAP_API_KEY_HERE') {
             console.log('⚠️ OpenWeatherMap API key not configured - air quality monitoring disabled');
-            console.log('📝 To enable air quality monitoring:');
-            console.log('   1. Get free API key from: https://openweathermap.org/api');
-            console.log('   2. Replace YOUR_OPENWEATHERMAP_API_KEY_HERE in the code');
             this.apis.airQuality.enabled = false;
         } else {
             this.apis.airQuality.enabled = true;
