@@ -8,19 +8,7 @@ class WeatherAlertSystem {
         if (window.municipalWeatherSystemInitialized) {
             console.warn('⚠️ Weather system already initialized');
             return window.municipalWeatherSystem;
-            console.log('🏛️ Municipal Weather System - Testing Commands:');
-        console.log('weatherTest.cycleWeather() - Test all weather conditions');
-        console.log('weatherTest.setWeather(code) - Set specific weather (0-99)');
-        console.log('weatherTest.testAlert("extreme_heat") - Test alert types');
-        console.log('weatherTest.testDangerousWeather() - Test auto-expanding dangerous weather');
-        console.log('weatherTest.toggle() - Toggle minimize/maximize');
-        console.log('weatherTest.expand() - Expand widget');
-        console.log('weatherTest.minimize() - Minimize widget');
-        console.log('weatherTest.debug() - Show debug information');
-        console.log('💡 Auto-expand: Emergency alerts + Critical weather + Dangerous conditions');
-        console.log('🌩️ Dangerous weather: Fog(45), Violent showers(82), Hailstorms(96,99)');
-        console.log('📍 Position: Bottom-right corner');
-    }
+        }
         
         window.municipalWeatherSystemInitialized = true;
         
@@ -219,26 +207,7 @@ class WeatherAlertSystem {
             listCodes: () => this.listWeatherCodes(),
             show: () => this.showWeatherAlert(),
             hide: () => this.hideWeatherAlert(),
-            expand: () => {
-                this.isExpanded = true;
-                this.updateExpandedState();
-                if (this.emergencyAlertActive) this.showEmergencyDetails();
-                else this.showSafetyRecommendations();
-            },
-            minimize: () => {
-                this.isExpanded = false;
-                this.updateExpandedState();
-                if (this.emergencyAlertActive) this.hideEmergencyDetails();
-                else this.hideSafetyRecommendations();
-            },
-            toggle: () => this.toggleExpanded(),
-            testDangerousWeather: () => {
-                console.log('🌩️ Testing dangerous weather conditions that auto-expand...');
-                setTimeout(() => this.setTestWeather(45), 1000);  // Fog
-                setTimeout(() => this.setTestWeather(82), 4000);  // Violent showers  
-                setTimeout(() => this.setTestWeather(96), 7000);  // Hailstorm
-                setTimeout(() => this.setTestWeather(99), 10000); // Severe hailstorm
-            },
+            expand: () => this.toggleExpanded(),
             destroy: () => this.destroy(),
             debug: () => {
                 console.log('🔍 Weather System Debug Info:');
@@ -247,14 +216,6 @@ class WeatherAlertSystem {
                 console.log('Emergency system instance:', !!window.emergencySystem);
                 console.log('Weather initialized flag:', !!window.municipalWeatherSystemInitialized);
                 console.log('Emergency initialized flag:', !!window.emergencySystemInitialized);
-                console.log('Is expanded:', this.isExpanded);
-                console.log('Emergency active:', this.emergencyAlertActive);
-                console.log('Current alert level:', this.currentAlertLevel);
-                if (this.currentWeatherData) {
-                    const code = this.currentWeatherData.current?.weather_code;
-                    console.log('Current weather code:', code);
-                    console.log('Is dangerous condition:', this.isDangerousWeatherCondition());
-                }
             }
         };
         
@@ -262,14 +223,8 @@ class WeatherAlertSystem {
         console.log('weatherTest.cycleWeather() - Test all weather conditions');
         console.log('weatherTest.setWeather(code) - Set specific weather (0-99)');
         console.log('weatherTest.testAlert("extreme_heat") - Test alert types');
-        console.log('weatherTest.testDangerousWeather() - Test auto-expanding dangerous weather');
-        console.log('weatherTest.toggle() - Toggle minimize/maximize');
-        console.log('weatherTest.expand() - Expand widget');
-        console.log('weatherTest.minimize() - Minimize widget');
+        console.log('weatherTest.listCodes() - List all weather codes');
         console.log('weatherTest.debug() - Show debug information');
-        console.log('💡 Auto-expand: Emergency alerts + Critical weather + Dangerous conditions');
-        console.log('🌩️ Dangerous weather: Fog(45), Violent showers(82), Hailstorms(96,99)');
-        console.log('📍 Position: Bottom-right corner');
     }
     
     // Test specific alert types
@@ -340,7 +295,7 @@ class WeatherAlertSystem {
     // Initialize the municipal weather system
     async init() {
         this.injectMunicipalCSS();
-        this.createWeatherContainer();
+        await this.createWeatherContainer();
         this.setupEventListeners();
         this.startMunicipalMonitoring();
         this.setupIntersectionObserver();
@@ -451,7 +406,7 @@ class WeatherAlertSystem {
         .weather-alert-floating {
             position: fixed;
             bottom: 50px;
-            right: 20px;
+            left: 20px;
             width: 280px;
             min-height: 70px;
             background: rgba(26, 47, 95, 0.7);
@@ -501,7 +456,7 @@ class WeatherAlertSystem {
             animation: criticalPulse 3s infinite;
         }
         
-        /* EMERGENCY ALERT STYLING - COMPACT LAYOUT */
+        /* EMERGENCY ALERT STYLING - GRID LAYOUT */
         .weather-alert-floating.emergency_advisory,
         .weather-alert-floating.emergency_warning,
         .weather-alert-floating.emergency_critical {
@@ -511,33 +466,10 @@ class WeatherAlertSystem {
                 "emergency-content weather-summary"
                 "emergency-actions weather-summary"
                 "emergency-contact emergency-contact";
-            gap: 8px;
-            padding: 12px;
-            min-height: 140px;
-            width: 350px;
-            position: relative;
-        }
-        
-        /* Emergency Minimized State */
-        .weather-alert-floating.emergency_advisory.minimized,
-        .weather-alert-floating.emergency_warning.minimized,
-        .weather-alert-floating.emergency_critical.minimized {
-            min-height: 60px;
-            width: 280px;
-            grid-template-columns: 1fr auto;
-            grid-template-areas: "emergency-header expand-btn";
-        }
-        
-        .weather-alert-floating.emergency_advisory.minimized .emergency-actions,
-        .weather-alert-floating.emergency_warning.minimized .emergency-actions,
-        .weather-alert-floating.emergency_critical.minimized .emergency-actions,
-        .weather-alert-floating.emergency_advisory.minimized .weather-summary,
-        .weather-alert-floating.emergency_warning.minimized .weather-summary,
-        .weather-alert-floating.emergency_critical.minimized .weather-summary,
-        .weather-alert-floating.emergency_advisory.minimized .emergency-contact-full,
-        .weather-alert-floating.emergency_warning.minimized .emergency-contact-full,
-        .weather-alert-floating.emergency_critical.minimized .emergency-contact-full {
-            display: none;
+            gap: 12px;
+            padding: 16px;
+            min-height: 180px;
+            width: 420px;
         }
         
         .weather-alert-floating.emergency_advisory {
@@ -577,23 +509,11 @@ class WeatherAlertSystem {
             width: 340px;
         }
         
-        /* Regular Weather Minimized State */
-        .weather-alert-floating.minimized {
-            min-height: 60px;
-            width: 280px;
-        }
-        
-        .weather-alert-floating.minimized .safety-recommendations,
-        .weather-alert-floating.minimized .emergency-contact,
-        .weather-alert-floating.minimized .alert-header {
-            display: none !important;
-        }
-        
         .weather-alert-floating.emergency_advisory.expanded,
         .weather-alert-floating.emergency_warning.expanded,
         .weather-alert-floating.emergency_critical.expanded {
-            min-height: 160px;
-            width: 380px;
+            min-height: 220px;
+            width: 450px;
         }
         
         /* Emergency Content Areas */
@@ -611,13 +531,13 @@ class WeatherAlertSystem {
             align-items: center;
             justify-content: flex-start;
             text-align: center;
-            padding: 8px 6px;
+            padding: 12px 8px;
             background: rgba(255, 255, 255, 0.15);
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(4px);
-            font-size: 11px;
-            min-height: 80px;
+            font-size: 12px;
+            min-height: 100px;
         }
         
         .emergency-actions {
@@ -635,124 +555,122 @@ class WeatherAlertSystem {
             text-align: center;
         }
         
-        /* Emergency Header - COMPACT */
+        /* Emergency Header */
         .emergency-header {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-            padding-bottom: 6px;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .emergency-icon {
-            font-size: 22px;
+            font-size: 28px;
             animation: emergencyPulse 2s infinite ease-in-out;
             flex-shrink: 0;
             font-family: 'Material Icons';
         }
         
         .emergency-title {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
-            line-height: 1.1;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
             flex: 1;
         }
         
-        /* Emergency Details Grid - COMPACT */
+        /* Emergency Details Grid */
         .emergency-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 6px;
-            margin-bottom: 6px;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 8px;
+            margin-bottom: 8px;
         }
         
         .detail-item {
             display: flex;
             flex-direction: column;
-            gap: 1px;
+            gap: 2px;
         }
         
         .detail-label {
-            font-size: 9px;
+            font-size: 10px;
             opacity: 0.8;
             text-transform: uppercase;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.3px;
             font-weight: 500;
         }
         
         .detail-value {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
-            line-height: 1.1;
+            line-height: 1.2;
         }
         
-        /* Activity Recommendations - COMPACT */
+        /* Activity Recommendations */
         .activity-recommendations {
-            margin-top: 6px;
-            padding: 6px;
+            margin-top: 10px;
+            padding: 8px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
+            border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .activity-title {
-            font-size: 9px;
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
             opacity: 0.9;
         }
         
         .activity-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 3px;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 6px;
         }
         
         .activity-item {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            text-align: left;
-            padding: 3px 4px;
+            text-align: center;
+            padding: 6px 4px;
             background: rgba(0, 0, 0, 0.1);
-            border-radius: 3px;
-            border-left: 2px solid;
-            min-height: 24px;
-            font-size: 8px;
+            border-radius: 4px;
+            border-left: 3px solid;
+            min-height: 50px;
+            justify-content: center;
         }
         
         .activity-icon-wrapper {
             position: relative;
-            margin-right: 4px;
-            flex-shrink: 0;
+            margin-bottom: 4px;
         }
         
         .activity-icon {
-            font-size: 12px;
+            font-size: 16px;
             font-family: 'Material Icons';
         }
         
         .activity-status {
             position: absolute;
             top: -2px;
-            right: -4px;
-            font-size: 8px;
+            right: -6px;
+            font-size: 12px;
             font-family: 'Material Icons';
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.5);
             border-radius: 50%;
             padding: 1px;
-            line-height: 1;
         }
         
         .activity-label {
-            font-size: 8px;
+            font-size: 9px;
             font-weight: 500;
             line-height: 1.1;
-            flex: 1;
         }
         
         /* Emergency Activity Colors for Different Alert Levels */
@@ -785,27 +703,27 @@ class WeatherAlertSystem {
             color: #fff;
         }
         
-        /* Weather Summary in Emergency Mode - COMPACT */
+        /* Weather Summary in Emergency Mode */
         .weather-summary .temp-display {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
-            margin-bottom: 2px;
-        }
-        
-        .weather-summary .condition-text {
-            font-size: 10px;
-            opacity: 0.9;
             margin-bottom: 4px;
         }
         
+        .weather-summary .condition-text {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-bottom: 6px;
+        }
+        
         .weather-summary .location-text {
-            font-size: 9px;
+            font-size: 10px;
             opacity: 0.7;
         }
         
         .weather-summary .weather-icon-small {
-            font-size: 16px;
-            margin-bottom: 4px;
+            font-size: 20px;
+            margin-bottom: 6px;
             font-family: 'Material Icons';
         }
         
@@ -988,7 +906,7 @@ class WeatherAlertSystem {
         
         .expand-indicator {
             position: absolute;
-            top: 8px;
+            top: 55px;
             right: 8px;
             width: 28px;
             height: 28px;
@@ -1483,11 +1401,6 @@ class WeatherAlertSystem {
                     Urgențe: 112 | Poliția Locală: (0243) 955
                 </p>
             </div>
-            
-            <div class="expand-indicator" role="button" aria-label="Expandează/Minimizează informații" tabindex="0">
-                <i class="material-icons">expand_more</i>
-            </div>
-            <div class="update-indicator"></div>
         `;
     }
     
@@ -1517,11 +1430,6 @@ class WeatherAlertSystem {
                     Urgențe: 112 | Poliția Locală: (0243) 955
                 </p>
             </div>
-            
-            <div class="expand-indicator" role="button" aria-label="Expandează/Minimizează informații" tabindex="0">
-                <i class="material-icons">expand_more</i>
-            </div>
-            <div class="update-indicator"></div>
         `;
     }
     
@@ -1623,15 +1531,31 @@ class WeatherAlertSystem {
     
     // Setup municipal event listeners
     setupEventListeners() {
-        // Main container click - only toggle if not clicking on expand indicator
+        // Main container click
         this.weatherContainer.addEventListener('click', (e) => {
             if (!e.target.closest('.expand-indicator') && !this.lockExpansion) {
                 this.toggleExpanded();
             }
         });
         
-        // Setup expand indicator events
-        this.setupExpandIndicatorEvents();
+        // Expand indicator
+        const expandIndicator = this.weatherContainer.querySelector('.expand-indicator');
+        if (expandIndicator) {
+            expandIndicator.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!this.lockExpansion) {
+                    this.toggleExpanded();
+                }
+            });
+            
+            expandIndicator.addEventListener('keydown', (e) => {
+                if ((e.key === 'Enter' || e.key === ' ') && !this.lockExpansion) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.toggleExpanded();
+                }
+            });
+        }
         
         // Keyboard support
         this.weatherContainer.addEventListener('keydown', (e) => {
@@ -1659,33 +1583,6 @@ class WeatherAlertSystem {
         window.addEventListener('resize', () => {
             this.checkFooterOverlap();
         });
-    }
-    
-    // Setup expand indicator events (used after innerHTML replacement and initial setup)
-    setupExpandIndicatorEvents() {
-        const expandIndicator = this.weatherContainer.querySelector('.expand-indicator');
-        if (expandIndicator) {
-            // Remove existing listeners first
-            expandIndicator.replaceWith(expandIndicator.cloneNode(true));
-            const newExpandIndicator = this.weatherContainer.querySelector('.expand-indicator');
-            
-            newExpandIndicator.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (!this.lockExpansion) {
-                    this.toggleExpanded();
-                }
-            });
-            
-            newExpandIndicator.addEventListener('keydown', (e) => {
-                if ((e.key === 'Enter' || e.key === ' ') && !this.lockExpansion) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.toggleExpanded();
-                }
-            });
-        } else {
-            console.warn('⚠️ Expand indicator not found - toggle functionality may not work');
-        }
     }
     
     // Check footer overlap for municipal design
@@ -1739,75 +1636,32 @@ class WeatherAlertSystem {
         }
     }
     
-    // Enhanced toggle for municipal warnings - supports minimized/expanded states
+    // Enhanced toggle for municipal warnings
     toggleExpanded() {
         if (this.lockExpansion) return;
         
-        // Toggle between minimized and expanded
         this.isExpanded = !this.isExpanded;
         this.updateExpandedState();
         
-        // Handle visibility of elements based on state and alert type
-        if (this.emergencyAlertActive) {
-            // Emergency alert toggle
-            if (this.isExpanded) {
-                this.showEmergencyDetails();
-            } else {
-                this.hideEmergencyDetails();
-            }
+        // Properly handle safety recommendations visibility
+        if (this.isExpanded && this.currentAlertLevel !== 'normal') {
+            this.showSafetyRecommendations();
         } else {
-            // Regular weather alert toggle
-            if (this.isExpanded && this.currentAlertLevel !== 'normal') {
-                this.showSafetyRecommendations();
-            } else {
-                this.hideSafetyRecommendations();
-            }
+            this.hideSafetyRecommendations();
         }
         
-        console.log(`🏛️ Municipal weather ${this.isExpanded ? 'expanded' : 'minimized'}`);
+        console.log(`🏛️ Municipal weather ${this.isExpanded ? 'expanded' : 'collapsed'}`);
     }
     
-    // Update expanded state with proper class management
+    // Update expanded state
     updateExpandedState() {
         if (this.weatherContainer) {
-            // Remove both states first
-            this.weatherContainer.classList.remove('expanded', 'minimized');
-            
-            // Add the correct state
-            if (this.isExpanded) {
-                this.weatherContainer.classList.add('expanded');
-            } else {
-                this.weatherContainer.classList.add('minimized');
-            }
-            
-            // Update expand icon
+            this.weatherContainer.classList.toggle('expanded', this.isExpanded);
             const expandIcon = this.weatherContainer.querySelector('.expand-indicator i');
             if (expandIcon) {
                 expandIcon.textContent = this.isExpanded ? 'expand_less' : 'expand_more';
             }
         }
-    }
-    
-    // Show emergency details (for expanded emergency alerts)
-    showEmergencyDetails() {
-        const weatherSummary = this.weatherContainer.querySelector('.weather-summary');
-        const emergencyActions = this.weatherContainer.querySelector('.emergency-actions');
-        const emergencyContact = this.weatherContainer.querySelector('.emergency-contact-full');
-        
-        if (weatherSummary) weatherSummary.style.display = 'flex';
-        if (emergencyActions) emergencyActions.style.display = 'block';
-        if (emergencyContact) emergencyContact.style.display = 'block';
-    }
-    
-    // Hide emergency details (for minimized emergency alerts)
-    hideEmergencyDetails() {
-        const weatherSummary = this.weatherContainer.querySelector('.weather-summary');
-        const emergencyActions = this.weatherContainer.querySelector('.emergency-actions');
-        const emergencyContact = this.weatherContainer.querySelector('.emergency-contact-full');
-        
-        if (weatherSummary) weatherSummary.style.display = 'none';
-        if (emergencyActions) emergencyActions.style.display = 'none';
-        if (emergencyContact) emergencyContact.style.display = 'none';
     }
     
     // Show safety recommendations
@@ -1992,26 +1846,6 @@ class WeatherAlertSystem {
         return priorities[level] || 0;
     }
     
-    // Check if current weather condition is dangerous and should auto-expand
-    isDangerousWeatherCondition() {
-        if (!this.currentWeatherData || !this.currentWeatherData.current) {
-            return false;
-        }
-        
-        const weatherCode = parseInt(this.currentWeatherData.current.weather_code) || 0;
-        
-        // Dangerous weather codes that should auto-expand even at 'warning' level:
-        const dangerousWeatherCodes = [
-            45,  // Ceață (Fog) - visibility issues
-            48,  // Ceață cu chiciură (Fog with rime) - visibility + ice
-            82,  // Averse violente (Violent showers) - heavy rain
-            96,  // Furtună cu grindină (Hailstorm) - severe storm
-            99   // Furtună severă cu grindină (Severe hailstorm) - severe storm
-        ];
-        
-        return dangerousWeatherCodes.includes(weatherCode);
-    }
-    
     // Display municipal safety alert (enhanced for emergency layout)
     displaySafetyAlert(alert) {
         if (!this.weatherContainer) return;
@@ -2036,17 +1870,10 @@ class WeatherAlertSystem {
                 // Update container class for emergency
                 this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
                 
-                // Auto-expand emergency alerts after a brief delay
-                setTimeout(() => {
-                    this.isExpanded = true;
-                    this.updateExpandedState();
-                    this.showEmergencyDetails();
-                }, 300);
-                
-                // Re-setup all event listeners (since we replaced innerHTML)
+                // Re-setup expand indicator event (since we replaced innerHTML)
                 this.setupExpandIndicatorEvents();
                 
-                console.log('✅ Emergency layout created successfully - auto-expanding');
+                console.log('✅ Emergency layout created successfully');
             } catch (error) {
                 console.error('❌ Error creating emergency layout:', error);
                 // Fallback to regular alert display
@@ -2063,22 +1890,6 @@ class WeatherAlertSystem {
                 alertTitle.textContent = alert.title;
                 alertHeader.classList.add('visible');
             }
-            
-            // Regular weather alerts start minimized by default
-            this.isExpanded = false;
-            this.updateExpandedState();
-            
-            // Auto-expand for dangerous weather conditions
-            const shouldAutoExpand = alert.level === 'critical' || 
-                                   alert.level === 'warning' && this.isDangerousWeatherCondition();
-            
-            if (shouldAutoExpand) {
-                setTimeout(() => {
-                    this.isExpanded = true;
-                    this.updateExpandedState();
-                    this.showSafetyRecommendations();
-                }, 300);
-            }
         }
         
         // Prepare safety recommendations
@@ -2092,10 +1903,19 @@ class WeatherAlertSystem {
             });
         }
         
-        // Show emergency contact for critical alerts when expanded
+        // Show emergency contact for critical alerts
         const emergencyContact = this.weatherContainer.querySelector('.emergency-contact, .emergency-contact-full');
         if (emergencyContact) {
             emergencyContact.classList.add('visible');
+        }
+        
+        // Auto-expand for warnings and critical alerts with proper timing
+        if ((alert.level === 'warning' || alert.level === 'critical' || alert.emergency) && !this.isExpanded) {
+            setTimeout(() => {
+                this.isExpanded = true;
+                this.updateExpandedState();
+                this.showSafetyRecommendations();
+            }, 300);
         }
     }
     
@@ -2128,19 +1948,13 @@ class WeatherAlertSystem {
         
         // Reset to normal layout if we were in emergency mode
         if (this.emergencyAlertActive) {
-            // Remove the old container
-            this.weatherContainer.remove();
-            
-            // Create new weather container
-            this.createWeatherContainer();
-            this.setupEventListeners();
-            if (this.currentWeatherData) {
-                this.updateWeatherDisplay(this.currentWeatherData);
-            }
-            // Start in minimized state
-            this.isExpanded = false;
-            this.updateExpandedState();
-            this.makeVisible();
+            this.createWeatherContainer().then(() => {
+                this.setupEventListeners();
+                if (this.currentWeatherData) {
+                    this.updateWeatherDisplay(this.currentWeatherData);
+                }
+                this.makeVisible();
+            });
             return;
         }
         
@@ -2155,9 +1969,11 @@ class WeatherAlertSystem {
         if (safetyRecommendations) safetyRecommendations.classList.remove('visible');
         if (emergencyContact) emergencyContact.classList.remove('visible');
         
-        // Return to minimized state when clearing alerts
-        this.isExpanded = false;
-        this.updateExpandedState();
+        // Reset expansion state when clearing alerts (only if not locked)
+        if (this.isExpanded && !this.lockExpansion) {
+            this.isExpanded = false;
+            this.updateExpandedState();
+        }
         
         // Reset weather icon to current weather
         if (this.currentWeatherData) {
@@ -2207,15 +2023,12 @@ class WeatherAlertSystem {
         }
     }
     
-    // Make visible with default minimized state
+    // Make visible
     makeVisible() {
         if (this.weatherContainer) {
             setTimeout(() => {
                 this.weatherContainer.classList.add('visible');
-                // Start in minimized state by default
-                this.isExpanded = false;
-                this.updateExpandedState();
-                console.log('🏛️ Municipal weather system activated (minimized)');
+                console.log('🏛️ Municipal weather system activated');
             }, 100);
         }
     }
@@ -2281,7 +2094,7 @@ class EmergencyMonitoringSystem {
             airQuality: {
                 good: 50,
                 moderate: 100,
-                unhealthy: 150,    // Emergency starts here (AQI 151+)
+                unhealthy: 150,
                 dangerous: 300
             }
         };
@@ -2465,38 +2278,36 @@ class EmergencyMonitoringSystem {
         };
         
         console.log('🧪 Emergency testing commands:');
-        console.log('emergencyTest.testEarthquake(5.2, 45) - Test earthquake (auto-expands)');
-        console.log('emergencyTest.testAirQuality(180) - Test unhealthy air quality (auto-expands)');
+        console.log('emergencyTest.testEarthquake(5.2, 45) - Test earthquake');
+        console.log('emergencyTest.testAirQuality(180) - Test air quality with activities');
         console.log('emergencyTest.testActivities() - Test all activity levels');
         console.log('emergencyTest.clearEmergency() - Clear emergency alert');
         console.log('emergencyTest.debug() - Show debug info');
-        console.log('💡 Air Quality Emergency Thresholds: Unhealthy 151+, Dangerous 301+');
-        console.log('🔄 Emergency alerts auto-expand, regular weather starts minimized');
     }
     
     // Test activity recommendations at different levels
     testActivityRecommendations() {
         console.log('🧪 Testing activity recommendations...');
         
-        // Test unhealthy air quality (now the minimum for emergency)
+        // Test moderate air quality
         setTimeout(() => {
-            console.log('Testing unhealthy AQI (165) - minimum for emergency');
-            this.testAirQualityAlert(165);
+            console.log('Testing moderate AQI (85)');
+            this.testAirQualityAlert(85);
         }, 1000);
+        
+        // Test unhealthy air quality
+        setTimeout(() => {
+            console.log('Testing unhealthy AQI (165)');
+            this.testAirQualityAlert(165);
+        }, 5000);
         
         // Test dangerous air quality
         setTimeout(() => {
             console.log('Testing dangerous AQI (285)');
             this.testAirQualityAlert(285);
-        }, 5000);
-        
-        // Test moderate (should NOT trigger emergency)
-        setTimeout(() => {
-            console.log('Testing moderate AQI (120) - should NOT trigger emergency');
-            this.testAirQualityAlert(120);
         }, 9000);
         
-        console.log('🧪 Activity test cycle started - Emergency threshold: AQI 151+');
+        console.log('🧪 Activity test cycle started - will run for 12 seconds');
     }
     
     async fetchAllEmergencyData() {
@@ -2644,13 +2455,13 @@ class EmergencyMonitoringSystem {
     evaluateAirQualityAlert(aqi, components) {
         let alertLevel = null;
         
-        // Only trigger emergency alerts for unhealthy and dangerous levels
         if (aqi >= this.emergencyThresholds.airQuality.dangerous) {
             alertLevel = 'dangerous';
-        } else if (aqi > this.emergencyThresholds.airQuality.unhealthy) {
+        } else if (aqi >= this.emergencyThresholds.airQuality.unhealthy) {
             alertLevel = 'unhealthy';
+        } else if (aqi >= this.emergencyThresholds.airQuality.moderate) {
+            alertLevel = 'moderate';
         }
-        // Note: No emergency alert for moderate (AQI 101-150) - only unhealthy (151+)
         
         if (alertLevel) {
             const baseProtocol = this.emergencyProtocols.airQuality[alertLevel];
