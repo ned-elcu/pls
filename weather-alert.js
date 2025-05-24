@@ -746,7 +746,7 @@ class WeatherAlertSystem {
         
         .expand-indicator {
             position: absolute;
-            top: 8px;
+            top: 55px;
             right: 8px;
             width: 28px;
             height: 28px;
