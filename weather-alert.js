@@ -26,6 +26,7 @@ class WeatherAlertSystem {
         this.hideTimer = null;
         this.lastSuccessfulData = null;
         this.currentAlertLevel = 'normal';
+        this.currentAlertData = null; // Store current alert for recreation
         this.emergencyAlertActive = false;
         this.lockExpansion = false;
         
@@ -220,6 +221,9 @@ class WeatherAlertSystem {
             testAlert: (type) => this.testAlert(type),
             testWind: () => this.testWindAlert(),
             testSeismic: () => this.testSeismicAlert(),
+            testHeavyRain: () => this.testHeavyRain(),
+            testExtremeCold: () => this.testExtremeCold(),
+            testThunderstorm: () => this.testThunderstorm(),
             listCodes: () => this.listWeatherCodes(),
             show: () => this.showWeatherAlert(),
             hide: () => this.hideWeatherAlert(),
@@ -237,6 +241,8 @@ class WeatherAlertSystem {
                 console.log('Weather initialized flag:', !!window.municipalWeatherSystemInitialized);
                 console.log('Emergency initialized flag:', !!window.emergencySystemInitialized);
                 console.log('UI State:', this.uiState);
+                console.log('Current Alert Level:', this.currentAlertLevel);
+                console.log('Current Alert Data:', this.currentAlertData);
                 console.log('Accessibility Mode:', this.accessibilityMode);
                 console.log('Font Scale:', this.fontScale);
                 console.log('High Contrast:', this.highContrast);
@@ -247,6 +253,9 @@ class WeatherAlertSystem {
         console.log('weatherTest.cycleWeather() - Test all weather conditions');
         console.log('weatherTest.setWeather(code) - Set specific weather (0-99)');
         console.log('weatherTest.testAlert("extreme_heat") - Test alert types');
+        console.log('weatherTest.testHeavyRain() - Test heavy rain with recommendations');
+        console.log('weatherTest.testExtremeCold() - Test extreme cold with recommendations');
+        console.log('weatherTest.testThunderstorm() - Test thunderstorm with recommendations');
         console.log('weatherTest.testWind() - Test wind alert minimized view');
         console.log('weatherTest.testSeismic() - Test seismic alert minimized view');
         console.log('weatherTest.minimize() - Test minimized layout');
@@ -789,7 +798,7 @@ class WeatherAlertSystem {
         /* ENHANCED CONTROL PANEL - Fixed Alignment and Centering */
         .control-panel {
             position: absolute;
-            top: 2px;
+            top: 8px;
             right: 8px;
             display: flex;
             flex-direction: column;
@@ -1928,6 +1937,45 @@ class WeatherAlertSystem {
                     </div>
                 </div>
             `;
+        } else if (alertType === 'weather_alert') {
+            // Generic weather alert minimized view
+            const alertLevelIcons = {
+                advisory: 'info',
+                warning: 'warning',
+                critical: 'error'
+            };
+            const alertLevelTexts = {
+                advisory: 'ATENȚIE METEO',
+                warning: 'AVERTIZARE METEO',
+                critical: 'ALERTĂ METEO'
+            };
+            
+            return `
+                <div class="control-panel">
+                    <button class="control-button accessibility-button" 
+                            type="button" 
+                            aria-label="Activare mod vizibilitate îmbunătățită" 
+                            title="Comutare vizibilitate îmbunătățită">
+                        <i class="material-icons button-icon">visibility_off</i>
+                    </button>
+                    <button class="control-button expand-button" 
+                            type="button" 
+                            aria-label="Extinde informații de siguranță" 
+                            title="Extinde informații">
+                        <i class="material-icons button-icon">expand_more</i>
+                    </button>
+                </div>
+                
+                <div class="weather-content minimized">
+                    <div class="alert-header-compact">
+                        <i class="material-icons alert-icon-compact">${alertLevelIcons[data.level] || 'info'}</i>
+                        <div class="alert-info-compact">
+                            <div class="alert-title-compact">${alertLevelTexts[data.level] || 'ALERTĂ METEO'}</div>
+                            <div class="alert-details-compact">Apăsați pentru detalii • Slobozia</div>
+                        </div>
+                    </div>
+                </div>
+            `;
         } else {
             // Default minimized weather layout
             return this.createDefaultMinimizedLayout();
@@ -2037,6 +2085,10 @@ class WeatherAlertSystem {
                 alertType = 'wind';
                 alertData = { windSpeed: Math.round(current.wind_speed_10m) };
             }
+        } else if (this.currentAlertLevel === 'advisory' || this.currentAlertLevel === 'warning' || this.currentAlertLevel === 'critical') {
+            // Preserve current alert type for proper expansion
+            alertType = 'weather_alert';
+            alertData = { level: this.currentAlertLevel };
         }
         
         // Create minimized layout
@@ -2051,6 +2103,24 @@ class WeatherAlertSystem {
         this.uiState.size = 'compact';
         
         console.log(`📱 Alert minimized: ${alertType}`);
+    }
+    
+    // Test heavy rain alert with recommendations
+    testHeavyRain() {
+        console.log('🌧️ Testing heavy rain alert with full recommendations');
+        this.displaySafetyAlert(this.safetyAdvice.heavy_rain);
+    }
+    
+    // Test extreme cold alert with recommendations  
+    testExtremeCold() {
+        console.log('🥶 Testing extreme cold alert with full recommendations');
+        this.displaySafetyAlert(this.safetyAdvice.extreme_cold);
+    }
+    
+    // Test thunderstorm alert with recommendations
+    testThunderstorm() {
+        console.log('⛈️ Testing thunderstorm alert with full recommendations');
+        this.displaySafetyAlert(this.safetyAdvice.thunderstorm);
     }
     setupEnhancedEventListeners() {
         // Main container click (but not on control panel)
@@ -2196,7 +2266,7 @@ class WeatherAlertSystem {
         }
     }
     
-    // Enhanced toggle for municipal warnings with minimized support
+    // Enhanced toggle for municipal warnings with proper recommendations
     toggleExpanded() {
         if (this.lockExpansion) return;
         
@@ -2204,8 +2274,12 @@ class WeatherAlertSystem {
         this.uiState.size = this.isExpanded ? 'expanded' : 'compact';
         
         if (!this.isExpanded && this.currentAlertLevel !== 'normal') {
-            // Use minimized layout for alerts
+            // Use minimized layout for alerts but keep data for expansion
             this.minimizeAlert();
+            return;
+        } else if (this.isExpanded && this.currentAlertLevel !== 'normal') {
+            // Recreate full alert with recommendations
+            this.recreateFullAlert();
             return;
         }
         
@@ -2219,6 +2293,26 @@ class WeatherAlertSystem {
         }
         
         console.log(`🏛️ Municipal weather ${this.isExpanded ? 'expanded' : 'collapsed'}`);
+    }
+    
+    // Recreate full alert with all recommendations
+    recreateFullAlert() {
+        // Re-trigger the current alert to show full layout
+        if (this.currentAlertData) {
+            this.displaySafetyAlert(this.currentAlertData);
+        } else {
+            // Fallback: check current weather conditions
+            if (this.currentWeatherData) {
+                this.checkMunicipalAlerts(this.currentWeatherData);
+            }
+        }
+        
+        // Force expansion
+        setTimeout(() => {
+            this.isExpanded = true;
+            this.updateExpandedState();
+            this.showSafetyRecommendations();
+        }, 100);
     }
     
     // Update expanded state with enhanced Romanian button management
@@ -2437,6 +2531,7 @@ class WeatherAlertSystem {
         if (!this.weatherContainer) return;
         
         this.currentAlertLevel = alert.level;
+        this.currentAlertData = alert; // Store for recreation
         
         // Check if this is an emergency alert
         if (alert.emergency) {
@@ -2469,8 +2564,13 @@ class WeatherAlertSystem {
                 this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
             }
         } else {
-            // Regular alert layout
+            // Regular alert layout - ensure we show full layout with recommendations
             this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
+            
+            // Create full alert layout if needed
+            if (!this.weatherContainer.querySelector('.alert-header')) {
+                this.createFullAlertLayout();
+            }
             
             // Show alert header
             const alertHeader = this.weatherContainer.querySelector('.alert-header');
@@ -2494,7 +2594,7 @@ class WeatherAlertSystem {
         
         // Show emergency contact for critical alerts
         const emergencyContact = this.weatherContainer.querySelector('.emergency-contact');
-        if (emergencyContact) {
+        if (emergencyContact && (alert.level === 'critical' || alert.level === 'warning')) {
             emergencyContact.classList.add('visible');
         }
         
@@ -2506,6 +2606,26 @@ class WeatherAlertSystem {
                 this.updateExpandedState();
                 this.showSafetyRecommendations();
             }, 300);
+        }
+    }
+    
+    // Create full alert layout (for non-emergency alerts)
+    createFullAlertLayout() {
+        if (!this.weatherContainer) return;
+        
+        // Only recreate if we don't have the proper structure
+        const hasProperStructure = this.weatherContainer.querySelector('.weather-content') && 
+                                  this.weatherContainer.querySelector('.safety-recommendations') &&
+                                  this.weatherContainer.querySelector('.alert-header');
+        
+        if (!hasProperStructure) {
+            this.createEnhancedWeatherContainer().then(() => {
+                this.setupEnhancedEventListeners();
+                this.updateAccessibilityFeatures();
+                if (this.currentWeatherData) {
+                    this.updateWeatherDisplay(this.currentWeatherData);
+                }
+            });
         }
     }
     
