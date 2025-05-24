@@ -295,17 +295,16 @@ class WeatherAlertSystem {
         const accessButton = this.weatherContainer.querySelector('.accessibility-button');
         if (accessButton) {
             const icon = accessButton.querySelector('.button-icon');
-            const label = accessButton.querySelector('.button-label');
             
             if (this.accessibilityMode) {
                 icon.textContent = 'visibility';
-                label.textContent = 'NORMAL';
                 accessButton.setAttribute('aria-label', 'Comutare la modul normal');
+                accessButton.setAttribute('title', 'Dezactivare mod vizibilitate');
                 accessButton.classList.add('active');
             } else {
                 icon.textContent = 'visibility_off';
-                label.textContent = 'VIZIBILITATE';
                 accessButton.setAttribute('aria-label', 'Activare mod vizibilitate îmbunătățită');
+                accessButton.setAttribute('title', 'Activare vizibilitate îmbunătățită');
                 accessButton.classList.remove('active');
             }
         }
@@ -559,8 +558,8 @@ class WeatherAlertSystem {
             box-shadow: 0 0 5px #ffff00 !important;
         }
         
-        .weather-alert-floating.high-contrast .control-button *,
-        .weather-alert-floating.accessibility-enhanced .control-button * {
+        .weather-alert-floating.high-contrast .control-button .button-icon,
+        .weather-alert-floating.accessibility-enhanced .control-button .button-icon {
             color: #000000 !important;
         }
         
@@ -571,8 +570,8 @@ class WeatherAlertSystem {
             box-shadow: 0 0 10px #ffff00 !important;
         }
         
-        .weather-alert-floating.high-contrast .control-button:hover *,
-        .weather-alert-floating.accessibility-enhanced .control-button:hover * {
+        .weather-alert-floating.high-contrast .control-button:hover .button-icon,
+        .weather-alert-floating.accessibility-enhanced .control-button:hover .button-icon {
             color: #000000 !important;
         }
         
@@ -626,9 +625,12 @@ class WeatherAlertSystem {
         }
         
         .weather-alert-floating.accessibility-enhanced .control-button {
-            min-width: 44px;
-            min-height: 44px;
-            font-size: 16px;
+            width: 36px;
+            height: 36px;
+        }
+        
+        .weather-alert-floating.accessibility-enhanced .control-button .button-icon {
+            font-size: 20px;
         }
         
         .weather-alert-floating.accessibility-enhanced .weather-icon {
@@ -711,39 +713,38 @@ class WeatherAlertSystem {
             width: 340px;
         }
         
-        /* ENHANCED CONTROL PANEL - Updated Positioning */
+        /* ENHANCED CONTROL PANEL - Icon Only with Better Positioning */
         .control-panel {
             position: absolute;
-            top: 6px;
-            right: 6px;
+            top: 12px;
+            right: 12px;
             display: flex;
-            gap: 3px;
+            flex-direction: column;
+            gap: 6px;
             z-index: 15;
         }
         
         .control-button {
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-width: 36px;
-            min-height: 36px;
+            width: 32px;
+            height: 32px;
             background: rgba(255, 255, 255, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 6px;
+            border-radius: 50%;
             backdrop-filter: blur(4px);
             cursor: pointer;
             transition: all 0.3s ease;
             color: #1a2f5f;
-            font-size: 10px;
-            padding: 2px;
+            padding: 0;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
         
         .control-button:hover {
             background: rgba(255, 255, 255, 1);
             border-color: #ffff00;
-            transform: scale(1.05);
+            transform: scale(1.1);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         
@@ -765,25 +766,16 @@ class WeatherAlertSystem {
         
         .button-icon {
             font-family: 'Material Icons';
-            font-size: 16px;
+            font-size: 18px;
             line-height: 1;
-            margin-bottom: 1px;
         }
         
         .button-label {
-            font-size: 7px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            line-height: 1;
+            display: none;
         }
         
         /* Expand button states */
         .expand-button.locked .button-icon {
-            color: #ff6b00;
-        }
-        
-        .expand-button.locked .button-label {
             color: #ff6b00;
         }
         
@@ -965,7 +957,8 @@ class WeatherAlertSystem {
         .weather-content {
             padding: 12px 16px;
             position: relative;
-            padding-top: 44px; /* More space for control panel */
+            padding-top: 16px;
+            padding-right: 50px; /* Space for vertical button stack */
         }
         
         .weather-basic-info {
@@ -1392,7 +1385,7 @@ class WeatherAlertSystem {
             
             .weather-content {
                 padding: 10px 12px;
-                padding-top: 40px;
+                padding-right: 46px;
             }
             
             .weather-icon-container {
@@ -1409,17 +1402,19 @@ class WeatherAlertSystem {
                 font-size: 18px;
             }
             
+            .control-panel {
+                top: 8px;
+                right: 8px;
+                gap: 4px;
+            }
+            
             .control-button {
-                min-width: 40px;
-                min-height: 40px;
+                width: 28px;
+                height: 28px;
             }
             
             .button-icon {
-                font-size: 18px;
-            }
-            
-            .button-label {
-                font-size: 8px;
+                font-size: 16px;
             }
             
             .activity-row {
@@ -1495,14 +1490,12 @@ class WeatherAlertSystem {
                         aria-label="Activare mod vizibilitate îmbunătățită" 
                         title="Comutare vizibilitate îmbunătățită">
                     <i class="material-icons button-icon">visibility_off</i>
-                    <span class="button-label">VIZIBILITATE</span>
                 </button>
                 <button class="control-button expand-button" 
                         type="button" 
                         aria-label="Extinde informații de siguranță" 
                         title="Extinde/restrânge">
                     <i class="material-icons button-icon">expand_more</i>
-                    <span class="button-label">EXTINDE</span>
                 </button>
             </div>
             
@@ -1618,18 +1611,16 @@ class WeatherAlertSystem {
                         aria-label="Activare mod vizibilitate îmbunătățită" 
                         title="Comutare vizibilitate îmbunătățită">
                     <i class="material-icons button-icon">visibility_off</i>
-                    <span class="button-label">VIZIBILITATE</span>
                 </button>
                 <button class="control-button expand-button locked" 
                         type="button" 
                         aria-label="Urgență activă" 
                         title="Alertă de urgență - prioritate">
                     <i class="material-icons button-icon">priority_high</i>
-                    <span class="button-label">URGENȚĂ</span>
                 </button>
             </div>
             
-            <div style="padding: 44px 12px 12px 12px;">
+            <div style="padding: 16px 50px 12px 12px;">
                 <div class="emergency-header">
                     <i class="material-icons emergency-icon">${emergencyIcon}</i>
                     <div class="emergency-title">${title}</div>
@@ -1751,18 +1742,16 @@ class WeatherAlertSystem {
                         aria-label="Activare mod vizibilitate îmbunătățită" 
                         title="Comutare vizibilitate îmbunătățită">
                     <i class="material-icons button-icon">visibility_off</i>
-                    <span class="button-label">VIZIBILITATE</span>
                 </button>
                 <button class="control-button expand-button" 
                         type="button" 
                         aria-label="Extinde informații" 
                         title="Extinde/restrânge">
                     <i class="material-icons button-icon">error</i>
-                    <span class="button-label">EROARE</span>
                 </button>
             </div>
             
-            <div style="padding: 44px 12px 12px 12px;">
+            <div style="padding: 16px 50px 12px 12px;">
                 <div class="emergency-header">
                     <i class="material-icons emergency-icon">error</i>
                     <div class="emergency-title">EROARE DATE URGENȚĂ</div>
@@ -1967,22 +1956,21 @@ class WeatherAlertSystem {
             const expandButton = this.weatherContainer.querySelector('.expand-button');
             if (expandButton) {
                 const icon = expandButton.querySelector('.button-icon');
-                const label = expandButton.querySelector('.button-label');
                 
                 if (this.lockExpansion) {
                     icon.textContent = 'priority_high';
-                    label.textContent = 'URGENȚĂ';
                     expandButton.setAttribute('aria-label', 'Urgență activă');
+                    expandButton.setAttribute('title', 'Alertă de urgență - prioritate');
                     expandButton.classList.add('locked');
                 } else if (this.isExpanded) {
                     icon.textContent = 'expand_less';
-                    label.textContent = 'RESTRÂNGE';
                     expandButton.setAttribute('aria-label', 'Restrânge informații de siguranță');
+                    expandButton.setAttribute('title', 'Restrânge informații');
                     expandButton.classList.remove('locked');
                 } else {
                     icon.textContent = 'expand_more';
-                    label.textContent = 'EXTINDE';
                     expandButton.setAttribute('aria-label', 'Extinde informații de siguranță');
+                    expandButton.setAttribute('title', 'Extinde informații');
                     expandButton.classList.remove('locked');
                 }
             }
