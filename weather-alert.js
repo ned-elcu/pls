@@ -242,6 +242,8 @@ class WeatherAlertSystem {
         console.log('weatherTest.expand() - Expand widget');
         console.log('weatherTest.minimize() - Minimize widget');
         console.log('weatherTest.debug() - Show debug information');
+        console.log('💡 Auto-expand: Emergency alerts + Critical weather alerts');
+        console.log('📍 Position: Bottom-right corner');
     }
     
     // Test specific alert types
@@ -1988,15 +1990,17 @@ class WeatherAlertSystem {
                 // Update container class for emergency
                 this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
                 
-                // Start in minimized state for emergency alerts
-                this.isExpanded = false;
-                this.updateExpandedState();
-                this.hideEmergencyDetails();
+                // Auto-expand emergency alerts after a brief delay
+                setTimeout(() => {
+                    this.isExpanded = true;
+                    this.updateExpandedState();
+                    this.showEmergencyDetails();
+                }, 300);
                 
                 // Re-setup all event listeners (since we replaced innerHTML)
                 this.setupExpandIndicatorEvents();
                 
-                console.log('✅ Emergency layout created successfully');
+                console.log('✅ Emergency layout created successfully - auto-expanding');
             } catch (error) {
                 console.error('❌ Error creating emergency layout:', error);
                 // Fallback to regular alert display
@@ -2014,9 +2018,18 @@ class WeatherAlertSystem {
                 alertHeader.classList.add('visible');
             }
             
-            // Start in minimized state for regular alerts too
+            // Regular weather alerts start minimized by default
             this.isExpanded = false;
             this.updateExpandedState();
+            
+            // Auto-expand for critical weather alerts (but not advisories/warnings)
+            if (alert.level === 'critical') {
+                setTimeout(() => {
+                    this.isExpanded = true;
+                    this.updateExpandedState();
+                    this.showSafetyRecommendations();
+                }, 300);
+            }
         }
         
         // Prepare safety recommendations
@@ -2403,12 +2416,13 @@ class EmergencyMonitoringSystem {
         };
         
         console.log('🧪 Emergency testing commands:');
-        console.log('emergencyTest.testEarthquake(5.2, 45) - Test earthquake');
-        console.log('emergencyTest.testAirQuality(180) - Test unhealthy air quality (151+ triggers emergency)');
+        console.log('emergencyTest.testEarthquake(5.2, 45) - Test earthquake (auto-expands)');
+        console.log('emergencyTest.testAirQuality(180) - Test unhealthy air quality (auto-expands)');
         console.log('emergencyTest.testActivities() - Test all activity levels');
         console.log('emergencyTest.clearEmergency() - Clear emergency alert');
         console.log('emergencyTest.debug() - Show debug info');
         console.log('💡 Air Quality Emergency Thresholds: Unhealthy 151+, Dangerous 301+');
+        console.log('🔄 Emergency alerts auto-expand, regular weather starts minimized');
     }
     
     // Test activity recommendations at different levels
