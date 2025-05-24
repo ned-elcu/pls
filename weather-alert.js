@@ -328,7 +328,7 @@ class WeatherAlertSystem {
     // Initialize the municipal weather system
     async init() {
         this.injectMunicipalCSS();
-        this.createWeatherContainer();
+        await this.createWeatherContainer();
         this.setupEventListeners();
         this.startMunicipalMonitoring();
         this.setupIntersectionObserver();
@@ -346,6 +346,10 @@ class WeatherAlertSystem {
     displayEmergencyAlert(type, protocol) {
         console.log(`🚨 EMERGENCY ALERT: ${type} - ${protocol.level}`);
         
+        // Store previous state
+        const wasVisible = this.weatherContainer && this.weatherContainer.classList.contains('visible');
+        const wasExpanded = this.isExpanded;
+        
         // Activate emergency mode
         this.emergencyAlertActive = true;
         
@@ -360,14 +364,24 @@ class WeatherAlertSystem {
             activities: protocol.activities || null
         };
         
+        // Ensure container exists and is visible
+        if (!this.weatherContainer) {
+            console.warn('⚠️ Weather container not found, recreating...');
+            this.createWeatherContainer();
+        }
+        
         this.displaySafetyAlert(emergencyAlert);
         
-        // Force expansion for all emergency alerts
+        // Force visibility and expansion for all emergency alerts
         setTimeout(() => {
-            this.isExpanded = true;
-            this.updateExpandedState();
-            this.showSafetyRecommendations();
-        }, 300);
+            if (this.weatherContainer) {
+                this.weatherContainer.classList.add('visible');
+                this.isHidden = false;
+                this.isExpanded = true;
+                this.updateExpandedState();
+                this.showEmergencyDetails();
+            }
+        }, 100);
         
         // Keep emergency alert expanded
         this.lockExpansion = true;
@@ -448,6 +462,7 @@ class WeatherAlertSystem {
     
     // Clear emergency alert state
     clearEmergencyAlert() {
+        console.log('🔄 Clearing emergency alert state...');
         this.emergencyAlertActive = false;
         this.lockExpansion = false;
         
@@ -660,6 +675,7 @@ class WeatherAlertSystem {
             margin-bottom: 8px;
             padding-bottom: 6px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            grid-area: emergency-header;
         }
         
         .emergency-icon {
@@ -1020,6 +1036,7 @@ class WeatherAlertSystem {
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 6px;
             backdrop-filter: blur(4px);
+            grid-area: expand-btn;
         }
         
         .expand-indicator:hover {
@@ -1396,94 +1413,142 @@ class WeatherAlertSystem {
         document.body.appendChild(this.weatherContainer);
     }
     
-    // Create emergency layout
+    // Create emergency layout - FIXED VERSION
     createEmergencyLayout(emergencyData) {
-        // Add error handling for undefined data
-        if (!emergencyData) {
-            console.error('❌ Emergency data is undefined');
-            return this.createErrorLayout();
-        }
-        
-        console.log('🔧 Creating emergency layout with data:', emergencyData);
-        
-        const { emergencyType, level, title, data, activities } = emergencyData;
-        
-        if (!emergencyType || !level || !title) {
-            console.error('❌ Missing required emergency data fields:', { emergencyType, level, title });
-            return this.createErrorLayout();
-        }
-        
-        let emergencyIcon = 'warning';
-        let detailsHTML = '';
-        let activitiesHTML = '';
-        
-        // Determine icon and details based on emergency type
-        if (emergencyType === 'earthquake') {
-            emergencyIcon = 'warning';
-            if (data) {
-                detailsHTML = `
-                    <div class="emergency-details">
-                        <div class="detail-item">
-                            <div class="detail-label">Magnitudine</div>
-                            <div class="detail-value">M${data.magnitude || 'N/A'}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Distanță</div>
-                            <div class="detail-value">${data.distance || 'N/A'} km</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Locația</div>
-                            <div class="detail-value">${data.location || 'N/A'}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Ora</div>
-                            <div class="detail-value">${data.time || 'N/A'}</div>
-                        </div>
-                    </div>
-                `;
-            }
-        } else if (emergencyType === 'airQuality') {
-            emergencyIcon = 'masks';
-            if (data) {
-                detailsHTML = `
-                    <div class="emergency-details">
-                        <div class="detail-item">
-                            <div class="detail-label">AQI</div>
-                            <div class="detail-value">${data.aqi || 'N/A'}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">PM2.5</div>
-                            <div class="detail-value">${data.pm25 || 'N/A'} μg/m³</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">PM10</div>
-                            <div class="detail-value">${data.pm10 || 'N/A'} μg/m³</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Nivel</div>
-                            <div class="detail-value">${data.aqi ? this.getAQILevel(data.aqi) : 'N/A'}</div>
-                        </div>
-                    </div>
-                `;
+        try {
+            console.log('🔧 Creating emergency layout with data:', emergencyData);
+            
+            // Validate required data
+            if (!emergencyData || !emergencyData.emergencyType || !emergencyData.level || !emergencyData.title) {
+                console.error('❌ Missing required emergency data:', emergencyData);
+                return this.createBasicEmergencyLayout();
             }
             
-            // Add activity recommendations for air quality
-            if (activities) {
-                activitiesHTML = this.createActivityRecommendations(activities);
+            const { emergencyType, level, title, data, activities } = emergencyData;
+            
+            let emergencyIcon = 'warning';
+            let detailsHTML = '';
+            let activitiesHTML = '';
+            
+            // Determine icon and details based on emergency type
+            if (emergencyType === 'earthquake') {
+                emergencyIcon = 'warning';
+                if (data && Object.keys(data).length > 0) {
+                    detailsHTML = `
+                        <div class="emergency-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Magnitudine</div>
+                                <div class="detail-value">M${data.magnitude || 'N/A'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Distanță</div>
+                                <div class="detail-value">${data.distance || 'N/A'} km</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Locația</div>
+                                <div class="detail-value">${data.location || 'N/A'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Ora</div>
+                                <div class="detail-value">${data.time || 'N/A'}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else if (emergencyType === 'airQuality') {
+                emergencyIcon = 'masks';
+                if (data && Object.keys(data).length > 0) {
+                    detailsHTML = `
+                        <div class="emergency-details">
+                            <div class="detail-item">
+                                <div class="detail-label">AQI</div>
+                                <div class="detail-value">${data.aqi || 'N/A'}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">PM2.5</div>
+                                <div class="detail-value">${data.pm25 || 'N/A'} μg/m³</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">PM10</div>
+                                <div class="detail-value">${data.pm10 || 'N/A'} μg/m³</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Nivel</div>
+                                <div class="detail-value">${data.aqi ? this.getAQILevel(data.aqi) : 'N/A'}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Add activity recommendations for air quality
+                if (activities && Object.keys(activities).length > 0) {
+                    activitiesHTML = this.createActivityRecommendations(activities);
+                }
             }
+            
+            // Get current weather for summary
+            const weatherSummary = this.createWeatherSummary();
+            
+            const layout = `
+                <div class="emergency-content">
+                    <div class="emergency-header">
+                        <i class="material-icons emergency-icon">${emergencyIcon}</i>
+                        <div class="emergency-title">${title}</div>
+                    </div>
+                    ${detailsHTML}
+                    ${activitiesHTML}
+                </div>
+                
+                <div class="weather-summary">
+                    ${weatherSummary}
+                </div>
+                
+                <div class="emergency-actions">
+                    <div class="safety-recommendations visible" role="region" aria-label="Recomandări de siguranță">
+                        <ul class="safety-list"></ul>
+                    </div>
+                </div>
+                
+                <div class="emergency-contact-full">
+                    <p class="emergency-text">
+                        <i class="material-icons" style="font-size: 14px; vertical-align: middle; margin-right: 4px;">phone</i>
+                        Urgențe: 112 | Poliția Locală: (0243) 955
+                    </p>
+                </div>
+                
+                <div class="expand-indicator" role="button" aria-label="Expandează/Minimizează informații" tabindex="0">
+                    <i class="material-icons">expand_more</i>
+                </div>
+                <div class="update-indicator"></div>
+            `;
+            
+            console.log('✅ Emergency layout created successfully');
+            return layout;
+            
+        } catch (error) {
+            console.error('❌ Error creating emergency layout:', error);
+            return this.createBasicEmergencyLayout();
         }
+    }
+    
+    // Create basic emergency layout for error cases
+    createBasicEmergencyLayout() {
+        console.log('🔧 Creating basic emergency layout fallback');
         
-        // Get current weather for summary
         const weatherSummary = this.createWeatherSummary();
         
-        const layout = `
+        return `
             <div class="emergency-content">
                 <div class="emergency-header">
-                    <i class="material-icons emergency-icon">${emergencyIcon}</i>
-                    <div class="emergency-title">${title}</div>
+                    <i class="material-icons emergency-icon">warning</i>
+                    <div class="emergency-title">ALERTĂ DE URGENȚĂ</div>
                 </div>
-                ${detailsHTML}
-                ${activitiesHTML}
+                <div class="emergency-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">În curs de verificare</div>
+                    </div>
+                </div>
             </div>
             
             <div class="weather-summary">
@@ -1494,43 +1559,6 @@ class WeatherAlertSystem {
                 <div class="safety-recommendations visible" role="region" aria-label="Recomandări de siguranță">
                     <ul class="safety-list"></ul>
                 </div>
-            </div>
-            
-            <div class="emergency-contact-full">
-                <p class="emergency-text">
-                    <i class="material-icons" style="font-size: 14px; vertical-align: middle; margin-right: 4px;">phone</i>
-                    Urgențe: 112 | Poliția Locală: (0243) 955
-                </p>
-            </div>
-            
-            <div class="expand-indicator" role="button" aria-label="Expandează/Minimizează informații" tabindex="0">
-                <i class="material-icons">expand_more</i>
-            </div>
-            <div class="update-indicator"></div>
-        `;
-        
-        console.log('✅ Emergency layout created successfully');
-        return layout;
-    }
-    
-    // Create error layout for missing data
-    createErrorLayout() {
-        return `
-            <div class="emergency-content">
-                <div class="emergency-header">
-                    <i class="material-icons emergency-icon">error</i>
-                    <div class="emergency-title">EROARE DATE URGENȚĂ</div>
-                </div>
-                <div class="emergency-details">
-                    <div class="detail-item">
-                        <div class="detail-label">Status</div>
-                        <div class="detail-value">Date indisponibile</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="weather-summary">
-                ${this.createWeatherSummary()}
             </div>
             
             <div class="emergency-contact-full">
@@ -2034,14 +2062,19 @@ class WeatherAlertSystem {
         return dangerousWeatherCodes.includes(weatherCode);
     }
     
-    // Display municipal safety alert (enhanced for emergency layout)
+    // Display municipal safety alert (enhanced for emergency layout) - FIXED VERSION
     displaySafetyAlert(alert) {
-        if (!this.weatherContainer) return;
+        if (!this.weatherContainer) {
+            console.error('❌ Weather container not found in displaySafetyAlert');
+            return;
+        }
         
         this.currentAlertLevel = alert.level;
         
         // Check if this is an emergency alert
         if (alert.emergency) {
+            console.log('🚨 Processing emergency alert:', alert);
+            
             // Prepare emergency data structure for layout creation
             const emergencyLayoutData = {
                 emergencyType: alert.emergencyType,
@@ -2052,23 +2085,38 @@ class WeatherAlertSystem {
             };
             
             try {
+                // Store current state for fallback
+                const originalHTML = this.weatherContainer.innerHTML;
+                const originalClassName = this.weatherContainer.className;
+                
                 // Switch to emergency layout
-                this.weatherContainer.innerHTML = this.createEmergencyLayout(emergencyLayoutData);
+                const emergencyHTML = this.createEmergencyLayout(emergencyLayoutData);
                 
-                // Update container class for emergency
-                this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
+                if (emergencyHTML && emergencyHTML.trim()) {
+                    this.weatherContainer.innerHTML = emergencyHTML;
+                    
+                    // Update container class for emergency
+                    this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
+                    
+                    // Ensure visibility
+                    this.weatherContainer.classList.add('visible');
+                    this.isHidden = false;
+                    
+                    // Re-setup all event listeners (since we replaced innerHTML)
+                    setTimeout(() => {
+                        this.setupExpandIndicatorEvents();
+                        
+                        // Auto-expand emergency alerts after a brief delay
+                        this.isExpanded = true;
+                        this.updateExpandedState();
+                        this.showEmergencyDetails();
+                        
+                        console.log('✅ Emergency layout applied and expanded');
+                    }, 100);
+                } else {
+                    throw new Error('Empty emergency layout generated');
+                }
                 
-                // Auto-expand emergency alerts after a brief delay
-                setTimeout(() => {
-                    this.isExpanded = true;
-                    this.updateExpandedState();
-                    this.showEmergencyDetails();
-                }, 300);
-                
-                // Re-setup all event listeners (since we replaced innerHTML)
-                this.setupExpandIndicatorEvents();
-                
-                console.log('✅ Emergency layout created successfully - auto-expanding');
             } catch (error) {
                 console.error('❌ Error creating emergency layout:', error);
                 // Fallback to regular alert display
@@ -2119,9 +2167,12 @@ class WeatherAlertSystem {
         if (emergencyContact) {
             emergencyContact.classList.add('visible');
         }
+        
+        // Ensure the widget is visible
+        this.showWeatherAlert();
     }
     
-    // Clear alert state
+    // Clear alert state - FIXED VERSION  
     clearAlert() {
         if (!this.weatherContainer) return;
         
@@ -2129,19 +2180,37 @@ class WeatherAlertSystem {
         
         // Reset to normal layout if we were in emergency mode
         if (this.emergencyAlertActive) {
-            // Remove the old container
+            console.log('🔄 Resetting from emergency mode to normal weather display...');
+            
+            // Store visibility state
+            const wasVisible = this.weatherContainer.classList.contains('visible');
+            
+            // Recreate the container with normal layout
+            const originalParent = this.weatherContainer.parentNode;
             this.weatherContainer.remove();
             
             // Create new weather container
-            this.createWeatherContainer();
-            this.setupEventListeners();
-            if (this.currentWeatherData) {
-                this.updateWeatherDisplay(this.currentWeatherData);
-            }
-            // Start in minimized state
-            this.isExpanded = false;
-            this.updateExpandedState();
-            this.makeVisible();
+            this.createWeatherContainer().then(() => {
+                this.setupEventListeners();
+                
+                // Restore visibility
+                if (wasVisible) {
+                    this.weatherContainer.classList.add('visible');
+                    this.isHidden = false;
+                }
+                
+                // Update with current weather data
+                if (this.currentWeatherData) {
+                    this.updateWeatherDisplay(this.currentWeatherData);
+                }
+                
+                // Start in minimized state
+                this.isExpanded = false;
+                this.updateExpandedState();
+                
+                console.log('✅ Normal weather layout restored');
+            });
+            
             return;
         }
         
@@ -2221,7 +2290,7 @@ class WeatherAlertSystem {
         }
     }
     
-    // Cleanup
+// Cleanup
     destroy() {
         if (this.updateTimer) {
             clearInterval(this.updateTimer);
@@ -2343,7 +2412,7 @@ class EmergencyMonitoringSystem {
                         windows_open: 'no' // Don't open windows
                     }
                 },
-unhealthy: {
+                unhealthy: {
                     level: 'warning',
                     title: 'AVERTIZARE CALITATE AER',
                     recommendations: [
@@ -2703,6 +2772,8 @@ unhealthy: {
         // Always integrate with existing weather system
         if (window.municipalWeatherSystem && typeof window.municipalWeatherSystem.displayEmergencyAlert === 'function') {
             window.municipalWeatherSystem.displayEmergencyAlert(type, protocol);
+        } else {
+            console.warn('⚠️ Municipal weather system not available for emergency alert display');
         }
         
         this.logEmergencyEvent(type, protocol);
@@ -2831,4 +2902,3 @@ console.log('🏛️ Municipal Weather System v2.0 - Production Ready');
 console.log('📍 Location: Slobozia, Ialomița County, Romania');
 console.log('🚨 Emergency monitoring: Earthquakes + Air Quality');
 console.log('📋 Test commands: weatherTest.debug() | emergencyTest.debug()');
-                        
