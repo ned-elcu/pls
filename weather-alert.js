@@ -218,10 +218,13 @@ class WeatherAlertSystem {
             cycleWeather: () => this.cycleWeatherModes(),
             setWeather: (code) => this.setTestWeather(code),
             testAlert: (type) => this.testAlert(type),
+            testWind: () => this.testWindAlert(),
+            testSeismic: () => this.testSeismicAlert(),
             listCodes: () => this.listWeatherCodes(),
             show: () => this.showWeatherAlert(),
             hide: () => this.hideWeatherAlert(),
             expand: () => this.toggleExpanded(),
+            minimize: () => this.minimizeAlert(),
             toggleAccessibility: () => this.toggleAccessibilityMode(),
             setFontScale: (scale) => this.setFontScale(scale),
             toggleHighContrast: () => this.toggleHighContrast(),
@@ -244,6 +247,9 @@ class WeatherAlertSystem {
         console.log('weatherTest.cycleWeather() - Test all weather conditions');
         console.log('weatherTest.setWeather(code) - Set specific weather (0-99)');
         console.log('weatherTest.testAlert("extreme_heat") - Test alert types');
+        console.log('weatherTest.testWind() - Test wind alert minimized view');
+        console.log('weatherTest.testSeismic() - Test seismic alert minimized view');
+        console.log('weatherTest.minimize() - Test minimized layout');
         console.log('weatherTest.toggleAccessibility() - Toggle accessibility mode');
         console.log('weatherTest.setFontScale(1-4) - Set font scale level');
         console.log('weatherTest.toggleHighContrast() - Toggle high contrast');
@@ -308,6 +314,24 @@ class WeatherAlertSystem {
                 accessButton.classList.remove('active');
             }
         }
+    }
+    
+    // Test wind alert
+    testWindAlert() {
+        console.log('🌬️ Testing wind alert minimized view');
+        this.currentAlertLevel = 'warning';
+        this.weatherContainer.innerHTML = this.createMinimizedAlertLayout('wind', { windSpeed: 45 });
+        this.setupControlPanelEvents();
+        this.updateAccessibilityFeatures();
+    }
+    
+    // Test seismic alert  
+    testSeismicAlert() {
+        console.log('🌍 Testing seismic alert minimized view');
+        this.currentAlertLevel = 'warning';
+        this.weatherContainer.innerHTML = this.createMinimizedAlertLayout('seismic', { magnitude: 4.2, distance: 35 });
+        this.setupControlPanelEvents();
+        this.updateAccessibilityFeatures();
     }
     
     // Test specific alert types
@@ -612,10 +636,59 @@ class WeatherAlertSystem {
             color: #ffffff !important;
         }
         
-        .weather-alert-floating.high-contrast .emergency-contact,
-        .weather-alert-floating.accessibility-enhanced .emergency-contact {
-            background: #ff0000 !important;
-            border: 2px solid #ffffff !important;
+        /* Compact Alert Header Styling */
+        .alert-header-compact {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 0;
+        }
+        
+        .alert-icon-compact {
+            font-size: 24px;
+            color: #ff7043;
+            background: rgba(255, 112, 67, 0.15);
+            padding: 6px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 112, 67, 0.3);
+        }
+        
+        .alert-info-compact {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .alert-title-compact {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ff7043;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+        
+        .alert-details-compact {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 2px;
+            line-height: 1.2;
+        }
+        
+        /* High contrast for compact alerts */
+        .weather-alert-floating.high-contrast .alert-icon-compact,
+        .weather-alert-floating.accessibility-enhanced .alert-icon-compact {
+            background: #ffffff !important;
+            color: #000000 !important;
+            border-color: #ffff00 !important;
+        }
+        
+        .weather-alert-floating.high-contrast .alert-title-compact,
+        .weather-alert-floating.accessibility-enhanced .alert-title-compact {
+            color: #ffff00 !important;
+        }
+        
+        .weather-alert-floating.high-contrast .alert-details-compact,
+        .weather-alert-floating.accessibility-enhanced .alert-details-compact {
             color: #ffffff !important;
         }
         
@@ -664,16 +737,16 @@ class WeatherAlertSystem {
         .weather-alert-floating.emergency_advisory,
         .weather-alert-floating.emergency_warning,
         .weather-alert-floating.emergency_critical {
-            width: 280px;
-            min-height: 140px;
-            padding: 12px;
+            width: 260px;
+            min-height: 120px;
+            padding: 10px;
         }
         
         .weather-alert-floating.emergency_advisory.expanded,
         .weather-alert-floating.emergency_warning.expanded,
         .weather-alert-floating.emergency_critical.expanded {
-            width: 340px;
-            min-height: 180px;
+            width: 300px;
+            min-height: 160px;
         }
         
         .weather-alert-floating.emergency_advisory {
@@ -713,39 +786,40 @@ class WeatherAlertSystem {
             width: 340px;
         }
         
-        /* ENHANCED CONTROL PANEL - Icon Only with Better Positioning */
+        /* ENHANCED CONTROL PANEL - Fixed Alignment and Centering */
         .control-panel {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 8px;
+            right: 8px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
             z-index: 15;
+            align-items: center;
         }
         
         .control-button {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 50%;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(6px);
             cursor: pointer;
             transition: all 0.3s ease;
             color: #1a2f5f;
             padding: 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
         }
         
         .control-button:hover {
             background: rgba(255, 255, 255, 1);
             border-color: #ffff00;
             transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
         }
         
         .control-button:active {
@@ -761,13 +835,16 @@ class WeatherAlertSystem {
             background: #ffff00;
             color: #000000;
             border-color: #ffd700;
-            box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+            box-shadow: 0 0 8px rgba(255, 255, 0, 0.6);
         }
         
         .button-icon {
             font-family: 'Material Icons';
-            font-size: 18px;
+            font-size: 16px;
             line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .button-label {
@@ -953,12 +1030,16 @@ class WeatherAlertSystem {
             font-family: 'Material Icons';
         }
         
-        /* Regular Weather Layout */
+        /* Regular Weather Layout - Optimized for Compact View */
         .weather-content {
-            padding: 12px 16px;
+            padding: 10px 14px;
             position: relative;
-            padding-top: 16px;
-            padding-right: 50px; /* Space for vertical button stack */
+            padding-right: 42px; /* Space for button stack */
+        }
+        
+        .weather-content.minimized {
+            padding: 8px 14px;
+            padding-right: 42px;
         }
         
         .weather-basic-info {
@@ -1360,32 +1441,34 @@ class WeatherAlertSystem {
             .weather-alert-floating {
                 bottom: 10px;
                 right: 10px;
-                width: 260px;
-                min-height: 60px;
+                width: 240px;
+                min-height: 55px;
+                max-height: 75px;
             }
             
             .weather-alert-floating.expanded {
-                width: 300px;
-                min-height: 120px;
+                width: 280px;
+                min-height: 100px;
+                max-height: none;
             }
             
             .weather-alert-floating.emergency_advisory,
             .weather-alert-floating.emergency_warning,
             .weather-alert-floating.emergency_critical {
-                width: 260px;
+                width: 240px;
                 max-width: 95vw;
             }
             
             .weather-alert-floating.emergency_advisory.expanded,
             .weather-alert-floating.emergency_warning.expanded,
             .weather-alert-floating.emergency_critical.expanded {
-                width: 300px;
+                width: 280px;
                 max-width: 95vw;
             }
             
             .weather-content {
-                padding: 10px 12px;
-                padding-right: 46px;
+                padding: 8px 10px;
+                padding-right: 38px;
             }
             
             .weather-icon-container {
@@ -1403,18 +1486,31 @@ class WeatherAlertSystem {
             }
             
             .control-panel {
-                top: 8px;
-                right: 8px;
-                gap: 4px;
+                top: 6px;
+                right: 6px;
+                gap: 3px;
             }
             
             .control-button {
-                width: 28px;
-                height: 28px;
+                width: 26px;
+                height: 26px;
             }
             
             .button-icon {
-                font-size: 16px;
+                font-size: 14px;
+            }
+            
+            .alert-icon-compact {
+                font-size: 20px;
+                padding: 4px;
+            }
+            
+            .alert-title-compact {
+                font-size: 11px;
+            }
+            
+            .alert-details-compact {
+                font-size: 10px;
             }
             
             .activity-row {
@@ -1620,7 +1716,7 @@ class WeatherAlertSystem {
                 </button>
             </div>
             
-            <div style="padding: 16px 50px 12px 12px;">
+            <div style="padding: 12px 42px 10px 12px;">
                 <div class="emergency-header">
                     <i class="material-icons emergency-icon">${emergencyIcon}</i>
                     <div class="emergency-title">${title}</div>
@@ -1751,7 +1847,7 @@ class WeatherAlertSystem {
                 </button>
             </div>
             
-            <div style="padding: 16px 50px 12px 12px;">
+            <div style="padding: 12px 42px 10px 12px;">
                 <div class="emergency-header">
                     <i class="material-icons emergency-icon">error</i>
                     <div class="emergency-title">EROARE DATE URGENȚĂ</div>
@@ -1776,6 +1872,144 @@ class WeatherAlertSystem {
         `;
     }
     
+    // Create minimized alert layout for different types
+    createMinimizedAlertLayout(alertType, data) {
+        if (alertType === 'wind') {
+            return `
+                <div class="control-panel">
+                    <button class="control-button accessibility-button" 
+                            type="button" 
+                            aria-label="Activare mod vizibilitate îmbunătățită" 
+                            title="Comutare vizibilitate îmbunătățită">
+                        <i class="material-icons button-icon">visibility_off</i>
+                    </button>
+                    <button class="control-button expand-button" 
+                            type="button" 
+                            aria-label="Extinde informații de siguranță" 
+                            title="Extinde informații">
+                        <i class="material-icons button-icon">expand_more</i>
+                    </button>
+                </div>
+                
+                <div class="weather-content minimized">
+                    <div class="alert-header-compact">
+                        <i class="material-icons alert-icon-compact">air</i>
+                        <div class="alert-info-compact">
+                            <div class="alert-title-compact">VÂNT PUTERNIC</div>
+                            <div class="alert-details-compact">${data.windSpeed || 'N/A'} km/h • Slobozia</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (alertType === 'seismic') {
+            return `
+                <div class="control-panel">
+                    <button class="control-button accessibility-button" 
+                            type="button" 
+                            aria-label="Activare mod vizibilitate îmbunătățită" 
+                            title="Comutare vizibilitate îmbunătățită">
+                        <i class="material-icons button-icon">visibility_off</i>
+                    </button>
+                    <button class="control-button expand-button" 
+                            type="button" 
+                            aria-label="Extinde informații de siguranță" 
+                            title="Extinde informații">
+                        <i class="material-icons button-icon">expand_more</i>
+                    </button>
+                </div>
+                
+                <div class="weather-content minimized">
+                    <div class="alert-header-compact">
+                        <i class="material-icons alert-icon-compact">warning</i>
+                        <div class="alert-info-compact">
+                            <div class="alert-title-compact">ACTIVITATE SEISMICĂ</div>
+                            <div class="alert-details-compact">M${data.magnitude || 'N/A'} • ${data.distance || 'N/A'} km</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Default minimized weather layout
+            return this.createDefaultMinimizedLayout();
+        }
+    }
+    
+    // Create default minimized weather layout
+    createDefaultMinimizedLayout() {
+        if (!this.currentWeatherData || !this.currentWeatherData.current) {
+            return `
+                <div class="control-panel">
+                    <button class="control-button accessibility-button" 
+                            type="button" 
+                            aria-label="Activare mod vizibilitate îmbunătățită" 
+                            title="Comutare vizibilitate îmbunătățită">
+                        <i class="material-icons button-icon">visibility_off</i>
+                    </button>
+                    <button class="control-button expand-button" 
+                            type="button" 
+                            aria-label="Extinde informații de siguranță" 
+                            title="Extinde informații">
+                        <i class="material-icons button-icon">expand_more</i>
+                    </button>
+                </div>
+                
+                <div class="weather-content minimized">
+                    <div class="weather-basic-info">
+                        <div class="weather-icon-container">
+                            <i class="material-icons weather-icon">wb_sunny</i>
+                        </div>
+                        <div class="weather-text-info">
+                            <div class="weather-temp-condition">
+                                <div class="temperature-display">--°C</div>
+                                <div class="condition-text">Se încarcă...</div>
+                            </div>
+                            <div class="location-indicator">Slobozia, Ialomița</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        const current = this.currentWeatherData.current;
+        const weatherCode = parseInt(current.weather_code) || 0;
+        const condition = this.weatherConditions[weatherCode] || {
+            icon: 'help_outline',
+            name: 'Necunoscut'
+        };
+        
+        return `
+            <div class="control-panel">
+                <button class="control-button accessibility-button" 
+                        type="button" 
+                        aria-label="Activare mod vizibilitate îmbunătățită" 
+                        title="Comutare vizibilitate îmbunătățită">
+                    <i class="material-icons button-icon">visibility_off</i>
+                </button>
+                <button class="control-button expand-button" 
+                        type="button" 
+                        aria-label="Extinde informații de siguranță" 
+                        title="Extinde informații">
+                    <i class="material-icons button-icon">expand_more</i>
+                </button>
+            </div>
+            
+            <div class="weather-content minimized">
+                <div class="weather-basic-info">
+                    <div class="weather-icon-container">
+                        <i class="material-icons weather-icon ${condition.animation}">${condition.icon}</i>
+                    </div>
+                    <div class="weather-text-info">
+                        <div class="weather-temp-condition">
+                            <div class="temperature-display">${Math.round(current.temperature_2m)}°C</div>
+                            <div class="condition-text">${condition.name}</div>
+                        </div>
+                        <div class="location-indicator">Slobozia, Ialomița</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
     // Get AQI level description
     getAQILevel(aqi) {
         if (aqi <= 50) return 'Bun';
@@ -1785,7 +2019,39 @@ class WeatherAlertSystem {
         return 'Periculos';
     }
     
-    // Setup enhanced event listeners
+    // Enhanced minimize functionality for all alert types
+    minimizeAlert() {
+        if (this.emergencyAlertActive) {
+            // Don't minimize emergency alerts, just temporary hide
+            this.temporaryMinimize();
+            return;
+        }
+        
+        let alertType = 'normal';
+        let alertData = {};
+        
+        // Determine alert type based on current state
+        if (this.currentAlertLevel === 'warning' && this.currentWeatherData) {
+            const current = this.currentWeatherData.current;
+            if (current.wind_speed_10m >= 40) {
+                alertType = 'wind';
+                alertData = { windSpeed: Math.round(current.wind_speed_10m) };
+            }
+        }
+        
+        // Create minimized layout
+        this.weatherContainer.innerHTML = this.createMinimizedAlertLayout(alertType, alertData);
+        
+        // Re-setup event listeners
+        this.setupControlPanelEvents();
+        this.updateAccessibilityFeatures();
+        
+        // Update state
+        this.isExpanded = false;
+        this.uiState.size = 'compact';
+        
+        console.log(`📱 Alert minimized: ${alertType}`);
+    }
     setupEnhancedEventListeners() {
         // Main container click (but not on control panel)
         this.weatherContainer.addEventListener('click', (e) => {
@@ -1930,12 +2196,19 @@ class WeatherAlertSystem {
         }
     }
     
-    // Enhanced toggle for municipal warnings
+    // Enhanced toggle for municipal warnings with minimized support
     toggleExpanded() {
         if (this.lockExpansion) return;
         
         this.isExpanded = !this.isExpanded;
         this.uiState.size = this.isExpanded ? 'expanded' : 'compact';
+        
+        if (!this.isExpanded && this.currentAlertLevel !== 'normal') {
+            // Use minimized layout for alerts
+            this.minimizeAlert();
+            return;
+        }
+        
         this.updateExpandedState();
         
         // Properly handle safety recommendations visibility
