@@ -456,7 +456,7 @@ class WeatherAlertSystem {
             animation: criticalPulse 3s infinite;
         }
         
-        /* EMERGENCY ALERT STYLING - GRID LAYOUT */
+        /* EMERGENCY ALERT STYLING - COMPACT LAYOUT */
         .weather-alert-floating.emergency_advisory,
         .weather-alert-floating.emergency_warning,
         .weather-alert-floating.emergency_critical {
@@ -466,10 +466,10 @@ class WeatherAlertSystem {
                 "emergency-content weather-summary"
                 "emergency-actions weather-summary"
                 "emergency-contact emergency-contact";
-            gap: 12px;
-            padding: 16px;
-            min-height: 180px;
-            width: 420px;
+            gap: 8px;
+            padding: 12px;
+            min-height: 140px;
+            width: 350px;
         }
         
         .weather-alert-floating.emergency_advisory {
@@ -512,8 +512,8 @@ class WeatherAlertSystem {
         .weather-alert-floating.emergency_advisory.expanded,
         .weather-alert-floating.emergency_warning.expanded,
         .weather-alert-floating.emergency_critical.expanded {
-            min-height: 220px;
-            width: 450px;
+            min-height: 160px;
+            width: 380px;
         }
         
         /* Emergency Content Areas */
@@ -531,13 +531,13 @@ class WeatherAlertSystem {
             align-items: center;
             justify-content: flex-start;
             text-align: center;
-            padding: 12px 8px;
+            padding: 8px 6px;
             background: rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(4px);
-            font-size: 12px;
-            min-height: 100px;
+            font-size: 11px;
+            min-height: 80px;
         }
         
         .emergency-actions {
@@ -555,122 +555,124 @@ class WeatherAlertSystem {
             text-align: center;
         }
         
-        /* Emergency Header */
+        /* Emergency Header - COMPACT */
         .emergency-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .emergency-icon {
-            font-size: 28px;
+            font-size: 22px;
             animation: emergencyPulse 2s infinite ease-in-out;
             flex-shrink: 0;
             font-family: 'Material Icons';
         }
         
         .emergency-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1.2;
+            letter-spacing: 0.4px;
+            line-height: 1.1;
             flex: 1;
         }
         
-        /* Emergency Details Grid */
+        /* Emergency Details Grid - COMPACT */
         .emergency-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-            gap: 8px;
-            margin-bottom: 8px;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 6px;
+            margin-bottom: 6px;
         }
         
         .detail-item {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 1px;
         }
         
         .detail-label {
-            font-size: 10px;
+            font-size: 9px;
             opacity: 0.8;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
             font-weight: 500;
         }
         
         .detail-value {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
-            line-height: 1.2;
+            line-height: 1.1;
         }
         
-        /* Activity Recommendations */
+        /* Activity Recommendations - COMPACT */
         .activity-recommendations {
-            margin-top: 10px;
-            padding: 8px;
+            margin-top: 6px;
+            padding: 6px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
+            border-radius: 4px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .activity-title {
-            font-size: 11px;
+            font-size: 9px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
             opacity: 0.9;
         }
         
         .activity-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 6px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
         }
         
         .activity-item {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            text-align: center;
-            padding: 6px 4px;
+            text-align: left;
+            padding: 3px 4px;
             background: rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-            border-left: 3px solid;
-            min-height: 50px;
-            justify-content: center;
+            border-radius: 3px;
+            border-left: 2px solid;
+            min-height: 24px;
+            font-size: 8px;
         }
         
         .activity-icon-wrapper {
             position: relative;
-            margin-bottom: 4px;
+            margin-right: 4px;
+            flex-shrink: 0;
         }
         
         .activity-icon {
-            font-size: 16px;
+            font-size: 12px;
             font-family: 'Material Icons';
         }
         
         .activity-status {
             position: absolute;
             top: -2px;
-            right: -6px;
-            font-size: 12px;
+            right: -4px;
+            font-size: 8px;
             font-family: 'Material Icons';
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             border-radius: 50%;
             padding: 1px;
+            line-height: 1;
         }
         
         .activity-label {
-            font-size: 9px;
+            font-size: 8px;
             font-weight: 500;
             line-height: 1.1;
+            flex: 1;
         }
         
         /* Emergency Activity Colors for Different Alert Levels */
@@ -703,27 +705,27 @@ class WeatherAlertSystem {
             color: #fff;
         }
         
-        /* Weather Summary in Emergency Mode */
+        /* Weather Summary in Emergency Mode - COMPACT */
         .weather-summary .temp-display {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         
         .weather-summary .condition-text {
-            font-size: 11px;
+            font-size: 10px;
             opacity: 0.9;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         
         .weather-summary .location-text {
-            font-size: 10px;
+            font-size: 9px;
             opacity: 0.7;
         }
         
         .weather-summary .weather-icon-small {
-            font-size: 20px;
-            margin-bottom: 6px;
+            font-size: 16px;
+            margin-bottom: 4px;
             font-family: 'Material Icons';
         }
         
@@ -2094,7 +2096,7 @@ class EmergencyMonitoringSystem {
             airQuality: {
                 good: 50,
                 moderate: 100,
-                unhealthy: 150,
+                unhealthy: 150,    // Emergency starts here (AQI 151+)
                 dangerous: 300
             }
         };
@@ -2279,35 +2281,36 @@ class EmergencyMonitoringSystem {
         
         console.log('🧪 Emergency testing commands:');
         console.log('emergencyTest.testEarthquake(5.2, 45) - Test earthquake');
-        console.log('emergencyTest.testAirQuality(180) - Test air quality with activities');
+        console.log('emergencyTest.testAirQuality(180) - Test unhealthy air quality (151+ triggers emergency)');
         console.log('emergencyTest.testActivities() - Test all activity levels');
         console.log('emergencyTest.clearEmergency() - Clear emergency alert');
         console.log('emergencyTest.debug() - Show debug info');
+        console.log('💡 Air Quality Emergency Thresholds: Unhealthy 151+, Dangerous 301+');
     }
     
     // Test activity recommendations at different levels
     testActivityRecommendations() {
         console.log('🧪 Testing activity recommendations...');
         
-        // Test moderate air quality
+        // Test unhealthy air quality (now the minimum for emergency)
         setTimeout(() => {
-            console.log('Testing moderate AQI (85)');
-            this.testAirQualityAlert(85);
-        }, 1000);
-        
-        // Test unhealthy air quality
-        setTimeout(() => {
-            console.log('Testing unhealthy AQI (165)');
+            console.log('Testing unhealthy AQI (165) - minimum for emergency');
             this.testAirQualityAlert(165);
-        }, 5000);
+        }, 1000);
         
         // Test dangerous air quality
         setTimeout(() => {
             console.log('Testing dangerous AQI (285)');
             this.testAirQualityAlert(285);
+        }, 5000);
+        
+        // Test moderate (should NOT trigger emergency)
+        setTimeout(() => {
+            console.log('Testing moderate AQI (120) - should NOT trigger emergency');
+            this.testAirQualityAlert(120);
         }, 9000);
         
-        console.log('🧪 Activity test cycle started - will run for 12 seconds');
+        console.log('🧪 Activity test cycle started - Emergency threshold: AQI 151+');
     }
     
     async fetchAllEmergencyData() {
@@ -2455,13 +2458,13 @@ class EmergencyMonitoringSystem {
     evaluateAirQualityAlert(aqi, components) {
         let alertLevel = null;
         
+        // Only trigger emergency alerts for unhealthy and dangerous levels
         if (aqi >= this.emergencyThresholds.airQuality.dangerous) {
             alertLevel = 'dangerous';
-        } else if (aqi >= this.emergencyThresholds.airQuality.unhealthy) {
+        } else if (aqi > this.emergencyThresholds.airQuality.unhealthy) {
             alertLevel = 'unhealthy';
-        } else if (aqi >= this.emergencyThresholds.airQuality.moderate) {
-            alertLevel = 'moderate';
         }
+        // Note: No emergency alert for moderate (AQI 101-150) - only unhealthy (151+)
         
         if (alertLevel) {
             const baseProtocol = this.emergencyProtocols.airQuality[alertLevel];
