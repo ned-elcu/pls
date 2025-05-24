@@ -1,6 +1,6 @@
-// WEATHER-ALERT.JS - Municipal Weather Warning System for Poliția Locală Slobozia
-// Production Version with Emergency-First Design (Earthquakes + Air Quality)
-// Professional weather monitoring and safety advisory system
+// WEATHER-ALERT.JS v3.0 - Enhanced Municipal Weather Warning System for Poliția Locală Slobozia
+// Production Version with Emergency-First Design + Enhanced Accessibility
+// Professional weather monitoring and safety advisory system with improved UI/UX
 
 class WeatherAlertSystem {
     constructor() {
@@ -28,6 +28,20 @@ class WeatherAlertSystem {
         this.currentAlertLevel = 'normal';
         this.emergencyAlertActive = false;
         this.lockExpansion = false;
+        
+        // New accessibility features
+        this.accessibilityMode = localStorage.getItem('weather-accessibility-mode') === 'true';
+        this.fontScale = parseInt(localStorage.getItem('weather-font-scale')) || 1;
+        this.highContrast = localStorage.getItem('weather-high-contrast') === 'true';
+        
+        // Enhanced UI state management
+        this.uiState = {
+            position: 'bottom-right',
+            size: 'compact',
+            accessibility: this.accessibilityMode ? 'enhanced' : 'normal',
+            emergency: 'none',
+            locked: false
+        };
         
         // Municipal weather conditions with safety guidance
         this.weatherConditions = {
@@ -208,6 +222,9 @@ class WeatherAlertSystem {
             show: () => this.showWeatherAlert(),
             hide: () => this.hideWeatherAlert(),
             expand: () => this.toggleExpanded(),
+            toggleAccessibility: () => this.toggleAccessibilityMode(),
+            setFontScale: (scale) => this.setFontScale(scale),
+            toggleHighContrast: () => this.toggleHighContrast(),
             destroy: () => this.destroy(),
             debug: () => {
                 console.log('🔍 Weather System Debug Info:');
@@ -216,15 +233,77 @@ class WeatherAlertSystem {
                 console.log('Emergency system instance:', !!window.emergencySystem);
                 console.log('Weather initialized flag:', !!window.municipalWeatherSystemInitialized);
                 console.log('Emergency initialized flag:', !!window.emergencySystemInitialized);
+                console.log('UI State:', this.uiState);
+                console.log('Accessibility Mode:', this.accessibilityMode);
+                console.log('Font Scale:', this.fontScale);
+                console.log('High Contrast:', this.highContrast);
             }
         };
         
-        console.log('🏛️ Municipal Weather System - Testing Commands:');
+        console.log('🏛️ Municipal Weather System v3.0 - Enhanced Testing Commands:');
         console.log('weatherTest.cycleWeather() - Test all weather conditions');
         console.log('weatherTest.setWeather(code) - Set specific weather (0-99)');
         console.log('weatherTest.testAlert("extreme_heat") - Test alert types');
-        console.log('weatherTest.listCodes() - List all weather codes');
+        console.log('weatherTest.toggleAccessibility() - Toggle accessibility mode');
+        console.log('weatherTest.setFontScale(1-4) - Set font scale level');
+        console.log('weatherTest.toggleHighContrast() - Toggle high contrast');
         console.log('weatherTest.debug() - Show debug information');
+    }
+    
+    // New accessibility methods
+    toggleAccessibilityMode() {
+        this.accessibilityMode = !this.accessibilityMode;
+        this.uiState.accessibility = this.accessibilityMode ? 'enhanced' : 'normal';
+        localStorage.setItem('weather-accessibility-mode', this.accessibilityMode.toString());
+        this.updateAccessibilityFeatures();
+        console.log(`♿ Accessibility mode: ${this.accessibilityMode ? 'Enhanced' : 'Normal'}`);
+    }
+    
+    setFontScale(scale) {
+        this.fontScale = Math.max(1, Math.min(4, parseInt(scale)));
+        localStorage.setItem('weather-font-scale', this.fontScale.toString());
+        this.updateAccessibilityFeatures();
+        console.log(`🔤 Font scale: ${this.fontScale}x (${12 * this.fontScale}px base)`);
+    }
+    
+    toggleHighContrast() {
+        this.highContrast = !this.highContrast;
+        localStorage.setItem('weather-high-contrast', this.highContrast.toString());
+        this.updateAccessibilityFeatures();
+        console.log(`🎨 High contrast: ${this.highContrast ? 'Enabled' : 'Disabled'}`);
+    }
+    
+    updateAccessibilityFeatures() {
+        if (!this.weatherContainer) return;
+        
+        // Update container classes
+        this.weatherContainer.classList.toggle('accessibility-enhanced', this.accessibilityMode);
+        this.weatherContainer.classList.toggle('high-contrast', this.highContrast);
+        this.weatherContainer.classList.remove('font-scale-1', 'font-scale-2', 'font-scale-3', 'font-scale-4');
+        this.weatherContainer.classList.add(`font-scale-${this.fontScale}`);
+        
+        // Update button states
+        this.updateAccessibilityButton();
+    }
+    
+    updateAccessibilityButton() {
+        const accessButton = this.weatherContainer.querySelector('.accessibility-button');
+        if (accessButton) {
+            const icon = accessButton.querySelector('.button-icon');
+            const label = accessButton.querySelector('.button-label');
+            
+            if (this.accessibilityMode) {
+                icon.textContent = 'visibility';
+                label.textContent = 'NORMAL';
+                accessButton.setAttribute('aria-label', 'Comutare la modul normal');
+                accessButton.classList.add('active');
+            } else {
+                icon.textContent = 'visibility_off';
+                label.textContent = 'ACCESIBIL';
+                accessButton.setAttribute('aria-label', 'Activare mod accesibilitate');
+                accessButton.classList.remove('active');
+            }
+        }
     }
     
     // Test specific alert types
@@ -292,13 +371,16 @@ class WeatherAlertSystem {
         });
     }
     
-    // Initialize the municipal weather system
+    // Initialize the enhanced municipal weather system
     async init() {
-        this.injectMunicipalCSS();
-        await this.createWeatherContainer();
-        this.setupEventListeners();
+        this.injectEnhancedCSS();
+        await this.createEnhancedWeatherContainer();
+        this.setupEnhancedEventListeners();
         this.startMunicipalMonitoring();
         this.setupIntersectionObserver();
+        
+        // Apply saved accessibility settings
+        this.updateAccessibilityFeatures();
         
         // Delay appearance for smooth site loading
         setTimeout(() => {
@@ -315,6 +397,8 @@ class WeatherAlertSystem {
         
         // Activate emergency mode
         this.emergencyAlertActive = true;
+        this.uiState.emergency = protocol.level;
+        this.uiState.locked = true;
         
         // Create enhanced emergency alert with proper data structure
         const emergencyAlert = {
@@ -332,6 +416,7 @@ class WeatherAlertSystem {
         // Force expansion for all emergency alerts
         setTimeout(() => {
             this.isExpanded = true;
+            this.uiState.size = 'expanded';
             this.updateExpandedState();
             this.showSafetyRecommendations();
         }, 300);
@@ -388,6 +473,8 @@ class WeatherAlertSystem {
     clearEmergencyAlert() {
         this.emergencyAlertActive = false;
         this.lockExpansion = false;
+        this.uiState.emergency = 'none';
+        this.uiState.locked = false;
         
         // Return to normal weather display
         if (this.currentWeatherData) {
@@ -397,16 +484,16 @@ class WeatherAlertSystem {
         }
     }
     
-    // Inject municipal-appropriate CSS with emergency styling
-    injectMunicipalCSS() {
+    // Inject enhanced CSS with new features
+    injectEnhancedCSS() {
         if (document.getElementById('municipal-weather-css')) return;
         
         const css = `
-        /* Municipal Weather Warning System - Emergency-First Layout */
+        /* Enhanced Municipal Weather Warning System v3.0 - Bottom Right + Accessibility */
         .weather-alert-floating {
             position: fixed;
-            bottom: 50px;
-            left: 20px;
+            bottom: 20px;
+            right: 20px;
             width: 280px;
             min-height: 70px;
             background: rgba(26, 47, 95, 0.7);
@@ -438,6 +525,51 @@ class WeatherAlertSystem {
             pointer-events: none;
         }
         
+        /* Font Scale Classes */
+        .weather-alert-floating.font-scale-1 { font-size: 14px; }
+        .weather-alert-floating.font-scale-2 { font-size: 16px; }
+        .weather-alert-floating.font-scale-3 { font-size: 18px; }
+        .weather-alert-floating.font-scale-4 { font-size: 20px; }
+        
+        /* High Contrast Mode */
+        .weather-alert-floating.high-contrast {
+            background: #000000;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            box-shadow: 0 0 0 3px #ffff00;
+        }
+        
+        .weather-alert-floating.high-contrast .control-button {
+            background: #ffffff;
+            color: #000000;
+            border: 2px solid #ffff00;
+        }
+        
+        .weather-alert-floating.high-contrast .control-button:hover {
+            background: #ffff00;
+            color: #000000;
+        }
+        
+        /* Accessibility Enhanced Mode */
+        .weather-alert-floating.accessibility-enhanced {
+            min-height: 90px;
+        }
+        
+        .weather-alert-floating.accessibility-enhanced .control-button {
+            min-width: 44px;
+            min-height: 44px;
+            font-size: 16px;
+        }
+        
+        .weather-alert-floating.accessibility-enhanced .weather-icon {
+            font-size: 32px;
+        }
+        
+        .weather-alert-floating.accessibility-enhanced .temperature-display {
+            font-size: 24px;
+        }
+        
+        /* Alert Level Styling */
         .weather-alert-floating.advisory {
             border-left: 4px solid #ffa726;
             background: rgba(26, 47, 95, 0.8);
@@ -456,20 +588,20 @@ class WeatherAlertSystem {
             animation: criticalPulse 3s infinite;
         }
         
-        /* EMERGENCY ALERT STYLING - GRID LAYOUT */
+        /* COMPACT EMERGENCY ALERT STYLING */
         .weather-alert-floating.emergency_advisory,
         .weather-alert-floating.emergency_warning,
         .weather-alert-floating.emergency_critical {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            grid-template-areas: 
-                "emergency-content weather-summary"
-                "emergency-actions weather-summary"
-                "emergency-contact emergency-contact";
-            gap: 12px;
-            padding: 16px;
+            width: 280px;
+            min-height: 140px;
+            padding: 12px;
+        }
+        
+        .weather-alert-floating.emergency_advisory.expanded,
+        .weather-alert-floating.emergency_warning.expanded,
+        .weather-alert-floating.emergency_critical.expanded {
+            width: 340px;
             min-height: 180px;
-            width: 420px;
         }
         
         .weather-alert-floating.emergency_advisory {
@@ -509,71 +641,93 @@ class WeatherAlertSystem {
             width: 340px;
         }
         
-        .weather-alert-floating.emergency_advisory.expanded,
-        .weather-alert-floating.emergency_warning.expanded,
-        .weather-alert-floating.emergency_critical.expanded {
-            min-height: 220px;
-            width: 450px;
-        }
-        
-        /* Emergency Content Areas */
-        .emergency-content {
-            grid-area: emergency-content;
+        /* ENHANCED CONTROL PANEL */
+        .control-panel {
+            position: absolute;
+            top: 8px;
+            right: 8px;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
+            gap: 4px;
+            z-index: 10;
         }
         
-        .weather-summary {
-            grid-area: weather-summary;
+        .control-button {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            text-align: center;
-            padding: 12px 8px;
+            justify-content: center;
+            min-width: 32px;
+            min-height: 32px;
             background: rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(4px);
-            font-size: 12px;
-            min-height: 100px;
-        }
-        
-        .emergency-actions {
-            grid-area: emergency-actions;
-            margin-top: 8px;
-        }
-        
-        .emergency-contact-full {
-            grid-area: emergency-contact;
-            margin-top: 12px;
-            padding: 8px 12px;
-            background: rgba(0, 0, 0, 0.2);
             border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            text-align: center;
+            backdrop-filter: blur(4px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 10px;
+            padding: 2px;
         }
         
-        /* Emergency Header */
+        .control-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .control-button:active {
+            transform: scale(0.95);
+        }
+        
+        .control-button.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1a2f5f;
+            border-color: #ffff00;
+        }
+        
+        .button-icon {
+            font-family: 'Material Icons';
+            font-size: 16px;
+            line-height: 1;
+            margin-bottom: 1px;
+        }
+        
+        .button-label {
+            font-size: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            line-height: 1;
+        }
+        
+        /* Expand button states */
+        .expand-button.locked .button-icon {
+            color: #ffca28;
+        }
+        
+        .expand-button.locked .button-label {
+            color: #ffca28;
+        }
+        
+        /* COMPACT EMERGENCY LAYOUT */
         .emergency-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .emergency-icon {
-            font-size: 28px;
+            font-size: 24px;
             animation: emergencyPulse 2s infinite ease-in-out;
             flex-shrink: 0;
             font-family: 'Material Icons';
         }
         
         .emergency-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -581,149 +735,84 @@ class WeatherAlertSystem {
             flex: 1;
         }
         
-        /* Emergency Details Grid */
-        .emergency-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        
-        .detail-item {
+        /* Compact Emergency Data */
+        .emergency-data-compact {
             display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        
-        .detail-label {
-            font-size: 10px;
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            font-weight: 500;
-        }
-        
-        .detail-value {
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-        
-        /* Activity Recommendations */
-        .activity-recommendations {
-            margin-top: 10px;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .activity-title {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            justify-content: space-between;
             margin-bottom: 8px;
-            opacity: 0.9;
+            font-size: 12px;
         }
         
-        .activity-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 6px;
-        }
-        
-        .activity-item {
+        .emergency-data-compact .data-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            padding: 6px 4px;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-            border-left: 3px solid;
-            min-height: 50px;
-            justify-content: center;
         }
         
-        .activity-icon-wrapper {
-            position: relative;
-            margin-bottom: 4px;
-        }
-        
-        .activity-icon {
-            font-size: 16px;
-            font-family: 'Material Icons';
-        }
-        
-        .activity-status {
-            position: absolute;
-            top: -2px;
-            right: -6px;
-            font-size: 12px;
-            font-family: 'Material Icons';
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 50%;
-            padding: 1px;
-        }
-        
-        .activity-label {
+        .emergency-data-compact .data-label {
             font-size: 9px;
-            font-weight: 500;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .emergency-data-compact .data-value {
+            font-size: 13px;
+            font-weight: 600;
             line-height: 1.1;
         }
         
-        /* Emergency Activity Colors for Different Alert Levels */
-        .weather-alert-floating.emergency_advisory .activity-recommendations {
-            background: rgba(0, 0, 0, 0.1);
-            border-color: rgba(0, 0, 0, 0.2);
+        /* Compact Activity Row */
+        .activity-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 8px 0;
+            padding: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .weather-alert-floating.emergency_advisory .activity-title,
-        .weather-alert-floating.emergency_advisory .activity-label {
-            color: #000;
-        }
-        
-        .weather-alert-floating.emergency_advisory .activity-icon {
-            color: #333;
-        }
-        
-        .weather-alert-floating.emergency_advisory .activity-item {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .weather-alert-floating.emergency_warning .activity-recommendations,
-        .weather-alert-floating.emergency_critical .activity-recommendations {
-            background: rgba(0, 0, 0, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-        
-        .weather-alert-floating.emergency_warning .activity-icon,
-        .weather-alert-floating.emergency_critical .activity-icon {
-            color: #fff;
-        }
-        
-        /* Weather Summary in Emergency Mode */
-        .weather-summary .temp-display {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .weather-summary .condition-text {
+        .activity-item-compact {
+            display: flex;
+            align-items: center;
+            gap: 2px;
             font-size: 11px;
-            opacity: 0.9;
-            margin-bottom: 6px;
         }
         
-        .weather-summary .location-text {
-            font-size: 10px;
-            opacity: 0.7;
+        .activity-icon-small {
+            font-size: 14px;
+            font-family: 'Material Icons';
         }
         
-        .weather-summary .weather-icon-small {
-            font-size: 20px;
-            margin-bottom: 6px;
+        .activity-status-small {
+            font-size: 12px;
+            font-family: 'Material Icons';
+        }
+        
+        /* Activity status colors */
+        .status-ok { color: #4caf50; }
+        .status-limited { color: #ff9800; }
+        .status-caution { color: #ff5722; }
+        .status-no { color: #f44336; }
+        .status-danger { color: #9c27b0; }
+        
+        /* Weather Summary Compact */
+        .weather-summary-compact {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 6px 0;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        
+        .weather-icon-tiny {
+            font-size: 16px;
             font-family: 'Material Icons';
         }
         
@@ -731,6 +820,7 @@ class WeatherAlertSystem {
         .weather-content {
             padding: 12px 16px;
             position: relative;
+            padding-top: 40px; /* Space for control panel */
         }
         
         .weather-basic-info {
@@ -891,6 +981,7 @@ class WeatherAlertSystem {
             background: rgba(229, 57, 53, 0.2);
             border-radius: 4px;
             border: 1px solid rgba(229, 57, 53, 0.3);
+            text-align: center;
         }
         
         .emergency-contact.visible {
@@ -904,42 +995,10 @@ class WeatherAlertSystem {
             font-weight: 500;
         }
         
-        .expand-indicator {
-            position: absolute;
-            top: 55px;
-            right: 8px;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0.8;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            backdrop-filter: blur(4px);
-        }
-        
-        .expand-indicator:hover {
-            opacity: 1;
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-        }
-        
-        .expand-indicator i {
-            font-family: 'Material Icons';
-            font-size: 18px;
-            color: white;
-        }
-        
         .update-indicator {
             position: absolute;
             top: 8px;
-            right: 44px;
+            left: 8px;
             width: 6px;
             height: 6px;
             background: #4caf50;
@@ -1154,7 +1213,7 @@ class WeatherAlertSystem {
         @media (max-width: 768px) {
             .weather-alert-floating {
                 bottom: 10px;
-                left: 10px;
+                right: 10px;
                 width: 260px;
                 min-height: 60px;
             }
@@ -1167,23 +1226,20 @@ class WeatherAlertSystem {
             .weather-alert-floating.emergency_advisory,
             .weather-alert-floating.emergency_warning,
             .weather-alert-floating.emergency_critical {
-                width: 320px;
+                width: 260px;
                 max-width: 95vw;
-                grid-template-columns: 1fr;
-                grid-template-areas:
-                    "emergency-content"
-                    "weather-summary"
-                    "emergency-actions"
-                    "emergency-contact";
             }
             
-            .weather-summary {
-                padding: 8px;
-                min-height: auto;
+            .weather-alert-floating.emergency_advisory.expanded,
+            .weather-alert-floating.emergency_warning.expanded,
+            .weather-alert-floating.emergency_critical.expanded {
+                width: 300px;
+                max-width: 95vw;
             }
             
             .weather-content {
                 padding: 10px 12px;
+                padding-top: 36px;
             }
             
             .weather-icon-container {
@@ -1200,29 +1256,29 @@ class WeatherAlertSystem {
                 font-size: 18px;
             }
             
-            /* Mobile Activity Grid */
-            .activity-grid {
-                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-                gap: 4px;
+            .control-button {
+                min-width: 28px;
+                min-height: 28px;
             }
             
-            .activity-item {
-                padding: 4px 2px;
-                min-height: 40px;
-            }
-            
-            .activity-icon {
+            .button-icon {
                 font-size: 14px;
             }
             
-            .activity-status {
-                font-size: 10px;
-                top: -1px;
-                right: -4px;
+            .button-label {
+                font-size: 7px;
             }
             
-            .activity-label {
-                font-size: 8px;
+            .activity-row {
+                gap: 2px;
+            }
+            
+            .activity-icon-small {
+                font-size: 12px;
+            }
+            
+            .activity-status-small {
+                font-size: 10px;
             }
         }
         
@@ -1242,6 +1298,17 @@ class WeatherAlertSystem {
                 transition: opacity 0.3s ease !important;
             }
         }
+        
+        /* Focus indicators for keyboard navigation */
+        .control-button:focus {
+            outline: 2px solid #ffff00;
+            outline-offset: 2px;
+        }
+        
+        .weather-alert-floating:focus {
+            outline: 2px solid #ffff00;
+            outline-offset: 2px;
+        }
         `;
         
         const styleEl = document.createElement('style');
@@ -1250,8 +1317,8 @@ class WeatherAlertSystem {
         document.head.appendChild(styleEl);
     }
     
-    // Create municipal weather container with emergency layout support
-    async createWeatherContainer() {
+    // Create enhanced weather container with new control panel
+    async createEnhancedWeatherContainer() {
         this.weatherContainer = document.createElement('div');
         this.weatherContainer.className = 'weather-alert-floating';
         this.weatherContainer.setAttribute('role', 'complementary');
@@ -1259,6 +1326,23 @@ class WeatherAlertSystem {
         this.weatherContainer.setAttribute('tabindex', '0');
         
         this.weatherContainer.innerHTML = `
+            <div class="control-panel">
+                <button class="control-button accessibility-button" 
+                        type="button" 
+                        aria-label="Activare mod accesibilitate" 
+                        title="Comutare mod accesibilitate">
+                    <i class="material-icons button-icon">visibility_off</i>
+                    <span class="button-label">ACCESIBIL</span>
+                </button>
+                <button class="control-button expand-button" 
+                        type="button" 
+                        aria-label="Expandează informații de siguranță" 
+                        title="Expandează/minimizează">
+                    <i class="material-icons button-icon">expand_more</i>
+                    <span class="button-label">DETALII</span>
+                </button>
+            </div>
+            
             <div class="weather-content">
                 <div class="alert-header" role="alert" aria-live="assertive">
                     <h3 class="alert-title"></h3>
@@ -1287,9 +1371,6 @@ class WeatherAlertSystem {
                     </p>
                 </div>
                 
-                <div class="expand-indicator" role="button" aria-label="Expandează informații de siguranță" tabindex="0">
-                    <i class="material-icons">expand_more</i>
-                </div>
                 <div class="update-indicator"></div>
             </div>
         `;
@@ -1297,8 +1378,8 @@ class WeatherAlertSystem {
         document.body.appendChild(this.weatherContainer);
     }
     
-    // Create emergency layout
-    createEmergencyLayout(emergencyData) {
+    // Create compact emergency layout
+    createCompactEmergencyLayout(emergencyData) {
         // Add error handling for undefined data
         if (!emergencyData) {
             console.error('❌ Emergency data is undefined');
@@ -1313,30 +1394,26 @@ class WeatherAlertSystem {
         }
         
         let emergencyIcon = 'warning';
-        let detailsHTML = '';
+        let dataHTML = '';
         let activitiesHTML = '';
         
-        // Determine icon and details based on emergency type
+        // Determine icon and data based on emergency type
         if (emergencyType === 'earthquake') {
             emergencyIcon = 'warning';
             if (data) {
-                detailsHTML = `
-                    <div class="emergency-details">
-                        <div class="detail-item">
-                            <div class="detail-label">Magnitudine</div>
-                            <div class="detail-value">M${data.magnitude || 'N/A'}</div>
+                dataHTML = `
+                    <div class="emergency-data-compact">
+                        <div class="data-item">
+                            <div class="data-label">Magnitudine</div>
+                            <div class="data-value">M${data.magnitude || 'N/A'}</div>
                         </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Distanță</div>
-                            <div class="detail-value">${data.distance || 'N/A'} km</div>
+                        <div class="data-item">
+                            <div class="data-label">Distanță</div>
+                            <div class="data-value">${data.distance || 'N/A'} km</div>
                         </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Locația</div>
-                            <div class="detail-value">${data.location || 'N/A'}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Ora</div>
-                            <div class="detail-value">${data.time || 'N/A'}</div>
+                        <div class="data-item">
+                            <div class="data-label">Timp</div>
+                            <div class="data-value">${data.time || 'N/A'}</div>
                         </div>
                     </div>
                 `;
@@ -1344,97 +1421,79 @@ class WeatherAlertSystem {
         } else if (emergencyType === 'airQuality') {
             emergencyIcon = 'masks';
             if (data) {
-                detailsHTML = `
-                    <div class="emergency-details">
-                        <div class="detail-item">
-                            <div class="detail-label">AQI</div>
-                            <div class="detail-value">${data.aqi || 'N/A'}</div>
+                dataHTML = `
+                    <div class="emergency-data-compact">
+                        <div class="data-item">
+                            <div class="data-label">AQI</div>
+                            <div class="data-value">${data.aqi || 'N/A'}</div>
                         </div>
-                        <div class="detail-item">
-                            <div class="detail-label">PM2.5</div>
-                            <div class="detail-value">${data.pm25 || 'N/A'} μg/m³</div>
+                        <div class="data-item">
+                            <div class="data-label">PM2.5</div>
+                            <div class="data-value">${data.pm25 || 'N/A'} μg/m³</div>
                         </div>
-                        <div class="detail-item">
-                            <div class="detail-label">PM10</div>
-                            <div class="detail-value">${data.pm10 || 'N/A'} μg/m³</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Nivel</div>
-                            <div class="detail-value">${data.aqi ? this.getAQILevel(data.aqi) : 'N/A'}</div>
+                        <div class="data-item">
+                            <div class="data-label">Nivel</div>
+                            <div class="data-value">${data.aqi ? this.getAQILevel(data.aqi) : 'N/A'}</div>
                         </div>
                     </div>
                 `;
             }
             
-            // Add activity recommendations for air quality
+            // Add compact activity recommendations for air quality
             if (activities) {
-                activitiesHTML = this.createActivityRecommendations(activities);
+                activitiesHTML = this.createCompactActivityRow(activities);
             }
         }
         
         // Get current weather for summary
-        const weatherSummary = this.createWeatherSummary();
+        const weatherSummary = this.createCompactWeatherSummary();
         
         return `
-            <div class="emergency-content">
+            <div class="control-panel">
+                <button class="control-button accessibility-button" 
+                        type="button" 
+                        aria-label="Activare mod accesibilitate" 
+                        title="Comutare mod accesibilitate">
+                    <i class="material-icons button-icon">visibility_off</i>
+                    <span class="button-label">ACCESIBIL</span>
+                </button>
+                <button class="control-button expand-button locked" 
+                        type="button" 
+                        aria-label="Blocat - alertă de urgență" 
+                        title="Alertă de urgență - auto-expandată">
+                    <i class="material-icons button-icon">lock</i>
+                    <span class="button-label">BLOCAT</span>
+                </button>
+            </div>
+            
+            <div style="padding: 40px 12px 12px 12px;">
                 <div class="emergency-header">
                     <i class="material-icons emergency-icon">${emergencyIcon}</i>
                     <div class="emergency-title">${title}</div>
                 </div>
-                ${detailsHTML}
+                
+                ${dataHTML}
                 ${activitiesHTML}
-            </div>
-            
-            <div class="weather-summary">
                 ${weatherSummary}
-            </div>
-            
-            <div class="emergency-actions">
+                
                 <div class="safety-recommendations visible" role="region" aria-label="Recomandări de siguranță">
                     <ul class="safety-list"></ul>
                 </div>
-            </div>
-            
-            <div class="emergency-contact-full">
-                <p class="emergency-text">
-                    <i class="material-icons" style="font-size: 14px; vertical-align: middle; margin-right: 4px;">phone</i>
-                    Urgențe: 112 | Poliția Locală: (0243) 955
-                </p>
+                
+                <div class="emergency-contact visible">
+                    <p class="emergency-text">
+                        <i class="material-icons" style="font-size: 12px; vertical-align: middle; margin-right: 4px;">phone</i>
+                        Urgențe: 112 | Poliția Locală: (0243) 955
+                    </p>
+                </div>
+                
+                <div class="update-indicator"></div>
             </div>
         `;
     }
     
-    // Create error layout for missing data
-    createErrorLayout() {
-        return `
-            <div class="emergency-content">
-                <div class="emergency-header">
-                    <i class="material-icons emergency-icon">error</i>
-                    <div class="emergency-title">EROARE DATE URGENȚĂ</div>
-                </div>
-                <div class="emergency-details">
-                    <div class="detail-item">
-                        <div class="detail-label">Status</div>
-                        <div class="detail-value">Date indisponibile</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="weather-summary">
-                ${this.createWeatherSummary()}
-            </div>
-            
-            <div class="emergency-contact-full">
-                <p class="emergency-text">
-                    <i class="material-icons" style="font-size: 14px; vertical-align: middle; margin-right: 4px;">phone</i>
-                    Urgențe: 112 | Poliția Locală: (0243) 955
-                </p>
-            </div>
-        `;
-    }
-    
-    // Create activity recommendations for air quality
-    createActivityRecommendations(activities) {
+    // Create compact activity row for air quality
+    createCompactActivityRow(activities) {
         if (!activities || typeof activities !== 'object') return '';
         
         const activityIcons = {
@@ -1446,23 +1505,6 @@ class WeatherAlertSystem {
             windows_open: 'sensor_window'
         };
         
-        const activityLabels = {
-            outdoor_sports: 'Sport exterior',
-            bring_baby_out: 'Copii afară',
-            eating_outside: 'Mâncare afară',
-            jogging: 'Alergare',
-            cycling: 'Ciclism',
-            windows_open: 'Ferestre deschise'
-        };
-        
-        const statusColors = {
-            ok: '#4caf50',      // Green
-            limited: '#ff9800',  // Orange
-            caution: '#ff5722',  // Red-orange
-            no: '#f44336',       // Red
-            danger: '#9c27b0'    // Purple
-        };
-        
         const statusIcons = {
             ok: 'check_circle',
             limited: 'warning',
@@ -1471,37 +1513,32 @@ class WeatherAlertSystem {
             danger: 'dangerous'
         };
         
-        let activitiesHtml = '<div class="activity-recommendations"><div class="activity-title">Recomandări activități:</div><div class="activity-grid">';
+        let activitiesHtml = '<div class="activity-row">';
         
         Object.entries(activities).forEach(([activity, status]) => {
             const icon = activityIcons[activity] || 'help';
-            const label = activityLabels[activity] || activity;
-            const color = statusColors[status] || '#666';
             const statusIcon = statusIcons[status] || 'help';
             
             activitiesHtml += `
-                <div class="activity-item" style="border-left: 3px solid ${color};">
-                    <div class="activity-icon-wrapper">
-                        <i class="material-icons activity-icon">${icon}</i>
-                        <i class="material-icons activity-status" style="color: ${color};">${statusIcon}</i>
-                    </div>
-                    <div class="activity-label">${label}</div>
+                <div class="activity-item-compact">
+                    <i class="material-icons activity-icon-small">${icon}</i>
+                    <i class="material-icons activity-status-small status-${status}">${statusIcon}</i>
                 </div>
             `;
         });
         
-        activitiesHtml += '</div></div>';
+        activitiesHtml += '</div>';
         return activitiesHtml;
     }
     
-    // Create weather summary for emergency layout
-    createWeatherSummary() {
+    // Create compact weather summary for emergency layout
+    createCompactWeatherSummary() {
         if (!this.currentWeatherData || !this.currentWeatherData.current) {
             return `
-                <div class="weather-icon-small material-icons">wb_sunny</div>
-                <div class="temp-display">--°C</div>
-                <div class="condition-text">Se încarcă...</div>
-                <div class="location-text">Slobozia</div>
+                <div class="weather-summary-compact">
+                    <i class="material-icons weather-icon-tiny">wb_sunny</i>
+                    <span>--°C | Slobozia</span>
+                </div>
             `;
         }
         
@@ -1513,10 +1550,55 @@ class WeatherAlertSystem {
         };
         
         return `
-            <div class="weather-icon-small material-icons">${condition.icon}</div>
-            <div class="temp-display">${Math.round(current.temperature_2m)}°C</div>
-            <div class="condition-text">${condition.name}</div>
-            <div class="location-text">Slobozia</div>
+            <div class="weather-summary-compact">
+                <i class="material-icons weather-icon-tiny">${condition.icon}</i>
+                <span>${Math.round(current.temperature_2m)}°C | ${condition.name} | Slobozia</span>
+            </div>
+        `;
+    }
+    
+    // Create error layout for missing data
+    createErrorLayout() {
+        return `
+            <div class="control-panel">
+                <button class="control-button accessibility-button" 
+                        type="button" 
+                        aria-label="Activare mod accesibilitate" 
+                        title="Comutare mod accesibilitate">
+                    <i class="material-icons button-icon">visibility_off</i>
+                    <span class="button-label">ACCESIBIL</span>
+                </button>
+                <button class="control-button expand-button" 
+                        type="button" 
+                        aria-label="Expandează informații" 
+                        title="Expandează/minimizează">
+                    <i class="material-icons button-icon">error</i>
+                    <span class="button-label">EROARE</span>
+                </button>
+            </div>
+            
+            <div style="padding: 40px 12px 12px 12px;">
+                <div class="emergency-header">
+                    <i class="material-icons emergency-icon">error</i>
+                    <div class="emergency-title">EROARE DATE URGENȚĂ</div>
+                </div>
+                
+                <div class="emergency-data-compact">
+                    <div class="data-item">
+                        <div class="data-label">Status</div>
+                        <div class="data-value">Date indisponibile</div>
+                    </div>
+                </div>
+                
+                ${this.createCompactWeatherSummary()}
+                
+                <div class="emergency-contact visible">
+                    <p class="emergency-text">
+                        <i class="material-icons" style="font-size: 12px; vertical-align: middle; margin-right: 4px;">phone</i>
+                        Urgențe: 112 | Poliția Locală: (0243) 955
+                    </p>
+                </div>
+            </div>
         `;
     }
     
@@ -1529,30 +1611,34 @@ class WeatherAlertSystem {
         return 'Periculos';
     }
     
-    // Setup municipal event listeners
-    setupEventListeners() {
-        // Main container click
+    // Setup enhanced event listeners
+    setupEnhancedEventListeners() {
+        // Main container click (but not on control panel)
         this.weatherContainer.addEventListener('click', (e) => {
-            if (!e.target.closest('.expand-indicator') && !this.lockExpansion) {
+            if (!e.target.closest('.control-panel') && !this.lockExpansion) {
                 this.toggleExpanded();
             }
         });
         
-        // Expand indicator
-        const expandIndicator = this.weatherContainer.querySelector('.expand-indicator');
-        if (expandIndicator) {
-            expandIndicator.addEventListener('click', (e) => {
+        // Accessibility button
+        const accessibilityButton = this.weatherContainer.querySelector('.accessibility-button');
+        if (accessibilityButton) {
+            accessibilityButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleAccessibilityMode();
+            });
+        }
+        
+        // Expand button
+        const expandButton = this.weatherContainer.querySelector('.expand-button');
+        if (expandButton) {
+            expandButton.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (!this.lockExpansion) {
                     this.toggleExpanded();
-                }
-            });
-            
-            expandIndicator.addEventListener('keydown', (e) => {
-                if ((e.key === 'Enter' || e.key === ' ') && !this.lockExpansion) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.toggleExpanded();
+                } else {
+                    // During emergency, allow temporary minimize
+                    this.temporaryMinimize();
                 }
             });
         }
@@ -1560,15 +1646,26 @@ class WeatherAlertSystem {
         // Keyboard support
         this.weatherContainer.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                if (!this.lockExpansion) {
+                if (e.target.classList.contains('accessibility-button')) {
+                    e.preventDefault();
+                    this.toggleAccessibilityMode();
+                } else if (e.target.classList.contains('expand-button')) {
+                    e.preventDefault();
+                    if (!this.lockExpansion) {
+                        this.toggleExpanded();
+                    } else {
+                        this.temporaryMinimize();
+                    }
+                } else if (!this.lockExpansion) {
+                    e.preventDefault();
                     this.toggleExpanded();
                 }
             } else if (e.key === 'Escape') {
                 if (this.emergencyAlertActive) {
-                    this.clearEmergencyAlert();
+                    this.temporaryMinimize();
                 } else {
                     this.isExpanded = false;
+                    this.uiState.size = 'compact';
                     this.updateExpandedState();
                     this.hideSafetyRecommendations();
                 }
@@ -1583,6 +1680,29 @@ class WeatherAlertSystem {
         window.addEventListener('resize', () => {
             this.checkFooterOverlap();
         });
+    }
+    
+    // Temporary minimize during emergency
+    temporaryMinimize() {
+        if (!this.emergencyAlertActive) return;
+        
+        this.isExpanded = false;
+        this.uiState.size = 'compact';
+        this.updateExpandedState();
+        this.hideSafetyRecommendations();
+        
+        // Re-expand after 5 minutes during emergency
+        setTimeout(() => {
+            if (this.emergencyAlertActive) {
+                this.isExpanded = true;
+                this.uiState.size = 'expanded';
+                this.updateExpandedState();
+                this.showSafetyRecommendations();
+                console.log('🚨 Emergency alert re-expanded automatically');
+            }
+        }, 5 * 60 * 1000); // 5 minutes
+        
+        console.log('🚨 Emergency alert minimized temporarily (will re-expand in 5 minutes)');
     }
     
     // Check footer overlap for municipal design
@@ -1641,6 +1761,7 @@ class WeatherAlertSystem {
         if (this.lockExpansion) return;
         
         this.isExpanded = !this.isExpanded;
+        this.uiState.size = this.isExpanded ? 'expanded' : 'compact';
         this.updateExpandedState();
         
         // Properly handle safety recommendations visibility
@@ -1653,13 +1774,32 @@ class WeatherAlertSystem {
         console.log(`🏛️ Municipal weather ${this.isExpanded ? 'expanded' : 'collapsed'}`);
     }
     
-    // Update expanded state
+    // Update expanded state with enhanced button management
     updateExpandedState() {
         if (this.weatherContainer) {
             this.weatherContainer.classList.toggle('expanded', this.isExpanded);
-            const expandIcon = this.weatherContainer.querySelector('.expand-indicator i');
-            if (expandIcon) {
-                expandIcon.textContent = this.isExpanded ? 'expand_less' : 'expand_more';
+            
+            const expandButton = this.weatherContainer.querySelector('.expand-button');
+            if (expandButton) {
+                const icon = expandButton.querySelector('.button-icon');
+                const label = expandButton.querySelector('.button-label');
+                
+                if (this.lockExpansion) {
+                    icon.textContent = 'lock';
+                    label.textContent = 'BLOCAT';
+                    expandButton.setAttribute('aria-label', 'Blocat - alertă de urgență');
+                    expandButton.classList.add('locked');
+                } else if (this.isExpanded) {
+                    icon.textContent = 'expand_less';
+                    label.textContent = 'ASCUNDE';
+                    expandButton.setAttribute('aria-label', 'Minimizează informații de siguranță');
+                    expandButton.classList.remove('locked');
+                } else {
+                    icon.textContent = 'expand_more';
+                    label.textContent = 'DETALII';
+                    expandButton.setAttribute('aria-label', 'Expandează informații de siguranță');
+                    expandButton.classList.remove('locked');
+                }
             }
         }
     }
@@ -1707,7 +1847,7 @@ class WeatherAlertSystem {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'User-Agent': 'Politia-Locala-Slobozia-Municipal-Weather/1.0'
+                    'User-Agent': 'Politia-Locala-Slobozia-Municipal-Weather/3.0'
                 },
                 cache: 'no-cache'
             });
@@ -1789,9 +1929,9 @@ class WeatherAlertSystem {
         
         // Update weather summary in emergency layout if active
         if (this.emergencyAlertActive) {
-            const weatherSummary = this.weatherContainer.querySelector('.weather-summary');
+            const weatherSummary = this.weatherContainer.querySelector('.weather-summary-compact');
             if (weatherSummary) {
-                weatherSummary.innerHTML = this.createWeatherSummary();
+                weatherSummary.innerHTML = this.createCompactWeatherSummary().replace('<div class="weather-summary-compact">', '').replace('</div>', '');
             }
         }
         
@@ -1846,7 +1986,7 @@ class WeatherAlertSystem {
         return priorities[level] || 0;
     }
     
-    // Display municipal safety alert (enhanced for emergency layout)
+    // Display municipal safety alert (enhanced for compact emergency layout)
     displaySafetyAlert(alert) {
         if (!this.weatherContainer) return;
         
@@ -1864,18 +2004,21 @@ class WeatherAlertSystem {
             };
             
             try {
-                // Switch to emergency layout
-                this.weatherContainer.innerHTML = this.createEmergencyLayout(emergencyLayoutData);
+                // Switch to compact emergency layout
+                this.weatherContainer.innerHTML = this.createCompactEmergencyLayout(emergencyLayoutData);
                 
                 // Update container class for emergency
                 this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
                 
-                // Re-setup expand indicator event (since we replaced innerHTML)
-                this.setupExpandIndicatorEvents();
+                // Re-setup event listeners (since we replaced innerHTML)
+                this.setupControlPanelEvents();
                 
-                console.log('✅ Emergency layout created successfully');
+                // Apply accessibility settings
+                this.updateAccessibilityFeatures();
+                
+                console.log('✅ Compact emergency layout created successfully');
             } catch (error) {
-                console.error('❌ Error creating emergency layout:', error);
+                console.error('❌ Error creating compact emergency layout:', error);
                 // Fallback to regular alert display
                 this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
             }
@@ -1904,7 +2047,7 @@ class WeatherAlertSystem {
         }
         
         // Show emergency contact for critical alerts
-        const emergencyContact = this.weatherContainer.querySelector('.emergency-contact, .emergency-contact-full');
+        const emergencyContact = this.weatherContainer.querySelector('.emergency-contact');
         if (emergencyContact) {
             emergencyContact.classList.add('visible');
         }
@@ -1913,28 +2056,34 @@ class WeatherAlertSystem {
         if ((alert.level === 'warning' || alert.level === 'critical' || alert.emergency) && !this.isExpanded) {
             setTimeout(() => {
                 this.isExpanded = true;
+                this.uiState.size = 'expanded';
                 this.updateExpandedState();
                 this.showSafetyRecommendations();
             }, 300);
         }
     }
     
-    // Setup expand indicator events (used after innerHTML replacement)
-    setupExpandIndicatorEvents() {
-        const expandIndicator = this.weatherContainer.querySelector('.expand-indicator');
-        if (expandIndicator) {
-            expandIndicator.addEventListener('click', (e) => {
+    // Setup control panel events (used after innerHTML replacement)
+    setupControlPanelEvents() {
+        // Accessibility button
+        const accessibilityButton = this.weatherContainer.querySelector('.accessibility-button');
+        if (accessibilityButton) {
+            accessibilityButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleAccessibilityMode();
+            });
+        }
+        
+        // Expand button
+        const expandButton = this.weatherContainer.querySelector('.expand-button');
+        if (expandButton) {
+            expandButton.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (!this.lockExpansion) {
                     this.toggleExpanded();
-                }
-            });
-            
-            expandIndicator.addEventListener('keydown', (e) => {
-                if ((e.key === 'Enter' || e.key === ' ') && !this.lockExpansion) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.toggleExpanded();
+                } else {
+                    // During emergency, allow temporary minimize
+                    this.temporaryMinimize();
                 }
             });
         }
@@ -1945,11 +2094,13 @@ class WeatherAlertSystem {
         if (!this.weatherContainer) return;
         
         this.currentAlertLevel = 'normal';
+        this.uiState.emergency = 'none';
         
         // Reset to normal layout if we were in emergency mode
         if (this.emergencyAlertActive) {
-            this.createWeatherContainer().then(() => {
-                this.setupEventListeners();
+            this.createEnhancedWeatherContainer().then(() => {
+                this.setupEnhancedEventListeners();
+                this.updateAccessibilityFeatures();
                 if (this.currentWeatherData) {
                     this.updateWeatherDisplay(this.currentWeatherData);
                 }
@@ -1972,6 +2123,7 @@ class WeatherAlertSystem {
         // Reset expansion state when clearing alerts (only if not locked)
         if (this.isExpanded && !this.lockExpansion) {
             this.isExpanded = false;
+            this.uiState.size = 'compact';
             this.updateExpandedState();
         }
         
@@ -2028,7 +2180,7 @@ class WeatherAlertSystem {
         if (this.weatherContainer) {
             setTimeout(() => {
                 this.weatherContainer.classList.add('visible');
-                console.log('🏛️ Municipal weather system activated');
+                console.log('🏛️ Enhanced Municipal weather system v3.0 activated');
             }, 100);
         }
     }
@@ -2053,7 +2205,7 @@ class WeatherAlertSystem {
         delete window.weatherTest;
         delete window.municipalWeatherSystem;
         delete window.municipalWeatherSystemInitialized;
-        console.log('🏛️ Municipal weather system deactivated');
+        console.log('🏛️ Enhanced Municipal weather system deactivated');
     }
 }
 
@@ -2358,7 +2510,7 @@ class EmergencyMonitoringSystem {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'User-Agent': 'Politia-Locala-Slobozia-Emergency/1.0'
+                'User-Agent': 'Politia-Locala-Slobozia-Emergency/3.0'
             }
         });
         
@@ -2571,7 +2723,7 @@ class EmergencyMonitoringSystem {
 }
 
 // PRODUCTION INITIALIZATION
-// Initialize Municipal Weather Warning System
+// Initialize Enhanced Municipal Weather Warning System v3.0
 window.WeatherAlertSystem = WeatherAlertSystem;
 
 // Create only ONE instance of the weather system
@@ -2600,7 +2752,9 @@ setTimeout(() => {
 }, 5000);
 
 // Production logging
-console.log('🏛️ Municipal Weather System v2.0 - Production Ready');
+console.log('🏛️ Enhanced Municipal Weather System v3.0 - Production Ready');
 console.log('📍 Location: Slobozia, Ialomița County, Romania');
 console.log('🚨 Emergency monitoring: Earthquakes + Air Quality');
+console.log('♿ Accessibility features: High contrast, font scaling, enhanced UI');
+console.log('📱 Mobile optimized with bottom-right positioning');
 console.log('📋 Test commands: weatherTest.debug() | emergencyTest.debug()');
