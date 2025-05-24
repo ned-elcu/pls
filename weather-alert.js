@@ -403,7 +403,7 @@ class WeatherAlertSystem {
         /* Municipal Weather Warning System - Professional Styling with Emergency Alerts */
         .weather-alert-floating {
             position: fixed;
-            bottom: 20px;
+            bottom: 50px;
             left: 20px;
             width: 280px;
             min-height: 70px;
