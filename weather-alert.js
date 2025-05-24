@@ -8,7 +8,19 @@ class WeatherAlertSystem {
         if (window.municipalWeatherSystemInitialized) {
             console.warn('⚠️ Weather system already initialized');
             return window.municipalWeatherSystem;
-        }
+            console.log('🏛️ Municipal Weather System - Testing Commands:');
+        console.log('weatherTest.cycleWeather() - Test all weather conditions');
+        console.log('weatherTest.setWeather(code) - Set specific weather (0-99)');
+        console.log('weatherTest.testAlert("extreme_heat") - Test alert types');
+        console.log('weatherTest.testDangerousWeather() - Test auto-expanding dangerous weather');
+        console.log('weatherTest.toggle() - Toggle minimize/maximize');
+        console.log('weatherTest.expand() - Expand widget');
+        console.log('weatherTest.minimize() - Minimize widget');
+        console.log('weatherTest.debug() - Show debug information');
+        console.log('💡 Auto-expand: Emergency alerts + Critical weather + Dangerous conditions');
+        console.log('🌩️ Dangerous weather: Fog(45), Violent showers(82), Hailstorms(96,99)');
+        console.log('📍 Position: Bottom-right corner');
+    }
         
         window.municipalWeatherSystemInitialized = true;
         
@@ -220,6 +232,13 @@ class WeatherAlertSystem {
                 else this.hideSafetyRecommendations();
             },
             toggle: () => this.toggleExpanded(),
+            testDangerousWeather: () => {
+                console.log('🌩️ Testing dangerous weather conditions that auto-expand...');
+                setTimeout(() => this.setTestWeather(45), 1000);  // Fog
+                setTimeout(() => this.setTestWeather(82), 4000);  // Violent showers  
+                setTimeout(() => this.setTestWeather(96), 7000);  // Hailstorm
+                setTimeout(() => this.setTestWeather(99), 10000); // Severe hailstorm
+            },
             destroy: () => this.destroy(),
             debug: () => {
                 console.log('🔍 Weather System Debug Info:');
@@ -231,6 +250,11 @@ class WeatherAlertSystem {
                 console.log('Is expanded:', this.isExpanded);
                 console.log('Emergency active:', this.emergencyAlertActive);
                 console.log('Current alert level:', this.currentAlertLevel);
+                if (this.currentWeatherData) {
+                    const code = this.currentWeatherData.current?.weather_code;
+                    console.log('Current weather code:', code);
+                    console.log('Is dangerous condition:', this.isDangerousWeatherCondition());
+                }
             }
         };
         
@@ -238,11 +262,13 @@ class WeatherAlertSystem {
         console.log('weatherTest.cycleWeather() - Test all weather conditions');
         console.log('weatherTest.setWeather(code) - Set specific weather (0-99)');
         console.log('weatherTest.testAlert("extreme_heat") - Test alert types');
+        console.log('weatherTest.testDangerousWeather() - Test auto-expanding dangerous weather');
         console.log('weatherTest.toggle() - Toggle minimize/maximize');
         console.log('weatherTest.expand() - Expand widget');
         console.log('weatherTest.minimize() - Minimize widget');
         console.log('weatherTest.debug() - Show debug information');
-        console.log('💡 Auto-expand: Emergency alerts + Critical weather alerts');
+        console.log('💡 Auto-expand: Emergency alerts + Critical weather + Dangerous conditions');
+        console.log('🌩️ Dangerous weather: Fog(45), Violent showers(82), Hailstorms(96,99)');
         console.log('📍 Position: Bottom-right corner');
     }
     
@@ -1966,6 +1992,26 @@ class WeatherAlertSystem {
         return priorities[level] || 0;
     }
     
+    // Check if current weather condition is dangerous and should auto-expand
+    isDangerousWeatherCondition() {
+        if (!this.currentWeatherData || !this.currentWeatherData.current) {
+            return false;
+        }
+        
+        const weatherCode = parseInt(this.currentWeatherData.current.weather_code) || 0;
+        
+        // Dangerous weather codes that should auto-expand even at 'warning' level:
+        const dangerousWeatherCodes = [
+            45,  // Ceață (Fog) - visibility issues
+            48,  // Ceață cu chiciură (Fog with rime) - visibility + ice
+            82,  // Averse violente (Violent showers) - heavy rain
+            96,  // Furtună cu grindină (Hailstorm) - severe storm
+            99   // Furtună severă cu grindină (Severe hailstorm) - severe storm
+        ];
+        
+        return dangerousWeatherCodes.includes(weatherCode);
+    }
+    
     // Display municipal safety alert (enhanced for emergency layout)
     displaySafetyAlert(alert) {
         if (!this.weatherContainer) return;
@@ -2022,8 +2068,11 @@ class WeatherAlertSystem {
             this.isExpanded = false;
             this.updateExpandedState();
             
-            // Auto-expand for critical weather alerts (but not advisories/warnings)
-            if (alert.level === 'critical') {
+            // Auto-expand for dangerous weather conditions
+            const shouldAutoExpand = alert.level === 'critical' || 
+                                   alert.level === 'warning' && this.isDangerousWeatherCondition();
+            
+            if (shouldAutoExpand) {
                 setTimeout(() => {
                     this.isExpanded = true;
                     this.updateExpandedState();
