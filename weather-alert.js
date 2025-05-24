@@ -8,19 +8,7 @@ class WeatherAlertSystem {
         if (window.municipalWeatherSystemInitialized) {
             console.warn('⚠️ Weather system already initialized');
             return window.municipalWeatherSystem;
-            console.log('🏛️ Municipal Weather System - Testing Commands:');
-        console.log('weatherTest.cycleWeather() - Test all weather conditions');
-        console.log('weatherTest.setWeather(code) - Set specific weather (0-99)');
-        console.log('weatherTest.testAlert("extreme_heat") - Test alert types');
-        console.log('weatherTest.testDangerousWeather() - Test auto-expanding dangerous weather');
-        console.log('weatherTest.toggle() - Toggle minimize/maximize');
-        console.log('weatherTest.expand() - Expand widget');
-        console.log('weatherTest.minimize() - Minimize widget');
-        console.log('weatherTest.debug() - Show debug information');
-        console.log('💡 Auto-expand: Emergency alerts + Critical weather + Dangerous conditions');
-        console.log('🌩️ Dangerous weather: Fog(45), Violent showers(82), Hailstorms(96,99)');
-        console.log('📍 Position: Bottom-right corner');
-    }
+        }
         
         window.municipalWeatherSystemInitialized = true;
         
@@ -384,7 +372,7 @@ class WeatherAlertSystem {
         // Keep emergency alert expanded
         this.lockExpansion = true;
         
-        // Add emergency sound notification (optional)
+        // Add emergency sound notification for both earthquake and air quality
         this.playEmergencySound(protocol.level);
     }
     
@@ -402,20 +390,28 @@ class WeatherAlertSystem {
             // Different sounds for different emergency levels
             switch(level) {
                 case 'critical':
+                case 'major':
+                case 'dangerous':
                     // High urgency - rapid beeps
                     oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
                     gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
                     oscillator.start();
                     setTimeout(() => oscillator.stop(), 200);
-                    setTimeout(() => this.playEmergencySound(level), 300);
+                    setTimeout(() => this.playEmergencyBeep(800, 200), 300);
+                    setTimeout(() => this.playEmergencyBeep(800, 200), 600);
                     break;
                 case 'warning':
-                    // Medium urgency - single beep
+                case 'moderate':
+                case 'unhealthy':
+                    // Medium urgency - double beep
                     oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
                     gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
                     oscillator.start();
                     setTimeout(() => oscillator.stop(), 500);
+                    setTimeout(() => this.playEmergencyBeep(600, 300), 700);
                     break;
+                case 'advisory':
+                case 'minor':
                 default:
                     // Low urgency - soft tone
                     oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
@@ -423,9 +419,30 @@ class WeatherAlertSystem {
                     oscillator.start();
                     setTimeout(() => oscillator.stop(), 300);
             }
+            
+            console.log(`🔊 Emergency sound played for level: ${level}`);
         } catch (error) {
             // Audio not supported or blocked
-            console.log('Audio notification not available');
+            console.log('🔇 Audio notification not available:', error.message);
+        }
+    }
+    
+    // Helper method for additional beeps
+    playEmergencyBeep(frequency, duration) {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            oscillator.start();
+            setTimeout(() => oscillator.stop(), duration);
+        } catch (error) {
+            // Silently fail for additional beeps
         }
     }
     
@@ -1387,10 +1404,12 @@ class WeatherAlertSystem {
             return this.createErrorLayout();
         }
         
+        console.log('🔧 Creating emergency layout with data:', emergencyData);
+        
         const { emergencyType, level, title, data, activities } = emergencyData;
         
         if (!emergencyType || !level || !title) {
-            console.error('❌ Missing required emergency data fields');
+            console.error('❌ Missing required emergency data fields:', { emergencyType, level, title });
             return this.createErrorLayout();
         }
         
@@ -1457,7 +1476,7 @@ class WeatherAlertSystem {
         // Get current weather for summary
         const weatherSummary = this.createWeatherSummary();
         
-        return `
+        const layout = `
             <div class="emergency-content">
                 <div class="emergency-header">
                     <i class="material-icons emergency-icon">${emergencyIcon}</i>
@@ -1489,6 +1508,9 @@ class WeatherAlertSystem {
             </div>
             <div class="update-indicator"></div>
         `;
+        
+        console.log('✅ Emergency layout created successfully');
+        return layout;
     }
     
     // Create error layout for missing data
@@ -2023,7 +2045,7 @@ class WeatherAlertSystem {
             // Prepare emergency data structure for layout creation
             const emergencyLayoutData = {
                 emergencyType: alert.emergencyType,
-                level: alert.level,
+                level: alert.level.replace('emergency_', ''), // Remove 'emergency_' prefix
                 title: alert.title,
                 data: alert.emergencyData || {},
                 activities: alert.activities
@@ -2096,27 +2118,6 @@ class WeatherAlertSystem {
         const emergencyContact = this.weatherContainer.querySelector('.emergency-contact, .emergency-contact-full');
         if (emergencyContact) {
             emergencyContact.classList.add('visible');
-        }
-    }
-    
-    // Setup expand indicator events (used after innerHTML replacement)
-    setupExpandIndicatorEvents() {
-        const expandIndicator = this.weatherContainer.querySelector('.expand-indicator');
-        if (expandIndicator) {
-            expandIndicator.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (!this.lockExpansion) {
-                    this.toggleExpanded();
-                }
-            });
-            
-            expandIndicator.addEventListener('keydown', (e) => {
-                if ((e.key === 'Enter' || e.key === ' ') && !this.lockExpansion) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.toggleExpanded();
-                }
-            });
         }
     }
     
@@ -2342,7 +2343,7 @@ class EmergencyMonitoringSystem {
                         windows_open: 'no' // Don't open windows
                     }
                 },
-                unhealthy: {
+unhealthy: {
                     level: 'warning',
                     title: 'AVERTIZARE CALITATE AER',
                     recommendations: [
@@ -2465,12 +2466,13 @@ class EmergencyMonitoringSystem {
         };
         
         console.log('🧪 Emergency testing commands:');
-        console.log('emergencyTest.testEarthquake(5.2, 45) - Test earthquake (auto-expands)');
-        console.log('emergencyTest.testAirQuality(180) - Test unhealthy air quality (auto-expands)');
+        console.log('emergencyTest.testEarthquake(5.2, 45) - Test earthquake (auto-expands + sound)');
+        console.log('emergencyTest.testAirQuality(180) - Test unhealthy air quality (auto-expands + sound)');
         console.log('emergencyTest.testActivities() - Test all activity levels');
         console.log('emergencyTest.clearEmergency() - Clear emergency alert');
         console.log('emergencyTest.debug() - Show debug info');
         console.log('💡 Air Quality Emergency Thresholds: Unhealthy 151+, Dangerous 301+');
+        console.log('🔊 Sound levels: Minor/Advisory=soft, Moderate/Warning=double beep, Major/Critical=rapid beeps');
         console.log('🔄 Emergency alerts auto-expand, regular weather starts minimized');
     }
     
@@ -2615,6 +2617,8 @@ class EmergencyMonitoringSystem {
     }
     
     evaluateEarthquakeAlert(magnitude, distance, properties) {
+        console.log(`🔍 Evaluating earthquake: M${magnitude}, ${distance}km, props:`, properties);
+        
         let alertLevel = null;
         
         if (magnitude >= this.emergencyThresholds.earthquake.major) {
@@ -2625,9 +2629,13 @@ class EmergencyMonitoringSystem {
             alertLevel = 'minor';
         }
         
+        console.log(`📊 Earthquake alert level determined: ${alertLevel}`);
+        
         if (alertLevel) {
             const protocol = this.emergencyProtocols.earthquake[alertLevel];
-            this.triggerEmergencyAlert('earthquake', {
+            console.log(`📋 Using protocol:`, protocol);
+            
+            const enhancedProtocol = {
                 ...protocol,
                 data: {
                     magnitude: magnitude,
@@ -2635,13 +2643,19 @@ class EmergencyMonitoringSystem {
                     location: properties.place,
                     time: new Date(properties.time).toLocaleString('ro-RO')
                 }
-            });
+            };
+            
+            console.log(`🚨 Triggering earthquake emergency alert:`, enhancedProtocol);
+            this.triggerEmergencyAlert('earthquake', enhancedProtocol);
         } else {
+            console.log('📊 No earthquake alert needed');
             this.clearAlert('earthquake');
         }
     }
     
     evaluateAirQualityAlert(aqi, components) {
+        console.log(`🔍 Evaluating air quality: AQI ${aqi}, components:`, components);
+        
         let alertLevel = null;
         
         // Only trigger emergency alerts for unhealthy and dangerous levels
@@ -2652,8 +2666,12 @@ class EmergencyMonitoringSystem {
         }
         // Note: No emergency alert for moderate (AQI 101-150) - only unhealthy (151+)
         
+        console.log(`📊 Air quality alert level determined: ${alertLevel}`);
+        
         if (alertLevel) {
             const baseProtocol = this.emergencyProtocols.airQuality[alertLevel];
+            console.log(`📋 Using base protocol:`, baseProtocol);
+            
             const protocol = {
                 ...baseProtocol,
                 data: {
@@ -2664,8 +2682,10 @@ class EmergencyMonitoringSystem {
                 activities: baseProtocol.activities || null
             };
             
+            console.log(`🚨 Triggering air quality emergency alert:`, protocol);
             this.triggerEmergencyAlert('airQuality', protocol);
         } else {
+            console.log('📊 No air quality emergency alert needed (AQI below 151)');
             this.clearAlert('airQuality');
         }
     }
@@ -2735,18 +2755,36 @@ class EmergencyMonitoringSystem {
     // Testing methods
     testEarthquakeAlert(magnitude, distance) {
         console.log(`🧪 Testing earthquake alert: M${magnitude} at ${distance}km`);
-        this.evaluateEarthquakeAlert(magnitude, distance, {
-            place: 'Test earthquake near Slobozia',
-            time: Date.now()
-        });
+        
+        // Create mock earthquake properties
+        const mockProperties = {
+            place: `Test earthquake ${distance}km from Slobozia`,
+            time: Date.now(),
+            mag: magnitude
+        };
+        
+        console.log('📊 Mock earthquake properties:', mockProperties);
+        
+        // Call the evaluation method
+        this.evaluateEarthquakeAlert(magnitude, distance, mockProperties);
     }
     
     testAirQualityAlert(aqi) {
         console.log(`🧪 Testing air quality alert: AQI ${aqi}`);
-        this.evaluateAirQualityAlert(aqi, {
+        
+        // Create mock air quality components
+        const mockComponents = {
             pm2_5: aqi * 0.5,
-            pm10: aqi * 0.8
-        });
+            pm10: aqi * 0.8,
+            co: aqi * 0.1,
+            no2: aqi * 0.3,
+            o3: aqi * 0.6
+        };
+        
+        console.log('📊 Mock air quality components:', mockComponents);
+        
+        // Call the evaluation method
+        this.evaluateAirQualityAlert(aqi, mockComponents);
     }
     
     destroy() {
@@ -2793,3 +2831,4 @@ console.log('🏛️ Municipal Weather System v2.0 - Production Ready');
 console.log('📍 Location: Slobozia, Ialomița County, Romania');
 console.log('🚨 Emergency monitoring: Earthquakes + Air Quality');
 console.log('📋 Test commands: weatherTest.debug() | emergencyTest.debug()');
+                        
