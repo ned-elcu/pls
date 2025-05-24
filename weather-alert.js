@@ -789,7 +789,7 @@ class WeatherAlertSystem {
         /* ENHANCED CONTROL PANEL - Fixed Alignment and Centering */
         .control-panel {
             position: absolute;
-            top: 8px;
+            top: 2px;
             right: 8px;
             display: flex;
             flex-direction: column;
