@@ -1,6 +1,6 @@
 // WEATHER-ALERT.JS - Municipal Weather Warning System for Poliția Locală Slobozia
-// Professional weather monitoring and safety advisory system - Production Version
-// Now includes Emergency Monitoring (Earthquakes, Air Quality, Floods)
+// Production Version with Emergency Monitoring (Earthquakes + Air Quality)
+// Professional weather monitoring and safety advisory system
 
 class WeatherAlertSystem {
     constructor() {
@@ -26,6 +26,7 @@ class WeatherAlertSystem {
         this.hideTimer = null;
         this.lastSuccessfulData = null;
         this.currentAlertLevel = 'normal';
+        this.emergencyAlertActive = false;
         
         // Municipal weather conditions with safety guidance
         this.weatherConditions = {
@@ -182,37 +183,6 @@ class WeatherAlertSystem {
                     'Verificați acoperișurile',
                     'Evitați parcarea sub copaci'
                 ]
-            },
-            // Emergency alert types
-            earthquake: {
-                level: 'warning',
-                title: 'ALERTĂ SEISMICĂ',
-                recommendations: [
-                    'Verificați integritatea locuinței',
-                    'Pregătiți-vă pentru posibile replici',
-                    'Urmăriți comunicatele oficiale',
-                    'Apelați 112 pentru urgențe'
-                ]
-            },
-            air_quality: {
-                level: 'advisory',
-                title: 'ATENȚIE - CALITATEA AERULUI',
-                recommendations: [
-                    'Limitați activitățile în aer liber',
-                    'Persoanele sensibile să rămână în interior',
-                    'Folosiți filtre de aer în locuință',
-                    'Evitați zonele cu trafic intens'
-                ]
-            },
-            flood_risk: {
-                level: 'warning',
-                title: 'RISC DE INUNDAȚII',
-                recommendations: [
-                    'Urmăriți nivelul apelor',
-                    'Pregătiți planul de evacuare',
-                    'Mutați obiectele de valoare la etaj',
-                    'Nu traversați zonele inundate'
-                ]
             }
         };
         
@@ -340,40 +310,104 @@ class WeatherAlertSystem {
     
     // Method to handle emergency alerts from the emergency monitoring system
     displayEmergencyAlert(type, protocol) {
-        console.log(`🚨 Emergency alert received: ${type} - ${protocol.level}`);
+        console.log(`🚨 EMERGENCY ALERT: ${type} - ${protocol.level}`);
         
-        // Integrate emergency alert with existing safety advice system
+        // Activate emergency mode
+        this.emergencyAlertActive = true;
+        
+        // Create enhanced emergency alert
         const emergencyAlert = {
-            level: protocol.level,
-            title: protocol.title,
-            recommendations: protocol.actions || protocol.recommendations || []
+            level: 'emergency_' + protocol.level,
+            title: `🚨 ${protocol.title}`,
+            recommendations: protocol.actions || protocol.recommendations || [],
+            emergency: true,
+            emergencyType: type,
+            emergencyData: protocol.data
         };
         
         this.displaySafetyAlert(emergencyAlert);
         
-        // Force expansion for critical emergency alerts
-        if (protocol.level === 'critical' && !this.isExpanded) {
-            setTimeout(() => {
-                this.isExpanded = true;
-                this.updateExpandedState();
-                this.showSafetyRecommendations();
-            }, 300);
+        // Force expansion for all emergency alerts
+        setTimeout(() => {
+            this.isExpanded = true;
+            this.updateExpandedState();
+            this.showSafetyRecommendations();
+        }, 300);
+        
+        // Keep emergency alert expanded
+        this.lockExpansion = true;
+        
+        // Add emergency sound notification (optional)
+        this.playEmergencySound(protocol.level);
+    }
+    
+    // Play emergency sound notification
+    playEmergencySound(level) {
+        try {
+            // Create audio context for emergency notification
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Different sounds for different emergency levels
+            switch(level) {
+                case 'critical':
+                    // High urgency - rapid beeps
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    oscillator.start();
+                    setTimeout(() => oscillator.stop(), 200);
+                    setTimeout(() => this.playEmergencySound(level), 300);
+                    break;
+                case 'warning':
+                    // Medium urgency - single beep
+                    oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    oscillator.start();
+                    setTimeout(() => oscillator.stop(), 500);
+                    break;
+                default:
+                    // Low urgency - soft tone
+                    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                    oscillator.start();
+                    setTimeout(() => oscillator.stop(), 300);
+            }
+        } catch (error) {
+            // Audio not supported or blocked
+            console.log('Audio notification not available');
         }
     }
     
-    // Inject municipal-appropriate CSS
+    // Clear emergency alert state
+    clearEmergencyAlert() {
+        this.emergencyAlertActive = false;
+        this.lockExpansion = false;
+        
+        // Return to normal weather display
+        if (this.currentWeatherData) {
+            this.checkMunicipalAlerts(this.currentWeatherData);
+        } else {
+            this.clearAlert();
+        }
+    }
+    
+    // Inject municipal-appropriate CSS with emergency styling
     injectMunicipalCSS() {
         if (document.getElementById('municipal-weather-css')) return;
         
         const css = `
-        /* Municipal Weather Warning System - Professional Styling */
+        /* Municipal Weather Warning System - Professional Styling with Emergency Alerts */
         .weather-alert-floating {
             position: fixed;
             bottom: 20px;
             left: 20px;
             width: 280px;
             min-height: 70px;
-            background: rgba(26, 47, 95, 0.7); /* Municipal blue with 70% transparency */
+            background: rgba(26, 47, 95, 0.7);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border-radius: 8px;
@@ -384,7 +418,7 @@ class WeatherAlertSystem {
             box-shadow: 
                 0 4px 20px rgba(0, 0, 0, 0.15),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            z-index: 100;
+            z-index: 1000;
             cursor: pointer;
             transition: all 0.3s ease;
             overflow: hidden;
@@ -420,9 +454,51 @@ class WeatherAlertSystem {
             animation: criticalPulse 3s infinite;
         }
         
-        .weather-alert-floating.critical.expanded {
+        /* EMERGENCY ALERT STYLING - MAXIMUM VISIBILITY */
+        .weather-alert-floating.emergency_advisory {
+            border: 3px solid #ff9800;
+            background: rgba(255, 152, 0, 0.95);
+            color: #000;
+            min-height: 140px;
+            width: 350px;
+            animation: emergencyGlow 2s infinite;
+            box-shadow: 
+                0 0 30px rgba(255, 152, 0, 0.8),
+                0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .weather-alert-floating.emergency_warning {
+            border: 3px solid #f44336;
+            background: rgba(244, 67, 54, 0.95);
+            color: #fff;
+            min-height: 160px;
+            width: 380px;
+            animation: emergencyFlash 1.5s infinite;
+            box-shadow: 
+                0 0 40px rgba(244, 67, 54, 0.9),
+                0 4px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .weather-alert-floating.emergency_critical {
+            border: 3px solid #d32f2f;
+            background: rgba(211, 47, 47, 0.98);
+            color: #fff;
             min-height: 200px;
-            width: 360px;
+            width: 400px;
+            animation: emergencyCritical 1s infinite;
+            box-shadow: 
+                0 0 50px rgba(211, 47, 47, 1),
+                0 0 100px rgba(211, 47, 47, 0.5),
+                0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+        
+        .weather-alert-floating.critical.expanded,
+        .weather-alert-floating.emergency_advisory.expanded,
+        .weather-alert-floating.emergency_warning.expanded,
+        .weather-alert-floating.emergency_critical.expanded {
+            min-height: 200px;
+            width: 420px;
         }
         
         .weather-alert-floating.expanded {
@@ -462,6 +538,15 @@ class WeatherAlertSystem {
             flex-shrink: 0;
         }
         
+        /* Emergency icon styling */
+        .weather-alert-floating.emergency_advisory .weather-icon-container,
+        .weather-alert-floating.emergency_warning .weather-icon-container,
+        .weather-alert-floating.emergency_critical .weather-icon-container {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            animation: iconPulse 1s infinite;
+        }
+        
         .weather-icon {
             font-size: 22px;
             color: #e3f2fd;
@@ -481,6 +566,18 @@ class WeatherAlertSystem {
             -moz-osx-font-smoothing: grayscale;
             font-feature-settings: 'liga';
             text-align: center;
+        }
+        
+        /* Emergency icon colors */
+        .weather-alert-floating.emergency_advisory .weather-icon {
+            color: #000;
+            font-size: 28px;
+        }
+        
+        .weather-alert-floating.emergency_warning .weather-icon,
+        .weather-alert-floating.emergency_critical .weather-icon {
+            color: #fff;
+            font-size: 32px;
         }
         
         .weather-text-info {
@@ -527,6 +624,14 @@ class WeatherAlertSystem {
             display: block;
         }
         
+        /* Emergency header styling */
+        .weather-alert-floating.emergency_advisory .alert-header,
+        .weather-alert-floating.emergency_warning .alert-header,
+        .weather-alert-floating.emergency_critical .alert-header {
+            background: rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
         .alert-title {
             font-size: 12px;
             font-weight: 600;
@@ -534,6 +639,21 @@ class WeatherAlertSystem {
             letter-spacing: 0.5px;
             color: #ffffff;
             margin: 0;
+        }
+        
+        /* Emergency title styling */
+        .weather-alert-floating.emergency_advisory .alert-title {
+            color: #000;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        
+        .weather-alert-floating.emergency_warning .alert-title,
+        .weather-alert-floating.emergency_critical .alert-title {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 800;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
         
         .safety-recommendations {
@@ -545,6 +665,17 @@ class WeatherAlertSystem {
         
         .safety-recommendations.visible {
             display: block;
+        }
+        
+        /* Emergency recommendations styling */
+        .weather-alert-floating.emergency_advisory .safety-recommendations,
+        .weather-alert-floating.emergency_warning .safety-recommendations,
+        .weather-alert-floating.emergency_critical .safety-recommendations {
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 4px;
+            margin: 8px -4px 0 -4px;
         }
         
         .safety-list {
@@ -568,6 +699,29 @@ class WeatherAlertSystem {
             position: absolute;
             left: 0;
             font-weight: bold;
+        }
+        
+        /* Emergency list styling */
+        .weather-alert-floating.emergency_advisory .safety-list li {
+            color: #000;
+            font-weight: 500;
+        }
+        
+        .weather-alert-floating.emergency_advisory .safety-list li:before {
+            color: #f57c00;
+        }
+        
+        .weather-alert-floating.emergency_warning .safety-list li,
+        .weather-alert-floating.emergency_critical .safety-list li {
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .weather-alert-floating.emergency_warning .safety-list li:before,
+        .weather-alert-floating.emergency_critical .safety-list li:before {
+            color: #ffeb3b;
+            font-size: 16px;
         }
         
         .emergency-contact {
@@ -655,13 +809,74 @@ class WeatherAlertSystem {
             background: rgba(244, 67, 54, 0.1);
         }
         
-        /* Professional Weather Icon Animations */
+        /* Emergency Animation Keyframes */
+        @keyframes emergencyGlow {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 30px rgba(255, 152, 0, 0.8),
+                    0 4px 20px rgba(0, 0, 0, 0.3);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 50px rgba(255, 152, 0, 1),
+                    0 4px 20px rgba(0, 0, 0, 0.3);
+            }
+        }
+        
+        @keyframes emergencyFlash {
+            0%, 100% { 
+                background: rgba(244, 67, 54, 0.95);
+                box-shadow: 
+                    0 0 40px rgba(244, 67, 54, 0.9),
+                    0 4px 25px rgba(0, 0, 0, 0.4);
+            }
+            50% { 
+                background: rgba(244, 67, 54, 1);
+                box-shadow: 
+                    0 0 60px rgba(244, 67, 54, 1),
+                    0 4px 25px rgba(0, 0, 0, 0.4);
+            }
+        }
+        
+        @keyframes emergencyCritical {
+            0%, 100% { 
+                background: rgba(211, 47, 47, 0.98);
+                transform: scale(1);
+                box-shadow: 
+                    0 0 50px rgba(211, 47, 47, 1),
+                    0 0 100px rgba(211, 47, 47, 0.5),
+                    0 4px 30px rgba(0, 0, 0, 0.5);
+            }
+            25% { 
+                background: rgba(255, 255, 255, 0.95);
+                transform: scale(1.02);
+            }
+            50% { 
+                background: rgba(211, 47, 47, 1);
+                transform: scale(1.01);
+                box-shadow: 
+                    0 0 80px rgba(211, 47, 47, 1),
+                    0 0 150px rgba(211, 47, 47, 0.8),
+                    0 4px 40px rgba(0, 0, 0, 0.6);
+            }
+            75% { 
+                background: rgba(255, 255, 255, 0.95);
+                transform: scale(1.02);
+            }
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Regular Weather Icon Animations */
         .weather-icon.sunny {
             color: #ffeb3b;
             animation: gentleRotate 30s linear infinite;
         }
         
-        .weather-icon.partly-cloudy {
+        .weather-icon.partly-cloudy, .weather-icon.foggy {
             color: #90a4ae;
             animation: subtleFloat 6s ease-in-out infinite;
         }
@@ -701,18 +916,12 @@ class WeatherAlertSystem {
             animation: severeLightning 1s ease-in-out infinite;
         }
         
-        .weather-icon.foggy {
-            color: #90a4ae;
-            animation: fogPulse 3s ease-in-out infinite;
-            opacity: 0.8;
-        }
-        
         .weather-icon.drizzle {
             color: #64b5f6;
             animation: drizzleFloat 3s ease-in-out infinite;
         }
         
-        /* Municipal-appropriate Keyframes */
+        /* Regular Animation Keyframes */
         @keyframes gentleRotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -760,16 +969,6 @@ class WeatherAlertSystem {
             5%, 80% { opacity: 0.4; transform: scale(1.1); }
         }
         
-        @keyframes fogPulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 0.9; }
-        }
-        
-        @keyframes drizzleFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-1px); }
-        }
-        
         @keyframes criticalPulse {
             0%, 100% { box-shadow: 0 4px 20px rgba(229, 57, 53, 0.3); }
             50% { box-shadow: 0 4px 25px rgba(229, 57, 53, 0.5); }
@@ -786,7 +985,12 @@ class WeatherAlertSystem {
             100% { opacity: 0; transform: scale(1); }
         }
         
-        /* Responsive Municipal Design */
+        @keyframes drizzleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-1px); }
+        }
+        
+        /* Responsive Design */
         @media (max-width: 768px) {
             .weather-alert-floating {
                 bottom: 10px;
@@ -800,9 +1004,16 @@ class WeatherAlertSystem {
                 min-height: 120px;
             }
             
-            .weather-alert-floating.critical.expanded {
+            .weather-alert-floating.emergency_advisory,
+            .weather-alert-floating.emergency_warning,
+            .weather-alert-floating.emergency_critical {
                 width: 320px;
-                min-height: 180px;
+                max-width: 95vw;
+            }
+            
+            .weather-alert-floating.emergency_critical.expanded {
+                width: 340px;
+                max-width: 95vw;
             }
             
             .weather-content {
@@ -824,7 +1035,7 @@ class WeatherAlertSystem {
             }
         }
         
-        /* Accessibility and High Contrast */
+        /* Accessibility */
         @media (prefers-contrast: high) {
             .weather-alert-floating {
                 border: 2px solid white;
@@ -898,7 +1109,7 @@ class WeatherAlertSystem {
     setupEventListeners() {
         // Main container click
         this.weatherContainer.addEventListener('click', (e) => {
-            if (!e.target.closest('.expand-indicator')) {
+            if (!e.target.closest('.expand-indicator') && !this.lockExpansion) {
                 this.toggleExpanded();
             }
         });
@@ -908,11 +1119,13 @@ class WeatherAlertSystem {
         if (expandIndicator) {
             expandIndicator.addEventListener('click', (e) => {
                 e.stopPropagation();
-                this.toggleExpanded();
+                if (!this.lockExpansion) {
+                    this.toggleExpanded();
+                }
             });
             
             expandIndicator.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
+                if ((e.key === 'Enter' || e.key === ' ') && !this.lockExpansion) {
                     e.preventDefault();
                     e.stopPropagation();
                     this.toggleExpanded();
@@ -924,11 +1137,17 @@ class WeatherAlertSystem {
         this.weatherContainer.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                this.toggleExpanded();
+                if (!this.lockExpansion) {
+                    this.toggleExpanded();
+                }
             } else if (e.key === 'Escape') {
-                this.isExpanded = false;
-                this.updateExpandedState();
-                this.hideSafetyRecommendations();
+                if (this.emergencyAlertActive) {
+                    this.clearEmergencyAlert();
+                } else {
+                    this.isExpanded = false;
+                    this.updateExpandedState();
+                    this.hideSafetyRecommendations();
+                }
             }
         });
         
@@ -952,8 +1171,8 @@ class WeatherAlertSystem {
         const weatherRect = this.weatherContainer.getBoundingClientRect();
         const footerRect = footer.getBoundingClientRect();
         
-        // Hide if footer is visible on screen
-        if (footerRect.top < window.innerHeight && footerRect.bottom > 0) {
+        // Hide if footer is visible on screen (unless emergency alert)
+        if (footerRect.top < window.innerHeight && footerRect.bottom > 0 && !this.emergencyAlertActive) {
             this.hideWeatherAlert();
         } else {
             this.showWeatherAlert();
@@ -964,7 +1183,7 @@ class WeatherAlertSystem {
     setupIntersectionObserver() {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.target.tagName === 'FOOTER' && entry.isIntersecting) {
+                if (entry.target.tagName === 'FOOTER' && entry.isIntersecting && !this.emergencyAlertActive) {
                     this.hideWeatherAlert();
                 } else if (entry.target.tagName === 'FOOTER' && !entry.isIntersecting) {
                     setTimeout(() => this.showWeatherAlert(), 300);
@@ -987,7 +1206,7 @@ class WeatherAlertSystem {
     }
     
     hideWeatherAlert() {
-        if (this.weatherContainer && !this.isHidden) {
+        if (this.weatherContainer && !this.isHidden && !this.emergencyAlertActive) {
             this.weatherContainer.classList.add('hidden');
             this.isHidden = true;
         }
@@ -995,6 +1214,8 @@ class WeatherAlertSystem {
     
     // Enhanced toggle for municipal warnings
     toggleExpanded() {
+        if (this.lockExpansion) return;
+        
         this.isExpanded = !this.isExpanded;
         this.updateExpandedState();
         
@@ -1057,7 +1278,6 @@ class WeatherAlertSystem {
             });
             
             const url = `${this.apiBaseUrl}?${params}`;
-            console.log('🏛️ Municipal weather monitoring:', url);
             
             const response = await fetch(url, {
                 method: 'GET',
@@ -1078,23 +1298,20 @@ class WeatherAlertSystem {
                 throw new Error('Invalid municipal weather data structure');
             }
             
-            console.log('🏛️ Municipal weather update:', {
-                temp: data.current.temperature_2m,
-                condition: data.current.weather_code,
-                wind: data.current.wind_speed_10m
-            });
-            
             this.currentWeatherData = data;
             this.lastSuccessfulData = data;
             this.updateWeatherDisplay(data);
-            this.checkMunicipalAlerts(data);
+            
+            // Only check weather alerts if no emergency alert is active
+            if (!this.emergencyAlertActive) {
+                this.checkMunicipalAlerts(data);
+            }
+            
             this.showUpdateIndicator();
             
             if (this.weatherContainer) {
                 this.weatherContainer.classList.remove('error-state');
             }
-            
-            console.log('✅ Municipal weather monitoring updated');
             
         } catch (error) {
             console.error('❌ Municipal weather error:', error);
@@ -1135,9 +1352,9 @@ class WeatherAlertSystem {
             conditionText.textContent = condition.name;
         }
         
-        // Update icon with animation
+        // Update icon with animation (only if not in emergency mode)
         const weatherIcon = this.weatherContainer.querySelector('.weather-icon');
-        if (weatherIcon) {
+        if (weatherIcon && !this.emergencyAlertActive) {
             weatherIcon.className = 'material-icons weather-icon';
             weatherIcon.textContent = condition.icon;
             
@@ -1154,13 +1371,11 @@ class WeatherAlertSystem {
         this.weatherContainer.setAttribute('aria-label', 
             `Sistem municipal meteo Slobozia: ${condition.name}, ${Math.round(current.temperature_2m)}°C, actualizat ${now}`
         );
-        
-        console.log('✅ Municipal weather display updated');
     }
     
     // Check municipal weather alerts
     checkMunicipalAlerts(data) {
-        if (!data.current) return;
+        if (!data.current || this.emergencyAlertActive) return;
         
         const current = data.current;
         const condition = this.weatherConditions[current.weather_code];
@@ -1205,8 +1420,29 @@ class WeatherAlertSystem {
         
         this.currentAlertLevel = alert.level;
         
-        // Update container class
-        this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
+        // Update container class (check if it's an emergency alert)
+        if (alert.emergency) {
+            this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
+            
+            // Update emergency icon
+            const weatherIcon = this.weatherContainer.querySelector('.weather-icon');
+            if (weatherIcon) {
+                weatherIcon.className = 'material-icons weather-icon';
+                
+                // Choose emergency icon based on type
+                if (alert.emergencyType === 'earthquake') {
+                    weatherIcon.textContent = 'warning';
+                } else if (alert.emergencyType === 'airQuality') {
+                    weatherIcon.textContent = 'masks';
+                } else if (alert.emergencyType === 'flood') {
+                    weatherIcon.textContent = 'flood';
+                } else {
+                    weatherIcon.textContent = 'emergency';
+                }
+            }
+        } else {
+            this.weatherContainer.className = `weather-alert-floating visible ${alert.level}`;
+        }
         
         // Show alert header
         const alertHeader = this.weatherContainer.querySelector('.alert-header');
@@ -1231,20 +1467,17 @@ class WeatherAlertSystem {
         // Show emergency contact for critical alerts
         const emergencyContact = this.weatherContainer.querySelector('.emergency-contact');
         if (emergencyContact) {
-            emergencyContact.classList.toggle('visible', alert.level === 'critical');
+            emergencyContact.classList.toggle('visible', alert.level === 'critical' || alert.emergency);
         }
         
         // Auto-expand for warnings and critical alerts with proper timing
-        if ((alert.level === 'warning' || alert.level === 'critical') && !this.isExpanded) {
-            console.log(`🚨 Auto-expanding for ${alert.level} alert`);
+        if ((alert.level === 'warning' || alert.level === 'critical' || alert.emergency) && !this.isExpanded) {
             setTimeout(() => {
                 this.isExpanded = true;
                 this.updateExpandedState();
                 this.showSafetyRecommendations();
-            }, 300); // Delay to ensure CSS transitions work properly
+            }, 300);
         }
-        
-        console.log(`🚨 Municipal alert: ${alert.level} - ${alert.title}`);
     }
     
     // Clear alert state
@@ -1263,10 +1496,15 @@ class WeatherAlertSystem {
         if (safetyRecommendations) safetyRecommendations.classList.remove('visible');
         if (emergencyContact) emergencyContact.classList.remove('visible');
         
-        // Reset expansion state when clearing alerts
-        if (this.isExpanded) {
+        // Reset expansion state when clearing alerts (only if not locked)
+        if (this.isExpanded && !this.lockExpansion) {
             this.isExpanded = false;
             this.updateExpandedState();
+        }
+        
+        // Reset weather icon to current weather
+        if (this.currentWeatherData) {
+            this.updateWeatherDisplay(this.currentWeatherData);
         }
     }
     
@@ -1347,16 +1585,17 @@ class WeatherAlertSystem {
 }
 
 // EMERGENCY MONITORING SYSTEM INTEGRATION
-// Extends the municipal weather system with earthquake, air quality, and flood monitoring
+// Production Version - Earthquakes + Air Quality with OpenWeatherMap API
 
 class EmergencyMonitoringSystem {
     constructor() {
+        // Configuration
         this.coordinates = {
             latitude: 44.5667,  // Slobozia, Romania
             longitude: 27.3667
         };
         
-        // API endpoints - all publicly accessible
+        // API Configuration
         this.apis = {
             earthquake: {
                 url: 'https://earthquake.usgs.gov/fdsnws/event/1/query',
@@ -1364,39 +1603,30 @@ class EmergencyMonitoringSystem {
                 keyRequired: false
             },
             airQuality: {
-                url: 'https://api.open-meteo.com/v1/air-quality',
-                name: 'Open-Meteo Air Quality',
-                keyRequired: false
-            },
-            flood: {
-                url: 'https://api.open-meteo.com/v1/flood',
-                name: 'Open-Meteo Flood API',
-                keyRequired: false
+                url: 'https://api.openweathermap.org/data/2.5/air_pollution',
+                name: 'OpenWeatherMap Air Pollution API',
+                keyRequired: true,
+                apiKey: 'e815f9edc2ed7da7912339b43ef2fec8' // Replace with your API key
             }
         };
         
-        // Emergency thresholds for municipal alerts
+        // Emergency thresholds
         this.emergencyThresholds = {
             earthquake: {
-                minor: 3.0,     // Local awareness
-                moderate: 4.5,  // Municipal preparation
-                major: 6.0,     // Emergency response
-                radius: 100     // km from Slobozia
+                minor: 3.0,
+                moderate: 4.5,
+                major: 6.0,
+                radius: 100
             },
             airQuality: {
                 good: 50,
                 moderate: 100,
                 unhealthy: 150,
                 dangerous: 300
-            },
-            flood: {
-                watch: 50,      // m³/s - monitoring threshold
-                warning: 100,   // m³/s - preparation threshold
-                emergency: 200  // m³/s - emergency response
             }
         };
         
-        // Municipal emergency responses
+        // Emergency response protocols
         this.emergencyProtocols = {
             earthquake: {
                 minor: {
@@ -1467,63 +1697,25 @@ class EmergencyMonitoringSystem {
                         'Beți multă apă pentru hidratare'
                     ]
                 }
-            },
-            flood: {
-                watch: {
-                    level: 'advisory',
-                    title: 'MONITORIZARE HIDRROLOGICĂ',
-                    recommendations: [
-                        'Urmăriți nivelul apelor din zonă',
-                        'Pregătiți documente importante',
-                        'Identificați rutele de evacuare',
-                        'Verificați asigurarea locuinței'
-                    ]
-                },
-                warning: {
-                    level: 'warning',
-                    title: 'ATENȚIONARE INUNDAȚII',
-                    recommendations: [
-                        'Mutați obiectele de valoare la etaj',
-                        'Pregătiți provizii pentru 72 de ore',
-                        'Aveți pregătit un plan de evacuare',
-                        'Evitați deplasările în zonele cu risc',
-                        'Țineți vehiculul cu rezervorul plin'
-                    ]
-                },
-                emergency: {
-                    level: 'critical',
-                    title: 'ALERTĂ INUNDAȚII',
-                    recommendations: [
-                        'EVACUAȚI IMEDIAT ZONA DACĂ ESTE NECESAR',
-                        'Nu traversați apele curgătoare',
-                        'Urcați-vă la etajele superioare',
-                        'Apelați 112 pentru salvare',
-                        'Semnalizați prezența voastră',
-                        'Nu intrați în subsoluri inundate'
-                    ]
-                }
             }
         };
         
         this.lastUpdate = {
             earthquake: null,
-            airQuality: null,
-            flood: null
+            airQuality: null
         };
         
         this.currentAlerts = new Set();
-        this.updateInterval = 10 * 60 * 1000; // 10 minutes for emergency monitoring
+        this.updateInterval = 10 * 60 * 1000; // 10 minutes
         this.activeTimers = [];
         
         this.init();
     }
     
     async init() {
-        console.log('🚨 Initializing Emergency Monitoring System for Slobozia');
-        
         // Ensure we don't initialize if already running
         if (window.emergencySystemInitialized) {
-            console.log('⚠️ Emergency system already initialized, skipping...');
+            console.log('⚠️ Emergency system already initialized');
             return;
         }
         
@@ -1531,6 +1723,9 @@ class EmergencyMonitoringSystem {
         
         // Wait for weather system to be ready
         setTimeout(() => {
+            // Check API configuration
+            this.checkAPIConfiguration();
+            
             // Initial data fetch
             this.fetchAllEmergencyData();
             
@@ -1540,78 +1735,97 @@ class EmergencyMonitoringSystem {
             // Setup console interface for testing
             this.setupEmergencyTestInterface();
             
-            console.log('✅ Emergency monitoring integrated successfully');
+            console.log('✅ Emergency monitoring system activated');
         }, 3000);
+    }
+    
+    checkAPIConfiguration() {
+        console.log('🔍 Checking emergency API configuration...');
+        
+        // Check if OpenWeatherMap API key is configured
+        if (this.apis.airQuality.apiKey === 'YOUR_OPENWEATHERMAP_API_KEY_HERE') {
+            console.log('⚠️ OpenWeatherMap API key not configured - air quality monitoring disabled');
+            console.log('📝 To enable air quality monitoring:');
+            console.log('   1. Get free API key from: https://openweathermap.org/api');
+            console.log('   2. Replace YOUR_OPENWEATHERMAP_API_KEY_HERE in the code');
+            this.apis.airQuality.enabled = false;
+        } else {
+            this.apis.airQuality.enabled = true;
+            console.log('✅ Air quality monitoring enabled');
+        }
+        
+        console.log('✅ Earthquake monitoring enabled (no API key required)');
     }
     
     setupEmergencyTestInterface() {
         window.emergencyTest = {
             testEarthquake: (magnitude, distance) => this.testEarthquakeAlert(magnitude, distance),
             testAirQuality: (aqi) => this.testAirQualityAlert(aqi),
-            testFlood: (discharge) => this.testFloodAlert(discharge),
             checkAll: () => this.fetchAllEmergencyData(),
             showAlerts: () => console.log('Active alerts:', Array.from(this.currentAlerts)),
             clearAlerts: () => this.clearAllAlerts(),
+            clearEmergency: () => {
+                if (window.municipalWeatherSystem) {
+                    window.municipalWeatherSystem.clearEmergencyAlert();
+                }
+            },
             debug: () => {
                 console.log('🔍 Emergency System Debug Info:');
                 console.log('Active alerts:', Array.from(this.currentAlerts));
                 console.log('Weather system available:', !!window.municipalWeatherSystem);
                 console.log('Emergency monitoring active:', this.activeTimers.length > 0);
+                console.log('API configuration:', {
+                    earthquake: 'enabled',
+                    airQuality: this.apis.airQuality.enabled ? 'enabled' : 'disabled (no API key)'
+                });
                 console.log('Last updates:', this.lastUpdate);
             }
         };
         
-        console.log('🧪 Emergency testing commands available:');
-        console.log('emergencyTest.testEarthquake(5.2, 45) - Test earthquake alert');
-        console.log('emergencyTest.testAirQuality(180) - Test air quality alert');
-        console.log('emergencyTest.testFlood(150) - Test flood alert');
-        console.log('emergencyTest.checkAll() - Fetch all emergency data');
-        console.log('emergencyTest.debug() - Show debug information');
+        console.log('🧪 Emergency testing commands:');
+        console.log('emergencyTest.testEarthquake(5.2, 45) - Test earthquake');
+        console.log('emergencyTest.testAirQuality(180) - Test air quality');
+        console.log('emergencyTest.clearEmergency() - Clear emergency alert');
+        console.log('emergencyTest.debug() - Show debug info');
     }
     
     async fetchAllEmergencyData() {
-        console.log('🔍 Fetching emergency data for Slobozia...');
-        
         try {
-            // Fetch all emergency data in parallel
-            const [earthquakeData, airQualityData, floodData] = await Promise.allSettled([
-                this.fetchEarthquakeData(),
-                this.fetchAirQualityData(),
-                this.fetchFloodData()
-            ]);
+            const promises = [this.fetchEarthquakeData()];
             
-            // Process results
-            if (earthquakeData.status === 'fulfilled') {
-                this.processEarthquakeData(earthquakeData.value);
-            } else {
-                console.warn('❌ Earthquake data fetch failed:', earthquakeData.reason);
+            // Only fetch air quality if API key is configured
+            if (this.apis.airQuality.enabled) {
+                promises.push(this.fetchAirQualityData());
             }
             
-            if (airQualityData.status === 'fulfilled' && airQualityData.value !== null) {
-                this.processAirQualityData(airQualityData.value);
+            const results = await Promise.allSettled(promises);
+            
+            // Process earthquake data
+            if (results[0].status === 'fulfilled') {
+                this.processEarthquakeData(results[0].value);
             } else {
-                console.log('ℹ️ Air quality monitoring not available for Slobozia');
-                this.clearAlert('airQuality');
+                console.warn('❌ Earthquake data fetch failed:', results[0].reason);
             }
             
-            if (floodData.status === 'fulfilled' && floodData.value !== null) {
-                this.processFloodData(floodData.value);
-            } else {
-                console.log('ℹ️ Flood monitoring not available for Slobozia');
-                this.clearAlert('flood');
+            // Process air quality data (if enabled)
+            if (this.apis.airQuality.enabled && results[1]) {
+                if (results[1].status === 'fulfilled') {
+                    this.processAirQualityData(results[1].value);
+                } else {
+                    console.warn('❌ Air quality data fetch failed:', results[1].reason);
+                    this.clearAlert('airQuality');
+                }
             }
-            
-            console.log('✅ Emergency monitoring update completed');
             
         } catch (error) {
-            console.error('❌ Emergency monitoring system error:', error);
+            console.error('❌ Emergency monitoring error:', error);
         }
     }
     
     async fetchEarthquakeData() {
         const params = new URLSearchParams({
             format: 'geojson',
-            starttime: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Last 24 hours
+            starttime: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0],
             latitude: this.coordinates.latitude,
             longitude: this.coordinates.longitude,
             maxradiuskm: this.emergencyThresholds.earthquake.radius,
@@ -1619,10 +1833,7 @@ class EmergencyMonitoringSystem {
             orderby: 'time'
         });
         
-        const url = `${this.apis.earthquake.url}?${params}`;
-        console.log('🌍 Fetching earthquake data:', url);
-        
-        const response = await fetch(url, {
+        const response = await fetch(`${this.apis.earthquake.url}?${params}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -1638,79 +1849,34 @@ class EmergencyMonitoringSystem {
     }
     
     async fetchAirQualityData() {
-        // Note: Open-Meteo Air Quality API may not be available at all locations
-        // Using a fallback approach with error handling
-        try {
-            const params = new URLSearchParams({
-                latitude: this.coordinates.latitude.toString(),
-                longitude: this.coordinates.longitude.toString(),
-                hourly: 'pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone',
-                timezone: 'Europe/Bucharest',
-                forecast_days: 1
-            });
-            
-            const url = `${this.apis.airQuality.url}?${params}`;
-            console.log('🌬️ Fetching air quality data:', url);
-            
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`Open-Meteo Air Quality API error: ${response.status}`);
-            }
-            
-            return await response.json();
-            
-        } catch (error) {
-            console.warn('⚠️ Air quality data not available for this location:', error.message);
-            // Return null to indicate no data available
+        if (!this.apis.airQuality.enabled) {
             return null;
         }
-    }
-    
-    async fetchFloodData() {
-        // Note: Open-Meteo Flood API may not be available at all locations
-        // Using a fallback approach with error handling
-        try {
-            const params = new URLSearchParams({
-                latitude: this.coordinates.latitude.toString(),
-                longitude: this.coordinates.longitude.toString(),
-                daily: 'river_discharge',
-                timezone: 'Europe/Bucharest',
-                forecast_days: 1
-            });
-            
-            const url = `${this.apis.flood.url}?${params}`;
-            console.log('🌊 Fetching flood data:', url);
-            
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`Open-Meteo Flood API error: ${response.status}`);
-            }
-            
-            return await response.json();
-            
-        } catch (error) {
-            console.warn('⚠️ Flood data not available for this location:', error.message);
-            // Return null to indicate no data available
-            return null;
+        
+        const params = new URLSearchParams({
+            lat: this.coordinates.latitude.toString(),
+            lon: this.coordinates.longitude.toString(),
+            appid: this.apis.airQuality.apiKey
+        });
+        
+        const response = await fetch(`${this.apis.airQuality.url}?${params}`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`OpenWeatherMap API error: ${response.status}`);
         }
+        
+        return await response.json();
     }
     
     processEarthquakeData(data) {
         if (!data.features || data.features.length === 0) {
-            console.log('🟢 No significant earthquakes in the last 24 hours');
             this.clearAlert('earthquake');
             return;
         }
         
-        // Find the most significant earthquake
         const significantEarthquake = data.features.reduce((max, current) => {
             return current.properties.mag > max.properties.mag ? current : max;
         });
@@ -1719,52 +1885,23 @@ class EmergencyMonitoringSystem {
         const distance = this.calculateDistance(
             this.coordinates.latitude,
             this.coordinates.longitude,
-            significantEarthquake.geometry.coordinates[1], // lat
-            significantEarthquake.geometry.coordinates[0]  // lon
+            significantEarthquake.geometry.coordinates[1],
+            significantEarthquake.geometry.coordinates[0]
         );
-        
-        console.log(`🌍 Earthquake detected: M${magnitude} at ${distance.toFixed(1)}km from Slobozia`);
         
         this.evaluateEarthquakeAlert(magnitude, distance, significantEarthquake.properties);
     }
     
     processAirQualityData(data) {
-        if (!data.hourly) {
-            console.warn('⚠️ Invalid air quality data structure');
+        if (!data.list || data.list.length === 0) {
+            this.clearAlert('airQuality');
             return;
         }
         
-        // Get current hour index (most recent data)
-        const currentIndex = 0;
-        const airData = {
-            pm25: data.hourly.pm2_5?.[currentIndex] || 0,
-            pm10: data.hourly.pm10?.[currentIndex] || 0,
-            co: data.hourly.carbon_monoxide?.[currentIndex] || 0,
-            no2: data.hourly.nitrogen_dioxide?.[currentIndex] || 0,
-            so2: data.hourly.sulphur_dioxide?.[currentIndex] || 0,
-            o3: data.hourly.ozone?.[currentIndex] || 0
-        };
+        const current = data.list[0];
+        const aqi = current.main.aqi * 50; // Convert to 0-300 scale
         
-        // Calculate simplified AQI based on PM2.5 (most health-relevant)
-        const aqi = this.calculateSimpleAQI(airData.pm25);
-        
-        console.log(`🌬️ Air Quality: PM2.5=${airData.pm25}µg/m³, AQI≈${aqi}`);
-        
-        this.evaluateAirQualityAlert(aqi, airData);
-    }
-    
-    processFloodData(data) {
-        if (!data.daily || !data.daily.river_discharge) {
-            console.warn('⚠️ No flood data available for this location');
-            return;
-        }
-        
-        // Get most recent discharge data
-        const discharge = data.daily.river_discharge[0] || 0;
-        
-        console.log(`🌊 River discharge: ${discharge} m³/s`);
-        
-        this.evaluateFloodAlert(discharge);
+        this.evaluateAirQualityAlert(aqi, current.components);
     }
     
     evaluateEarthquakeAlert(magnitude, distance, properties) {
@@ -1794,7 +1931,7 @@ class EmergencyMonitoringSystem {
         }
     }
     
-    evaluateAirQualityAlert(aqi, airData) {
+    evaluateAirQualityAlert(aqi, components) {
         let alertLevel = null;
         
         if (aqi >= this.emergencyThresholds.airQuality.dangerous) {
@@ -1810,10 +1947,9 @@ class EmergencyMonitoringSystem {
             this.triggerEmergencyAlert('airQuality', {
                 ...protocol,
                 data: {
-                    aqi: aqi,
-                    pm25: airData.pm25?.toFixed(1) || 'N/A',
-                    pm10: airData.pm10?.toFixed(1) || 'N/A',
-                    recommendation: this.getAirQualityRecommendation(aqi)
+                    aqi: Math.round(aqi),
+                    pm25: components.pm2_5?.toFixed(1) || 'N/A',
+                    pm10: components.pm10?.toFixed(1) || 'N/A'
                 }
             });
         } else {
@@ -1821,62 +1957,21 @@ class EmergencyMonitoringSystem {
         }
     }
     
-    evaluateFloodAlert(discharge) {
-        let alertLevel = null;
-        
-        if (discharge >= this.emergencyThresholds.flood.emergency) {
-            alertLevel = 'emergency';
-        } else if (discharge >= this.emergencyThresholds.flood.warning) {
-            alertLevel = 'warning';
-        } else if (discharge >= this.emergencyThresholds.flood.watch) {
-            alertLevel = 'watch';
-        }
-        
-        if (alertLevel) {
-            const protocol = this.emergencyProtocols.flood[alertLevel];
-            this.triggerEmergencyAlert('flood', {
-                ...protocol,
-                data: {
-                    discharge: discharge.toFixed(1),
-                    risk: this.getFloodRiskLevel(discharge),
-                    trend: 'monitoring'
-                }
-            });
-        } else {
-            this.clearAlert('flood');
-        }
-    }
-    
     triggerEmergencyAlert(type, protocol) {
         const alertId = `${type}_${protocol.level}`;
         
         if (this.currentAlerts.has(alertId)) {
-            console.log(`🔄 Updating existing ${type} alert`);
-        } else {
-            console.log(`🚨 NEW EMERGENCY ALERT: ${type} - ${protocol.level}`);
-            this.currentAlerts.add(alertId);
+            return; // Don't spam the same alert
         }
         
-        // Always integrate with existing weather system - never create separate UI
+        console.log(`🚨 EMERGENCY ALERT: ${type} - ${protocol.level}`);
+        this.currentAlerts.add(alertId);
+        
+        // Always integrate with existing weather system
         if (window.municipalWeatherSystem && typeof window.municipalWeatherSystem.displayEmergencyAlert === 'function') {
             window.municipalWeatherSystem.displayEmergencyAlert(type, protocol);
-        } else {
-            // If weather system not available, log only (no UI creation)
-            console.log('🚨 EMERGENCY ALERT (Weather system not available)');
-            console.log(`Type: ${type.toUpperCase()}`);
-            console.log(`Level: ${protocol.level.toUpperCase()}`);
-            console.log(`Title: ${protocol.title}`);
-            console.log('Actions Required:');
-            protocol.recommendations.forEach((action, index) => {
-                console.log(`  ${index + 1}. ${action}`);
-            });
-            
-            if (protocol.data) {
-                console.log('Data:', protocol.data);
-            }
         }
         
-        // Log for municipal records
         this.logEmergencyEvent(type, protocol);
     }
     
@@ -1887,31 +1982,26 @@ class EmergencyMonitoringSystem {
             type: type,
             level: protocol.level,
             title: protocol.title,
-            data: protocol.data || {},
-            actions: protocol.recommendations
+            data: protocol.data || {}
         };
         
-        // In a real implementation, this would be sent to municipal systems
-        console.log('📋 MUNICIPAL LOG ENTRY:', JSON.stringify(event, null, 2));
+        console.log('📋 EMERGENCY LOG:', JSON.stringify(event, null, 2));
     }
     
     clearAlert(type) {
         const alertsToRemove = Array.from(this.currentAlerts).filter(alert => alert.startsWith(type));
         alertsToRemove.forEach(alert => this.currentAlerts.delete(alert));
-        
-        if (alertsToRemove.length > 0) {
-            console.log(`✅ Cleared ${type} alerts:`, alertsToRemove);
-        }
     }
     
     clearAllAlerts() {
         this.currentAlerts.clear();
-        console.log('✅ All emergency alerts cleared');
+        if (window.municipalWeatherSystem) {
+            window.municipalWeatherSystem.clearEmergencyAlert();
+        }
     }
     
-    // Utility methods
     calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371; // Earth's radius in km
+        const R = 6371;
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
         const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -1921,40 +2011,12 @@ class EmergencyMonitoringSystem {
         return R * c;
     }
     
-    calculateSimpleAQI(pm25) {
-        // Simplified AQI calculation based on PM2.5
-        if (pm25 <= 12) return 50;
-        if (pm25 <= 35.4) return 100;
-        if (pm25 <= 55.4) return 150;
-        if (pm25 <= 150.4) return 200;
-        if (pm25 <= 250.4) return 300;
-        return 400;
-    }
-    
-    getAirQualityRecommendation(aqi) {
-        if (aqi <= 50) return 'Calitate bună - activități normale';
-        if (aqi <= 100) return 'Moderată - persoane sensibile să limiteze efortul';
-        if (aqi <= 150) return 'Nesănătoasă pentru grupuri sensibile';
-        if (aqi <= 200) return 'Nesănătoasă - limitați activitățile în exterior';
-        if (aqi <= 300) return 'Foarte nesănătoasă - evitați activitățile în exterior';
-        return 'Periculoasă - rămâneți în interior';
-    }
-    
-    getFloodRiskLevel(discharge) {
-        if (discharge < 50) return 'Normal';
-        if (discharge < 100) return 'Monitorizare';
-        if (discharge < 200) return 'Atenționare';
-        return 'Pericol';
-    }
-    
     startEmergencyMonitoring() {
-        // Main monitoring loop
         const timer = setInterval(() => {
             this.fetchAllEmergencyData();
         }, this.updateInterval);
         
         this.activeTimers.push(timer);
-        console.log(`🔄 Emergency monitoring started (${this.updateInterval/1000/60} min intervals)`);
     }
     
     // Testing methods
@@ -1969,18 +2031,9 @@ class EmergencyMonitoringSystem {
     testAirQualityAlert(aqi) {
         console.log(`🧪 Testing air quality alert: AQI ${aqi}`);
         this.evaluateAirQualityAlert(aqi, {
-            pm25: aqi * 0.5,
-            pm10: aqi * 0.8,
-            co: 100,
-            no2: 20,
-            so2: 10,
-            o3: 80
+            pm2_5: aqi * 0.5,
+            pm10: aqi * 0.8
         });
-    }
-    
-    testFloodAlert(discharge) {
-        console.log(`🧪 Testing flood alert: ${discharge} m³/s`);
-        this.evaluateFloodAlert(discharge);
     }
     
     destroy() {
@@ -1993,6 +2046,7 @@ class EmergencyMonitoringSystem {
     }
 }
 
+// PRODUCTION INITIALIZATION
 // Initialize Municipal Weather Warning System
 window.WeatherAlertSystem = WeatherAlertSystem;
 
@@ -2018,13 +2072,12 @@ if (document.readyState === 'loading') {
 setTimeout(() => {
     if (!window.emergencySystem && !window.emergencySystemInitialized && weatherSystemInstance) {
         window.emergencySystem = new EmergencyMonitoringSystem();
-        console.log('🚨 Emergency monitoring system started for Slobozia');
-    } else if (window.emergencySystemInitialized) {
-        console.log('ℹ️ Emergency system already running');
     }
-}, 5000); // Wait 5 seconds to ensure weather system is fully loaded
+}, 5000);
 
-console.log('🏛️ Municipal Weather Warning System loaded for Poliția Locală Slobozia');
-console.log('📋 Use weatherTest.* commands for municipal testing');
-console.log('🚨 Use emergencyTest.* commands for emergency system testing');
-console.log('🔍 Debug: Check for duplicate containers with: document.querySelectorAll(".weather-alert-floating").length');
+// Production logging
+console.log('🏛️ Municipal Weather System v2.0 - Production Ready');
+console.log('📍 Location: Slobozia, Ialomița County, Romania');
+console.log('🚨 Emergency monitoring: Earthquakes + Air Quality');
+console.log('📋 Test commands: weatherTest.debug() | emergencyTest.debug()');
+
