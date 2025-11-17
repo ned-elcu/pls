@@ -1980,7 +1980,7 @@ function fixIconAlignment() {
     }, 100);
 }
 
-// GOOGLE FORMS NEWSLETTER INTEGRATION
+// GOOGLE FORMS NEWSLETTER INTEGRATION - Using CORS Proxy
 function initNewsletterForm() {
     const form = document.getElementById('newsletter-form');
     const emailInput = document.getElementById('newsletter-email');
@@ -1991,10 +1991,11 @@ function initNewsletterForm() {
         return;
     }
     
-    // Google Form URL configured for Newsletter PLS
+    // Google Form URL with CORS proxy
     const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdG8I17JU1TiMG5o7IXZeQKvul6YH6a0huf1wFG0uZ_ccBctQ/formResponse';
+    const CORS_PROXY = 'https://corsproxy.io/?';
     
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const email = emailInput.value.trim();
@@ -2015,19 +2016,19 @@ function initNewsletterForm() {
         messageDiv.className = 'newsletter-message';
         messageDiv.textContent = '';
         
-        // Use XMLHttpRequest for better compatibility
-        const xhr = new XMLHttpRequest();
-        
-        // Prepare form data
-        const formData = new FormData();
-        formData.append('entry.367514333', email);
-        
-        xhr.open('POST', GOOGLE_FORM_URL, true);
-        
-        // Handle completion (success or failure)
-        xhr.onloadend = function() {
-            // With Google Forms, we can't read the response due to CORS
-            // But if we get here, the submission likely worked
+        try {
+            // Create form data
+            const formData = new URLSearchParams();
+            formData.append('entry.367514333', email);
+            
+            // Submit through CORS proxy
+            const response = await fetch(CORS_PROXY + encodeURIComponent(GOOGLE_FORM_URL), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData.toString()
+            });
             
             // Show success message
             messageDiv.className = 'newsletter-message success';
@@ -2036,6 +2037,13 @@ function initNewsletterForm() {
             // Clear the form
             form.reset();
             
+        } catch (error) {
+            console.error('Newsletter subscription error:', error);
+            
+            // Show error message
+            messageDiv.className = 'newsletter-message error';
+            messageDiv.textContent = '✗ A apărut o eroare. Te rugăm să încerci din nou.';
+        } finally {
             // Re-enable button
             submitButton.disabled = false;
             submitButton.textContent = 'Abonează-te';
@@ -2045,32 +2053,7 @@ function initNewsletterForm() {
                 messageDiv.className = 'newsletter-message';
                 messageDiv.textContent = '';
             }, 5000);
-        };
-        
-        xhr.onerror = function() {
-            // Even on "error", the form might have submitted successfully
-            // Google Forms CORS policy causes this
-            
-            // Show success message anyway (Google Forms submission likely worked)
-            messageDiv.className = 'newsletter-message success';
-            messageDiv.textContent = '✓ Mulțumim! Te-ai abonat cu succes la newsletter!';
-            
-            // Clear the form
-            form.reset();
-            
-            // Re-enable button
-            submitButton.disabled = false;
-            submitButton.textContent = 'Abonează-te';
-            
-            // Hide message after 5 seconds
-            setTimeout(() => {
-                messageDiv.className = 'newsletter-message';
-                messageDiv.textContent = '';
-            }, 5000);
-        };
-        
-        // Send the request
-        xhr.send(formData);
+        }
     });
     
     // Email validation on input
