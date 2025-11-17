@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Integritate instituțională - POLIȚIA LOCALĂ SLOBOZIA</title>
-    <!-- Added Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -26,7 +25,6 @@
             --header-height: 140px;
             --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --transition-medium: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --transition-slow: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
             --shadow-small: 0 2px 4px rgba(0,0,0,0.1);
             --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
             --shadow-large: 0 10px 25px rgba(0,0,0,0.15);
@@ -54,13 +52,11 @@
             font-weight: 700;
         }
         
-        /* Material Icons styling */
         .material-icons {
             vertical-align: middle;
             line-height: 1;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -78,7 +74,6 @@
             background: var(--secondary-light);
         }
         
-        /* Header Container (will be loaded via components.js) */
         .header-container {
             position: fixed;
             width: 100%;
@@ -87,7 +82,6 @@
             top: 0;
         }
 
-        /* Page Title Section */
         .page-title-section {
             background-color: var(--primary-color);
             background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
@@ -104,7 +98,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('/api/placeholder/1920/300');
             background-size: cover;
             background-position: center;
             opacity: 0.1;
@@ -192,7 +185,6 @@
             font-weight: 500;
         }
 
-        /* Content Section */
         .content-section {
             padding: 5rem 3rem;
             background-color: white;
@@ -205,7 +197,6 @@
             margin: 0 auto;
         }
 
-        /* Document Container Styling */
         .document-container {
             background-color: white;
             border-radius: var(--border-radius-large);
@@ -249,7 +240,6 @@
             font-weight: 600;
         }
 
-        /* Main Tabs Container */
         .main-tabs-container {
             margin-bottom: 2rem;
         }
@@ -276,6 +266,8 @@
             background: none;
             font-family: 'Poppins', sans-serif;
             font-size: 1rem;
+            flex: 1;
+            justify-content: center;
         }
         
         .main-tab:hover {
@@ -308,9 +300,9 @@
         
         .main-tab-content.active {
             display: block;
+            animation: fadeIn 0.5s forwards;
         }
         
-        /* Year Tabs */
         .year-tabs-container {
             margin: 2rem 0;
         }
@@ -365,7 +357,6 @@
             animation: fadeIn 0.5s forwards;
         }
 
-        /* Document Cards */
         .document-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -435,65 +426,100 @@
             transform: translateX(5px);
         }
 
-        /* Archive Toggle */
-        .archive-toggle {
-            margin: 1.5rem 0;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-        }
-        
-        .archive-toggle-switch {
-            position: relative;
-            width: 48px;
-            height: 24px;
-            background-color: rgba(0,0,0,0.1);
-            border-radius: 12px;
-            margin-right: 1rem;
-            transition: var(--transition-fast);
-        }
-        
-        .archive-toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            border-radius: 50%;
-            transition: var(--transition-fast);
-        }
-        
-        .archive-toggle.active .archive-toggle-switch {
-            background-color: var(--secondary-color);
-        }
-        
-        .archive-toggle.active .archive-toggle-switch::after {
-            left: 26px;
-        }
-        
-        .archive-toggle-text {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            transition: var(--transition-fast);
-        }
-        
-        .archive-toggle.active .archive-toggle-text {
-            color: var(--secondary-color);
-        }
-        
-        .archived-documents {
-            display: none;
-        }
-        
-        .archived-documents.active {
-            display: block;
-            animation: fadeIn 0.5s forwards;
+        .loading-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
         }
 
-        /* Related Resources */
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(30, 136, 229, 0.2);
+            border-top-color: var(--secondary-color);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-state p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem !important;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .error-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: rgba(229, 57, 53, 0.05);
+            border: 2px solid rgba(229, 57, 53, 0.2);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
+        .error-state-icon {
+            font-size: 4rem !important;
+            color: var(--danger-color);
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .error-state-text {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 0 0 1.5rem 0;
+            line-height: 1.6;
+        }
+
+        .error-state-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-medium);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .error-state-button:hover {
+            background-color: var(--secondary-light);
+            transform: translateY(-2px);
+        }
+
         .related-resources {
             margin-top: 4rem;
             padding: 3rem;
@@ -595,7 +621,6 @@
             transform: translateX(3px);
         }
 
-        /* CTA Section */
         .cta-section {
             margin-top: 5rem;
             padding: 4rem 0;
@@ -611,7 +636,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('/api/placeholder/1920/300');
             background-size: cover;
             background-position: center;
             opacity: 0.1;
@@ -659,28 +683,6 @@
             font-weight: 600;
             text-decoration: none;
             transition: var(--transition-fast);
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-        
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.5s ease;
-            z-index: -1;
-        }
-        
-        .btn:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
         }
         
         .btn i {
@@ -695,13 +697,11 @@
         .btn-primary {
             background-color: var(--accent-color);
             color: var(--text-primary);
-            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
         }
         
         .btn-primary:hover {
             background-color: var(--accent-dark);
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
         }
         
         .btn-secondary {
@@ -713,10 +713,8 @@
         .btn-secondary:hover {
             border-color: white;
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
         }
 
-        /* Animation */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -726,7 +724,6 @@
             }
         }
 
-        /* Responsive Styles */
         @media (max-width: 992px) {
             .page-title-section {
                 padding: 4rem 2rem 3rem;
@@ -764,10 +761,6 @@
             
             .content-section {
                 padding: 3rem 1.5rem;
-                position: relative;
-                z-index: 2;
-                margin-top: 0;
-                background: white;
             }
             
             .document-container {
@@ -782,14 +775,26 @@
                 grid-template-columns: 1fr;
             }
             
+            .main-tabs {
+                flex-direction: column;
+            }
+            
             .main-tab {
                 padding: 1rem 1.5rem;
                 font-size: 0.9rem;
+                justify-content: flex-start;
             }
             
             .main-tab i {
                 margin-right: 0.3rem;
                 font-size: 1rem;
+            }
+            
+            .main-tab.active::after {
+                width: 4px;
+                height: 100%;
+                left: 0;
+                bottom: 0;
             }
             
             .year-tab {
@@ -808,10 +813,8 @@
     </style>
 </head>
 <body>
-    <!-- Header Container - Will be populated by components.js -->
     <div id="header-container"></div>
 
-    <!-- Page Title Section -->
     <section class="page-title-section">
         <div class="page-title-bg"></div>
         <div class="page-title-content">
@@ -829,19 +832,16 @@
         </div>
     </section>
 
-    <!-- Content Section -->
     <section class="content-section">
         <div class="content-container">
-            <!-- Main Document Container -->
             <div class="document-container">
                 <h2 class="document-heading">Integritatea instituțională în cadrul Poliției Locale Slobozia</h2>
                 
                 <div class="document-intro">
                     <p>Poliția Locală Slobozia se angajează să mențină cele mai înalte standarde de integritate și transparență în toate activitățile sale. Adoptăm un set de măsuri și practici care asigură respectarea normelor legale, etice și de transparență în activitatea curentă.</p>
-                    <p>În această secțiune puteți consulta documentele relevante privind integritatea instituțională, structurate pe trei domenii principale: <a href="#" class="highlight-text">Strategia Națională Anticorupție</a>, <a href="#" class="highlight-text">Codul etic</a> și <a href="#" class="highlight-text">Rapoartele privind declararea cadourilor</a>.</p>
+                    <p>În această secțiune puteți consulta documentele relevante privind integritatea instituțională, structurate pe trei domenii principale: <a href="#strategie-anticoruptie" class="highlight-text">Strategia Națională Anticorupție</a>, <a href="#cod-etic" class="highlight-text">Codul etic</a> și <a href="#declarare-cadouri" class="highlight-text">Rapoartele privind declararea cadourilor</a>.</p>
                 </div>
                 
-                <!-- Main Tabs for Document Types -->
                 <div class="main-tabs-container">
                     <div class="main-tabs">
                         <button class="main-tab active" data-tab="strategie-anticoruptie" id="tab-strategie-anticoruptie">
@@ -855,310 +855,39 @@
                         </button>
                     </div>
                     
-                    <!-- Tab Content - Strategia Națională Anticorupție -->
                     <div class="main-tab-content active" id="strategie-anticoruptie">
                         <div class="document-intro">
                             <p>Poliția Locală Slobozia implementează <a href="#" class="highlight-text">Strategia Națională Anticorupție 2021-2025</a>, adoptată prin Hotărârea Guvernului nr. 1269/2021, prin documente și măsuri specifice pentru asigurarea integrității și combaterea corupției.</p>
                         </div>
                         
-                        <!-- Year Tabs -->
-                        <div class="year-tabs-container">
-                            <div class="year-tabs">
-                                <button class="year-tab active" data-year="2025">2025</button>
-                                <button class="year-tab" data-year="2024">2024</button>
-                                <button class="year-tab" data-year="2023">2023</button>
-                                <button class="year-tab" data-year="2022">2022</button>
-                            </div>
-                            
-                            <!-- 2025 Content -->
-                            <div class="year-content active" id="strategie-2025">
-                                <div class="document-grid">
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Programul de dezvoltare SCIM
-                                        </h4>
-                                        <p class="document-card-date">Februarie 2025</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2025/02/Programul-de-dezvoltare-SCIM-pe-anul-2025.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 2024 Content -->
-                            <div class="year-content" id="strategie-2024">
-                                <div class="document-grid">
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            MDLPA Anexa 3
-                                        </h4>
-                                        <p class="document-card-date">Februarie 2025</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2025/02/MDLPA_Anexa-3-pe-anul-2024.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Raportare privind implementarea SNA
-                                        </h4>
-                                        <p class="document-card-date">Februarie 2025</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2025/02/Raportare-privind-implementarea-SNA-2021-2025-PENTRU-2024.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Programul de dezvoltare SCIM
-                                        </h4>
-                                        <p class="document-card-date">Februarie 2024</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/02/Programul-de-dezvoltare-SCIM-pe-anul-2024.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 2023 Content -->
-                            <div class="year-content" id="strategie-2023">
-                                <div class="document-grid">
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Raportare privind implementarea SNA
-                                        </h4>
-                                        <p class="document-card-date">Noiembrie 2023</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2020/11/Raportare-privind-implementarea-SNA-2021-2025-pe-anul-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            MDLPA Anexa 3
-                                        </h4>
-                                        <p class="document-card-date">Februarie 2024</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/02/MDLPA_Anexa-3-pe-anul-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 2022 Content -->
-                            <div class="year-content" id="strategie-2022">
-                                <div class="document-grid">
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Raportare privind implementarea SNA
-                                        </h4>
-                                        <p class="document-card-date">Noiembrie 2022</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2020/11/Raportare-privind-implementarea-SNA-2021-2025-pe-anul-2022.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Decizia privind aprobarea Planului de Integritate
-                                        </h4>
-                                        <p class="document-card-date">Iunie 2022</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2022/06/DECIZIE-grup-lucru-SNA-2021-2025.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">description</i>
-                                            Planul de integritate
-                                        </h4>
-                                        <p class="document-card-date">Iunie 2022</p>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2022/06/plan-de-integritate-Politia-Locala-Slobozia.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Archive documents toggle -->
-                        <div class="archive-toggle" id="strategie-archive-toggle">
-                            <div class="archive-toggle-switch"></div>
-                            <span class="archive-toggle-text">Afișează documentele suplimentare</span>
-                        </div>
-                        
-                        <!-- Archive documents section -->
-                        <div class="archived-documents" id="strategie-archive">
-                            <div class="document-grid">
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">description</i>
-                                        Strategia Națională Anticorupție 2021-2025
-                                    </h4>
-                                    <p class="document-card-date">Decembrie 2021</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2020/11/Strategia-Nationala-Anticoruptie-2021-2025.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">description</i>
-                                        Declarație privind asumarea agendei de integritate
-                                    </h4>
-                                    <p class="document-card-date">Februarie 2024</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/02/Declaratie-privind-asumarea-agendei-de-integritate-organizationala-la-nivelul-Politiei-Locale-Slobozia-pentru-implementarea-SNA-2021-2025.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">description</i>
-                                        Anexa 3 SNA completat
-                                    </h4>
-                                    <p class="document-card-date">Februarie 2024</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/02/Anexa-3-SNA-completat-Politia-Locala.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">description</i>
-                                        Agenda de integritate instituțională
-                                    </h4>
-                                    <p class="document-card-date">Februarie 2024</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/02/Agenda-de-integritate-institutionala-a-Politiei-Locale-Slobozia.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">description</i>
-                                        Decizie Grup lucru pentru evaluarea riscurilor de corupție
-                                    </h4>
-                                    <p class="document-card-date">Februarie 2024</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/02/Decizie-Grup-lucru-pentru-implementarea-metodologiei-privind-evaluarea-riscurilor-de-coruptie-din-cadrul-Politiei-Locale-Slobozia.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">description</i>
-                                        Regulament de organizare și funcționare
-                                    </h4>
-                                    <p class="document-card-date">Octombrie 2023</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2023/10/regulament-de-organizare-si-functionare-grup-lucru-evaluare-riscuri-coruptie.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="text-align: center; margin-top: 2rem;">
-                            <a href="strategia-nationala-anticoruptie/" class="document-card-link">
-                                Vezi toate documentele legate de Strategia Națională Anticorupție <i class="material-icons">arrow_forward</i>
-                            </a>
-                        </div>
+                        <div id="strategie-anticoruptie-container"></div>
                     </div>
                     
-                    <!-- Tab Content - Cod etic -->
                     <div class="main-tab-content" id="cod-etic">
                         <div class="document-intro">
                             <p>Codul etic stabilește normele de conduită etică și profesională aplicabile personalului Poliției Locale Slobozia în exercitarea atribuțiilor de serviciu.</p>
                         </div>
                         
-                        <div class="document-grid">
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">description</i>
-                                    Cod etic actualizat
-                                </h4>
-                                <p class="document-card-date">Aprilie 2023</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2023/04/cod-etic-actualizat-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                            
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">description</i>
-                                    Cadrul relațiilor în desfășurarea relațiilor publice
-                                </h4>
-                                <p class="document-card-date">Martie 2020</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2020/03/SKM_C22720030208400.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                        </div>
+                        <div id="cod-etic-container"></div>
                         
-                        <!-- Related link -->
                         <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(0,0,0,0.1);">
                             <h4 style="margin-bottom: 1rem;">Raportări către Agenția Națională a Funcționarilor Publici</h4>
                             <a href="https://pcslobozia.ro/raportari-anfp/" class="document-card-link">
                                 Accesează raportările ANFP <i class="material-icons">arrow_forward</i>
                             </a>
                         </div>
-                        
-                        <div style="text-align: center; margin-top: 2rem;">
-                            <a href="cod-etic/" class="document-card-link">
-                                Vezi toate documentele legate de Codul etic <i class="material-icons">arrow_forward</i>
-                            </a>
-                        </div>
                     </div>
                     
-                    <!-- Tab Content - Declarare cadouri -->
                     <div class="main-tab-content" id="declarare-cadouri">
                         <div class="document-intro">
                             <p>Conform <a href="#" class="highlight-text">Legii nr. 251/2004</a> privind unele măsuri referitoare la bunurile primite cu titlu gratuit cu prilejul unor acțiuni de protocol în exercitarea mandatului sau a funcției, Poliția Locală Slobozia publică anual rapoarte privind declararea cadourilor primite de funcționarii publici.</p>
                         </div>
                         
-                        <div class="document-grid">
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">description</i>
-                                    Raport privind declararea cadourilor
-                                </h4>
-                                <p class="document-card-date">Anul 2024</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2025/01/raport-23-din-09.01.2025-cadouri-an-2024-legea-251.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                            
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">description</i>
-                                    Raport privind declararea cadourilor
-                                </h4>
-                                <p class="document-card-date">Anul 2023</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2024/01/raport-declarare-cadouri-an-2023-L.-251.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div style="text-align: center; margin-top: 2rem;">
-                            <a href="raport-privind-declararea-cadourilor/" class="document-card-link">
-                                Vezi toate rapoartele privind declararea cadourilor <i class="material-icons">arrow_forward</i>
-                            </a>
-                        </div>
+                        <div id="declarare-cadouri-container"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Related Resources Section -->
             <div class="related-resources">
                 <h3 class="related-heading">Documente conexe</h3>
                 <div class="resources-grid">
@@ -1166,185 +895,141 @@
                         <div class="resource-icon"><i class="material-icons">article</i></div>
                         <h4 class="resource-title">Declarații de avere</h4>
                         <p class="resource-description">Declarațiile de avere ale personalului Poliției Locale Slobozia, conform cerințelor legale.</p>
-                        <a href="declaratii-avere/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="../transparenta/declaratii-avere/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                     
                     <div class="resource-card">
                         <div class="resource-icon"><i class="material-icons">assignment</i></div>
                         <h4 class="resource-title">Declarații de interese</h4>
                         <p class="resource-description">Declarațiile de interese ale personalului Poliției Locale Slobozia, conform cerințelor legale.</p>
-                        <a href="declaratii-interese/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="../transparenta/declaratii-interese/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                     
                     <div class="resource-card">
                         <div class="resource-icon"><i class="material-icons">account_balance</i></div>
                         <h4 class="resource-title">Bilanțuri și bugete</h4>
                         <p class="resource-description">Documente financiare și contabile ale instituției, incluzând bilanțuri contabile și bugete anuale.</p>
-                        <a href="bilanturi-si-bugete/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="../transparenta/financiara/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                     
                     <div class="resource-card">
                         <div class="resource-icon"><i class="material-icons">find_in_page</i></div>
                         <h4 class="resource-title">Raport Legea 544/2001</h4>
                         <p class="resource-description">Rapoarte anuale privind aplicarea Legii nr. 544/2001 privind liberul acces la informațiile de interes public.</p>
-                        <a href="documente-legea-544-2001/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="../transparenta/rapoarte-544/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                 </div>
             </div>
 
-            <!-- CTA Section -->
             <div class="cta-section">
                 <div class="cta-bg"></div>
                 <div class="cta-container">
                     <h2 class="cta-title">Ai nevoie de informații suplimentare?</h2>
                     <p class="cta-description">Pentru solicitări de informații sau sesizări legate de integritatea instituțională, te invităm să contactezi Compartimentul de Relații cu Publicul.</p>
                     <div class="cta-buttons">
-                        <a href="contact/" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
-                        <a href="petitii/" class="btn btn-secondary">Formular de petiție <i class="material-icons">description</i></a>
+                        <a href="../contact/" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
+                        <a href="../petitii/" class="btn btn-secondary">Formular de petiție <i class="material-icons">description</i></a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer Container - Will be populated by components.js -->
     <div id="footer-container"></div>
     
-    <!-- Include components.js to load header and footer -->
     <script src="../components.js"></script>
+    <script src="../transparenta/drive-config.js"></script>
+    <script src="../transparenta/drive-integration.js"></script>
     
-    <!-- Page Specific JavaScript -->
     <script>
+        const loadedTabs = {
+            'strategie-anticoruptie': false,
+            'cod-etic': false,
+            'declarare-cadouri': false
+        };
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Check URL hash to activate the appropriate tab
-            function checkHash() {
-                const hash = window.location.hash.substring(1); // Remove the # symbol
-                if (hash) {
-                    // Check if it's a main tab
-                    const mainTabElement = document.getElementById('tab-' + hash);
-                    if (mainTabElement) {
-                        // Activate the appropriate tab
-                        activateMainTab(hash);
-                    }
-                }
+            let activeTabId = window.location.hash.substring(1);
+            if (!activeTabId || !loadedTabs.hasOwnProperty(activeTabId)) {
+                activeTabId = 'strategie-anticoruptie';
+                window.location.hash = activeTabId;
             }
             
-            // Function to activate a main tab
-            function activateMainTab(tabId) {
-                // Remove active class from all tabs
-                document.querySelectorAll('.main-tab').forEach(tab => {
-                    tab.classList.remove('active');
-                });
-                
-                // Add active class to selected tab
-                const tabElement = document.getElementById('tab-' + tabId);
-                if (tabElement) {
-                    tabElement.classList.add('active');
-                }
-                
-                // Hide all tab content
-                document.querySelectorAll('.main-tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // Show target content
-                const contentElement = document.getElementById(tabId);
-                if (contentElement) {
-                    contentElement.classList.add('active');
-                }
-                
-                // Update URL hash without triggering page scroll
-                const currentScrollPosition = window.pageYOffset;
-                window.location.hash = tabId;
-                window.scrollTo(0, currentScrollPosition);
-            }
+            activateMainTab(activeTabId);
+            loadTabData(activeTabId);
             
-            // Main Tabs functionality
-            const mainTabs = document.querySelectorAll('.main-tab');
-            
-            mainTabs.forEach(tab => {
+            document.querySelectorAll('.main-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
-                    // Get the tab target
-                    const target = this.getAttribute('data-tab');
-                    activateMainTab(target);
+                    const tabId = this.getAttribute('data-tab');
+                    window.location.hash = tabId;
+                    activateMainTab(tabId);
+                    loadTabData(tabId);
                 });
             });
             
-            // Year Tabs functionality
-            const yearTabs = document.querySelectorAll('.year-tab');
-            
-            yearTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Get the year
-                    const year = this.getAttribute('data-year');
-                    
-                    // Get the parent container to scope our selectors
-                    const parentContainer = this.closest('.year-tabs-container');
-                    
-                    // Remove active class from all tabs in this container
-                    parentContainer.querySelectorAll('.year-tab').forEach(t => {
-                        t.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-                    
-                    // Hide all year content in this container
-                    parentContainer.querySelectorAll('.year-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    // Show target content (based on the parent tab and year)
-                    const parentTab = parentContainer.closest('.main-tab-content').id;
-                    const contentId = parentTab.split('-')[0] + '-' + year;
-                    document.getElementById(contentId).classList.add('active');
-                });
+            window.addEventListener('hashchange', function() {
+                const tabId = window.location.hash.substring(1);
+                if (loadedTabs.hasOwnProperty(tabId)) {
+                    activateMainTab(tabId);
+                    loadTabData(tabId);
+                }
             });
-            
-            // Archive toggle functionality
-            const archiveToggles = document.querySelectorAll('.archive-toggle');
-            
-            archiveToggles.forEach(toggle => {
-                toggle.addEventListener('click', function() {
-                    // Toggle active class
-                    this.classList.toggle('active');
-                    
-                    // Get the ID of this toggle
-                    const id = this.id;
-                    
-                    // Get the associated archive section
-                    let archiveId = id.replace('-toggle', '');
-                    const archiveSection = document.getElementById(archiveId);
-                    
-                    // Toggle active class on archive section
-                    if (archiveSection) {
-                        archiveSection.classList.toggle('active');
-                        
-                        // Update toggle text
-                        const toggleText = this.querySelector('.archive-toggle-text');
-                        if (this.classList.contains('active')) {
-                            toggleText.textContent = 'Ascunde documentele suplimentare';
-                        } else {
-                            toggleText.textContent = 'Afișează documentele suplimentare';
-                        }
-                    }
-                });
-            });
-            
-            // Animation for page elements
-            const fadeElements = document.querySelectorAll('.page-title-content, .document-container, .related-resources, .resource-card');
-            fadeElements.forEach((element, index) => {
-                element.style.opacity = 0;
-                element.style.animation = 'fadeIn 0.8s forwards';
-                element.style.animationDelay = `${0.2 + (index * 0.1)}s`;
-            });
-            
-            // Check hash on page load
-            checkHash();
-            
-            // Listen for hash changes
-            window.addEventListener('hashchange', checkHash);
         });
+        
+        function activateMainTab(tabId) {
+            document.querySelectorAll('.main-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            const tabElement = document.getElementById(`tab-${tabId}`);
+            if (tabElement) {
+                tabElement.classList.add('active');
+            }
+            
+            document.querySelectorAll('.main-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const contentElement = document.getElementById(tabId);
+            if (contentElement) {
+                contentElement.classList.add('active');
+            }
+        }
+        
+        async function loadTabData(tabId) {
+            if (loadedTabs[tabId]) {
+                return;
+            }
+            
+            const containerId = `${tabId}-container`;
+            const container = document.getElementById(containerId);
+            
+            if (!container) {
+                console.error(`Container ${containerId} not found`);
+                return;
+            }
+            
+            container.innerHTML = DriveUIHelper.createLoadingState();
+            
+            try {
+                const integration = new DriveIntegration(tabId);
+                const files = await integration.getFiles();
+                
+                loadedTabs[tabId] = true;
+                
+                if (files.length === 0) {
+                    container.innerHTML = DriveUIHelper.createEmptyState();
+                    return;
+                }
+                
+                const grouped = integration.groupByYear(files);
+                DriveUIHelper.renderGroupedByYear(grouped, containerId);
+                
+            } catch (error) {
+                console.error(`Error loading ${tabId}:`, error);
+                container.innerHTML = DriveUIHelper.createErrorState();
+            }
+        }
     </script>
 </body>
 </html>
