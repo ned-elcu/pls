@@ -1986,16 +1986,26 @@ function initNewsletterForm() {
     const emailInput = document.getElementById('newsletter-email');
     const messageDiv = document.getElementById('newsletter-message');
     
-    if (!form) return;
+    if (!form) {
+        console.error('Newsletter form not found');
+        return;
+    }
     
     // Google Form URL configured for Newsletter PLS
     const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdG8I17JU1TiMG5o7IXZeQKvul6YH6a0huf1wFG0uZ_ccBctQ/formResponse';
     
-    form.addEventListener('submit', async function(e) {
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
         
         const email = emailInput.value.trim();
         const submitButton = form.querySelector('button[type="submit"]');
+        
+        // Validate email
+        if (!email || !emailInput.validity.valid) {
+            messageDiv.className = 'newsletter-message error';
+            messageDiv.textContent = '✗ Te rugăm să introduci o adresă de email validă.';
+            return;
+        }
         
         // Disable button and show loading state
         submitButton.disabled = true;
@@ -2005,55 +2015,61 @@ function initNewsletterForm() {
         messageDiv.className = 'newsletter-message';
         messageDiv.textContent = '';
         
-        try {
-            // Create FormData with the email
-            const formData = new FormData(form);
-            
-            // Submit to Google Forms (using no-cors mode)
-            await fetch(GOOGLE_FORM_URL, {
-                method: 'POST',
-                mode: 'no-cors', // Required for Google Forms
-                body: formData
-            });
-            
-            // Show success message
-            messageDiv.className = 'newsletter-message success';
-            messageDiv.textContent = '✓ Mulțumim! Te-ai abonat cu succes la newsletter!';
-            
-            // Clear the form
-            form.reset();
-            
-            // Hide message after 5 seconds
-            setTimeout(() => {
-                messageDiv.className = 'newsletter-message';
-                messageDiv.textContent = '';
-            }, 5000);
-            
-        } catch (error) {
-            console.error('Newsletter subscription error:', error);
-            
-            // Show error message
-            messageDiv.className = 'newsletter-message error';
-            messageDiv.textContent = '✗ A apărut o eroare. Te rugăm să încerci din nou.';
-            
-            // Hide message after 5 seconds
-            setTimeout(() => {
-                messageDiv.className = 'newsletter-message';
-                messageDiv.textContent = '';
-            }, 5000);
-        } finally {
-            // Re-enable button
-            submitButton.disabled = false;
-            submitButton.textContent = 'Abonează-te';
-        }
+        // Create a hidden iframe to submit the form
+        const iframe = document.createElement('iframe');
+        iframe.name = 'hidden_iframe_newsletter';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+        
+        // Create a temporary form that will submit to the iframe
+        const tempForm = document.createElement('form');
+        tempForm.action = GOOGLE_FORM_URL;
+        tempForm.method = 'POST';
+        tempForm.target = 'hidden_iframe_newsletter';
+        
+        // Add the email input
+        const emailField = document.createElement('input');
+        emailField.type = 'email';
+        emailField.name = 'entry.367514333';
+        emailField.value = email;
+        tempForm.appendChild(emailField);
+        
+        // Add form to body and submit
+        document.body.appendChild(tempForm);
+        tempForm.submit();
+        
+        // Clean up after a short delay
+        setTimeout(() => {
+            document.body.removeChild(tempForm);
+            document.body.removeChild(iframe);
+        }, 1000);
+        
+        // Show success message
+        messageDiv.className = 'newsletter-message success';
+        messageDiv.textContent = '✓ Mulțumim! Te-ai abonat cu succes la newsletter!';
+        
+        // Clear the form
+        form.reset();
+        
+        // Re-enable button
+        submitButton.disabled = false;
+        submitButton.textContent = 'Abonează-te';
+        
+        // Hide message after 5 seconds
+        setTimeout(() => {
+            messageDiv.className = 'newsletter-message';
+            messageDiv.textContent = '';
+        }, 5000);
     });
     
     // Email validation on input
-    emailInput.addEventListener('input', function() {
-        if (this.validity.valid) {
-            this.style.borderColor = '';
-        } else {
-            this.style.borderColor = '#e53935';
-        }
-    });
+    if (emailInput) {
+        emailInput.addEventListener('input', function() {
+            if (this.validity.valid) {
+                this.style.borderColor = '';
+            } else {
+                this.style.borderColor = '#e53935';
+            }
+        });
+    }
 }
