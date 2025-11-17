@@ -67,31 +67,6 @@
             padding: 0 20px;
         }
 
-        /* Header */
-        .header {
-            background-color: white;
-            box-shadow: var(--shadow-small);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: var(--header-height);
-        }
-
-        .logo {
-            height: 60px;
-        }
-
-        .logo img {
-            height: 100%;
-        }
-
-        /* Page Title */
         .page-title-section {
             background-color: var(--primary-color);
             background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
@@ -192,7 +167,43 @@
             font-weight: 500;
         }
 
-        /* Main Navigation */
+        .content-section {
+            padding: 3rem 0 5rem;
+            background-color: white;
+        }
+        
+        .document-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            margin-bottom: 3rem;
+        }
+        
+        .section-heading {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 1.5px;
+        }
+
+        .section-intro {
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
         .main-tabs-container {
             margin: 2rem 0;
         }
@@ -219,6 +230,8 @@
             background: none;
             font-family: 'Poppins', sans-serif;
             font-size: 1rem;
+            flex: 1;
+            justify-content: center;
         }
         
         .main-tab:hover {
@@ -256,44 +269,6 @@
             animation: fadeIn 0.5s forwards;
         }
 
-        /* Content Section */
-        .content-section {
-            padding: 3rem 0 5rem;
-            background-color: white;
-        }
-        
-        .document-container {
-            background-color: white;
-            border-radius: var(--border-radius-large);
-            margin-bottom: 3rem;
-        }
-        
-        .section-heading {
-            color: var(--primary-color);
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            position: relative;
-        }
-        
-        .section-heading::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100px;
-            height: 3px;
-            background-color: var(--secondary-color);
-            border-radius: 1.5px;
-        }
-
-        .section-intro {
-            margin-bottom: 2rem;
-        }
-
-        /* Year Tabs */
         .year-tabs-container {
             margin: 2rem 0;
         }
@@ -348,226 +323,174 @@
             animation: fadeIn 0.5s forwards;
         }
 
-        /* Document Lists */
-        .document-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 2rem;
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
-
-        .document-item {
-            margin-bottom: 1rem;
-            padding: 1.2rem;
+        
+        .document-card {
             background-color: var(--background-light);
             border-radius: var(--border-radius-medium);
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            border-left: 4px solid var(--secondary-color);
-        }
-
-        .document-item:hover {
-            transform: translateX(5px);
             box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            transition: var(--transition-medium);
+            border-left: 4px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
         }
-
-        .document-icon {
-            margin-right: 1rem;
-            color: var(--secondary-color);
-            font-size: 1.5rem;
+        
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
         }
-
-        .document-details {
-            flex: 1;
-        }
-
-        .document-title {
-            font-weight: 600;
+        
+        .document-card-title {
+            font-size: 1.1rem;
             color: var(--primary-color);
-            margin-bottom: 0.3rem;
-        }
-
-        .document-date {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .document-link {
-            margin-left: 1rem;
+            margin-bottom: 0.7rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
+        }
+        
+        .document-card-title i {
+            margin-right: 0.7rem;
             color: var(--secondary-color);
-            font-weight: 500;
+            font-size: 1.3rem;
+        }
+        
+        .document-card-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        
+        .document-card-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
             font-size: 0.9rem;
+            margin-top: auto;
             transition: var(--transition-fast);
         }
-
-        .document-link i {
+        
+        .document-card-link i {
             margin-left: 0.5rem;
             transition: var(--transition-fast);
         }
-
-        .document-link:hover {
+        
+        .document-card-link:hover {
             color: var(--primary-color);
         }
-
-        .document-link:hover i {
-            transform: translateX(3px);
-        }
-
-        /* Archive Toggle */
-        .archive-toggle {
-            margin: 1.5rem 0;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-        }
         
-        .archive-toggle-switch {
-            position: relative;
-            width: 48px;
-            height: 24px;
-            background-color: rgba(0,0,0,0.1);
-            border-radius: 12px;
-            margin-right: 1rem;
-            transition: var(--transition-fast);
-        }
-        
-        .archive-toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            border-radius: 50%;
-            transition: var(--transition-fast);
-        }
-        
-        .archive-toggle.active .archive-toggle-switch {
-            background-color: var(--secondary-color);
-        }
-        
-        .archive-toggle.active .archive-toggle-switch::after {
-            left: 26px;
-        }
-        
-        .archive-toggle-text {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            transition: var(--transition-fast);
-        }
-        
-        .archive-toggle.active .archive-toggle-text {
-            color: var(--secondary-color);
-        }
-        
-        .archived-documents {
-            display: none;
-        }
-        
-        .archived-documents.active {
-            display: block;
-            animation: fadeIn 0.5s forwards;
+        .document-card-link:hover i {
+            transform: translateX(5px);
         }
 
-        /* Footer */
-        .footer {
-            background-color: var(--primary-dark);
-            color: white;
-            padding: 4rem 0 2rem;
+        .loading-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
         }
 
-        .footer-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-column {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .footer-title {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            color: white;
-            position: relative;
-            padding-bottom: 0.5rem;
-        }
-
-        .footer-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
+        .loading-spinner {
             width: 50px;
-            height: 3px;
-            background-color: var(--accent-color);
+            height: 50px;
+            border: 4px solid rgba(30, 136, 229, 0.2);
+            border-top-color: var(--secondary-color);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            animation: spin 0.8s linear infinite;
         }
 
-        .footer-links {
-            list-style: none;
-            padding: 0;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .footer-links li {
-            margin-bottom: 0.8rem;
+        .loading-state p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
         }
 
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.7);
-            transition: var(--transition-fast);
-            display: flex;
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem !important;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .error-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: rgba(229, 57, 53, 0.05);
+            border: 2px solid rgba(229, 57, 53, 0.2);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
+        .error-state-icon {
+            font-size: 4rem !important;
+            color: var(--danger-color);
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .error-state-text {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 0 0 1.5rem 0;
+            line-height: 1.6;
+        }
+
+        .error-state-button {
+            display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-        }
-
-        .footer-links a:hover {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--secondary-color);
             color: white;
+            border: none;
+            border-radius: var(--border-radius-medium);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .footer-contact {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            color: rgba(255, 255, 255, 0.7);
+        .error-state-button:hover {
+            background-color: var(--secondary-light);
+            transform: translateY(-2px);
         }
 
-        .footer-contact i {
-            color: var(--accent-color);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
-        }
-
-        /* Utilities */
-        .mt-1 { margin-top: 0.5rem; }
-        .mt-2 { margin-top: 1rem; }
-        .mt-3 { margin-top: 1.5rem; }
-        .mt-4 { margin-top: 2rem; }
-        .mb-1 { margin-bottom: 0.5rem; }
-        .mb-2 { margin-bottom: 1rem; }
-        .mb-3 { margin-bottom: 1.5rem; }
-        .mb-4 { margin-bottom: 2rem; }
-
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        /* Responsive */
         @media (max-width: 992px) {
             .page-title {
                 font-size: 2.2rem;
@@ -583,48 +506,19 @@
                 font-size: 1.8rem;
             }
             
+            .main-tabs {
+                flex-direction: column;
+            }
+            
             .main-tab {
                 padding: 0.8rem 1.2rem;
                 font-size: 0.9rem;
+                justify-content: flex-start;
             }
             
             .main-tab i {
                 font-size: 1rem;
                 margin-right: 0.3rem;
-            }
-            
-            .document-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .document-icon {
-                margin-bottom: 0.5rem;
-            }
-            
-            .document-link {
-                margin-left: 0;
-                margin-top: 0.8rem;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .navbar {
-                flex-direction: column;
-                height: auto;
-                padding: 1rem 0;
-            }
-            
-            .page-title-section {
-                padding: 3rem 0 2rem;
-            }
-            
-            .page-title {
-                font-size: 1.5rem;
-            }
-            
-            .main-tabs {
-                flex-direction: column;
             }
             
             .main-tab.active::after {
@@ -633,14 +527,26 @@
                 left: 0;
                 bottom: 0;
             }
+            
+            .document-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .page-title-section {
+                padding: 3rem 0 2rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Header Container - Will be populated by components.js -->
     <div id="header-container"></div>
 
-    <!-- Page Title Section -->
     <section class="page-title-section">
         <div class="page-title-bg"></div>
         <div class="container">
@@ -658,873 +564,75 @@
         </div>
     </section>
 
-    <!-- Main Content -->
     <section class="content-section">
         <div class="container">
-            <!-- Main Tabs Navigation -->
             <div class="main-tabs-container">
                 <div class="main-tabs">
-                    <button class="main-tab" data-tab="raportare-salariala" id="tab-raportare-salariala">
+                    <button class="main-tab active" data-tab="raportare-salariala" id="tab-raportare-salariala">
                         <i class="material-icons">payments</i> Raportare salarială
                     </button>
                     <button class="main-tab" data-tab="bilanturi-bugete" id="tab-bilanturi-bugete">
                         <i class="material-icons">account_balance</i> Bilanțuri și bugete
                     </button>
                     <button class="main-tab" data-tab="program-achizitii" id="tab-program-achizitii">
-                        <i class="material-icons">shopping_cart</i> Program achiziții anuale
+                        <i class="material-icons">shopping_cart</i> Program achiziții
                     </button>
                 </div>
                 
-                <!-- Tab Content - Raportare Salarială -->
-                <div class="main-tab-content" id="raportare-salariala">
+                <div class="main-tab-content active" id="raportare-salariala">
                     <h2 class="section-heading">Raportare salarială</h2>
                     <div class="section-intro">
                         <p>Conform Art. 33 din Legea-cadru nr. 153/2017 privind salarizarea personalului plătit din fonduri publice, publicăm periodic lista funcțiilor și salariile de bază ale personalului Poliției Locale Slobozia.</p>
                     </div>
                     
-                    <ul class="document-list">
-                        <li class="document-item">
-                            <i class="material-icons document-icon">description</i>
-                            <div class="document-details">
-                                <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                <p class="document-date">Martie 2025</p>
-                            </div>
-                            <a href="https://pcslobozia.ro/wp-content/uploads/2025/03/Salarii-31.03.2025.pdf" target="_blank" class="document-link">
-                                Vizualizează <i class="material-icons">open_in_new</i>
-                            </a>
-                        </li>
-                        
-                        <li class="document-item">
-                            <i class="material-icons document-icon">description</i>
-                            <div class="document-details">
-                                <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                <p class="document-date">Septembrie 2024</p>
-                            </div>
-                            <a href="https://pcslobozia.ro/wp-content/uploads/2024/09/Salarii-30.09.2024.pdf" target="_blank" class="document-link">
-                                Vizualizează <i class="material-icons">open_in_new</i>
-                            </a>
-                        </li>
-                        
-                        <li class="document-item">
-                            <i class="material-icons document-icon">description</i>
-                            <div class="document-details">
-                                <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                <p class="document-date">Martie 2024</p>
-                            </div>
-                            <a href="https://pcslobozia.ro/wp-content/uploads/2024/03/Salarii-31.03.2024.pdf" target="_blank" class="document-link">
-                                Vizualizează <i class="material-icons">open_in_new</i>
-                            </a>
-                        </li>
-                        
-                        <li class="document-item">
-                            <i class="material-icons document-icon">description</i>
-                            <div class="document-details">
-                                <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                <p class="document-date">Septembrie 2023</p>
-                            </div>
-                            <a href="https://pcslobozia.ro/wp-content/uploads/2023/09/salarii-la-data-de-30.09.2023-1-2.pdf" target="_blank" class="document-link">
-                                Vizualizează <i class="material-icons">open_in_new</i>
-                            </a>
-                        </li>
-                    </ul>
-                    
-                    <!-- Archive Toggle -->
-                    <div class="archive-toggle" id="raportare-salariala-archive-toggle">
-                        <div class="archive-toggle-switch"></div>
-                        <span class="archive-toggle-text">Afișează documentele arhivate</span>
-                    </div>
-                    
-                    <!-- Archive Documents -->
-                    <div class="archived-documents" id="raportare-salariala-archive">
-                        <ul class="document-list">
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Martie 2023</p>
-                                </div>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2023/03/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2023.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Septembrie 2022</p>
-                                </div>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2022/09/salarii-Politia-Locala-Slobozia-la-data-de-30.09.2022.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Martie 2022</p>
-                                </div>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2022/03/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2022.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Septembrie 2021</p>
-                                </div>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2021/09/salarii-Politia-Locala-Slobozia-la-data-de-30.09.2021.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Iunie 2021</p>
-                                </div>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2021/06/stat-functii-2021-actualizat.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Martie 2021</p>
-                                </div>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2021/04/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2021.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Septembrie 2020</p>
-                                </div>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2020/09/salarii-Politia-Locala-Slobozia-la-data-de-30.09.2020.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Martie 2020</p>
-                                </div>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2020/03/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2020.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Septembrie 2019</p>
-                                </div>
-                                <a href="http://pcslobozia.ro/wp-content/uploads/2019/10/SKM_C22719101010050.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Martie 2019</p>
-                                </div>
-                                <a href="http://pcslobozia.ro/wp-content/uploads/2019/10/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2019.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Septembrie 2018</p>
-                                </div>
-                                <a href="http://pcslobozia.ro/wp-content/uploads/2018/09/salarii-Politia-Locala-Slobozia-la-data-de-30.09.2018.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Martie 2018</p>
-                                </div>
-                                <a href="http://pcslobozia.ro/wp-content/uploads/2018/03/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2018.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">description</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Art. 33 din Legea – cadru nr. 153/2017</h4>
-                                    <p class="document-date">Septembrie 2017</p>
-                                </div>
-                                <a href="http://pcslobozia.ro/wp-content/uploads/2017/09/SalariiPolitiaLocalaSloboziaSeptembrie2017.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    <div id="raportare-salariala-container"></div>
                 </div>
                 
-                <!-- Tab Content - Bilanțuri și bugete -->
                 <div class="main-tab-content" id="bilanturi-bugete">
                     <h2 class="section-heading">Bilanțuri și bugete</h2>
                     <div class="section-intro">
                         <p>În conformitate cu legislația privind transparența și accesul la informații de interes public, publicăm bilanțurile contabile, conturile de execuție bugetară și bugetele anuale ale Poliției Locale Slobozia.</p>
                     </div>
                     
-                    <!-- Year Tabs -->
-                    <div class="year-tabs-container">
-                        <div class="year-tabs">
-                            <button class="year-tab active" data-year="2024">2024</button>
-                            <button class="year-tab" data-year="2023">2023</button>
-                            <button class="year-tab" data-year="2022">2022</button>
-                            <button class="year-tab" data-year="2021">2021</button>
-                            <button class="year-tab" data-year="2020">2020</button>
-                        </div>
-                        
-                        <!-- 2024 Content -->
-                        <div class="year-content active" id="bilant-2024">
-                            <ul class="document-list">
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Bilanț la 31.12.2024</h4>
-                                        <p class="document-date">Decembrie 2024</p>
-                                    </div>
-                                    <a href="http://pdf-embedder url=" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Contul de execuție la 31.12.2024 - Venituri</h4>
-                                        <p class="document-date">Decembrie 2024</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2025/02/contul-de-executie-la-31.12.2024.-VENITURI.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Contul de execuție la 31.12.2024 - Cheltuieli</h4>
-                                        <p class="document-date">Decembrie 2024</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2025/02/contul-de-executie-la-31.12.2024-.-CHELTUIELI.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Bugetul de venituri și cheltuieli - venituri actualizat la 28.11.2024</h4>
-                                        <p class="document-date">Noiembrie 2024</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/11/bugetul-de-venituri-si-cheltuieli-venituri-actualizat-la-28.11.2024.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Bugetul de venituri și cheltuieli - cheltuieli actualizat la 28.11.2024</h4>
-                                        <p class="document-date">Noiembrie 2024</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/11/bugetul-de-venituri-si-cheltuieli-cheltuieli-actualizat-la-28.11.2024.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                            </ul>
-                            
-                            <!-- Archive Toggle -->
-                            <div class="archive-toggle" id="bilant-2024-archive-toggle">
-                                <div class="archive-toggle-switch"></div>
-                                <span class="archive-toggle-text">Afișează documente suplimentare</span>
-                            </div>
-                            
-                            <!-- Archive Documents -->
-                            <div class="archived-documents" id="bilant-2024-archive">
-                                <ul class="document-list">
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Bilanț la 30.09.2024</h4>
-                                            <p class="document-date">Septembrie 2024</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/11/bilant-la-30.09.2024.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Contul de execuție -venituri la 30.09.2024</h4>
-                                            <p class="document-date">Septembrie 2024</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/11/contul-de-executie-venituri-la-30.09.2024.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Contul de execuție -cheltuieli la 30.09.2024</h4>
-                                            <p class="document-date">Septembrie 2024</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/11/contul-de-executie-cheltuieli-la-30.09.2024.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Bilanț la 30.06.2024</h4>
-                                            <p class="document-date">Iunie 2024</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/08/bilant-la-30.06.2024-2.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Contul de execuție venituri la 30.06.2024</h4>
-                                            <p class="document-date">Iunie 2024</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/08/contul-de-executie-.venituri.-la-30.06.2024.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Contul de execuție cheltuieli la 30.06.2024</h4>
-                                            <p class="document-date">Iunie 2024</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/08/contul-de-executie-.-chelutieli-.-la-30.06.2024.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Buget 02G an 2024 actualizat 10.07.2024</h4>
-                                            <p class="document-date">Iulie 2024</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/08/buget-02G-an-2024-actualizat-10.07.2024.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Buget 61.02.G.03.04 an 2024 actualizat la 10.07.2024</h4>
-                                            <p class="document-date">Iulie 2024</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/08/buget-61.02.G.03.04-an-2024-actualizat-la-10.07.2024.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Bilanț la 31.03.2024</h4>
-                                            <p class="document-date">Martie 2024</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/04/Bilant-la-31.03.2024.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Bugetul de venituri și cheltuieli an 2024 inițial</h4>
-                                            <p class="document-date">Martie 2024</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/03/bugetul-de-venituri-si-cheltuieli-an-2024-initial.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Bugetul de venituri și cheltuieli an 2024 rectificat</h4>
-                                            <p class="document-date">Martie 2024</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/03/bugetul-de-venituri-si-cheltuieli-an-2024-rectificat.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <!-- 2023 Content -->
-                        <div class="year-content" id="bilant-2023">
-                            <ul class="document-list">
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Bilanț la 31.12.2023</h4>
-                                        <p class="document-date">Decembrie 2023</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/03/bilant-la-31.12.2023.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Contul de rezultat patrimonial la 31.12.2023</h4>
-                                        <p class="document-date">Decembrie 2023</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/03/contul-de-rezultat-patrimonial-la-31.12.2023.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Contul de execuție bugetară la 31.12.2023</h4>
-                                        <p class="document-date">Decembrie 2023</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/03/contul-de-executie-bugetara-la-31.12.2023.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Bugetul de venituri și cheltuieli an 2023 rectificat</h4>
-                                        <p class="document-date">Decembrie 2023</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2024/03/bugetul-de-venituri-si-cheltuieli-an-2023-rectificat.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                            </ul>
-                            
-                            <!-- Archive Toggle -->
-                            <div class="archive-toggle" id="bilant-2023-archive-toggle">
-                                <div class="archive-toggle-switch"></div>
-                                <span class="archive-toggle-text">Afișează documente suplimentare</span>
-                            </div>
-                            
-                            <!-- Archive Documents -->
-                            <div class="archived-documents" id="bilant-2023-archive">
-                                <ul class="document-list">
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Bilanț la 30.09.2023</h4>
-                                            <p class="document-date">Septembrie 2023</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/11/bilant-la-30.09.2023.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Contul de rezultat patrimonial la 30.09.2023</h4>
-                                            <p class="document-date">Septembrie 2023</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/11/contul-de-rezultat-patrimonial-la-30.09.2023.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Contul de execuție bugetară la 30.09.2023</h4>
-                                            <p class="document-date">Septembrie 2023</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/11/contul-de-executie-bugetara-la-30.09.2023.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Bugetul de venituri și cheltuieli 2023 actualizat</h4>
-                                            <p class="document-date">Septembrie 2023</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/09/bugetul-de-venituri-si-cheltuieli-2023-actualizat.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Bilanț la 30.06.2023</h4>
-                                            <p class="document-date">Iunie 2023</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/08/bilant-la-30.06.2023.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                    
-                                    <li class="document-item">
-                                        <i class="material-icons document-icon">description</i>
-                                        <div class="document-details">
-                                            <h4 class="document-title">Bugetul de venituri și cheltuieli an 2023</h4>
-                                            <p class="document-date">Februarie 2023</p>
-                                        </div>
-                                        <a href="https://pcslobozia.ro/wp-content/uploads/2023/02/bugetul-de-venituri-si-cheltuieli-an-2023.pdf" target="_blank" class="document-link">
-                                            Vizualizează <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <!-- 2022 Content -->
-                        <div class="year-content" id="bilant-2022">
-                            <ul class="document-list">
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Bilanț la 31.12.2022</h4>
-                                        <p class="document-date">Decembrie 2022</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2023/02/bilant-la-31.12.2022.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Contul de rezultat patrimonial la 31.12.2022</h4>
-                                        <p class="document-date">Decembrie 2022</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2023/02/contul-de-rezultat-patrimonial-la-31.12.2022.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Contul de execuție la 31.12.2022</h4>
-                                        <p class="document-date">Decembrie 2022</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2023/02/contul-de-executie-la-31.12.2022.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                            </ul>
-                            
-                            <p class="mt-4 mb-2">Pentru mai multe documente din anul 2022 și din anii anteriori, vă rugăm să accesați pagina completă de <a href="https://pcslobozia.ro/bilanturi-si-bugete/" target="_blank">Bilanțuri și bugete</a>.</p>
-                        </div>
-                        
-                        <!-- 2021 Content -->
-                        <div class="year-content" id="bilant-2021">
-                            <ul class="document-list">
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Bilanț la 31.12.2021</h4>
-                                        <p class="document-date">Decembrie 2021</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2022/03/bilant-la-31.12.2021.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Contul de rezultat patrimonial la 31.12.2021</h4>
-                                        <p class="document-date">Decembrie 2021</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2022/03/contul-de-rezultat-patrimonial-la-31.12.2021.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Contul de execuție la 31.12.2021</h4>
-                                        <p class="document-date">Decembrie 2021</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2022/03/contul-de-executie-la-31.12.2021.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Bugetul de venituri și cheltuieli pe 2021</h4>
-                                        <p class="document-date">Noiembrie 2021</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/11/bugetul-de-venituri-si-cheltuieli-pe-2021.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                            </ul>
-                            
-                            <p class="mt-4 mb-2">Pentru mai multe documente din anul 2021 și din anii anteriori, vă rugăm să accesați pagina completă de <a href="https://pcslobozia.ro/bilanturi-si-bugete/" target="_blank">Bilanțuri și bugete</a>.</p>
-                        </div>
-                        
-                        <!-- 2020 Content -->
-                        <div class="year-content" id="bilant-2020">
-                            <ul class="document-list">
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Bilanț la 31.12.2020</h4>
-                                        <p class="document-date">Decembrie 2020</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/03/bilant-la-31.12.2020.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Contul de rezultat patrimonial la 31.12.2020</h4>
-                                        <p class="document-date">Decembrie 2020</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/03/Contul-de-rezultat-patrimonial-la-31.12.2020.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Contul de execuție la 31.12.2020</h4>
-                                        <p class="document-date">Decembrie 2020</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/03/Contul-de-executie-la-31.12.2020.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                                
-                                <li class="document-item">
-                                    <i class="material-icons document-icon">description</i>
-                                    <div class="document-details">
-                                        <h4 class="document-title">Bugetul de venituri și cheltuieli 2020 actualizat 21.12.2020</h4>
-                                        <p class="document-date">Decembrie 2020</p>
-                                    </div>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/03/Bugetul-de-venituri-si-cheltuieli-2020-actualizat-21.12.2020.pdf" target="_blank" class="document-link">
-                                        Vizualizează <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </li>
-                            </ul>
-                            
-                            <p class="mt-4 mb-2">Pentru mai multe documente din anul 2020 și din anii anteriori, vă rugăm să accesați pagina completă de <a href="https://pcslobozia.ro/bilanturi-si-bugete/" target="_blank">Bilanțuri și bugete</a>.</p>
-                        </div>
-                    </div>
+                    <div id="bilanturi-bugete-container"></div>
                 </div>
                 
-                <!-- Tab Content - Program achiziții anuale -->
                 <div class="main-tab-content" id="program-achizitii">
                     <h2 class="section-heading">Program achiziții anuale</h2>
                     <div class="section-intro">
                         <p>În vederea asigurării transparenței în utilizarea fondurilor publice, Poliția Locală Slobozia publică planurile anuale de achiziții publice, conform legislației în vigoare.</p>
                     </div>
                     
-                    <ul class="document-list">
-                        <li class="document-item">
-                            <i class="material-icons document-icon">shopping_cart</i>
-                            <div class="document-details">
-                                <h4 class="document-title">Programul anual al achizițiilor</h4>
-                                <p class="document-date">2025</p>
-                            </div>
-                            <a href="https://pcslobozia.ro/wp-content/uploads/2025/01/Program-anual-achizitii-2025.pdf" target="_blank" class="document-link">
-                                Vizualizează <i class="material-icons">open_in_new</i>
-                            </a>
-                        </li>
-                        
-                        <li class="document-item">
-                            <i class="material-icons document-icon">shopping_cart</i>
-                            <div class="document-details">
-                                <h4 class="document-title">Programul anual al achizițiilor</h4>
-                                <p class="document-date">2024</p>
-                            </div>
-                            <a href="https://pcslobozia.ro/wp-content/uploads/2024/01/Program-anual-achizitii-2024.pdf" target="_blank" class="document-link">
-                                Vizualizează <i class="material-icons">open_in_new</i>
-                            </a>
-                        </li>
-                        
-                        <li class="document-item">
-                            <i class="material-icons document-icon">shopping_cart</i>
-                            <div class="document-details">
-                                <h4 class="document-title">Programul anual al achizițiilor</h4>
-                                <p class="document-date">2023</p>
-                            </div>
-                            <a href="https://pcslobozia.ro/wp-content/uploads/2023/02/Program-anual-achizitii-2023.pdf" target="_blank" class="document-link">
-                                Vizualizează <i class="material-icons">open_in_new</i>
-                            </a>
-                        </li>
-                        
-                        <li class="document-item">
-                            <i class="material-icons document-icon">shopping_cart</i>
-                            <div class="document-details">
-                                <h4 class="document-title">Programul anual al achizițiilor</h4>
-                                <p class="document-date">2022</p>
-                            </div>
-                            <a href="https://pcslobozia.ro/wp-content/uploads/2022/03/SKM_C22722032914190.pdf" target="_blank" class="document-link">
-                                Vizualizează <i class="material-icons">open_in_new</i>
-                            </a>
-                        </li>
-                        
-                        <li class="document-item">
-                            <i class="material-icons document-icon">shopping_cart</i>
-                            <div class="document-details">
-                                <h4 class="document-title">Programul anual al achizițiilor</h4>
-                                <p class="document-date">2021</p>
-                            </div>
-                            <a href="https://pcslobozia.ro/wp-content/uploads/2021/03/Program-anual-achizitii-2021.pdf" target="_blank" class="document-link">
-                                Vizualizează <i class="material-icons">open_in_new</i>
-                            </a>
-                        </li>
-                    </ul>
-                    
-                    <!-- Archive Toggle -->
-                    <div class="archive-toggle" id="achizitii-archive-toggle">
-                        <div class="archive-toggle-switch"></div>
-                        <span class="archive-toggle-text">Afișează documentele arhivate</span>
-                    </div>
-                    
-                    <!-- Archive Documents -->
-                    <div class="archived-documents" id="achizitii-archive">
-                        <ul class="document-list">
-                            <li class="document-item">
-                                <i class="material-icons document-icon">shopping_cart</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Programul anual al achizițiilor</h4>
-                                    <p class="document-date">2020</p>
-                                </div>
-                                <a href="http://pcslobozia.ro/wp-content/uploads/2020/01/Program-anual-achizitii-2020.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">shopping_cart</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Programul anual al achizițiilor</h4>
-                                    <p class="document-date">2019</p>
-                                </div>
-                                <a href="http://pcslobozia.ro/wp-content/uploads/2019/11/program-achizitii-2019.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">shopping_cart</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Programul anual al achizițiilor</h4>
-                                    <p class="document-date">2018</p>
-                                </div>
-                                <a href="http://pcslobozia.ro/wp-content/uploads/2019/02/Programul-anual-al-achizitiilor-2018.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">shopping_cart</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Plan anual de achiziții</h4>
-                                    <p class="document-date">2017</p>
-                                </div>
-                                <a href="http://pcslobozia.ro/wp-content/uploads/2016/11/program-achizitii-publice-2017.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">shopping_cart</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Plan anual de achiziții</h4>
-                                    <p class="document-date">2016</p>
-                                </div>
-                                <a href="http://pcslobozia.ro/wp-content/uploads/2016/11/program-achizitii-publice-2016.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                            
-                            <li class="document-item">
-                                <i class="material-icons document-icon">shopping_cart</i>
-                                <div class="document-details">
-                                    <h4 class="document-title">Plan anual de achiziții</h4>
-                                    <p class="document-date">2015</p>
-                                </div>
-                                <a href="http://pcslobozia.ro/wp-content/uploads/2016/11/program-anual-achizitii-2015.pdf" target="_blank" class="document-link">
-                                    Vizualizează <i class="material-icons">open_in_new</i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    <div id="program-achizitii-container"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer Container - Will be populated by components.js -->
     <div id="footer-container"></div>
 
-    <!-- Include components.js to load header and footer -->
     <script src="../../components.js"></script>
+    <script src="../drive-config.js"></script>
+    <script src="../drive-integration.js"></script>
     
-    <!-- JavaScript -->
     <script>
+        // Track which tabs have been loaded
+        const loadedTabs = {
+            'raportare-salariala': false,
+            'bilanturi-bugete': false,
+            'program-achizitii': false
+        };
+
+        // Set default active tab on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Set default active tab
             let activeTabId = window.location.hash.substring(1);
-            if (!activeTabId) {
+            if (!activeTabId || !loadedTabs.hasOwnProperty(activeTabId)) {
                 activeTabId = 'raportare-salariala';
                 window.location.hash = activeTabId;
             }
             
-            // Activate the tab based on hash or default
             activateMainTab(activeTabId);
+            loadTabData(activeTabId);
             
             // Main tabs functionality
             document.querySelectorAll('.main-tab').forEach(tab => {
@@ -1532,88 +640,74 @@
                     const tabId = this.getAttribute('data-tab');
                     window.location.hash = tabId;
                     activateMainTab(tabId);
+                    loadTabData(tabId);
                 });
             });
             
             // Listen for hash changes
             window.addEventListener('hashchange', function() {
                 const tabId = window.location.hash.substring(1);
-                activateMainTab(tabId);
-            });
-            
-            // Year tabs functionality
-            document.querySelectorAll('.year-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const year = this.getAttribute('data-year');
-                    const tabsContainer = this.closest('.year-tabs-container');
-                    
-                    // Remove active class from all tabs in this container
-                    tabsContainer.querySelectorAll('.year-tab').forEach(t => {
-                        t.classList.remove('active');
-                    });
-                    
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-                    
-                    // Hide all year content in this container
-                    tabsContainer.querySelectorAll('.year-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    // Show target content
-                    const target = `bilant-${year}`;
-                    document.getElementById(target).classList.add('active');
-                });
-            });
-            
-            // Archive toggle functionality
-            document.querySelectorAll('.archive-toggle').forEach(toggle => {
-                toggle.addEventListener('click', function() {
-                    this.classList.toggle('active');
-                    
-                    const toggleId = this.id;
-                    const archiveId = toggleId.replace('-toggle', '');
-                    const archiveSection = document.getElementById(archiveId);
-                    
-                    if (archiveSection) {
-                        archiveSection.classList.toggle('active');
-                        
-                        // Update toggle text
-                        const toggleText = this.querySelector('.archive-toggle-text');
-                        if (this.classList.contains('active')) {
-                            toggleText.textContent = 'Ascunde documentele arhivate';
-                        } else {
-                            toggleText.textContent = 'Afișează documentele arhivate';
-                        }
-                    }
-                });
-            });
-            
-            // Function to activate main tab
-            function activateMainTab(tabId) {
-                // Remove active class from all tabs
-                document.querySelectorAll('.main-tab').forEach(tab => {
-                    tab.classList.remove('active');
-                });
-                
-                // Add active class to selected tab
-                const tabElement = document.getElementById(`tab-${tabId}`);
-                if (tabElement) {
-                    tabElement.classList.add('active');
+                if (loadedTabs.hasOwnProperty(tabId)) {
+                    activateMainTab(tabId);
+                    loadTabData(tabId);
                 }
-                
-                // Hide all tab content
-                document.querySelectorAll('.main-tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // Show selected tab content
-                const contentElement = document.getElementById(tabId);
-                if (contentElement) {
-                    contentElement.classList.add('active');
-                }
-            }
+            });
         });
+        
+        function activateMainTab(tabId) {
+            document.querySelectorAll('.main-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            const tabElement = document.getElementById(`tab-${tabId}`);
+            if (tabElement) {
+                tabElement.classList.add('active');
+            }
+            
+            document.querySelectorAll('.main-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const contentElement = document.getElementById(tabId);
+            if (contentElement) {
+                contentElement.classList.add('active');
+            }
+        }
+        
+        async function loadTabData(tabId) {
+            if (loadedTabs[tabId]) {
+                return;
+            }
+            
+            const containerId = `${tabId}-container`;
+            const container = document.getElementById(containerId);
+            
+            if (!container) {
+                console.error(`Container ${containerId} not found`);
+                return;
+            }
+            
+            container.innerHTML = DriveUIHelper.createLoadingState();
+            
+            try {
+                const integration = new DriveIntegration(tabId);
+                const files = await integration.getFiles();
+                
+                loadedTabs[tabId] = true;
+                
+                if (files.length === 0) {
+                    container.innerHTML = DriveUIHelper.createEmptyState();
+                    return;
+                }
+                
+                const grouped = integration.groupByYear(files);
+                DriveUIHelper.renderGroupedByYear(grouped, containerId);
+                
+            } catch (error) {
+                console.error(`Error loading ${tabId}:`, error);
+                container.innerHTML = DriveUIHelper.createErrorState();
+            }
+        }
     </script>
 </body>
 </html>
