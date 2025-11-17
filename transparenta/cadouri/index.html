@@ -67,31 +67,6 @@
             padding: 0 20px;
         }
 
-        /* Header */
-        .header {
-            background-color: white;
-            box-shadow: var(--shadow-small);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: var(--header-height);
-        }
-
-        .logo {
-            height: 60px;
-        }
-
-        .logo img {
-            height: 100%;
-        }
-
-        /* Page Title */
         .page-title-section {
             background-color: var(--primary-color);
             background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
@@ -111,8 +86,6 @@
             background-position: center;
             opacity: 0.1;
             z-index: 0;
-            background-image: url('/api/placeholder/1200/400');
-            background-blend-mode: overlay;
         }
         
         .page-title-content {
@@ -194,7 +167,6 @@
             font-weight: 500;
         }
 
-        /* Content Section */
         .content-section {
             padding: 3rem 0 5rem;
         }
@@ -232,73 +204,6 @@
             margin-bottom: 2rem;
         }
 
-        /* Document Lists */
-        .document-list {
-            list-style: none;
-            padding: 0;
-            margin: 2rem 0;
-        }
-
-        .document-item {
-            margin-bottom: 1rem;
-            padding: 1.2rem;
-            background-color: var(--background-light);
-            border-radius: var(--border-radius-medium);
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            border-left: 4px solid var(--secondary-color);
-        }
-
-        .document-item:hover {
-            transform: translateX(5px);
-            box-shadow: var(--shadow-small);
-        }
-
-        .document-icon {
-            margin-right: 1rem;
-            color: var(--secondary-color);
-            font-size: 1.5rem;
-        }
-
-        .document-details {
-            flex: 1;
-        }
-
-        .document-title {
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 0.3rem;
-        }
-
-        .document-date {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .document-link {
-            margin-left: 1rem;
-            display: flex;
-            align-items: center;
-            color: var(--secondary-color);
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: var(--transition-fast);
-        }
-
-        .document-link i {
-            margin-left: 0.5rem;
-            transition: var(--transition-fast);
-        }
-
-        .document-link:hover {
-            color: var(--primary-color);
-        }
-
-        .document-link:hover i {
-            transform: translateX(3px);
-        }
-
         .info-card {
             background-color: rgba(30, 136, 229, 0.05);
             border-left: 4px solid var(--secondary-color);
@@ -324,101 +229,174 @@
             color: var(--text-secondary);
         }
 
-        /* Footer */
-        .footer {
-            background-color: var(--primary-dark);
-            color: white;
-            padding: 4rem 0 2rem;
+        .document-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
         }
 
-        .footer-content {
+        .document-card {
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            box-shadow: var(--shadow-small);
+            padding: 1.5rem;
+            transition: var(--transition-medium);
+            border-left: 4px solid var(--secondary-color);
             display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-bottom: 3rem;
+            flex-direction: column;
         }
 
-        .footer-column {
-            flex: 1;
-            min-width: 250px;
+        .document-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
         }
 
-        .footer-title {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            color: white;
-            position: relative;
-            padding-bottom: 0.5rem;
+        .document-card-title {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
         }
 
-        .footer-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background-color: var(--accent-color);
+        .document-card-title i {
+            margin-right: 0.7rem;
+            color: var(--secondary-color);
+            font-size: 1.3rem;
         }
 
-        .footer-links {
-            list-style: none;
-            padding: 0;
+        .document-card-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            padding-left: 2rem;
         }
 
-        .footer-links li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.7);
+        .document-card-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: auto;
             transition: var(--transition-fast);
-            display: flex;
+        }
+
+        .document-card-link i {
+            margin-left: 0.5rem;
+            transition: var(--transition-fast);
+        }
+
+        .document-card-link:hover {
+            color: var(--primary-color);
+        }
+
+        .document-card-link:hover i {
+            transform: translateX(5px);
+        }
+
+        .loading-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(30, 136, 229, 0.2);
+            border-top-color: var(--secondary-color);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-state p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem !important;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .error-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: rgba(229, 57, 53, 0.05);
+            border: 2px solid rgba(229, 57, 53, 0.2);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
+        .error-state-icon {
+            font-size: 4rem !important;
+            color: var(--danger-color);
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .error-state-text {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 0 0 1.5rem 0;
+            line-height: 1.6;
+        }
+
+        .error-state-button {
+            display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-        }
-
-        .footer-links a:hover {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--secondary-color);
             color: white;
+            border: none;
+            border-radius: var(--border-radius-medium);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .footer-contact {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            color: rgba(255, 255, 255, 0.7);
+        .error-state-button:hover {
+            background-color: var(--secondary-light);
+            transform: translateY(-2px);
         }
 
-        .footer-contact i {
-            color: var(--accent-color);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
-        }
-
-        /* Utilities */
-        .mt-1 { margin-top: 0.5rem; }
-        .mt-2 { margin-top: 1rem; }
-        .mt-3 { margin-top: 1.5rem; }
-        .mt-4 { margin-top: 2rem; }
-        .mb-1 { margin-bottom: 0.5rem; }
-        .mb-2 { margin-bottom: 1rem; }
-        .mb-3 { margin-bottom: 1.5rem; }
-        .mb-4 { margin-bottom: 2rem; }
-
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        /* Responsive */
         @media (max-width: 992px) {
             .page-title {
                 font-size: 2.2rem;
@@ -430,28 +408,12 @@
                 font-size: 1.8rem;
             }
             
-            .document-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .document-icon {
-                margin-bottom: 0.5rem;
-            }
-            
-            .document-link {
-                margin-left: 0;
-                margin-top: 0.8rem;
+            .document-grid {
+                grid-template-columns: 1fr;
             }
         }
         
         @media (max-width: 576px) {
-            .navbar {
-                flex-direction: column;
-                height: auto;
-                padding: 1rem 0;
-            }
-            
             .page-title-section {
                 padding: 3rem 0 2rem;
             }
@@ -463,10 +425,8 @@
     </style>
 </head>
 <body>
-    <!-- Header Container - Will be populated by components.js -->
     <div id="header-container"></div>
 
-    <!-- Page Title Section -->
     <section class="page-title-section">
         <div class="page-title-bg"></div>
         <div class="container">
@@ -478,7 +438,7 @@
                 <div class="breadcrumbs">
                     <a href="https://pcslobozia.ro/">Acasă</a>
                     <span class="separator"><i class="material-icons">chevron_right</i></span>
-                    <a href="#">Integritate instituțională</a>
+                    <a href="../">Transparență</a>
                     <span class="separator"><i class="material-icons">chevron_right</i></span>
                     <span class="current">Raport privind declararea cadourilor</span>
                 </div>
@@ -486,7 +446,6 @@
         </div>
     </section>
 
-    <!-- Main Content -->
     <section class="content-section">
         <div class="container">
             <div class="document-container">
@@ -505,49 +464,79 @@
                     <p>Rapoartele privind declararea cadourilor sunt publicate anual, în conformitate cu legislația în vigoare.</p>
                 </div>
                 
-                <ul class="document-list">
-                    <li class="document-item">
-                        <i class="material-icons document-icon">description</i>
-                        <div class="document-details">
-                            <h4 class="document-title">Raport privind declararea cadourilor în anul 2024</h4>
-                            <p class="document-date">Ianuarie 2025</p>
-                        </div>
-                        <a href="https://pcslobozia.ro/wp-content/uploads/2025/01/raport-23-din-09.01.2025-cadouri-an-2024-legea-251.pdf" target="_blank" class="document-link">
-                            Vizualizează <i class="material-icons">open_in_new</i>
-                        </a>
-                    </li>
-                    
-                    <li class="document-item">
-                        <i class="material-icons document-icon">description</i>
-                        <div class="document-details">
-                            <h4 class="document-title">Raport privind declararea cadourilor în anul 2023</h4>
-                            <p class="document-date">Ianuarie 2024</p>
-                        </div>
-                        <a href="https://pcslobozia.ro/wp-content/uploads/2024/01/raport-declarare-cadouri-an-2023-L.-251.pdf" target="_blank" class="document-link">
-                            Vizualizează <i class="material-icons">open_in_new</i>
-                        </a>
-                    </li>
-                </ul>
+                <div id="documents-container"></div>
             </div>
         </div>
     </section>
 
-    <!-- Footer Container - Will be populated by components.js -->
     <div id="footer-container"></div>
 
-    <!-- Include components.js to load header and footer -->
     <script src="../../components.js"></script>
+    <script src="../drive-config.js"></script>
+    <script src="../drive-integration.js"></script>
     
-    <!-- JavaScript for animations -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animation for page elements
-            const fadeElements = document.querySelectorAll('.page-title-content, .document-container');
-            fadeElements.forEach(element => {
-                element.style.opacity = 0;
-                element.style.animation = 'fadeIn 0.8s forwards';
-                element.style.animationDelay = '0.2s';
-            });
+        document.addEventListener('DOMContentLoaded', async function() {
+            const container = document.getElementById('documents-container');
+            
+            container.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Se încarcă documentele...</p>
+                </div>
+            `;
+            
+            try {
+                const integration = new DriveIntegration('cadouri');
+                const files = await integration.getFiles();
+                
+                if (files.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="material-icons empty-state-icon">folder_open</i>
+                            <p class="empty-state-text">Nu există documente disponibile momentan.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const grouped = integration.groupByYear(files);
+                const years = Object.keys(grouped);
+                
+                let html = '<div class="document-grid">';
+                years.forEach(year => {
+                    grouped[year].forEach(file => {
+                        html += `
+                            <div class="document-card">
+                                <h4 class="document-card-title">
+                                    <i class="material-icons">description</i>
+                                    ${file.displayName}
+                                </h4>
+                                <p class="document-card-date">${file.formattedDate}</p>
+                                <a href="${file.viewLink}" target="_blank" rel="noopener" class="document-card-link">
+                                    Vizualizează <i class="material-icons">open_in_new</i>
+                                </a>
+                            </div>
+                        `;
+                    });
+                });
+                html += '</div>';
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading documents:', error);
+                container.innerHTML = `
+                    <div class="error-state">
+                        <i class="material-icons error-state-icon">error_outline</i>
+                        <p class="error-state-text">A apărut o eroare la încărcarea documentelor. Vă rugăm să reîncărcați pagina.</p>
+                        <button class="error-state-button" onclick="location.reload()">
+                            <i class="material-icons">refresh</i>
+                            Reîncearcă
+                        </button>
+                    </div>
+                `;
+            }
         });
     </script>
 </body>
