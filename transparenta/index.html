@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documente Transparență - Poliția Locală Slobozia</title>
-    <!-- Added Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -54,13 +53,11 @@
             font-weight: 700;
         }
         
-        /* Material Icons styling */
         .material-icons {
             vertical-align: middle;
             line-height: 1;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -78,7 +75,6 @@
             background: var(--secondary-light);
         }
         
-        /* Header Container (will be loaded via components.js) */
         .header-container {
             position: fixed;
             width: 100%;
@@ -104,7 +100,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('/api/placeholder/1920/300');
             background-size: cover;
             background-position: center;
             opacity: 0.1;
@@ -205,7 +200,6 @@
             margin: 0 auto;
         }
 
-        /* Document Container Styling */
         .document-container {
             background-color: white;
             border-radius: var(--border-radius-large);
@@ -249,7 +243,7 @@
             font-weight: 600;
         }
 
-        /* Main Tabs Container */
+        /* Main Tabs */
         .main-tabs-container {
             margin-bottom: 2rem;
         }
@@ -435,64 +429,6 @@
             transform: translateX(5px);
         }
 
-        /* Archive Toggle */
-        .archive-toggle {
-            margin: 1.5rem 0;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-        }
-        
-        .archive-toggle-switch {
-            position: relative;
-            width: 48px;
-            height: 24px;
-            background-color: rgba(0,0,0,0.1);
-            border-radius: 12px;
-            margin-right: 1rem;
-            transition: var(--transition-fast);
-        }
-        
-        .archive-toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            border-radius: 50%;
-            transition: var(--transition-fast);
-        }
-        
-        .archive-toggle.active .archive-toggle-switch {
-            background-color: var(--secondary-color);
-        }
-        
-        .archive-toggle.active .archive-toggle-switch::after {
-            left: 26px;
-        }
-        
-        .archive-toggle-text {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            transition: var(--transition-fast);
-        }
-        
-        .archive-toggle.active .archive-toggle-text {
-            color: var(--secondary-color);
-        }
-        
-        .archived-documents {
-            display: none;
-        }
-        
-        .archived-documents.active {
-            display: block;
-            animation: fadeIn 0.5s forwards;
-        }
-
         /* Search Component */
         .search-container {
             margin: 2rem 0;
@@ -530,90 +466,85 @@
             transform: translateY(-50%);
             color: var(--text-secondary);
         }
-        
-        .filter-dropdown {
-            min-width: 200px;
-            position: relative;
-        }
-        
-        .filter-dropdown select {
-            width: 100%;
-            padding: 1rem;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: var(--border-radius-medium);
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.95rem;
-            appearance: none;
-            background: white;
-            cursor: pointer;
-            transition: var(--transition-fast);
-        }
-        
-        .filter-dropdown select:focus {
-            outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
-        }
-        
-        .filter-dropdown::after {
-            content: '\e5cf';
-            font-family: 'Material Icons';
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            pointer-events: none;
-        }
-        
-        .search-button {
-            padding: 1rem 2rem;
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius-medium);
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-        }
-        
-        .search-button i {
-            margin-right: 0.5rem;
-        }
-        
-        .search-button:hover {
-            background-color: var(--secondary-light);
-            transform: translateY(-2px);
-        }
 
-        /* Empty State */
-        .empty-state {
-            padding: 3rem;
+        /* Loading, Empty, Error States */
+        .loading-state {
+            padding: 4rem 2rem;
             text-align: center;
             background-color: var(--background-light);
             border-radius: var(--border-radius-medium);
             margin: 2rem 0;
         }
-        
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(30, 136, 229, 0.2);
+            border-top-color: var(--secondary-color);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-state p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
         .empty-state-icon {
-            font-size: 3rem;
+            font-size: 4rem !important;
             color: var(--text-secondary);
             opacity: 0.5;
             margin-bottom: 1rem;
         }
-        
+
         .empty-state-text {
             font-size: 1.1rem;
             color: var(--text-secondary);
-            margin-bottom: 1.5rem;
+            margin: 0;
+            line-height: 1.6;
         }
-        
-        .empty-state-button {
+
+        .error-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: rgba(229, 57, 53, 0.05);
+            border: 2px solid rgba(229, 57, 53, 0.2);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
+        .error-state-icon {
+            font-size: 4rem !important;
+            color: var(--danger-color);
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .error-state-text {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 0 0 1.5rem 0;
+            line-height: 1.6;
+        }
+
+        .error-state-button {
             display: inline-flex;
             align-items: center;
+            gap: 0.5rem;
             padding: 0.8rem 1.5rem;
             background-color: var(--secondary-color);
             color: white;
@@ -621,16 +552,12 @@
             border-radius: var(--border-radius-medium);
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             cursor: pointer;
-            transition: var(--transition-fast);
+            transition: all 0.3s ease;
         }
-        
-        .empty-state-button i {
-            margin-right: 0.5rem;
-        }
-        
-        .empty-state-button:hover {
+
+        .error-state-button:hover {
             background-color: var(--secondary-light);
             transform: translateY(-2px);
         }
@@ -753,7 +680,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('/api/placeholder/1920/300');
             background-size: cover;
             background-position: center;
             opacity: 0.1;
@@ -801,28 +727,6 @@
             font-weight: 600;
             text-decoration: none;
             transition: var(--transition-fast);
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-        
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.5s ease;
-            z-index: -1;
-        }
-        
-        .btn:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
         }
         
         .btn i {
@@ -837,13 +741,11 @@
         .btn-primary {
             background-color: var(--accent-color);
             color: var(--text-primary);
-            box-shadow: 0 4px 15px rgba(255, 202, 40, 0.3);
         }
         
         .btn-primary:hover {
             background-color: var(--accent-dark);
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 202, 40, 0.4);
         }
         
         .btn-secondary {
@@ -855,10 +757,8 @@
         .btn-secondary:hover {
             border-color: white;
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
         }
 
-        /* Animation */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -868,7 +768,7 @@
             }
         }
 
-        /* Responsive Styles */
+        /* Responsive */
         @media (max-width: 992px) {
             .page-title-section {
                 padding: 4rem 2rem 3rem;
@@ -906,10 +806,6 @@
             
             .content-section {
                 padding: 3rem 1.5rem;
-                position: relative;
-                z-index: 2;
-                margin-top: 0;
-                background: white;
             }
             
             .document-container {
@@ -929,11 +825,6 @@
                 font-size: 0.9rem;
             }
             
-            .main-tab i {
-                margin-right: 0.3rem;
-                font-size: 1rem;
-            }
-            
             .year-tab {
                 padding: 0.7rem 1rem;
                 font-size: 0.8rem;
@@ -950,15 +841,11 @@
             .search-container {
                 flex-direction: column;
             }
-            
-            .search-input, .filter-dropdown {
-                width: 100%;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Header Container - Will be populated by components.js -->
+    <!-- Header Container -->
     <div id="header-container"></div>
 
     <!-- Page Title Section -->
@@ -971,9 +858,9 @@
                 <p class="page-description">Acces la declarațiile de avere, declarațiile de interese și raportările salariale ale personalului Poliției Locale Slobozia, conform cerințelor legale de transparență.</p>
                 
                 <div class="breadcrumbs">
-                    <a href="/pls/">Acasă</a>
+                    <a href="/">Acasă</a>
                     <span class="separator"><i class="material-icons">chevron_right</i></span>
-                    <a href="/pls/transparenta">Informații de interes public</a>
+                    <a href="#">Informații de interes public</a>
                     <span class="separator"><i class="material-icons">chevron_right</i></span>
                     <span class="current">Documente de Transparență</span>
                 </div>
@@ -984,40 +871,26 @@
     <!-- Content Section -->
     <section class="content-section">
         <div class="content-container">
-            <!-- Main Document Container -->
             <div class="document-container">
                 <h2 class="document-heading">Acces la Documente</h2>
                 
                 <div class="document-intro">
                     <p>Poliția Locală Slobozia publică regulat documente pentru asigurarea transparenței instituționale, în conformitate cu <a href="#" class="highlight-text">Legea nr. 544/2001</a> privind liberul acces la informațiile de interes public și cu <a href="#" class="highlight-text">Legea nr. 176/2010</a> privind integritatea în exercitarea funcțiilor publice.</p>
-                    <p>În această secțiune găsiți toate documentele de transparență instituțională: declarații de avere, declarații de interese, raportări salariale și rapoarte privind implementarea Legii 544/2001.</p>
-                    <p>Utilizați filtrele de mai jos pentru a accesa tipul de document dorit și anul de referință. Documentele sunt disponibile în format PDF, putând fi vizualizate și descărcate direct din browser.</p>
+                    <p>Documentele sunt actualizate automat și pot fi căutate după nume, funcție sau an. Toate fișierele sunt stocate în Google Drive și pot fi vizualizate sau descărcate direct din browser.</p>
                 </div>
                 
                 <!-- Search Component -->
                 <div class="search-container">
                     <div class="search-input">
                         <i class="material-icons">search</i>
-                        <input type="text" placeholder="Caută după nume, funcție sau conținut...">
+                        <input type="text" id="globalSearch" placeholder="Caută după nume, funcție sau an...">
                     </div>
-                    <div class="filter-dropdown">
-                        <select>
-                            <option value="" selected>Toate tipurile</option>
-                            <option value="avere">Declarații de avere</option>
-                            <option value="interese">Declarații de interese</option>
-                            <option value="salarizare">Raportare salarială</option>
-                        </select>
-                    </div>
-                    <button class="search-button">
-                        <i class="material-icons">filter_list</i>
-                        Filtrează
-                    </button>
                 </div>
                 
-                <!-- Main Tabs for Document Types -->
+                <!-- Main Tabs -->
                 <div class="main-tabs-container">
                     <div class="main-tabs">
-                        <button class="main-tab" data-tab="declaratii-avere" id="tab-declaratii-avere">
+                        <button class="main-tab active" data-tab="declaratii-avere" id="tab-declaratii-avere">
                             <i class="material-icons">description</i> Declarații de avere
                         </button>
                         <button class="main-tab" data-tab="declaratii-interese" id="tab-declaratii-interese">
@@ -1032,634 +905,54 @@
                     </div>
                     
                     <!-- Tab Content - Declarații Avere -->
-                    <div class="main-tab-content" id="declaratii-avere">
-                        <!-- Year Tabs -->
-                        <div class="year-tabs-container">
-                            <div class="year-tabs">
-                                <button class="year-tab active" data-year="2024">2024</button>
-                                <button class="year-tab" data-year="2023">2023</button>
-                                <button class="year-tab" data-year="2022">2022</button>
-                                <button class="year-tab" data-year="2021">2021</button>
-                                <button class="year-tab" data-year="2020">2020</button>
-                            </div>
-                            
-                            <!-- 2024 Content -->
-                            <div class="year-content active" id="avere-2024">
-                                <div class="document-grid">
-                                    <!-- Example document cards -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Popescu Ion
-                                        </h4>
-                                        <p class="document-card-date">Director executiv • Mai 2024</p>
-                                        <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Ionescu Maria
-                                        </h4>
-                                        <p class="document-card-date">Director executiv adjunct • Mai 2024</p>
-                                        <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Georgescu Alexandru
-                                        </h4>
-                                        <p class="document-card-date">Șef serviciu • Mai 2024</p>
-                                        <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Stanescu Elena
-                                        </h4>
-                                        <p class="document-card-date">Polițist local • Mai 2024</p>
-                                        <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                                
-                                <!-- Archive documents toggle -->
-                                <div class="archive-toggle" id="avere-2024-archive-toggle">
-                                    <div class="archive-toggle-switch"></div>
-                                    <span class="archive-toggle-text">Afișează toate documentele</span>
-                                </div>
-                                
-                                <!-- Archive documents section -->
-                                <div class="archived-documents" id="avere-2024-archive">
-                                    <div class="document-grid">
-                                        <!-- More document cards -->
-                                        <div class="document-card">
-                                            <h4 class="document-card-title">
-                                                <i class="material-icons">person</i>
-                                                Dumitrescu Andrei
-                                            </h4>
-                                            <p class="document-card-date">Polițist local • Mai 2024</p>
-                                            <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
-                                                Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                            </a>
-                                        </div>
-                                        
-                                        <div class="document-card">
-                                            <h4 class="document-card-title">
-                                                <i class="material-icons">person</i>
-                                                Vasilescu Mihai
-                                            </h4>
-                                            <p class="document-card-date">Polițist local • Mai 2024</p>
-                                            <a href="https://drive.google.com/file/d/1UseEemos_Q-cLKZ8xf1xR9kwqQa_yr-Kx/view" target="_blank" rel="noopener" class="document-card-link">
-                                                Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 2023 Content -->
-                            <div class="year-content" id="avere-2023">
-                                <div class="document-grid">
-                                    <!-- Example document cards -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Popescu Ion
-                                        </h4>
-                                        <p class="document-card-date">Director executiv • Mai 2023</p>
-                                        <a href="https://drive.google.com/file/d/1a2gOiTZnwdjjVz45RTVG1bJnOn3CTRe-/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Ionescu Maria
-                                        </h4>
-                                        <p class="document-card-date">Director executiv adjunct • Mai 2023</p>
-                                        <a href="https://drive.google.com/file/d/1a2gOiTZnwdjjVz45RTVG1bJnOn3CTRe-/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                                
-                                <!-- Archive documents toggle -->
-                                <div class="archive-toggle" id="avere-2023-archive-toggle">
-                                    <div class="archive-toggle-switch"></div>
-                                    <span class="archive-toggle-text">Afișează toate documentele</span>
-                                </div>
-                                
-                                <!-- Archive documents section -->
-                                <div class="archived-documents" id="avere-2023-archive">
-                                    <div class="document-grid">
-                                        <!-- More document cards -->
-                                        <div class="document-card">
-                                            <h4 class="document-card-title">
-                                                <i class="material-icons">person</i>
-                                                Georgescu Alexandru
-                                            </h4>
-                                            <p class="document-card-date">Șef serviciu • Mai 2023</p>
-                                            <a href="https://drive.google.com/file/d/1a2gOiTZnwdjjVz45RTVG1bJnOn3CTRe-/view" target="_blank" rel="noopener" class="document-card-link">
-                                                Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 2022 Content -->
-                            <div class="year-content" id="avere-2022">
-                                <!-- Archive documents toggle - empty state example -->
-                                <div class="empty-state">
-                                    <i class="material-icons empty-state-icon">folder_open</i>
-                                    <p class="empty-state-text">Nu a fost găsit niciun document pentru criteriile selectate.</p>
-                                    <button class="empty-state-button">
-                                        <i class="material-icons">restart_alt</i>
-                                        Resetați filtrele
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <!-- 2021 Content -->
-                            <div class="year-content" id="avere-2021">
-                                <div class="document-grid">
-                                    <!-- Example document cards -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Popescu Ion
-                                        </h4>
-                                        <p class="document-card-date">Director executiv • Mai 2021</p>
-                                        <a href="https://drive.google.com/file/d/11ocx43jhhVwp9ztsHS1-NCmSQZuvgtym/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 2020 Content -->
-                            <div class="year-content" id="avere-2020">
-                                <div class="document-grid">
-                                    <!-- Example document cards -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Popescu Ion
-                                        </h4>
-                                        <p class="document-card-date">Director executiv • Mai 2020</p>
-                                        <a href="https://drive.google.com/file/d/1tJ7FWjQtoXFNwjFskpqdWYauvH3KFqzL/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Archive link -->
-                        <div style="text-align: center; margin-top: 2rem;">
-                            <a href="https://drive.google.com/drive/folders/0By4DJVQZbI9mTktOSTJLQXFVTFk?resourcekey=0-eQj5Ekmw5PZrDAUsw17BVg&usp=sharing" target="_blank" rel="noopener" class="document-card-link">
-                                Vezi arhiva completă (2009-2021) <i class="material-icons">archive</i>
-                            </a>
-                        </div>
+                    <div class="main-tab-content active" id="declaratii-avere">
+                        <div id="avere-container"></div>
                     </div>
                     
                     <!-- Tab Content - Declarații Interese -->
                     <div class="main-tab-content" id="declaratii-interese">
-                        <!-- Year Tabs -->
-                        <div class="year-tabs-container">
-                            <div class="year-tabs">
-                                <button class="year-tab active" data-year="2024">2024</button>
-                                <button class="year-tab" data-year="2023">2023</button>
-                                <button class="year-tab" data-year="2022">2022</button>
-                                <button class="year-tab" data-year="2021">2021</button>
-                                <button class="year-tab" data-year="2020">2020</button>
-                            </div>
-                            
-                            <!-- 2024 Content -->
-                            <div class="year-content active" id="interese-2024">
-                                <div class="document-grid">
-                                    <!-- Example document cards -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Popescu Ion
-                                        </h4>
-                                        <p class="document-card-date">Director executiv • Mai 2024</p>
-                                        <a href="https://drive.google.com/file/d/1sZcKhbTTC0Md5AMDInBDrFwih56zQEIz/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                    
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Ionescu Maria
-                                        </h4>
-                                        <p class="document-card-date">Director executiv adjunct • Mai 2024</p>
-                                        <a href="https://drive.google.com/file/d/1sZcKhbTTC0Md5AMDInBDrFwih56zQEIz/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 2023 Content -->
-                            <div class="year-content" id="interese-2023">
-                                <div class="document-grid">
-                                    <!-- Example document cards -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Popescu Ion
-                                        </h4>
-                                        <p class="document-card-date">Director executiv • Mai 2023</p>
-                                        <a href="https://drive.google.com/file/d/1Wq2jvPSfNF-YqUzfIbV0FP_6jWD_FmVh/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 2022 Content -->
-                            <div class="year-content" id="interese-2022">
-                                <div class="document-grid">
-                                    <!-- Example document cards -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Popescu Ion
-                                        </h4>
-                                        <p class="document-card-date">Director executiv • Mai 2022</p>
-                                        <a href="https://drive.google.com/file/d/1CeufDd3yUv0KP6oqsc1B6haSXUzDHuQC/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 2021 Content -->
-                            <div class="year-content" id="interese-2021">
-                                <div class="document-grid">
-                                    <!-- Example document cards -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Popescu Ion
-                                        </h4>
-                                        <p class="document-card-date">Director executiv • Mai 2021</p>
-                                        <a href="https://drive.google.com/file/d/1BVP0lqetlJ6SSr8wGqJnuIWny2Ezy1dv/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 2020 Content -->
-                            <div class="year-content" id="interese-2020">
-                                <div class="document-grid">
-                                    <!-- Example document cards -->
-                                    <div class="document-card">
-                                        <h4 class="document-card-title">
-                                            <i class="material-icons">person</i>
-                                            Popescu Ion
-                                        </h4>
-                                        <p class="document-card-date">Director executiv • Mai 2020</p>
-                                        <a href="https://drive.google.com/file/d/1hO3JVLs_voYtM6ocsnanLP9aM1-uIwNH/view" target="_blank" rel="noopener" class="document-card-link">
-                                            Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Archive link -->
-                        <div style="text-align: center; margin-top: 2rem;">
-                            <a href="https://drive.google.com/drive/folders/0By4DJVQZbI9mX0VNT1dOWWJpR1U?resourcekey=0-Y0pW_hR6BeHkCwY6UbDQCA&usp=sharing" target="_blank" rel="noopener" class="document-card-link">
-                                Vezi arhiva completă (2009-2021) <i class="material-icons">archive</i>
-                            </a>
-                        </div>
+                        <div id="interese-container"></div>
                     </div>
                     
-                    <!-- Tab Content - Raportare Salariala -->
+                    <!-- Tab Content - Raportare Salarială -->
                     <div class="main-tab-content" id="raportare-salariala">
-                        <div class="document-grid">
-                            <!-- Example document cards -->
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">payments</i>
-                                    Raport Salarial
-                                </h4>
-                                <p class="document-card-date">Martie 2025</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2025/03/Salarii-31.03.2025.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                            
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">payments</i>
-                                    Raport Salarial
-                                </h4>
-                                <p class="document-card-date">Septembrie 2024</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2024/09/Salarii-30.09.2024.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                            
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">payments</i>
-                                    Raport Salarial
-                                </h4>
-                                <p class="document-card-date">Martie 2024</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2024/03/Salarii-31.03.2024.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                            
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">payments</i>
-                                    Raport Salarial
-                                </h4>
-                                <p class="document-card-date">Septembrie 2023</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2023/09/salarii-la-data-de-30.09.2023-1-2.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <!-- Archive documents toggle -->
-                        <div class="archive-toggle" id="salarii-archive-toggle">
-                            <div class="archive-toggle-switch"></div>
-                            <span class="archive-toggle-text">Afișează toate documentele</span>
-                        </div>
-                        
-                        <!-- Archive documents section -->
-                        <div class="archived-documents" id="salarii-archive">
-                            <div class="document-grid">
-                                <!-- More document cards -->
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">payments</i>
-                                        Raport Salarial
-                                    </h4>
-                                    <p class="document-card-date">Martie 2023</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2023/03/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">payments</i>
-                                        Raport Salarial
-                                    </h4>
-                                    <p class="document-card-date">Septembrie 2022</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2022/09/salarii-Politia-Locala-Slobozia-la-data-de-30.09.2022.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">payments</i>
-                                        Raport Salarial
-                                    </h4>
-                                    <p class="document-card-date">Martie 2022</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2022/03/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2022.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">payments</i>
-                                        Raport Salarial
-                                    </h4>
-                                    <p class="document-card-date">Septembrie 2021</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/09/salarii-Politia-Locala-Slobozia-la-data-de-30.09.2021.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">payments</i>
-                                        Raport Salarial
-                                    </h4>
-                                    <p class="document-card-date">Iunie 2021</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/06/stat-functii-2021-actualizat.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">payments</i>
-                                        Raport Salarial
-                                    </h4>
-                                    <p class="document-card-date">Martie 2021</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/04/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2021.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">payments</i>
-                                        Raport Salarial
-                                    </h4>
-                                    <p class="document-card-date">Septembrie 2020</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2020/09/salarii-Politia-Locala-Slobozia-la-data-de-30.09.2020.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">payments</i>
-                                        Raport Salarial
-                                    </h4>
-                                    <p class="document-card-date">Martie 2020</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2020/03/salarii-Politia-Locala-Slobozia-la-data-de-31.03.2020.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="salarii-container"></div>
                     </div>
                     
-                    <!-- Tab Content - Rapoarte Legea 544/2001 -->
+                    <!-- Tab Content - Rapoarte 544 -->
                     <div class="main-tab-content" id="rapoarte-544">
-                        <div class="document-intro">
-                            <p>Conform cerințelor <a href="#" class="highlight-text">Legii nr. 544/2001</a> privind liberul acces la informațiile de interes public, Poliția Locală Slobozia publică anual rapoarte de evaluare a implementării acestei legi.</p>
-                        </div>
-                        
-                        <div class="document-grid">
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">assessment</i>
-                                    Raport de evaluare
-                                </h4>
-                                <p class="document-card-date">Anul 2024</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2025/02/raport-evaluare-implem.L-544-pt.an-2024.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                            
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">assessment</i>
-                                    Raport de evaluare
-                                </h4>
-                                <p class="document-card-date">Anul 2023</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2024/02/raport-evaluare-implem.L-544-pe-2023.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                            
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">assessment</i>
-                                    Raport de evaluare
-                                </h4>
-                                <p class="document-card-date">Anul 2022</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2023/02/RAPORT-DE-EVALUARE-L-544-2001-pe-2022.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                            
-                            <div class="document-card">
-                                <h4 class="document-card-title">
-                                    <i class="material-icons">assessment</i>
-                                    Raport de evaluare
-                                </h4>
-                                <p class="document-card-date">Anul 2021</p>
-                                <a href="https://pcslobozia.ro/wp-content/uploads/2023/02/RAPORT-DE-EVALUARE-L-544-2001-pe-2021.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                    Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <!-- Archive documents toggle -->
-                        <div class="archive-toggle" id="rapoarte-544-archive-toggle">
-                            <div class="archive-toggle-switch"></div>
-                            <span class="archive-toggle-text">Afișează rapoarte arhivate</span>
-                        </div>
-                        
-                        <!-- Archive documents section -->
-                        <div class="archived-documents" id="rapoarte-544-archive">
-                            <div class="document-grid">
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">assessment</i>
-                                        Raport de evaluare
-                                    </h4>
-                                    <p class="document-card-date">Anul 2020</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/03/RAPORT-DE-EVALUARE-L-544-2001-pe-2020.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">assessment</i>
-                                        Raport de evaluare
-                                    </h4>
-                                    <p class="document-card-date">Anul 2019</p>
-                                    <a href="https://pcslobozia.ro/wp-content/uploads/2021/03/RAPORT-DE-EVALUARE-L-544-2001-pe-2019.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">assessment</i>
-                                        Raport de evaluare
-                                    </h4>
-                                    <p class="document-card-date">Anul 2018</p>
-                                    <a href="http://pcslobozia.ro/wp-content/uploads/2019/11/RAPORT-DE-EVALUARE-L-544-2001-pe-2018.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">assessment</i>
-                                        Raport de evaluare
-                                    </h4>
-                                    <p class="document-card-date">Anul 2017</p>
-                                    <a href="http://pcslobozia.ro/wp-content/uploads/2016/11/RAPORT-DE-EVALUARE-L-544-2001-pe-2017.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">assessment</i>
-                                        Raport de evaluare
-                                    </h4>
-                                    <p class="document-card-date">Anul 2016</p>
-                                    <a href="http://pcslobozia.ro/wp-content/uploads/2016/11/RAPORT-DE-EVALUARE-L-544-2001-pe-2016.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                                
-                                <div class="document-card">
-                                    <h4 class="document-card-title">
-                                        <i class="material-icons">assessment</i>
-                                        Raport de evaluare
-                                    </h4>
-                                    <p class="document-card-date">Anul 2015</p>
-                                    <a href="http://pcslobozia.ro/wp-content/uploads/2016/11/RapEvalL544-2001_2015.pdf" target="_blank" rel="noopener" class="document-card-link">
-                                        Vizualizează documentul <i class="material-icons">open_in_new</i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="rapoarte-container"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Related Resources Section -->
+            <!-- Related Resources -->
             <div class="related-resources">
                 <h3 class="related-heading">Documente conexe</h3>
                 <div class="resources-grid">
                     <div class="resource-card">
-                        <div class="resource-icon"><i class="material-icons">important_devices</i></div>
-                        <h4 class="resource-title">Buletin informativ</h4>
-                        <p class="resource-description">Informații publice comunicat periodic de Poliția Locală Slobozia referitoare la activitatea instituției.</p>
-                        <a href="/pls/transparenta/buletin" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <div class="resource-icon"><i class="material-icons">card_giftcard</i></div>
+                        <h4 class="resource-title">Raport cadouri</h4>
+                        <p class="resource-description">Raportul anual privind declararea cadourilor primite în exercitarea funcțiilor.</p>
+                        <a href="cadouri/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                     <div class="resource-card">
                         <div class="resource-icon"><i class="material-icons">gavel</i></div>
                         <h4 class="resource-title">Legislație</h4>
                         <p class="resource-description">Documente gestionate conform legii, inclusiv hotărâri, ordonanțe și alte acte normative.</p>
-                        <a href="/pls/legislatie" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
-                    </div>
-                    <div class="resource-card">
-                        <div class="resource-icon"><i class="material-icons">shopping_cart</i></div>
-                        <h4 class="resource-title">Program achiziții anuale</h4>
-                        <p class="resource-description">Planul anual de achiziții publice al Poliției Locale Slobozia.</p>
-                        <a href="/pls/transparenta/achizitii" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="documente/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                     <div class="resource-card">
                         <div class="resource-icon"><i class="material-icons">account_balance</i></div>
-                        <h4 class="resource-title">Bilanțuri și bugete</h4>
-                        <p class="resource-description">Documente financiare și contabile ale instituției, incluzând bilanțuri contabile și bugete anuale.</p>
-                        <a href="/pls/transparenta/buget" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <h4 class="resource-title">Informații financiare</h4>
+                        <p class="resource-description">Bilanțuri, bugete și program anual de achiziții publice.</p>
+                        <a href="financiara/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                    </div>
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="material-icons">school</i></div>
+                        <h4 class="resource-title">Program formare</h4>
+                        <p class="resource-description">Planul anual de formare profesională a personalului.</p>
+                        <a href="formare/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                 </div>
             </div>
@@ -1671,198 +964,212 @@
                     <h2 class="cta-title">Ai nevoie de informații suplimentare?</h2>
                     <p class="cta-description">Pentru solicitări de informații în baza Legii nr. 544/2001 privind liberul acces la informațiile de interes public, te invităm să contactezi Compartimentul de Relații cu Publicul.</p>
                     <div class="cta-buttons">
-                        <a href="/pls/contact" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
-                        <a href="/pls/formulare/cerere-544" class="btn btn-secondary">Formular cerere <i class="material-icons">download</i></a>
+                        <a href="/contact" class="btn btn-primary">Contactează-ne <i class="material-icons">arrow_forward</i></a>
+                        <a href="/formulare/cerere-544" class="btn btn-secondary">Formular cerere <i class="material-icons">download</i></a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer Container - Will be populated by components.js -->
+    <!-- Footer Container -->
     <div id="footer-container"></div>
     
-    <!-- Include components.js to load header and footer -->
+    <!-- Include components.js for header and footer -->
     <script src="../components.js"></script>
     
-    <!-- Page Specific JavaScript -->
+    <!-- Include Google Drive integration -->
+    <script src="drive-config.js"></script>
+    <script src="drive-integration.js"></script>
+    
+    <!-- Page Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check URL hash to activate the appropriate tab
-            function checkHash() {
-                const hash = window.location.hash.substring(1); // Remove the # symbol
-                if (hash) {
-                    // Check if it's a main tab
-                    const mainTabElement = document.getElementById('tab-' + hash);
-                    if (mainTabElement) {
-                        // Activate the appropriate tab
-                        activateMainTab(hash);
-                    }
-                } else {
-                    // Default to the first tab if no hash is present
-                    activateMainTab('declaratii-avere');
-                }
+        // Global state
+        let currentData = {
+            'declaratii-avere': null,
+            'declaratii-interese': null,
+            'raportare-salariala': null,
+            'rapoarte-544': null
+        };
+        
+        let currentTab = 'declaratii-avere';
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check URL hash
+            const hash = window.location.hash.substring(1);
+            if (hash && currentData.hasOwnProperty(hash)) {
+                currentTab = hash;
             }
             
-            // Function to activate a main tab
-            function activateMainTab(tabId) {
-                // Remove active class from all tabs
-                document.querySelectorAll('.main-tab').forEach(tab => {
-                    tab.classList.remove('active');
+            // Setup tab navigation
+            setupTabs();
+            
+            // Setup search
+            setupSearch();
+            
+            // Load initial tab data
+            await loadTabData(currentTab);
+            activateTab(currentTab);
+        });
+        
+        // Setup tab navigation
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.main-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', async function() {
+                    const tabId = this.getAttribute('data-tab');
+                    currentTab = tabId;
+                    window.location.hash = tabId;
+                    activateTab(tabId);
+                    await loadTabData(tabId);
                 });
-                
-                // Add active class to selected tab
-                const tabElement = document.getElementById('tab-' + tabId);
-                if (tabElement) {
-                    tabElement.classList.add('active');
-                }
-                
-                // Hide all tab content
-                document.querySelectorAll('.main-tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // Show target content
-                const contentElement = document.getElementById(tabId);
-                if (contentElement) {
-                    contentElement.classList.add('active');
-                }
-                
-                // Update URL hash without triggering page scroll
-                const currentScrollPosition = window.pageYOffset;
-                window.location.hash = tabId;
-                window.scrollTo(0, currentScrollPosition);
+            });
+        }
+        
+        // Activate tab
+        function activateTab(tabId) {
+            // Update tab buttons
+            document.querySelectorAll('.main-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.main-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+        
+        // Load tab data
+        async function loadTabData(tabId) {
+            // Skip if already loaded
+            if (currentData[tabId]) {
+                return;
             }
             
-            // Main Tabs functionality
-            const mainTabs = document.querySelectorAll('.main-tab');
+            const containerId = getContainerId(tabId);
+            const container = document.getElementById(containerId);
             
-            mainTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Get the tab target
-                    const target = this.getAttribute('data-tab');
-                    activateMainTab(target);
-                });
-            });
+            // Show loading state
+            container.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Se încarcă documentele...</p>
+                </div>
+            `;
             
-            // Year Tabs functionality for Avere
-            const yearTabsAvere = document.querySelectorAll('#declaratii-avere .year-tab');
+            try {
+                const integration = new DriveIntegration(tabId);
+                const files = await integration.getFiles();
+                
+                // Store data
+                currentData[tabId] = files;
+                
+                // Render data
+                renderTabData(tabId, files);
+                
+            } catch (error) {
+                console.error(`Error loading ${tabId}:`, error);
+                container.innerHTML = `
+                    <div class="error-state">
+                        <i class="material-icons error-state-icon">error_outline</i>
+                        <p class="error-state-text">A apărut o eroare la încărcarea documentelor. Vă rugăm să reîncărcați pagina.</p>
+                        <button class="error-state-button" onclick="location.reload()">
+                            <i class="material-icons">refresh</i>
+                            Reîncearcă
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // Render tab data
+        function renderTabData(tabId, files) {
+            const containerId = getContainerId(tabId);
+            const container = document.getElementById(containerId);
             
-            yearTabsAvere.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Get the year
-                    const year = this.getAttribute('data-year');
-                    
-                    // Remove active class from all tabs in this section
-                    yearTabsAvere.forEach(t => t.classList.remove('active'));
-                    
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-                    
-                    // Hide all year content in this section
-                    document.querySelectorAll('#declaratii-avere .year-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    // Show target content
-                    document.getElementById(`avere-${year}`).classList.add('active');
-                });
-            });
-            
-            // Year Tabs functionality for Interese
-            const yearTabsInterese = document.querySelectorAll('#declaratii-interese .year-tab');
-            
-            yearTabsInterese.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Get the year
-                    const year = this.getAttribute('data-year');
-                    
-                    // Remove active class from all tabs in this section
-                    yearTabsInterese.forEach(t => t.classList.remove('active'));
-                    
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-                    
-                    // Hide all year content in this section
-                    document.querySelectorAll('#declaratii-interese .year-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    // Show target content
-                    document.getElementById(`interese-${year}`).classList.add('active');
-                });
-            });
-            
-            // Archive toggle functionality
-            const archiveToggles = document.querySelectorAll('.archive-toggle');
-            
-            archiveToggles.forEach(toggle => {
-                toggle.addEventListener('click', function() {
-                    // Toggle active class
-                    this.classList.toggle('active');
-                    
-                    // Get the ID of this toggle
-                    const id = this.id;
-                    
-                    // Get the associated archive section
-                    let archiveId = id.replace('-toggle', '');
-                    const archiveSection = document.getElementById(archiveId);
-                    
-                    // Toggle active class on archive section
-                    if (archiveSection) {
-                        archiveSection.classList.toggle('active');
-                        
-                        // Update toggle text
-                        const toggleText = this.querySelector('.archive-toggle-text');
-                        if (this.classList.contains('active')) {
-                            if (id === 'rapoarte-544-archive-toggle') {
-                                toggleText.textContent = 'Ascunde rapoarte arhivate';
-                            } else {
-                                toggleText.textContent = 'Ascunde documentele';
-                            }
-                        } else {
-                            if (id === 'rapoarte-544-archive-toggle') {
-                                toggleText.textContent = 'Afișează rapoarte arhivate';
-                            } else {
-                                toggleText.textContent = 'Afișează toate documentele';
-                            }
-                        }
-                    }
-                });
-            });
-            
-            // Search functionality
-            const searchInput = document.querySelector('.search-input input');
-            const searchButton = document.querySelector('.search-button');
-            const emptyStateButton = document.querySelector('.empty-state-button');
-            
-            if (searchButton) {
-                searchButton.addEventListener('click', function() {
-                    // Simple search - just for demonstration
-                    const searchTerm = searchInput.value.toLowerCase().trim();
-                    
-                    if (searchTerm) {
-                        alert(`Căutare pentru: "${searchTerm}"\nAceasta este o demonstrație. Într-o implementare reală, s-ar efectua căutarea în documente.`);
-                    }
-                });
+            if (!files || files.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="material-icons empty-state-icon">folder_open</i>
+                        <p class="empty-state-text">Nu există documente disponibile momentan.</p>
+                    </div>
+                `;
+                return;
             }
             
-            if (emptyStateButton) {
-                emptyStateButton.addEventListener('click', function() {
-                    // Reset filter - just for demonstration
-                    if (searchInput) {
-                        searchInput.value = '';
-                    }
-                    
-                    alert('Filtre resetate. Aceasta este o demonstrație.');
-                });
+            // Group by year
+            const integration = new DriveIntegration(tabId);
+            const grouped = integration.groupByYear(files);
+            
+            // Render grouped by year
+            DriveUIHelper.renderGroupedByYear(grouped, containerId, { showIcon: true, showDate: true });
+        }
+        
+        // Get container ID for tab
+        function getContainerId(tabId) {
+            const map = {
+                'declaratii-avere': 'avere-container',
+                'declaratii-interese': 'interese-container',
+                'raportare-salariala': 'salarii-container',
+                'rapoarte-544': 'rapoarte-container'
+            };
+            return map[tabId];
+        }
+        
+        // Setup search
+        function setupSearch() {
+            const searchInput = document.getElementById('globalSearch');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    performSearch(this.value);
+                }, 300);
+            });
+        }
+        
+        // Perform search
+        function performSearch(query) {
+            const files = currentData[currentTab];
+            
+            if (!files || files.length === 0) {
+                return;
             }
             
-            // Check hash on page load
-            checkHash();
+            const integration = new DriveIntegration(currentTab);
+            const filtered = integration.searchFiles(files, query);
             
-            // Listen for hash changes
-            window.addEventListener('hashchange', checkHash);
+            // Re-render with filtered results
+            const containerId = getContainerId(currentTab);
+            const container = document.getElementById(containerId);
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="material-icons empty-state-icon">search_off</i>
+                        <p class="empty-state-text">Nu s-au găsit rezultate pentru "${query}"</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group and render filtered results
+            const grouped = integration.groupByYear(filtered);
+            DriveUIHelper.renderGroupedByYear(grouped, containerId, { showIcon: true, showDate: true });
+        }
+        
+        // Listen for hash changes
+        window.addEventListener('hashchange', function() {
+            const hash = window.location.hash.substring(1);
+            if (hash && currentData.hasOwnProperty(hash)) {
+                currentTab = hash;
+                activateTab(hash);
+                loadTabData(hash);
+            }
         });
     </script>
 </body>
