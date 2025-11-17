@@ -21,7 +21,10 @@ const DRIVE_CONFIG = {
         'bilanturi-bugete': '1GndSXLzUjoljgwgqmOCZV8mI-28lekX9',
         'program-achizitii': '1BCQMfAk1DVwgsU80pprlpnE05fy9Pykh',
         'formare-profesionala': '1g0PNmLkMiElwuVYfxs8bPQ0FuYE5ZEmz',
-        'legislatie': '18Cq2GZC-h01spS2rcDcOCbECC0yn79T3'
+        'legislatie': '18Cq2GZC-h01spS2rcDcOCbECC0yn79T3',
+        'strategie-anticoruptie': '1YoRVOJ6pnBygximXR1UeLFesS29RIrZv',
+        'cod-etic': '14INOAKgKLPyVuFr-BVXIrZEqOQsgInld',
+        'declarare-cadouri': '13qwvAq6jnJ8JeWANY15t8rBNqd9RqN5f'
     },
     
     // API endpoint
