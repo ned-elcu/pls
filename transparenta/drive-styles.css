@@ -1,0 +1,145 @@
+/**
+ * Google Drive Integration Styles
+ * 
+ * Additional styles for loading, empty, and error states
+ * Include this after your main stylesheet
+ */
+
+/* Loading State */
+.loading-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    background-color: var(--background-light, #f8f9fa);
+    border-radius: var(--border-radius-medium, 8px);
+    margin: 2rem 0;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(30, 136, 229, 0.2);
+    border-top-color: var(--secondary-color, #1e88e5);
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-state p {
+    font-size: 1.1rem;
+    color: var(--text-secondary, #424242);
+    margin: 0;
+}
+
+/* Empty State */
+.empty-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    background-color: var(--background-light, #f8f9fa);
+    border-radius: var(--border-radius-medium, 8px);
+    margin: 2rem 0;
+}
+
+.empty-state-icon {
+    font-size: 4rem !important;
+    color: var(--text-secondary, #424242);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.empty-state-text {
+    font-size: 1.1rem;
+    color: var(--text-secondary, #424242);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Error State */
+.error-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    background-color: rgba(229, 57, 53, 0.05);
+    border: 2px solid rgba(229, 57, 53, 0.2);
+    border-radius: var(--border-radius-medium, 8px);
+    margin: 2rem 0;
+}
+
+.error-state-icon {
+    font-size: 4rem !important;
+    color: var(--danger-color, #e53935);
+    opacity: 0.8;
+    margin-bottom: 1rem;
+}
+
+.error-state-text {
+    font-size: 1.1rem;
+    color: var(--text-primary, #212121);
+    margin: 0 0 1.5rem 0;
+    line-height: 1.6;
+}
+
+.error-state-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background-color: var(--secondary-color, #1e88e5);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-medium, 8px);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.error-state-button:hover {
+    background-color: var(--secondary-light, #4dabf5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+}
+
+.error-state-button i {
+    font-size: 1.2rem;
+}
+
+/* Search highlighting */
+.search-highlight {
+    background-color: rgba(255, 202, 40, 0.3);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* Fade in animation for loaded content */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .loading-state,
+    .empty-state,
+    .error-state {
+        padding: 3rem 1.5rem;
+    }
+    
+    .empty-state-icon,
+    .error-state-icon {
+        font-size: 3rem !important;
+    }
+}
