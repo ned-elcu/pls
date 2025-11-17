@@ -1,4 +1,4 @@
-// COMPONENTS.JS - Enhanced version with search disabled, bigger text, and weather alert integration
+// COMPONENTS.JS - Enhanced version with search disabled, bigger text, weather alert integration, and GOOGLE FORMS NEWSLETTER
 // Simply include this file in your HTML pages to automatically load the header, footer, and weather alerts
 
 // CSS for header and footer as a string
@@ -207,9 +207,9 @@ const COMPONENTS_CSS = `
 }
 
 .logo-badge {
-    width: 60px; /* Increased from 50px */
-    height: 68px; /* Increased from 57px */
-    margin-right: 1.2rem; /* Increased from 1rem */
+    width: 60px;
+    height: 68px;
+    margin-right: 1.2rem;
     transition: var(--transition-fast);
 }
 
@@ -220,7 +220,7 @@ const COMPONENTS_CSS = `
 
 .logo h1 {
     color: var(--text-light);
-    font-size: 1.5rem; /* Increased from 1.3rem */
+    font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: 0.5px;
     margin: 0;
@@ -229,7 +229,7 @@ const COMPONENTS_CSS = `
 
 .logo-subtitle {
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem; /* Increased from 0.8rem */
+    font-size: 0.9rem;
     font-weight: 400;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -243,9 +243,9 @@ const COMPONENTS_CSS = `
 }
 
 .utility-item {
-    margin-left: 2rem; /* Increased from 1.5rem */
+    margin-left: 2rem;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem; /* Increased from 0.8rem */
+    font-size: 0.9rem;
     font-weight: 500;
     text-decoration: none;
     letter-spacing: 0.5px;
@@ -262,10 +262,10 @@ const COMPONENTS_CSS = `
 .utility-item.emergency {
     background-color: var(--danger-color);
     color: white;
-    padding: 0.8rem 1.4rem; /* Increased padding */
+    padding: 0.8rem 1.4rem;
     border-radius: var(--border-radius-small);
     font-weight: 600;
-    font-size: 1rem; /* Increased from default */
+    font-size: 1rem;
     display: flex;
     align-items: center;
     box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
@@ -306,8 +306,8 @@ const COMPONENTS_CSS = `
 }
 
 .utility-item.emergency i {
-    margin-right: 0.6rem; /* Increased from 0.5rem */
-    font-size: 1.3rem; /* Increased */
+    margin-right: 0.6rem;
+    font-size: 1.3rem;
     animation: pulse 2s infinite;
 }
 
@@ -334,7 +334,7 @@ const COMPONENTS_CSS = `
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.2rem 3rem; /* Increased from 1rem */
+    padding: 1.2rem 3rem;
     box-shadow: var(--shadow-small);
     transition: background-color 0.3s ease;
 }
@@ -358,12 +358,12 @@ const COMPONENTS_CSS = `
     padding: 0;
     align-items: center;
     flex-wrap: nowrap;
-    width: 100%; /* Use full width now that search is gone */
-    justify-content: space-between; /* Distribute items evenly */
+    width: 100%;
+    justify-content: space-between;
 }
 
 .main-nav ul li {
-    margin: 0 1.5rem; /* Increased from 1rem */
+    margin: 0 1.5rem;
     position: relative;
     display: flex;
     align-items: center;
@@ -372,13 +372,13 @@ const COMPONENTS_CSS = `
 .main-nav ul li a {
     color: var(--text-secondary);
     text-decoration: none;
-    font-weight: 600; /* Increased from 500 */
-    padding: 0.6rem 0; /* Increased from 0.5rem */
+    font-weight: 600;
+    padding: 0.6rem 0;
     transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
-    font-size: 1.1rem; /* Increased from 0.95rem */
+    font-size: 1.1rem;
     display: flex;
     align-items: center;
-    height: 45px; /* Increased from 40px */
+    height: 45px;
     line-height: 1;
     white-space: nowrap;
     position: relative;
@@ -392,14 +392,14 @@ const COMPONENTS_CSS = `
 
 /* Icon in main menu */
 .menu-icon {
-    margin-right: 0.7rem; /* Increased from 0.5rem */
-    font-size: 1.4rem; /* Increased from 1.2rem */
+    margin-right: 0.7rem;
+    font-size: 1.4rem;
     opacity: 0.8;
     transition: all 0.3s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 28px; /* Increased from 24px */
+    height: 28px;
     flex-shrink: 0;
     position: relative;
     top: 2px;
@@ -421,7 +421,7 @@ const COMPONENTS_CSS = `
     bottom: -3px;
     left: 0;
     width: 0;
-    height: 3px; /* Increased from 2px */
+    height: 3px;
     background-color: var(--secondary-color);
     transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
@@ -432,7 +432,7 @@ const COMPONENTS_CSS = `
 
 .main-nav ul li.active a {
     color: var(--secondary-color);
-    font-weight: 700; /* Increased from 600 */
+    font-weight: 700;
 }
 
 .main-nav ul li.active a::after {
@@ -448,18 +448,18 @@ const COMPONENTS_CSS = `
 .main-nav ul li.has-dropdown > a {
     display: flex;
     align-items: center;
-    padding-right: 1.4rem; /* Increased from 1.2rem */
-    height: 45px; /* Increased from 40px */
+    padding-right: 1.4rem;
+    height: 45px;
 }
 
 .main-nav ul li.has-dropdown > a .dropdown-icon {
-    margin-left: 0.4rem; /* Increased from 0.3rem */
-    font-size: 1.2rem; /* Increased from 1rem */
+    margin-left: 0.4rem;
+    font-size: 1.2rem;
     transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 28px; /* Increased from 24px */
+    height: 28px;
     position: relative;
     top: 2px;
 }
@@ -474,10 +474,10 @@ const COMPONENTS_CSS = `
     top: 100% !important;
     left: 0 !important;
     background-color: white !important;
-    min-width: 320px !important; /* Increased from 280px */
+    min-width: 320px !important;
     display: block !important;
     flex-direction: column !important;
-    padding: 0.8rem 0 !important; /* Increased from 0.7rem */
+    padding: 0.8rem 0 !important;
     margin: 0 !important;
     margin-top: 0.5rem !important;
     border-radius: 8px !important;
@@ -510,8 +510,8 @@ const COMPONENTS_CSS = `
 
 /* Group headers in dropdown */
 .dropdown-group-header {
-    padding: 0.6rem 1.7rem; /* Increased padding */
-    font-size: 0.8rem; /* Increased from 0.75rem */
+    padding: 0.6rem 1.7rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--primary-color);
     text-transform: uppercase;
@@ -550,19 +550,19 @@ const COMPONENTS_CSS = `
     display: flex !important;
     align-items: center !important;
     width: 100% !important;
-    padding: 0.8rem 1.7rem !important; /* Increased padding */
+    padding: 0.8rem 1.7rem !important;
     color: var(--text-secondary) !important;
     text-decoration: none !important;
-    font-size: 1rem !important; /* Increased from 0.9rem */
-    font-weight: 500 !important; /* Increased from 400 */
+    font-size: 1rem !important;
+    font-weight: 500 !important;
     transition: all 0.3s ease !important;
     border-left: 3px solid transparent !important;
 }
 
 /* Icon in dropdown menu */
 .dropdown-icon-item {
-    margin-right: 0.8rem !important; /* Increased from 0.7rem */
-    font-size: 1.3rem !important; /* Increased from 1.1rem */
+    margin-right: 0.8rem !important;
+    font-size: 1.3rem !important;
     color: var(--text-secondary) !important;
     opacity: 0.7 !important;
     transition: all 0.3s ease !important;
@@ -578,7 +578,7 @@ const COMPONENTS_CSS = `
     color: var(--secondary-color) !important;
     border-left: 3px solid var(--secondary-color) !important;
     transform: translateX(3px) !important;
-    padding-left: 1.9rem !important; /* Adjusted for increased base padding */
+    padding-left: 1.9rem !important;
 }
 
 .dropdown-menu li a:hover .dropdown-icon-item {
@@ -600,7 +600,7 @@ const COMPONENTS_CSS = `
 
 /* Search Bar styles - DISABLED */
 .search-bar {
-    display: none !important; /* Hide the search bar completely */
+    display: none !important;
 }
 
 /* Mobile Menu Toggle */
@@ -609,7 +609,7 @@ const COMPONENTS_CSS = `
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-size: 2rem; /* Increased from 1.8rem */
+    font-size: 2rem;
     cursor: pointer;
     transition: var(--transition-fast);
 }
@@ -619,10 +619,9 @@ const COMPONENTS_CSS = `
 }
 
 /* INNOVATION MENU ANIMATIONS */
-/* More noticeable attention-grabbing animation for Innovations menu item */
 .main-nav ul li a[href="/pls/inovatii"] {
     position: relative;
-    overflow: hidden; /* Contain shine effects within button */
+    overflow: hidden;
 }
 
 .main-nav ul li a[href="/pls/inovatii"] .menu-icon {
@@ -630,7 +629,6 @@ const COMPONENTS_CSS = `
     filter: drop-shadow(0 0 3px rgba(255, 202, 40, 0.4));
 }
 
-/* Much more noticeable lightbulb pulse animation */
 @keyframes innovationPulse {
     0% {
         transform: scale(1);
@@ -654,7 +652,6 @@ const COMPONENTS_CSS = `
     }
 }
 
-/* More visible background glow effect - contained within button */
 .main-nav ul li a[href="/pls/inovatii"]::before {
     content: '';
     position: absolute;
@@ -669,7 +666,6 @@ const COMPONENTS_CSS = `
     border-radius: 6px;
 }
 
-/* More pronounced shine effect */
 @keyframes innovationShine {
     0% {
         transform: translateX(-120%);
@@ -692,14 +688,13 @@ const COMPONENTS_CSS = `
     }
 }
 
-/* Enhanced hover state with contained light effects */
 .main-nav ul li a[href="/pls/inovatii"]:hover {
     background-color: rgba(255, 202, 40, 0.12);
     border-radius: 6px;
     transition: all 0.3s ease;
     position: relative;
     z-index: 1;
-    overflow: hidden; /* Ensure hover effects stay contained */
+    overflow: hidden;
 }
 
 .main-nav ul li a[href="/pls/inovatii"]:hover::after {
@@ -737,7 +732,6 @@ const COMPONENTS_CSS = `
     z-index: 2;
 }
 
-/* More dramatic hover animation */
 @keyframes innovationHover {
     0% {
         transform: scale(1);
@@ -753,21 +747,17 @@ const COMPONENTS_CSS = `
     }
 }
 
-/* Remove text glow - only lightbulb should animate */
 .main-nav ul li a[href="/pls/inovatii"] .menu-text-optional {
-    /* No animation - text stays normal */
     position: relative;
     z-index: 2;
 }
 
-/* Mobile-specific innovation animations - also more noticeable */
 @media (max-width: 992px) {
     .main-nav ul li a[href="/pls/inovatii"] {
-        overflow: hidden; /* Ensure mobile effects are contained */
+        overflow: hidden;
     }
     
     .main-nav ul li a[href="/pls/inovatii"]::before {
-        /* Keep shine effect on mobile but contained */
         background: linear-gradient(45deg, transparent 30%, rgba(255, 202, 40, 0.2) 50%, transparent 70%);
         animation: innovationShine 5s ease-in-out infinite;
         top: 0;
@@ -780,7 +770,6 @@ const COMPONENTS_CSS = `
         animation: innovationPulseMobile 3s ease-in-out infinite;
     }
     
-    /* More noticeable mobile animation */
     @keyframes innovationPulseMobile {
         0%, 70%, 100% {
             transform: scale(1);
@@ -795,10 +784,9 @@ const COMPONENTS_CSS = `
     }
 }
 
-/* Dropdown menu innovation item animation - more noticeable */
 .dropdown-menu li a[href="/pls/inovatii"] {
     position: relative;
-    overflow: hidden; /* Contain dropdown effects too */
+    overflow: hidden;
 }
 
 .dropdown-menu li a[href="/pls/inovatii"] .dropdown-icon-item {
@@ -865,11 +853,11 @@ const COMPONENTS_CSS = `
 
 /* Overflow menu for responsive header */
 .overflow-menu-item {
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 .overflow-menu-container .dropdown-menu {
-    min-width: 250px !important; /* Increased from 220px */
+    min-width: 250px !important;
 }
 
 /* Footer styles */
@@ -922,13 +910,13 @@ footer {
 }
 
 .footer-logo-badge {
-    width: 60px; /* Increased from 50px */
-    height: 68px; /* Increased from 57px */
-    margin-right: 1.2rem; /* Increased from 1rem */
+    width: 60px;
+    height: 68px;
+    margin-right: 1.2rem;
 }
 
 .footer-logo-text {
-    font-size: 1.7rem; /* Increased from 1.5rem */
+    font-size: 1.7rem;
     font-weight: 700;
 }
 
@@ -936,7 +924,7 @@ footer {
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.8;
     margin-bottom: 2rem;
-    font-size: 1rem; /* Increased slightly */
+    font-size: 1rem;
 }
 
 .footer-social {
@@ -945,8 +933,8 @@ footer {
 }
 
 .social-icon {
-    width: 45px; /* Increased from 40px */
-    height: 45px; /* Increased from 40px */
+    width: 45px;
+    height: 45px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
@@ -955,7 +943,7 @@ footer {
     color: white;
     text-decoration: none;
     transition: var(--transition-fast);
-    font-size: 1.4rem; /* Increased from 1.2rem */
+    font-size: 1.4rem;
 }
 
 .social-icon:hover {
@@ -966,7 +954,7 @@ footer {
 }
 
 .footer-title {
-    font-size: 1.5rem; /* Increased from 1.3rem */
+    font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 2rem;
     position: relative;
@@ -995,14 +983,14 @@ footer {
     display: flex;
     align-items: center;
     transition: var(--transition-fast);
-    font-size: 1rem; /* Increased slightly */
+    font-size: 1rem;
 }
 
 .footer-link i {
     margin-right: 0.8rem;
     color: var(--accent-color);
     transition: var(--transition-fast);
-    font-size: 1.2rem; /* Increased */
+    font-size: 1.2rem;
 }
 
 .footer-link:hover {
@@ -1023,35 +1011,36 @@ footer {
 .footer-contact-icon {
     margin-right: 1rem;
     color: var(--accent-color);
-    font-size: 1.3rem; /* Increased */
+    font-size: 1.3rem;
 }
 
 .footer-contact-text h4 {
     margin-bottom: 0.3rem;
-    font-size: 1.1rem; /* Increased from 1rem */
+    font-size: 1.1rem;
     font-weight: 600;
     color: white;
 }
 
 .footer-contact-text p {
     line-height: 1.6;
-    font-size: 1rem; /* Increased slightly */
+    font-size: 1rem;
 }
 
+/* Newsletter Form Styles */
 .footer-form {
     margin-bottom: 1.5rem;
 }
 
 .footer-form input {
     width: 100%;
-    padding: 1.1rem; /* Increased from 1rem */
+    padding: 1.1rem;
     background-color: rgba(255, 255, 255, 0.1);
     border: none;
     border-radius: var(--border-radius-medium);
     color: white;
     margin-bottom: 1rem;
     font-family: 'Poppins', sans-serif;
-    font-size: 1rem; /* Increased */
+    font-size: 1rem;
 }
 
 .footer-form input::placeholder {
@@ -1062,18 +1051,60 @@ footer {
     background-color: var(--accent-color);
     color: var(--primary-color);
     border: none;
-    padding: 1.1rem 2.2rem; /* Increased from 1rem 2rem */
+    padding: 1.1rem 2.2rem;
     border-radius: var(--border-radius-medium);
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition-fast);
     font-family: 'Poppins', sans-serif;
-    font-size: 1rem; /* Increased */
+    font-size: 1rem;
+    width: 100%;
 }
 
 .footer-form button:hover {
     background-color: var(--accent-dark);
     transform: translateY(-3px);
+}
+
+.footer-form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Newsletter message styles */
+.newsletter-message {
+    padding: 1rem;
+    border-radius: var(--border-radius-medium);
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    display: none;
+    animation: slideIn 0.3s ease;
+}
+
+.newsletter-message.success {
+    background-color: rgba(67, 160, 71, 0.2);
+    border-left: 4px solid var(--success-color);
+    color: #c8e6c9;
+    display: block;
+}
+
+.newsletter-message.error {
+    background-color: rgba(229, 57, 53, 0.2);
+    border-left: 4px solid var(--danger-color);
+    color: #ffcdd2;
+    display: block;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .footer-bottom {
@@ -1087,7 +1118,7 @@ footer {
 
 .footer-copyright {
     color: rgba(255, 255, 255, 0.7);
-    font-size: 1rem; /* Increased from 0.9rem */
+    font-size: 1rem;
 }
 
 .footer-links-bottom {
@@ -1099,7 +1130,7 @@ footer {
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
     margin-left: 1.5rem;
-    font-size: 1rem; /* Increased from 0.9rem */
+    font-size: 1rem;
     transition: var(--transition-fast);
 }
 
@@ -1117,7 +1148,6 @@ footer {
     justify-content: center;
 }
 
-/* Fix for icons in emergency button */
 .utility-item.emergency i {
     position: relative;
     display: inline-flex;
@@ -1129,7 +1159,7 @@ footer {
 @media screen and (min-width: 993px) and (max-width: 1920px) {
     .header-top,
     .header-main {
-        padding-left: 2rem !important; /* Increased base padding */
+        padding-left: 2rem !important;
         padding-right: 2rem !important;
     }
     
@@ -1142,29 +1172,28 @@ footer {
     }
     
     .main-nav ul {
-        justify-content: space-evenly !important; /* Better distribution */
+        justify-content: space-evenly !important;
         width: 100% !important;
     }
     
     .main-nav ul li {
-        margin: 0 0.8rem !important; /* Increased from 0.2rem */
+        margin: 0 0.8rem !important;
     }
     
     .main-nav ul li a {
-        padding: 0.6rem 0 !important; /* Increased from 0.4rem */
+        padding: 0.6rem 0 !important;
         white-space: nowrap !important;
     }
     
     .menu-icon {
-        margin-right: 0.6rem !important; /* Increased from 0.2rem */
+        margin-right: 0.6rem !important;
     }
     
     .main-nav ul li.has-dropdown > a .dropdown-icon {
-        margin-left: 0.4rem !important; /* Increased from 0.1rem */
+        margin-left: 0.4rem !important;
     }
 }
 
-/* Mobile menu media queries */
 @media (max-width: 992px) {
     .header-top,
     .header-main {
@@ -1180,8 +1209,8 @@ footer {
         position: fixed;
         top: var(--header-height);
         left: -100%;
-        width: 85%; /* Increased from 80% */
-        max-width: 350px; /* Increased from 320px */
+        width: 85%;
+        max-width: 350px;
         height: calc(100vh - var(--header-height));
         background-color: white;
         box-shadow: var(--shadow-large);
@@ -1196,7 +1225,7 @@ footer {
     
     .main-nav ul {
         flex-direction: column;
-        padding: 1.2rem 0; /* Increased from 1rem */
+        padding: 1.2rem 0;
     }
     
     .main-nav ul li {
@@ -1206,33 +1235,29 @@ footer {
     
     .main-nav ul li a {
         display: flex;
-        padding: 1.3rem 2.5rem; /* Increased from 1rem 2rem */
+        padding: 1.3rem 2.5rem;
         border-bottom: 1px solid rgba(0,0,0,0.05);
-        font-size: 1.2rem; /* Increased for mobile */
+        font-size: 1.2rem;
     }
     
     .main-nav ul li a::after {
         display: none;
     }
     
-    /* Ensure text is shown on mobile menu */
     .main-nav ul li a .menu-text,
     .main-nav ul li a .menu-text-optional {
         display: inline !important;
     }
     
-    /* Reset icon-only styles for mobile */
     .main-nav ul li a.icon-only::before,
     .main-nav ul li a.icon-only::after {
         display: none !important;
     }
     
-    /* Hide overflow menu on mobile */
     .main-nav ul li.overflow-menu-item {
         display: none !important;
     }
     
-    /* Show low priority items on mobile */
     .main-nav ul li.low-priority {
         display: block !important;
     }
@@ -1272,13 +1297,13 @@ footer {
     }
     
     .dropdown-menu li a {
-        padding-left: 4rem !important; /* Increased from 3rem */
-        font-size: 1.1rem !important; /* Increased for mobile dropdown */
+        padding-left: 4rem !important;
+        font-size: 1.1rem !important;
     }
     
     .dropdown-group-header {
-        padding-left: 4rem !important; /* Increased from 3rem */
-        font-size: 0.85rem !important; /* Increased */
+        padding-left: 4rem !important;
+        font-size: 0.85rem !important;
     }
 }
 
@@ -1290,11 +1315,11 @@ footer {
     }
     
     .logo h1 {
-        font-size: 1.3rem; /* Increased from 1.1rem */
+        font-size: 1.3rem;
     }
     
     .logo-subtitle {
-        font-size: 0.75rem; /* Increased slightly */
+        font-size: 0.75rem;
     }
     
     .utility-item {
@@ -1304,7 +1329,7 @@ footer {
     .utility-item.emergency {
         display: flex;
         margin-left: 0;
-        font-size: 0.95rem; /* Increased slightly */
+        font-size: 0.95rem;
     }
 
     footer {
@@ -1335,14 +1360,12 @@ footer {
     }
 }
 
-/* Add padding to the body to prevent content from being hidden under the fixed header */
 body {
     padding-top: var(--header-height);
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
-    width: 12px; /* Increased from 10px */
+    width: 12px;
 }
 
 ::-webkit-scrollbar-track {
@@ -1351,14 +1374,13 @@ body {
 
 ::-webkit-scrollbar-thumb {
     background: var(--secondary-color);
-    border-radius: 6px; /* Increased from 5px */
+    border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--secondary-light);
 }
 
-/* Disable header size changes on scroll - maintain consistent padding */
 .header-top.scrolled,
 .header-top {
     padding: 0.8rem 3rem !important;
@@ -1367,17 +1389,16 @@ body {
 
 .header-main.scrolled,
 .header-main {
-    padding: 1.2rem 3rem !important; /* Increased from 1rem */
+    padding: 1.2rem 3rem !important;
     transition: background-color 0.3s ease !important;
 }
 
-/* Maintain consistent padding at different screen sizes */
 @media screen and (max-width: 1920px) {
     .header-top.scrolled,
     .header-top,
     .header-main.scrolled,
     .header-main {
-        padding-left: 2rem !important; /* Increased from 1.5rem */
+        padding-left: 2rem !important;
         padding-right: 2rem !important;
     }
 }
@@ -1387,13 +1408,13 @@ body {
     .header-top,
     .header-main.scrolled,
     .header-main {
-        padding-left: 1.5rem !important; /* Increased from 1rem */
+        padding-left: 1.5rem !important;
         padding-right: 1.5rem !important;
     }
 }
 `;
 
-// HTML Components as JavaScript strings - Search bar removed
+// HTML Components - Newsletter form updated with Google Forms integration
 const HEADER_HTML = `
 <div class="intro-screen" id="intro-screen">
     <div class="intro-content">
@@ -1407,7 +1428,6 @@ const HEADER_HTML = `
     </div>
 </div>
 
-<!-- Header -->
 <div class="header-container">
     <div class="header-top" id="header-top">
         <div class="logo">
@@ -1538,7 +1558,6 @@ const HEADER_HTML = `
                 </li>
             </ul>
         </nav>
-        <!-- Search bar removed - space now used for bigger menu text -->
         <button class="mobile-menu-toggle" id="mobile-menu-toggle">
             <i class="material-icons">menu</i>
         </button>
@@ -1605,10 +1624,11 @@ const FOOTER_HTML = `
             <div class="footer-column">
                 <h3 class="footer-title">Newsletter</h3>
                 <p class="footer-description">Rămâi informat despre alertele de siguranță, evenimentele comunitare și actualizările departamentului abonându-te la newsletter-ul nostru.</p>
-                <form class="footer-form">
-                    <input type="email" placeholder="Adresa ta de Email">
+                <form class="footer-form" id="newsletter-form">
+                    <input type="email" id="newsletter-email" name="entry.367514333" placeholder="Adresa ta de Email" required>
                     <button type="submit">Abonează-te</button>
                 </form>
+                <div id="newsletter-message" class="newsletter-message"></div>
             </div>
         </div>
         
@@ -1629,12 +1649,11 @@ const FOOTER_HTML = `
 
 // Load Weather Alert System
 function loadWeatherAlertSystem() {
-    // Check if already loaded
     if (document.getElementById('weather-alert-script')) return;
     
     const script = document.createElement('script');
     script.id = 'weather-alert-script';
-    script.src = 'weather-alert.js'; // Adjust path as needed - change this if your file is in a subfolder
+    script.src = 'weather-alert.js';
     script.async = true;
     script.onerror = () => {
         console.warn('Weather alert system could not be loaded - check if weather-alert.js is in the correct path');
@@ -1645,31 +1664,24 @@ function loadWeatherAlertSystem() {
     document.head.appendChild(script);
 }
 
-// Initialize Weather Alert System
 function initWeatherAlert() {
-    // Wait for the weather alert script to load and initialize
     const checkWeatherSystem = () => {
         if (window.WeatherAlertSystem) {
             try {
-                // Initialize weather alert system
                 window.weatherAlert = new WeatherAlertSystem();
                 console.log('Weather Alert System initialized successfully');
             } catch (error) {
                 console.error('Error initializing Weather Alert System:', error);
             }
         } else {
-            // Check again in 100ms if not loaded yet
             setTimeout(checkWeatherSystem, 100);
         }
     };
     
-    // Start checking after components are loaded
     setTimeout(checkWeatherSystem, 500);
 }
 
-// Auto-install the components when the document is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Add favicon first
     if (!document.querySelector('link[rel="icon"]')) {
         const faviconLink = document.createElement('link');
         faviconLink.rel = "icon";
@@ -1678,7 +1690,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(faviconLink);
     }
 
-    // Inject CSS
     if (!document.getElementById('components-css')) {
         const styleEl = document.createElement('style');
         styleEl.id = 'components-css';
@@ -1686,7 +1697,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(styleEl);
     }
     
-    // Add material icons if not already included
     if (!document.querySelector('link[href*="material-icons"]')) {
         const iconLink = document.createElement('link');
         iconLink.href = "https://fonts.googleapis.com/icon?family=Material+Icons";
@@ -1694,46 +1704,28 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(iconLink);
     }
     
-    // Load weather alert system early
     loadWeatherAlertSystem();
     
-    // Load header and footer
     const headerContainer = document.getElementById('header-container');
     const footerContainer = document.getElementById('footer-container');
     
-    // Insert components if containers exist
     if (headerContainer) headerContainer.innerHTML = HEADER_HTML;
     if (footerContainer) footerContainer.innerHTML = FOOTER_HTML;
     
-    // Initialize components
     initializeComponents();
 });
 
-// Initialize all component functionality
 function initializeComponents() {
-    // Initialize intro screen
     initIntroScreen();
-    
-    // Initialize header effects
     initHeaderEffects();
-    
-    // Initialize mobile menu
     initMobileMenu();
-    
-    // Initialize dropdown menu
     initDropdownMenu();
-    
-    // Initialize responsive header
     initResponsiveHeader();
-    
-    // Fix icon alignment issues
     fixIconAlignment();
-    
-    // Initialize weather alert system after other components are ready
+    initNewsletterForm();
     initWeatherAlert();
 }
 
-// Intro Screen Animation and Removal
 function initIntroScreen() {
     const introScreen = document.getElementById('intro-screen');
     if (introScreen) {
@@ -1746,19 +1738,16 @@ function initIntroScreen() {
     }
 }
 
-// Header scroll effect - only changes background color, not size
 function initHeaderEffects() {
     const headerTop = document.getElementById('header-top');
     const headerMain = document.getElementById('header-main');
     
     if (headerTop && headerMain) {
-        // Apply initial state based on current scroll position
         if (window.scrollY > 50) {
             headerTop.classList.add('scrolled');
             headerMain.classList.add('scrolled');
         }
         
-        // Add scroll event listener
         window.addEventListener('scroll', function() {
             if (window.scrollY > 50) {
                 headerTop.classList.add('scrolled');
@@ -1771,7 +1760,6 @@ function initHeaderEffects() {
     }
 }
 
-// Mobile Menu Toggle
 function initMobileMenu() {
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const mainNav = document.getElementById('main-nav');
@@ -1788,15 +1776,12 @@ function initMobileMenu() {
     }
 }
 
-// Dropdown Menu functionality
 function initDropdownMenu() {
     const dropdownItems = document.querySelectorAll('.main-nav .has-dropdown');
     
     dropdownItems.forEach(item => {
         item.addEventListener('click', function(e) {
-            // Check if we're in mobile view
             if (window.innerWidth <= 992) {
-                // Only apply to direct child a tag
                 if (e.target === this.querySelector('a') || 
                     e.target === this.querySelector('a .dropdown-icon') || 
                     e.target === this.querySelector('a .menu-icon')) {
@@ -1807,7 +1792,6 @@ function initDropdownMenu() {
         });
     });
     
-    // Ensure proper dropdown behavior on window resize
     window.addEventListener('resize', function() {
         if (window.innerWidth > 992) {
             dropdownItems.forEach(item => {
@@ -1828,7 +1812,6 @@ function initDropdownMenu() {
     });
 }
 
-// Initialize responsive header for single-line menu
 function initResponsiveHeader() {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', setupResponsiveHeader);
@@ -1840,33 +1823,27 @@ function initResponsiveHeader() {
         const applyResponsiveClasses = () => {
             const screenWidth = window.innerWidth;
             
-            // Get all menu items with optional text
             const optionalTextItems = document.querySelectorAll('.main-nav ul li a .menu-text-optional');
             const iconOnlySmallItems = document.querySelectorAll('.main-nav ul li a.icon-only-small');
             
             if (screenWidth <= 1366 && screenWidth > 992) {
-                // Hide optional text between 992-1366px
                 optionalTextItems.forEach(item => {
                     item.style.display = 'none';
                 });
                 
-                // Add icon-only class
                 iconOnlySmallItems.forEach(item => {
                     item.classList.add('icon-only');
                 });
             } else if (screenWidth > 1366) {
-                // Show optional text above 1366px
                 optionalTextItems.forEach(item => {
                     item.style.display = 'inline';
                 });
                 
-                // Remove icon-only class
                 iconOnlySmallItems.forEach(item => {
                     item.classList.remove('icon-only');
                 });
             }
             
-            // Add overflow menu at smaller sizes
             if (screenWidth <= 1199 && screenWidth > 992) {
                 createOverflowMenu();
             } else {
@@ -1963,7 +1940,6 @@ function initResponsiveHeader() {
     }
 }
 
-// Fix icon alignment
 function fixIconAlignment() {
     setTimeout(function() {
         const menuIcons = document.querySelectorAll('.menu-icon, .dropdown-icon, .dropdown-icon-item');
@@ -2002,4 +1978,82 @@ function fixIconAlignment() {
             });
         }
     }, 100);
+}
+
+// GOOGLE FORMS NEWSLETTER INTEGRATION
+function initNewsletterForm() {
+    const form = document.getElementById('newsletter-form');
+    const emailInput = document.getElementById('newsletter-email');
+    const messageDiv = document.getElementById('newsletter-message');
+    
+    if (!form) return;
+    
+    // Google Form URL configured for Newsletter PLS
+    const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdG8I17JU1TiMG5o7IXZeQKvul6YH6a0huf1wFG0uZ_ccBctQ/formResponse';
+    
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = emailInput.value.trim();
+        const submitButton = form.querySelector('button[type="submit"]');
+        
+        // Disable button and show loading state
+        submitButton.disabled = true;
+        submitButton.textContent = 'Se trimite...';
+        
+        // Hide any previous messages
+        messageDiv.className = 'newsletter-message';
+        messageDiv.textContent = '';
+        
+        try {
+            // Create FormData with the email
+            const formData = new FormData(form);
+            
+            // Submit to Google Forms (using no-cors mode)
+            await fetch(GOOGLE_FORM_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Required for Google Forms
+                body: formData
+            });
+            
+            // Show success message
+            messageDiv.className = 'newsletter-message success';
+            messageDiv.textContent = '✓ Mulțumim! Te-ai abonat cu succes la newsletter!';
+            
+            // Clear the form
+            form.reset();
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.className = 'newsletter-message';
+                messageDiv.textContent = '';
+            }, 5000);
+            
+        } catch (error) {
+            console.error('Newsletter subscription error:', error);
+            
+            // Show error message
+            messageDiv.className = 'newsletter-message error';
+            messageDiv.textContent = '✗ A apărut o eroare. Te rugăm să încerci din nou.';
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.className = 'newsletter-message';
+                messageDiv.textContent = '';
+            }, 5000);
+        } finally {
+            // Re-enable button
+            submitButton.disabled = false;
+            submitButton.textContent = 'Abonează-te';
+        }
+    });
+    
+    // Email validation on input
+    emailInput.addEventListener('input', function() {
+        if (this.validity.valid) {
+            this.style.borderColor = '';
+        } else {
+            this.style.borderColor = '#e53935';
+        }
+    });
 }
