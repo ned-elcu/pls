@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legislație - Poliția Locală Slobozia</title>
-    <!-- Added Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -54,13 +53,11 @@
             font-weight: 700;
         }
         
-        /* Material Icons styling */
         .material-icons {
             vertical-align: middle;
             line-height: 1;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -78,7 +75,6 @@
             background: var(--secondary-light);
         }
         
-        /* Header Container (placeholder for components.js) */
         .header-container {
             position: fixed;
             width: 100%;
@@ -87,7 +83,6 @@
             top: 0;
         }
 
-        /* Page Title Section */
         .page-title-section {
             background-color: var(--primary-color);
             background-image: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
@@ -104,7 +99,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('/api/placeholder/1920/300');
             background-size: cover;
             background-position: center;
             opacity: 0.1;
@@ -192,7 +186,6 @@
             font-weight: 500;
         }
 
-        /* Content Section */
         .content-section {
             padding: 5rem 3rem;
             background-color: white;
@@ -205,7 +198,6 @@
             margin: 0 auto;
         }
 
-        /* Legislation Container Styling */
         .legislation-container {
             background-color: white;
             border-radius: var(--border-radius-large);
@@ -249,7 +241,6 @@
             font-weight: 600;
         }
 
-        /* Document Cards */
         .document-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -323,7 +314,100 @@
             transform: translateX(5px);
         }
 
-        /* Contest Section */
+        .loading-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(30, 136, 229, 0.2);
+            border-top-color: var(--secondary-color);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-state p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem !important;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .error-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background-color: rgba(229, 57, 53, 0.05);
+            border: 2px solid rgba(229, 57, 53, 0.2);
+            border-radius: var(--border-radius-medium);
+            margin: 2rem 0;
+        }
+
+        .error-state-icon {
+            font-size: 4rem !important;
+            color: var(--danger-color);
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .error-state-text {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 0 0 1.5rem 0;
+            line-height: 1.6;
+        }
+
+        .error-state-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-medium);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .error-state-button:hover {
+            background-color: var(--secondary-light);
+            transform: translateY(-2px);
+        }
+
         .contest-section {
             background-color: var(--background-light);
             border-radius: var(--border-radius-large);
@@ -379,7 +463,6 @@
             font-weight: 600;
         }
 
-        /* Related Resources */
         .related-resources {
             margin-top: 4rem;
             padding: 3rem;
@@ -481,7 +564,6 @@
             transform: translateX(3px);
         }
 
-        /* CTA Section */
         .cta-section {
             margin-top: 5rem;
             padding: 4rem 0;
@@ -497,7 +579,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('/api/placeholder/1920/300');
             background-size: cover;
             background-position: center;
             opacity: 0.1;
@@ -602,7 +683,6 @@
             box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
         }
 
-        /* Responsive Styles */
         @media (max-width: 992px) {
             .page-title-section {
                 padding: 4rem 2rem 3rem;
@@ -665,10 +745,8 @@
     </style>
 </head>
 <body>
-    <!-- Header Container - Will be populated by components.js -->
     <div id="header-container"></div>
 
-    <!-- Page Title Section -->
     <section class="page-title-section">
         <div class="page-title-bg"></div>
         <div class="page-title-content">
@@ -688,10 +766,8 @@
         </div>
     </section>
 
-    <!-- Content Section -->
     <section class="content-section">
         <div class="content-container">
-            <!-- Main Legislation Container -->
             <div class="legislation-container">
                 <h2 class="legislation-heading">Documente gestionate conform legii</h2>
                 
@@ -699,58 +775,8 @@
                     <p>În conformitate cu <a href="#" class="highlight-text">Legea nr. 544/2001</a> privind liberul acces la informațiile de interes public, Poliția Locală Slobozia pune la dispoziția publicului următoarele liste de documente și informații.</p>
                 </div>
                 
-                <!-- Document Cards Grid -->
-                <div class="document-grid">
-                    <!-- Document 1 -->
-                    <div class="document-card">
-                        <h3 class="document-card-title">
-                            <i class="material-icons">list_alt</i>
-                            Documente comunicate din oficiu
-                        </h3>
-                        <p class="document-card-description">Lista cuprinzând documentele de interes public comunicate din oficiu conform cerințelor legale.</p>
-                        <a href="http://pcslobozia.ro/wp-content/uploads/2013/11/InteresPublicOficiu.pdf" target="_blank" rel="noopener" class="document-card-link">
-                            Descarcă documentul <i class="material-icons">open_in_new</i>
-                        </a>
-                    </div>
-                    
-                    <!-- Document 2 -->
-                    <div class="document-card">
-                        <h3 class="document-card-title">
-                            <i class="material-icons">list_alt</i>
-                            Documente furnizate la cerere
-                        </h3>
-                        <p class="document-card-description">Lista cuprinzând documentele de interes public furnizate de Poliția Locală Slobozia la cerere.</p>
-                        <a href="http://pcslobozia.ro/wp-content/uploads/2014/09/InteresPublicPolitiaLocala.pdf" target="_blank" rel="noopener" class="document-card-link">
-                            Descarcă documentul <i class="material-icons">open_in_new</i>
-                        </a>
-                    </div>
-                    
-                    <!-- Document 3 -->
-                    <div class="document-card">
-                        <h3 class="document-card-title">
-                            <i class="material-icons">list_alt</i>
-                            Documente produse/gestionate
-                        </h3>
-                        <p class="document-card-description">Lista cuprinzând documentele produse și/sau gestionate de Poliția Locală Slobozia.</p>
-                        <a href="http://pcslobozia.ro/wp-content/uploads/2013/11/ListaDocumentePolitiaLocala.pdf" target="_blank" rel="noopener" class="document-card-link">
-                            Descarcă documentul <i class="material-icons">open_in_new</i>
-                        </a>
-                    </div>
-                    
-                    <!-- Document 4 -->
-                    <div class="document-card">
-                        <h3 class="document-card-title">
-                            <i class="material-icons">block</i>
-                            Documente exceptate
-                        </h3>
-                        <p class="document-card-description">Lista documentelor care se exceptează de la accesul liber al cetățenilor conform legislației în vigoare.</p>
-                        <a href="http://pcslobozia.ro/wp-content/uploads/2013/11/ListaDocumenteExceptate.pdf" target="_blank" rel="noopener" class="document-card-link">
-                            Descarcă documentul <i class="material-icons">open_in_new</i>
-                        </a>
-                    </div>
-                </div>
+                <div id="documents-container"></div>
                 
-                <!-- Contest Section -->
                 <div class="contest-section">
                     <h3 class="contest-section-title">
                         <i class="material-icons">gavel</i>
@@ -764,13 +790,10 @@
                         <li class="contest-step">Recursul împotriva hotărârii tribunalului se judecă la curtea de apel, fiind scutit de taxa de timbru.</li>
                     </ul>
                     
-                    <a href="http://pcslobozia.ro/wp-content/uploads/2013/11/ModalitatiContestare.pdf" target="_blank" rel="noopener" class="document-card-link" style="margin-top: 1.5rem; display: inline-block;">
-                        Descarcă documentul complet <i class="material-icons">open_in_new</i>
-                    </a>
+                    <div id="modalitati-contestare-link"></div>
                 </div>
             </div>
 
-            <!-- Related Resources Section -->
             <div class="related-resources">
                 <h3 class="related-heading">Alte informații de interes public</h3>
                 <div class="resources-grid">
@@ -778,30 +801,29 @@
                         <div class="resource-icon"><i class="material-icons">find_in_page</i></div>
                         <h4 class="resource-title">Rapoarte Legea 544/2001</h4>
                         <p class="resource-description">Rapoarte anuale privind implementarea Legii nr. 544/2001 la nivelul Poliției Locale Slobozia.</p>
-                        <a href="documente-legea-544-2001/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="../rapoarte-544/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                     <div class="resource-card">
                         <div class="resource-icon"><i class="material-icons">description</i></div>
                         <h4 class="resource-title">Declarații de avere</h4>
                         <p class="resource-description">Declarații de avere depuse de personalul Poliției Locale Slobozia conform legii.</p>
-                        <a href="declaratii-avere/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="../declaratii-avere/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                     <div class="resource-card">
                         <div class="resource-icon"><i class="material-icons">business_center</i></div>
                         <h4 class="resource-title">Declarații de interese</h4>
                         <p class="resource-description">Declarații de interese depuse de personalul Poliției Locale Slobozia conform legii.</p>
-                        <a href="declaratii-interese/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="../declaratii-interese/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                     <div class="resource-card">
                         <div class="resource-icon"><i class="material-icons">payments</i></div>
                         <h4 class="resource-title">Raportare salarială</h4>
                         <p class="resource-description">Informații privind salarizarea personalului conform Art. 33 din Legea-cadru nr. 153/2017.</p>
-                        <a href="raportare-salariala/" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
+                        <a href="../financiara/#raportare-salariala" class="resource-link">Consultă acum <i class="material-icons">arrow_forward</i></a>
                     </div>
                 </div>
             </div>
 
-            <!-- CTA Section -->
             <div class="cta-section">
                 <div class="cta-bg"></div>
                 <div class="cta-container">
@@ -816,10 +838,155 @@
         </div>
     </section>
 
-    <!-- Footer Container - Will be populated by components.js -->
     <div id="footer-container"></div>
     
-    <!-- Include components.js to load header and footer -->
     <script src="../../components.js"></script>
+    <script src="../drive-config.js"></script>
+    <script src="../drive-integration.js"></script>
+    
+    <script>
+        // Document metadata configuration - keeps smart descriptions separate from Drive data
+        const DOCUMENT_METADATA = {
+            'InteresPublicOficiu': {
+                title: 'Documente comunicate din oficiu',
+                description: 'Lista cuprinzând documentele de interes public comunicate din oficiu conform cerințelor legale.',
+                icon: 'list_alt',
+                order: 1
+            },
+            'InteresPublicPolitiaLocala': {
+                title: 'Documente furnizate la cerere',
+                description: 'Lista cuprinzând documentele de interes public furnizate de Poliția Locală Slobozia la cerere.',
+                icon: 'list_alt',
+                order: 2
+            },
+            'ListaDocumentePolitiaLocala': {
+                title: 'Documente produse/gestionate',
+                description: 'Lista cuprinzând documentele produse și/sau gestionate de Poliția Locală Slobozia.',
+                icon: 'list_alt',
+                order: 3
+            },
+            'ListaDocumenteExceptate': {
+                title: 'Documente exceptate',
+                description: 'Lista documentelor care se exceptează de la accesul liber al cetățenilor conform legislației în vigoare.',
+                icon: 'block',
+                order: 4
+            },
+            'ModalitatiContestare': {
+                title: 'Modalități de contestare',
+                description: 'Procedura completă de contestare a deciziilor instituției.',
+                icon: 'gavel',
+                order: 5
+            }
+        };
+
+        // Match Drive file to metadata
+        function matchFileToMetadata(file) {
+            // Try to match based on filename (without extension)
+            const fileName = file.name.replace('.pdf', '');
+            
+            for (const [key, metadata] of Object.entries(DOCUMENT_METADATA)) {
+                if (fileName.includes(key) || key.includes(fileName)) {
+                    return {
+                        ...file,
+                        metadata: metadata
+                    };
+                }
+            }
+            
+            // Return with default metadata if no match
+            return {
+                ...file,
+                metadata: {
+                    title: file.displayName,
+                    description: '',
+                    icon: 'description',
+                    order: 999
+                }
+            };
+        }
+
+        // Render document card with metadata
+        function renderDocumentCard(file) {
+            const { metadata } = file;
+            
+            return `
+                <div class="document-card" style="order: ${metadata.order}">
+                    <h3 class="document-card-title">
+                        <i class="material-icons">${metadata.icon}</i>
+                        ${metadata.title}
+                    </h3>
+                    ${metadata.description ? `<p class="document-card-description">${metadata.description}</p>` : ''}
+                    <a href="${file.viewLink}" target="_blank" rel="noopener" class="document-card-link">
+                        Descarcă documentul <i class="material-icons">open_in_new</i>
+                    </a>
+                </div>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const container = document.getElementById('documents-container');
+            const contestareContainer = document.getElementById('modalitati-contestare-link');
+            
+            container.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Se încarcă documentele...</p>
+                </div>
+            `;
+            
+            try {
+                // Note: You'll need to create a 'legislatie' folder in Google Drive
+                // and add it to drive-config.js: 'legislatie': 'YOUR_FOLDER_ID'
+                const integration = new DriveIntegration('legislatie');
+                const files = await integration.getFiles();
+                
+                if (files.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="material-icons empty-state-icon">folder_open</i>
+                            <p class="empty-state-text">Nu există documente disponibile momentan.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Match files to metadata
+                const enrichedFiles = files.map(file => matchFileToMetadata(file));
+                
+                // Separate main documents from "Modalitati Contestare"
+                const mainDocs = enrichedFiles.filter(f => !f.name.includes('ModalitatiContestare'));
+                const contestareDoc = enrichedFiles.find(f => f.name.includes('ModalitatiContestare'));
+                
+                // Sort by order
+                mainDocs.sort((a, b) => a.metadata.order - b.metadata.order);
+                
+                // Render main documents
+                const docsHTML = mainDocs.map(file => renderDocumentCard(file)).join('');
+                container.innerHTML = `<div class="document-grid" style="display: grid;">${docsHTML}</div>`;
+                
+                // Render Modalitati Contestare link
+                if (contestareDoc) {
+                    contestareContainer.innerHTML = `
+                        <a href="${contestareDoc.viewLink}" target="_blank" rel="noopener" class="document-card-link" style="margin-top: 1.5rem; display: inline-block;">
+                            Descarcă documentul complet <i class="material-icons">open_in_new</i>
+                        </a>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Error loading documents:', error);
+                container.innerHTML = `
+                    <div class="error-state">
+                        <i class="material-icons error-state-icon">error_outline</i>
+                        <p class="error-state-text">A apărut o eroare la încărcarea documentelor. Vă rugăm să reîncărcați pagina.</p>
+                        <button class="error-state-button" onclick="location.reload()">
+                            <i class="material-icons">refresh</i>
+                            Reîncearcă
+                        </button>
+                    </div>
+                `;
+            }
+        });
+    </script>
 </body>
 </html>
