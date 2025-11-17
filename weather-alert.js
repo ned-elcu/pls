@@ -1,6 +1,6 @@
 // =============================================================================
-// WEATHER ALERT SYSTEM v4.1 - Municipal Weather Monitoring
-// Poliția Locală Slobozia | Production-Ready | Clean & Polished
+// WEATHER ALERT SYSTEM v4.2 - Ultra-Polished Municipal Weather
+// Poliția Locală Slobozia | Production-Ready | Premium UX
 // =============================================================================
 
 // === CONFIGURATION ===
@@ -8,7 +8,7 @@ const CONFIG = {
     coordinates: { lat: 44.5667, lon: 27.3667 },
     location: 'Slobozia, Ialomița',
     apiUrl: 'https://api.open-meteo.com/v1/forecast',
-    updateInterval: 5 * 60 * 1000, // 5 minutes
+    updateInterval: 5 * 60 * 1000,
     thresholds: {
         temperature: { cold: -10, hot: 38 },
         wind: { strong: 40, severe: 60 },
@@ -16,14 +16,11 @@ const CONFIG = {
     }
 };
 
-// Weather conditions with day/night awareness
 const WEATHER_CONDITIONS = {
-    // Clear sky
     0: { 
         day: { icon: 'wb_sunny', name: 'Senin', anim: 'sunny' },
         night: { icon: 'nights_stay', name: 'Senin', anim: 'night' }
     },
-    // Partly cloudy
     1: { 
         day: { icon: 'wb_cloudy', name: 'Parțial înnorat', anim: 'partly-cloudy' },
         night: { icon: 'wb_cloudy', name: 'Parțial înnorat', anim: 'partly-cloudy-night' }
@@ -32,42 +29,33 @@ const WEATHER_CONDITIONS = {
         day: { icon: 'wb_cloudy', name: 'Parțial înnorat', anim: 'partly-cloudy' },
         night: { icon: 'wb_cloudy', name: 'Parțial înnorat', anim: 'partly-cloudy-night' }
     },
-    // Overcast
     3: { icon: 'cloud', name: 'Înnorat', anim: 'cloudy' },
-    // Fog
     45: { icon: 'foggy', name: 'Ceață', anim: 'foggy', advice: 'visibility' },
     48: { icon: 'foggy', name: 'Ceață cu chiciură', anim: 'foggy', advice: 'ice' },
-    // Drizzle
     51: { icon: 'grain', name: 'Burniță ușoară', anim: 'drizzle' },
     53: { icon: 'grain', name: 'Burniță moderată', anim: 'drizzle', advice: 'rain' },
     55: { icon: 'grain', name: 'Burniță densă', anim: 'drizzle', advice: 'rain' },
     56: { icon: 'ac_unit', name: 'Burniță înghețată', anim: 'drizzle', advice: 'ice' },
     57: { icon: 'ac_unit', name: 'Burniță înghețată densă', anim: 'drizzle', advice: 'ice' },
-    // Rain
     61: { icon: 'water_drop', name: 'Ploaie ușoară', anim: 'rainy' },
     63: { icon: 'water_drop', name: 'Ploaie moderată', anim: 'rainy', advice: 'rain' },
     65: { icon: 'water_drop', name: 'Ploaie torențială', anim: 'heavy-rain', advice: 'heavy_rain' },
     66: { icon: 'ac_unit', name: 'Ploaie înghețată', anim: 'rainy', advice: 'ice' },
     67: { icon: 'ac_unit', name: 'Ploaie înghețată puternică', anim: 'heavy-rain', advice: 'ice' },
-    // Snow
     71: { icon: 'ac_unit', name: 'Ninsoare ușoară', anim: 'snowy', advice: 'snow' },
     73: { icon: 'ac_unit', name: 'Ninsoare moderată', anim: 'snowy', advice: 'snow' },
     75: { icon: 'ac_unit', name: 'Ninsoare abundentă', anim: 'heavy-snow', advice: 'heavy_snow' },
     77: { icon: 'ac_unit', name: 'Ninsoare cu boabe', anim: 'snowy', advice: 'snow' },
-    // Rain showers
     80: { icon: 'water_drop', name: 'Averse ușoare', anim: 'rainy', advice: 'rain' },
     81: { icon: 'water_drop', name: 'Averse moderate', anim: 'rainy', advice: 'heavy_rain' },
     82: { icon: 'water_drop', name: 'Averse violente', anim: 'heavy-rain', advice: 'heavy_rain' },
-    // Snow showers
     85: { icon: 'ac_unit', name: 'Averse de zăpadă', anim: 'snowy', advice: 'heavy_snow' },
     86: { icon: 'ac_unit', name: 'Averse de zăpadă puternice', anim: 'heavy-snow', advice: 'heavy_snow' },
-    // Thunderstorm
     95: { icon: 'thunderstorm', name: 'Furtună', anim: 'thunderstorm', advice: 'storm' },
     96: { icon: 'thunderstorm', name: 'Furtună cu grindină', anim: 'severe-storm', advice: 'severe_storm' },
     99: { icon: 'thunderstorm', name: 'Furtună severă cu grindină', anim: 'severe-storm', advice: 'severe_storm' }
 };
 
-// Safety advice for different weather conditions
 const SAFETY_ADVICE = {
     visibility: { 
         level: 'advisory', 
@@ -196,16 +184,17 @@ const SAFETY_ADVICE = {
     }
 };
 
-// Romanian UI text
 const TEXT = {
     loading: 'Se încarcă...',
     error: 'Eroare conexiune',
-    cached: 'Date din cache',
     expand: 'Extinde informații',
     collapse: 'Restrânge informații',
-    accessibility: 'Comutare vizibilitate îmbunătățită',
-    accessibilityOn: 'Dezactivare vizibilitate îmbunătățită',
-    emergency: 'Urgențe: 112 | Poliția Locală: (0243) 955'
+    accessibility: 'Activează contrast ridicat',
+    accessibilityOn: 'Dezactivează contrast ridicat',
+    emergency: 'Urgențe: 112 | Poliția Locală: (0243) 955',
+    tapToExpand: 'Apasă pentru mai multe detalii',
+    contrastEnabled: 'Contrast ridicat activat',
+    contrastDisabled: 'Contrast normal activat'
 };
 
 // === CSS INJECTION ===
@@ -214,7 +203,7 @@ function injectCSS() {
     
     const css = `
 /* =============================================================================
-   WEATHER ALERT SYSTEM v4.1 - Clean & Polished Styles
+   WEATHER ALERT SYSTEM v4.2 - Ultra-Polished Premium UX
    ============================================================================= */
 
 /* === BASE CONTAINER === */
@@ -222,23 +211,48 @@ function injectCSS() {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 280px;
-    min-height: 70px;
-    background: rgba(26, 47, 95, 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 290px;
+    min-height: 80px;
+    background: rgba(26, 47, 95, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: #ffffff;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     font-size: 14px;
-    line-height: 1.4;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    line-height: 1.5;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
     z-index: 1000;
     opacity: 0;
     transform: translateY(100%);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     overflow: hidden;
+    cursor: pointer;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* === HOVER HINT === */
+.weather-alert::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.weather-alert:hover::before {
+    border-color: rgba(255, 202, 40, 0.3);
+}
+
+.weather-alert:hover {
+    background: rgba(26, 47, 95, 0.96);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 }
 
 /* === VISIBILITY STATES === */
@@ -253,148 +267,255 @@ function injectCSS() {
 }
 
 .weather-alert.expanded {
-    width: 340px;
-    min-height: 140px;
+    width: 360px;
+    min-height: 180px;
+    cursor: default;
+}
+
+.weather-alert.expanded:hover {
+    transform: translateY(0);
+}
+
+/* === EXPANDED INDICATOR === */
+.weather-alert.expanded::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        #1e88e5 0%, 
+        #ffca28 100%
+    );
+    animation: expandedPulse 3s ease-in-out infinite;
+    z-index: 2;
+}
+
+@keyframes expandedPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
 }
 
 /* === ALERT LEVELS === */
 .weather-alert.advisory {
-    border-left: 4px solid #ffa726;
+    border-left: 5px solid #ffa726;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(255, 167, 38, 0.2);
 }
 
 .weather-alert.warning {
-    border-left: 4px solid #ff7043;
+    border-left: 5px solid #ff7043;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(255, 112, 67, 0.3);
 }
 
 .weather-alert.critical {
-    border-left: 4px solid #e53935;
+    border-left: 5px solid #e53935;
+    box-shadow: 0 8px 36px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(229, 57, 53, 0.4);
     animation: criticalPulse 3s ease-in-out infinite;
 }
 
 @keyframes criticalPulse {
     0%, 100% {
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 8px 36px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(229, 57, 53, 0.4);
     }
     50% {
-        box-shadow: 0 4px 25px rgba(229, 57, 53, 0.4);
+        box-shadow: 0 12px 48px rgba(229, 57, 53, 0.4), 0 0 0 1px rgba(229, 57, 53, 0.6);
     }
 }
 
-/* === LAYOUT STRUCTURE === */
+/* === LAYOUT === */
 .weather-content {
-    padding: 12px;
-    padding-right: 44px;
+    padding: 16px;
+    padding-right: 60px;
     position: relative;
+    z-index: 2;
 }
 
 /* === CONTROL BUTTONS === */
 .weather-controls {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 12px;
+    right: 12px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
     z-index: 10;
 }
 
 .weather-btn {
-    width: 30px;
-    height: 30px;
-    min-width: 30px;
-    min-height: 30px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
     background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 50%;
     color: #1a2f5f;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     padding: 0;
     outline: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.weather-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 202, 40, 0.3) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .weather-btn:hover {
-    transform: scale(1.1);
+    transform: scale(1.1) translateY(-2px);
     background: #ffffff;
     border-color: #ffca28;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.weather-btn:hover::before {
+    opacity: 1;
 }
 
 .weather-btn:active {
-    transform: scale(0.95);
+    transform: scale(0.92);
+    transition: transform 0.1s ease;
 }
 
+/* Ripple effect */
+.weather-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 202, 40, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+    opacity: 0;
+}
+
+.weather-btn.ripple::after {
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+}
+
+/* Focus visible only for keyboard */
 .weather-btn:focus {
+    outline: none;
+}
+
+.weather-btn:focus-visible {
     outline: 3px solid #ffca28;
-    outline-offset: 2px;
+    outline-offset: 3px;
+    animation: focusPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes focusPulse {
+    0%, 100% { outline-color: #ffca28; }
+    50% { outline-color: #ffd54f; }
 }
 
 .weather-btn.active {
     background: #ffca28;
     color: #1a2f5f;
     border-color: #ffca28;
-    box-shadow: 0 0 8px rgba(255, 202, 40, 0.6);
+    box-shadow: 0 0 12px rgba(255, 202, 40, 0.6), 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .weather-btn i {
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1;
     font-family: 'Material Icons';
+    position: relative;
+    z-index: 2;
 }
 
 /* === ALERT HEADER === */
 .weather-alert-header {
     display: none;
     text-align: center;
-    padding: 8px 12px;
-    margin: -12px -12px 12px;
-    margin-right: -44px;
-    background: rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 12px 16px;
+    margin: -16px -16px 16px;
+    margin-right: -60px;
+    background: rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .weather-alert-header.visible {
     display: block;
+    animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .weather-alert-title {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     margin: 0;
     color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* === WEATHER DISPLAY === */
 .weather-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 0;
 }
 
 .weather-icon-box {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.weather-alert:hover .weather-icon-box {
+    background: rgba(255, 255, 255, 0.12);
+    transform: scale(1.05);
 }
 
 .weather-icon {
-    font-size: 24px;
+    font-size: 26px;
     color: #e3f2fd;
     font-family: 'Material Icons';
     line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .weather-text {
@@ -405,39 +526,55 @@ function injectCSS() {
 .weather-temp-row {
     display: flex;
     align-items: baseline;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 4px;
 }
 
 .weather-temp {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 700;
     line-height: 1;
     color: #ffffff;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .weather-condition {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 400;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
 }
 
 .weather-location {
     font-size: 11px;
     color: rgba(255, 255, 255, 0.7);
     font-weight: 400;
+    letter-spacing: 0.3px;
+    margin-top: 2px;
 }
 
 /* === SAFETY TIPS === */
 .weather-tips {
     display: none;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .weather-tips.visible {
     display: block;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .weather-tips ul {
@@ -447,12 +584,14 @@ function injectCSS() {
 }
 
 .weather-tips li {
-    font-size: 12px;
+    font-size: 13px;
     color: rgba(255, 255, 255, 0.95);
-    margin-bottom: 6px;
-    padding-left: 16px;
+    margin-bottom: 10px;
+    padding-left: 18px;
     position: relative;
-    line-height: 1.4;
+    line-height: 1.6;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .weather-tips li:last-child {
@@ -465,58 +604,67 @@ function injectCSS() {
     position: absolute;
     left: 0;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 1.4;
 }
 
 /* === EMERGENCY CONTACT === */
 .weather-emergency {
     display: none;
-    margin-top: 12px;
-    padding: 8px 12px;
-    background: rgba(229, 57, 53, 0.2);
-    border: 1px solid rgba(229, 57, 53, 0.3);
-    border-radius: 4px;
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: rgba(229, 57, 53, 0.25);
+    border: 1px solid rgba(229, 57, 53, 0.4);
+    border-radius: 8px;
     text-align: center;
-    font-size: 11px;
-    font-weight: 500;
+    font-size: 12px;
+    font-weight: 600;
     color: #ffcdd2;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .weather-emergency.visible {
     display: block;
+    animation: fadeIn 0.4s ease 0.2s backwards;
 }
 
 .weather-emergency i {
-    font-size: 12px;
+    font-size: 13px;
     vertical-align: middle;
-    margin-right: 4px;
+    margin-right: 6px;
 }
 
 /* === UPDATE INDICATOR === */
 .weather-update {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    width: 6px;
-    height: 6px;
+    top: 12px;
+    left: 12px;
+    width: 8px;
+    height: 8px;
     background: #4caf50;
     border-radius: 50%;
     opacity: 0;
     z-index: 5;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
 }
 
 .weather-update.flash {
-    animation: updateFlash 1s ease-out;
+    animation: updateFlash 1.2s ease-out;
 }
 
 @keyframes updateFlash {
     0% {
         opacity: 0;
-        transform: scale(0.8);
+        transform: scale(0.5);
     }
-    50% {
+    30% {
         opacity: 1;
-        transform: scale(1.2);
+        transform: scale(1.3);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1);
     }
     100% {
         opacity: 0;
@@ -524,11 +672,55 @@ function injectCSS() {
     }
 }
 
+/* === NOTIFICATION TOAST === */
+.weather-notification {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%) translateY(15px);
+    background: rgba(0, 0, 0, 0.92);
+    color: #ffffff;
+    padding: 10px 18px;
+    border-radius: 24px;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+    z-index: 30;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+.weather-notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
 /* === HIGH CONTRAST MODE === */
 .weather-alert.high-contrast {
     background: #000000 !important;
-    border: 3px solid #ffffff !important;
-    box-shadow: 0 0 0 3px #ffff00 !important;
+    border: 4px solid #ffffff !important;
+    box-shadow: 0 0 0 4px #ffff00 !important;
+}
+
+.weather-alert.high-contrast::before {
+    display: none;
+}
+
+.weather-alert.high-contrast::after {
+    background: #ffff00 !important;
+}
+
+/* Accessibility indicator */
+.weather-alert.high-contrast .weather-update::before {
+    content: '♿';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    font-size: 18px;
+    color: #ffff00;
+    filter: drop-shadow(0 0 4px #000);
 }
 
 .weather-alert.high-contrast .weather-content {
@@ -546,17 +738,19 @@ function injectCSS() {
 
 .weather-alert.high-contrast .weather-icon {
     color: #ffff00 !important;
+    filter: drop-shadow(0 0 6px #ffff00);
 }
 
 .weather-alert.high-contrast .weather-icon-box {
     background: #333333 !important;
-    border: 2px solid #ffffff !important;
+    border: 3px solid #ffffff !important;
 }
 
 .weather-alert.high-contrast .weather-btn {
     background: #ffffff !important;
     color: #000000 !important;
-    border: 2px solid #ffff00 !important;
+    border: 3px solid #ffff00 !important;
+    box-shadow: 0 0 12px #ffff00 !important;
 }
 
 .weather-alert.high-contrast .weather-btn i {
@@ -566,20 +760,14 @@ function injectCSS() {
 .weather-alert.high-contrast .weather-btn:hover {
     background: #ffff00 !important;
     color: #000000 !important;
-}
-
-.weather-alert.high-contrast .weather-btn:hover i {
-    color: #000000 !important;
+    border-color: #ffffff !important;
 }
 
 .weather-alert.high-contrast .weather-btn.active {
     background: #00ff00 !important;
     color: #000000 !important;
     border-color: #00ff00 !important;
-}
-
-.weather-alert.high-contrast .weather-btn.active i {
-    color: #000000 !important;
+    box-shadow: 0 0 12px #00ff00 !important;
 }
 
 .weather-alert.high-contrast .weather-alert-header {
@@ -597,7 +785,7 @@ function injectCSS() {
 
 .weather-alert.high-contrast .weather-emergency {
     background: #ff0000 !important;
-    border-color: #ffffff !important;
+    border: 3px solid #ffffff !important;
     color: #ffffff !important;
 }
 
@@ -607,11 +795,11 @@ function injectCSS() {
 }
 
 .weather-alert.font-scale-2 .weather-temp {
-    font-size: 22px;
+    font-size: 26px;
 }
 
 .weather-alert.font-scale-2 .weather-icon {
-    font-size: 26px;
+    font-size: 28px;
 }
 
 .weather-alert.font-scale-3 {
@@ -619,11 +807,11 @@ function injectCSS() {
 }
 
 .weather-alert.font-scale-3 .weather-temp {
-    font-size: 24px;
+    font-size: 28px;
 }
 
 .weather-alert.font-scale-3 .weather-icon {
-    font-size: 28px;
+    font-size: 30px;
 }
 
 .weather-alert.font-scale-4 {
@@ -631,23 +819,17 @@ function injectCSS() {
 }
 
 .weather-alert.font-scale-4 .weather-temp {
-    font-size: 26px;
-}
-
-.weather-alert.font-scale-4 .weather-icon {
     font-size: 30px;
 }
 
-/* === WEATHER ANIMATIONS === */
+.weather-alert.font-scale-4 .weather-icon {
+    font-size: 32px;
+}
 
-/* Sunny - Day */
+/* === WEATHER ANIMATIONS === */
 @keyframes sunny {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .weather-icon.sunny {
@@ -655,16 +837,9 @@ function injectCSS() {
     animation: sunny 30s linear infinite;
 }
 
-/* Night - Moon */
 @keyframes night {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 0.95;
-    }
-    50% {
-        transform: scale(1.05);
-        opacity: 1;
-    }
+    0%, 100% { transform: scale(1); opacity: 0.95; }
+    50% { transform: scale(1.05); opacity: 1; }
 }
 
 .weather-icon.night {
@@ -672,14 +847,9 @@ function injectCSS() {
     animation: night 8s ease-in-out infinite;
 }
 
-/* Partly Cloudy - Day */
 @keyframes partly-cloudy {
-    0%, 100% {
-        transform: translateX(0) scale(1);
-    }
-    50% {
-        transform: translateX(1px) scale(1.02);
-    }
+    0%, 100% { transform: translateX(0) scale(1); }
+    50% { transform: translateX(1px) scale(1.02); }
 }
 
 .weather-icon.partly-cloudy {
@@ -687,16 +857,9 @@ function injectCSS() {
     animation: partly-cloudy 6s ease-in-out infinite;
 }
 
-/* Partly Cloudy - Night */
 @keyframes partly-cloudy-night {
-    0%, 100% {
-        transform: translateX(0);
-        opacity: 0.9;
-    }
-    50% {
-        transform: translateX(-1px);
-        opacity: 1;
-    }
+    0%, 100% { transform: translateX(0); opacity: 0.9; }
+    50% { transform: translateX(-1px); opacity: 1; }
 }
 
 .weather-icon.partly-cloudy-night {
@@ -704,14 +867,9 @@ function injectCSS() {
     animation: partly-cloudy-night 7s ease-in-out infinite;
 }
 
-/* Cloudy */
 @keyframes cloudy {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    50% {
-        transform: translateX(1px);
-    }
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(1px); }
 }
 
 .weather-icon.cloudy {
@@ -719,14 +877,9 @@ function injectCSS() {
     animation: cloudy 8s ease-in-out infinite;
 }
 
-/* Foggy */
 @keyframes foggy {
-    0%, 100% {
-        opacity: 0.8;
-    }
-    50% {
-        opacity: 1;
-    }
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
 }
 
 .weather-icon.foggy {
@@ -734,14 +887,9 @@ function injectCSS() {
     animation: foggy 6s ease-in-out infinite;
 }
 
-/* Drizzle */
 @keyframes drizzle {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-1px);
-    }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-1px); }
 }
 
 .weather-icon.drizzle {
@@ -749,16 +897,9 @@ function injectCSS() {
     animation: drizzle 3s ease-in-out infinite;
 }
 
-/* Rainy */
 @keyframes rainy {
-    0%, 100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    50% {
-        transform: translateY(-2px);
-        opacity: 0.85;
-    }
+    0%, 100% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(-2px); opacity: 0.85; }
 }
 
 .weather-icon.rainy {
@@ -766,14 +907,9 @@ function injectCSS() {
     animation: rainy 2s ease-in-out infinite;
 }
 
-/* Heavy Rain */
 @keyframes heavy-rain {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 
 .weather-icon.heavy-rain {
@@ -781,17 +917,10 @@ function injectCSS() {
     animation: heavy-rain 1.5s ease-in-out infinite;
 }
 
-/* Snowy */
 @keyframes snowy {
-    0%, 100% {
-        transform: translateY(0) rotate(0deg);
-    }
-    25% {
-        transform: translateY(-1px) rotate(5deg);
-    }
-    75% {
-        transform: translateY(1px) rotate(-5deg);
-    }
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-1px) rotate(5deg); }
+    75% { transform: translateY(1px) rotate(-5deg); }
 }
 
 .weather-icon.snowy {
@@ -799,17 +928,10 @@ function injectCSS() {
     animation: snowy 4s ease-in-out infinite;
 }
 
-/* Heavy Snow */
 @keyframes heavy-snow {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    25% {
-        transform: translateX(-1px);
-    }
-    75% {
-        transform: translateX(1px);
-    }
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-1px); }
+    75% { transform: translateX(1px); }
 }
 
 .weather-icon.heavy-snow {
@@ -817,14 +939,9 @@ function injectCSS() {
     animation: heavy-snow 2s ease-in-out infinite;
 }
 
-/* Thunderstorm */
 @keyframes thunderstorm {
-    0%, 90%, 100% {
-        opacity: 1;
-    }
-    5%, 85% {
-        opacity: 0.3;
-    }
+    0%, 90%, 100% { opacity: 1; }
+    5%, 85% { opacity: 0.3; }
 }
 
 .weather-icon.thunderstorm {
@@ -832,16 +949,9 @@ function injectCSS() {
     animation: thunderstorm 2s ease-in-out infinite;
 }
 
-/* Severe Storm */
 @keyframes severe-storm {
-    0%, 85%, 100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    5%, 80% {
-        opacity: 0.4;
-        transform: scale(1.1);
-    }
+    0%, 85%, 100% { opacity: 1; transform: scale(1); }
+    5%, 80% { opacity: 0.4; transform: scale(1.1); }
 }
 
 .weather-icon.severe-storm {
@@ -849,41 +959,40 @@ function injectCSS() {
     animation: severe-storm 1s ease-in-out infinite;
 }
 
-/* === RESPONSIVE DESIGN === */
+/* === RESPONSIVE === */
 @media (max-width: 768px) {
     .weather-alert {
-        bottom: 10px;
-        right: 10px;
-        width: 240px;
-        min-height: 60px;
+        bottom: 12px;
+        right: 12px;
+        width: min(270px, calc(100vw - 24px));
     }
     
     .weather-alert.expanded {
-        width: 280px;
-        min-height: 120px;
+        width: min(320px, calc(100vw - 24px));
+        min-height: 160px;
     }
     
     .weather-content {
-        padding: 10px;
-        padding-right: 40px;
+        padding: 14px;
+        padding-right: 56px;
     }
     
     .weather-icon-box {
-        width: 40px;
-        height: 40px;
-        min-width: 40px;
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
     }
     
     .weather-icon {
-        font-size: 20px;
+        font-size: 22px;
     }
     
     .weather-temp {
-        font-size: 18px;
+        font-size: 20px;
     }
     
     .weather-condition {
-        font-size: 12px;
+        font-size: 13px;
     }
     
     .weather-location {
@@ -891,20 +1000,38 @@ function injectCSS() {
     }
     
     .weather-btn {
-        width: 28px;
-        height: 28px;
-        min-width: 28px;
-        min-height: 28px;
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        min-height: 38px;
     }
     
     .weather-btn i {
-        font-size: 14px;
+        font-size: 16px;
     }
     
     .weather-controls {
-        top: 6px;
-        right: 6px;
-        gap: 3px;
+        top: 10px;
+        right: 10px;
+        gap: 8px;
+    }
+    
+    .weather-alert-header {
+        padding: 10px 14px;
+        margin-right: -56px;
+    }
+    
+    .weather-tips li {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+    .weather-alert {
+        bottom: 8px;
+        right: 8px;
+        max-height: calc(100vh - 16px);
+        overflow-y: auto;
     }
 }
 
@@ -919,16 +1046,16 @@ function injectCSS() {
 @media (prefers-reduced-motion: reduce) {
     .weather-alert,
     .weather-icon,
-    .weather-btn {
+    .weather-btn,
+    * {
         animation: none !important;
-        transition: opacity 0.3s ease !important;
+        transition: opacity 0.2s ease !important;
     }
 }
 
-/* === FOCUS VISIBLE === */
 .weather-alert:focus-visible {
-    outline: 3px solid #ffca28;
-    outline-offset: 2px;
+    outline: 4px solid #ffca28;
+    outline-offset: 4px;
 }
     `;
     
@@ -939,21 +1066,14 @@ function injectCSS() {
 }
 
 // === UTILITY FUNCTIONS ===
-
-// Get weather condition with day/night awareness
 function getWeatherCondition(code, isDay) {
     const condition = WEATHER_CONDITIONS[code] || WEATHER_CONDITIONS[0];
-    
-    // If condition has day/night variants
     if (condition.day && condition.night) {
         return isDay ? condition.day : condition.night;
     }
-    
-    // Return standard condition
     return condition;
 }
 
-// Create HTML template
 function createHTML(data) {
     const condition = data ? getWeatherCondition(data.weatherCode, data.isDay) : { icon: 'wb_sunny', name: TEXT.loading, anim: 'sunny' };
     const temp = data ? `${data.temp}°C` : '--°C';
@@ -995,16 +1115,14 @@ function createHTML(data) {
     `;
 }
 
-// === MAIN WEATHER SYSTEM ===
+// === MAIN SYSTEM ===
 class WeatherAlertSystem {
     constructor() {
-        // Prevent multiple instances
         if (window.weatherSystemActive) {
             console.warn('⚠️ Weather system already running');
             return window.weatherSystem;
         }
         
-        // State management
         this.container = null;
         this.currentData = null;
         this.currentAlert = null;
@@ -1013,51 +1131,36 @@ class WeatherAlertSystem {
         this.updateTimer = null;
         this.fetchAbortController = null;
         
-        // Accessibility settings
         this.accessibility = {
             highContrast: localStorage.getItem('weather-high-contrast') === 'true',
             fontScale: parseInt(localStorage.getItem('weather-font-scale')) || 1
         };
         
-        // Mark as active
         window.weatherSystemActive = true;
         window.weatherSystem = this;
         
-        // Initialize
         this.init();
     }
     
     async init() {
         try {
-            // Inject styles
             injectCSS();
-            
-            // Create container
             this.createContainer();
-            
-            // Setup event listeners
             this.setupEventListeners();
-            
-            // Setup intersection observer for footer
             this.setupFooterObserver();
-            
-            // Fetch initial weather
             await this.fetchWeather();
-            
-            // Start monitoring
             this.startMonitoring();
             
-            // Show container
             setTimeout(() => {
                 if (this.container) {
                     this.container.classList.add('visible');
                 }
             }, 2000);
             
-            console.log('✅ Weather Alert System v4.1 - Ready');
+            console.log('✅ Weather Alert System v4.2 - Ultra-Polished');
             
         } catch (error) {
-            console.error('❌ Failed to initialize weather system:', error);
+            console.error('❌ Failed to initialize:', error);
         }
     }
     
@@ -1065,7 +1168,7 @@ class WeatherAlertSystem {
         this.container = document.createElement('div');
         this.container.className = 'weather-alert';
         this.container.setAttribute('role', 'complementary');
-        this.container.setAttribute('aria-label', 'Sistem de avertizare meteorologică municipală');
+        this.container.setAttribute('aria-label', 'Sistem de avertizare meteorologică');
         this.container.setAttribute('tabindex', '0');
         this.container.innerHTML = createHTML(null);
         
@@ -1076,7 +1179,7 @@ class WeatherAlertSystem {
     setupEventListeners() {
         if (!this.container) return;
         
-        // Click anywhere on widget to expand (except buttons)
+        // Click to expand
         this.container.addEventListener('click', (e) => {
             if (!e.target.closest('.weather-controls')) {
                 this.toggleExpanded();
@@ -1088,6 +1191,7 @@ class WeatherAlertSystem {
         if (accessBtn) {
             accessBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
+                this.handleButtonClick(e.currentTarget);
                 this.toggleAccessibility();
             });
         }
@@ -1097,6 +1201,7 @@ class WeatherAlertSystem {
         if (expandBtn) {
             expandBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
+                this.handleButtonClick(e.currentTarget);
                 this.toggleExpanded();
             });
         }
@@ -1117,6 +1222,27 @@ class WeatherAlertSystem {
                 this.updateExpandedState();
             }
         });
+        
+        // Remove focus on blur
+        this.container.addEventListener('blur', (e) => {
+            if (e.target.classList.contains('weather-btn')) {
+                e.target.blur();
+            }
+        }, true);
+    }
+    
+    handleButtonClick(button) {
+        // Add ripple effect
+        button.classList.add('ripple');
+        setTimeout(() => button.classList.remove('ripple'), 400);
+        
+        // Blur to remove focus after click (mouse users)
+        setTimeout(() => button.blur(), 100);
+        
+        // Vibrate on mobile
+        if ('vibrate' in navigator) {
+            navigator.vibrate(30);
+        }
     }
     
     setupFooterObserver() {
@@ -1131,16 +1257,13 @@ class WeatherAlertSystem {
                     this.show();
                 }
             });
-        }, {
-            rootMargin: '0px 0px -20px 0px'
-        });
+        }, { rootMargin: '0px 0px -20px 0px' });
         
         observer.observe(footer);
     }
     
     async fetchWeather() {
         try {
-            // Cancel previous request
             if (this.fetchAbortController) {
                 this.fetchAbortController.abort();
             }
@@ -1156,23 +1279,17 @@ class WeatherAlertSystem {
             
             const response = await fetch(`${CONFIG.apiUrl}?${params}`, {
                 signal: this.fetchAbortController.signal,
-                headers: {
-                    'Accept': 'application/json'
-                }
+                headers: { 'Accept': 'application/json' }
             });
             
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
             
             const data = await response.json();
             
-            // Validate data
             if (!data.current || typeof data.current.temperature_2m !== 'number') {
                 throw new Error('Invalid weather data');
             }
             
-            // Store current data
             this.currentData = {
                 temp: Math.round(data.current.temperature_2m),
                 weatherCode: data.current.weather_code || 0,
@@ -1181,13 +1298,8 @@ class WeatherAlertSystem {
                 isDay: data.current.is_day === 1
             };
             
-            // Update display
             this.updateDisplay();
-            
-            // Check for alerts
             this.checkAlerts();
-            
-            // Flash update indicator
             this.flashUpdate();
             
         } catch (error) {
@@ -1203,32 +1315,21 @@ class WeatherAlertSystem {
         
         const condition = getWeatherCondition(this.currentData.weatherCode, this.currentData.isDay);
         
-        // Update icon
         const icon = this.container.querySelector('.weather-icon');
         if (icon) {
             icon.className = `material-icons weather-icon ${condition.anim}`;
             icon.textContent = condition.icon;
         }
         
-        // Update temperature
         const temp = this.container.querySelector('.weather-temp');
-        if (temp) {
-            temp.textContent = `${this.currentData.temp}°C`;
-        }
+        if (temp) temp.textContent = `${this.currentData.temp}°C`;
         
-        // Update condition
         const conditionEl = this.container.querySelector('.weather-condition');
-        if (conditionEl) {
-            conditionEl.textContent = condition.name;
-        }
+        if (conditionEl) conditionEl.textContent = condition.name;
         
-        // Update ARIA label
-        const now = new Date().toLocaleTimeString('ro-RO', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-        });
+        const now = new Date().toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' });
         this.container.setAttribute('aria-label', 
-            `Sistem meteo Slobozia: ${condition.name}, ${this.currentData.temp} grade Celsius, actualizat ${now}`
+            `Sistem meteo Slobozia: ${condition.name}, ${this.currentData.temp} grade, actualizat ${now}`
         );
     }
     
@@ -1239,19 +1340,16 @@ class WeatherAlertSystem {
         const condition = getWeatherCondition(weatherCode, this.currentData.isDay);
         let alert = null;
         
-        // Temperature alerts
         if (temp <= CONFIG.thresholds.temperature.cold) {
             alert = SAFETY_ADVICE.extreme_cold;
         } else if (temp >= CONFIG.thresholds.temperature.hot) {
             alert = SAFETY_ADVICE.extreme_heat;
         }
         
-        // Wind alerts
         if (wind >= CONFIG.thresholds.wind.strong) {
             alert = SAFETY_ADVICE.high_winds;
         }
         
-        // Weather condition alerts
         if (condition.advice && SAFETY_ADVICE[condition.advice]) {
             const conditionAlert = SAFETY_ADVICE[condition.advice];
             if (!alert || this.getAlertPriority(conditionAlert.level) > this.getAlertPriority(alert.level)) {
@@ -1259,7 +1357,6 @@ class WeatherAlertSystem {
             }
         }
         
-        // Show or clear alert
         if (alert) {
             this.showAlert(alert);
         } else {
@@ -1268,24 +1365,16 @@ class WeatherAlertSystem {
     }
     
     getAlertPriority(level) {
-        const priorities = {
-            advisory: 1,
-            warning: 2,
-            critical: 3
-        };
-        return priorities[level] || 0;
+        return { advisory: 1, warning: 2, critical: 3 }[level] || 0;
     }
     
     showAlert(alert) {
         if (!this.container) return;
         
         this.currentAlert = alert;
-        
-        // Update container class
         this.container.className = `weather-alert visible ${alert.level}`;
         this.applyAccessibility();
         
-        // Show alert header
         const header = this.container.querySelector('.weather-alert-header');
         const title = this.container.querySelector('.weather-alert-title');
         if (header && title) {
@@ -1293,19 +1382,16 @@ class WeatherAlertSystem {
             header.classList.add('visible');
         }
         
-        // Show tips
         const tips = this.container.querySelector('.weather-tips ul');
         if (tips && alert.tips) {
             tips.innerHTML = alert.tips.map(tip => `<li>${tip}</li>`).join('');
         }
         
-        // Show emergency contact for warnings and critical
         const emergency = this.container.querySelector('.weather-emergency');
         if (emergency && (alert.level === 'warning' || alert.level === 'critical')) {
             emergency.classList.add('visible');
         }
         
-        // Auto-expand for warnings and critical
         if ((alert.level === 'warning' || alert.level === 'critical') && !this.isExpanded) {
             setTimeout(() => {
                 this.isExpanded = true;
@@ -1318,12 +1404,9 @@ class WeatherAlertSystem {
         if (!this.container) return;
         
         this.currentAlert = null;
-        
-        // Reset container class
         this.container.className = 'weather-alert visible';
         this.applyAccessibility();
         
-        // Hide alert elements
         const header = this.container.querySelector('.weather-alert-header');
         const tips = this.container.querySelector('.weather-tips');
         const emergency = this.container.querySelector('.weather-emergency');
@@ -1332,7 +1415,6 @@ class WeatherAlertSystem {
         if (tips) tips.classList.remove('visible');
         if (emergency) emergency.classList.remove('visible');
         
-        // Collapse if expanded
         if (this.isExpanded) {
             this.isExpanded = false;
             this.updateExpandedState();
@@ -1349,7 +1431,6 @@ class WeatherAlertSystem {
         
         this.container.classList.toggle('expanded', this.isExpanded);
         
-        // Update expand button
         const expandBtn = this.container.querySelector('.expand-btn');
         if (expandBtn) {
             const icon = expandBtn.querySelector('i');
@@ -1360,7 +1441,6 @@ class WeatherAlertSystem {
             expandBtn.setAttribute('title', this.isExpanded ? TEXT.collapse : TEXT.expand);
         }
         
-        // Show/hide tips
         const tips = this.container.querySelector('.weather-tips');
         if (tips) {
             tips.classList.toggle('visible', this.isExpanded);
@@ -1372,7 +1452,6 @@ class WeatherAlertSystem {
         localStorage.setItem('weather-high-contrast', this.accessibility.highContrast.toString());
         this.applyAccessibility();
         
-        // Update button
         const accessBtn = this.container.querySelector('.accessibility-btn');
         if (accessBtn) {
             const icon = accessBtn.querySelector('i');
@@ -1388,15 +1467,39 @@ class WeatherAlertSystem {
             accessBtn.classList.toggle('active', this.accessibility.highContrast);
         }
         
+        // Show notification
+        this.showNotification(
+            this.accessibility.highContrast ? TEXT.contrastEnabled : TEXT.contrastDisabled
+        );
+        
         console.log(`♿ High contrast: ${this.accessibility.highContrast ? 'ON' : 'OFF'}`);
+    }
+    
+    showNotification(message) {
+        // Remove existing notification
+        const existing = this.container.querySelector('.weather-notification');
+        if (existing) existing.remove();
+        
+        // Create notification
+        const notification = document.createElement('div');
+        notification.className = 'weather-notification';
+        notification.textContent = message;
+        this.container.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => notification.classList.add('show'), 10);
+        
+        // Animate out
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 400);
+        }, 2500);
     }
     
     applyAccessibility() {
         if (!this.container) return;
         
         this.container.classList.toggle('high-contrast', this.accessibility.highContrast);
-        
-        // Apply font scale
         this.container.classList.remove('font-scale-1', 'font-scale-2', 'font-scale-3', 'font-scale-4');
         this.container.classList.add(`font-scale-${this.accessibility.fontScale}`);
     }
@@ -1405,6 +1508,7 @@ class WeatherAlertSystem {
         this.accessibility.fontScale = Math.max(1, Math.min(4, parseInt(scale)));
         localStorage.setItem('weather-font-scale', this.accessibility.fontScale.toString());
         this.applyAccessibility();
+        this.showNotification(`Dimensiune text: ${this.accessibility.fontScale}x`);
         console.log(`🔤 Font scale: ${this.accessibility.fontScale}x`);
     }
     
@@ -1412,17 +1516,15 @@ class WeatherAlertSystem {
         const indicator = this.container?.querySelector('.weather-update');
         if (indicator) {
             indicator.classList.remove('flash');
-            void indicator.offsetWidth; // Force reflow
+            void indicator.offsetWidth;
             indicator.classList.add('flash');
         }
     }
     
     showError() {
         if (!this.container) return;
-        
         const temp = this.container.querySelector('.weather-temp');
         const condition = this.container.querySelector('.weather-condition');
-        
         if (temp) temp.textContent = '--°C';
         if (condition) condition.textContent = TEXT.error;
     }
@@ -1440,31 +1542,24 @@ class WeatherAlertSystem {
     }
     
     startMonitoring() {
-        // Update every 5 minutes
-        this.updateTimer = setInterval(() => {
-            this.fetchWeather();
-        }, CONFIG.updateInterval);
+        this.updateTimer = setInterval(() => this.fetchWeather(), CONFIG.updateInterval);
     }
     
     destroy() {
-        // Clear timer
         if (this.updateTimer) {
             clearInterval(this.updateTimer);
             this.updateTimer = null;
         }
         
-        // Abort any pending requests
         if (this.fetchAbortController) {
             this.fetchAbortController.abort();
         }
         
-        // Remove container
         if (this.container) {
             this.container.remove();
             this.container = null;
         }
         
-        // Clear global references
         delete window.weatherSystem;
         delete window.weatherSystemActive;
         
@@ -1474,120 +1569,89 @@ class WeatherAlertSystem {
 
 // === TESTING INTERFACE ===
 window.weatherTest = {
-    // Set specific weather code
     setWeather(code) {
         if (!window.weatherSystem?.currentData) {
             console.warn('⚠️ Weather system not ready');
             return;
         }
-        
         window.weatherSystem.currentData.weatherCode = code;
         window.weatherSystem.updateDisplay();
         window.weatherSystem.checkAlerts();
         console.log(`🌤️ Weather code: ${code}`);
     },
     
-    // Set temperature
     setTemp(temp) {
-        if (!window.weatherSystem?.currentData) {
-            console.warn('⚠️ Weather system not ready');
-            return;
-        }
-        
+        if (!window.weatherSystem?.currentData) return;
         window.weatherSystem.currentData.temp = temp;
         window.weatherSystem.updateDisplay();
         window.weatherSystem.checkAlerts();
         console.log(`🌡️ Temperature: ${temp}°C`);
     },
     
-    // Set wind speed
     setWind(speed) {
-        if (!window.weatherSystem?.currentData) {
-            console.warn('⚠️ Weather system not ready');
-            return;
-        }
-        
+        if (!window.weatherSystem?.currentData) return;
         window.weatherSystem.currentData.wind = speed;
         window.weatherSystem.checkAlerts();
         console.log(`💨 Wind: ${speed} km/h`);
     },
     
-    // Toggle day/night
     toggleDayNight() {
-        if (!window.weatherSystem?.currentData) {
-            console.warn('⚠️ Weather system not ready');
-            return;
-        }
-        
+        if (!window.weatherSystem?.currentData) return;
         window.weatherSystem.currentData.isDay = !window.weatherSystem.currentData.isDay;
         window.weatherSystem.updateDisplay();
         console.log(`🌓 ${window.weatherSystem.currentData.isDay ? 'Day' : 'Night'} mode`);
     },
     
-    // Cycle through weather conditions
     cycle() {
         const codes = [0, 1, 3, 45, 61, 65, 71, 75, 95, 99];
         let i = 0;
-        
         const interval = setInterval(() => {
             if (i >= codes.length) {
                 clearInterval(interval);
                 console.log('✅ Weather cycle complete');
                 return;
             }
-            
             this.setWeather(codes[i]);
             i++;
         }, 3000);
-        
         console.log('🔄 Starting weather cycle...');
     },
     
-    // Toggle accessibility
     toggleAccessibility() {
         window.weatherSystem?.toggleAccessibility();
     },
     
-    // Set font scale
     setFontScale(scale) {
         window.weatherSystem?.setFontScale(scale);
     },
     
-    // Expand widget
     expand() {
         if (window.weatherSystem && !window.weatherSystem.isExpanded) {
             window.weatherSystem.toggleExpanded();
         }
     },
     
-    // Collapse widget
     collapse() {
         if (window.weatherSystem?.isExpanded) {
             window.weatherSystem.toggleExpanded();
         }
     },
     
-    // Destroy and recreate
     reset() {
         window.weatherSystem?.destroy();
-        setTimeout(() => {
-            new WeatherAlertSystem();
-        }, 500);
+        setTimeout(() => new WeatherAlertSystem(), 500);
         console.log('🔄 Weather system reset');
     },
     
-    // Show current state
     status() {
         if (!window.weatherSystem) {
             console.log('❌ Weather system not initialized');
             return;
         }
-        
         console.log('📊 Weather System Status:');
         console.log('  Data:', window.weatherSystem.currentData);
         console.log('  Alert:', window.weatherSystem.currentAlert?.title || 'None');
         console.log('  Expanded:', window.weatherSystem.isExpanded);
-        console.log('  Hidden:', window.weatherSystem.isHidden);
         console.log('  High Contrast:', window.weatherSystem.accessibility.highContrast);
         console.log('  Font Scale:', window.weatherSystem.accessibility.fontScale);
     }
@@ -1595,17 +1659,12 @@ window.weatherTest = {
 
 // === AUTO-INITIALIZATION ===
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        new WeatherAlertSystem();
-    });
+    document.addEventListener('DOMContentLoaded', () => new WeatherAlertSystem());
 } else {
     new WeatherAlertSystem();
 }
 
-// === PRODUCTION INFO ===
-console.log('🏛️ Weather Alert System v4.1 - Production Ready');
-console.log('📍 Location: Slobozia, Ialomița County, Romania');
-console.log('🌓 Day/Night aware weather conditions');
-console.log('♿ Accessibility: High contrast & font scaling');
-console.log('🧪 Test: weatherTest.cycle() | weatherTest.status()');
-console.log('🎨 Toggle: weatherTest.toggleAccessibility() | weatherTest.toggleDayNight()');
+console.log('🏛️ Weather Alert System v4.2 - Ultra-Polished');
+console.log('📍 Slobozia, Ialomița County, Romania');
+console.log('✨ Premium UX with polished interactions');
+console.log('🧪 Test: weatherTest.cycle() | weatherTest.toggleAccessibility()');
