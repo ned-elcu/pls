@@ -20,7 +20,8 @@ const DRIVE_CONFIG = {
         'cadouri': '1LCvY_nzWPsneWH_6N-fFmrNMLd_9pD-Z',
         'bilanturi-bugete': '1GndSXLzUjoljgwgqmOCZV8mI-28lekX9',
         'program-achizitii': '1BCQMfAk1DVwgsU80pprlpnE05fy9Pykh',
-        'formare-profesionala': '1g0PNmLkMiElwuVYfxs8bPQ0FuYE5ZEmz'
+        'formare-profesionala': '1g0PNmLkMiElwuVYfxs8bPQ0FuYE5ZEmz',
+        'legislatie': '18Cq2GZC-h01spS2rcDcOCbECC0yn79T3'
     },
     
     // API endpoint
