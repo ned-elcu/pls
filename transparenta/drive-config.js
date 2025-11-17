@@ -24,7 +24,8 @@ const DRIVE_CONFIG = {
         'legislatie': '18Cq2GZC-h01spS2rcDcOCbECC0yn79T3',
         'strategie-anticoruptie': '1YoRVOJ6pnBygximXR1UeLFesS29RIrZv',
         'cod-etic': '14INOAKgKLPyVuFr-BVXIrZEqOQsgInld',
-        'declarare-cadouri': '13qwvAq6jnJ8JeWANY15t8rBNqd9RqN5f'
+        'declarare-cadouri': '13qwvAq6jnJ8JeWANY15t8rBNqd9RqN5f',
+        'raspunsuri-petitii': '1kJUw1wCrMzv_D1UApTN1vKp-idOxH1I2'
     },
     
     // API endpoint
