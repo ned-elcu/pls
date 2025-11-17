@@ -2015,51 +2015,62 @@ function initNewsletterForm() {
         messageDiv.className = 'newsletter-message';
         messageDiv.textContent = '';
         
-        // Create a hidden iframe to submit the form
-        const iframe = document.createElement('iframe');
-        iframe.name = 'hidden_iframe_newsletter';
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
+        // Use XMLHttpRequest for better compatibility
+        const xhr = new XMLHttpRequest();
         
-        // Create a temporary form that will submit to the iframe
-        const tempForm = document.createElement('form');
-        tempForm.action = GOOGLE_FORM_URL;
-        tempForm.method = 'POST';
-        tempForm.target = 'hidden_iframe_newsletter';
+        // Prepare form data
+        const formData = new FormData();
+        formData.append('entry.367514333', email);
         
-        // Add the email input
-        const emailField = document.createElement('input');
-        emailField.type = 'email';
-        emailField.name = 'entry.367514333';
-        emailField.value = email;
-        tempForm.appendChild(emailField);
+        xhr.open('POST', GOOGLE_FORM_URL, true);
         
-        // Add form to body and submit
-        document.body.appendChild(tempForm);
-        tempForm.submit();
+        // Handle completion (success or failure)
+        xhr.onloadend = function() {
+            // With Google Forms, we can't read the response due to CORS
+            // But if we get here, the submission likely worked
+            
+            // Show success message
+            messageDiv.className = 'newsletter-message success';
+            messageDiv.textContent = '✓ Mulțumim! Te-ai abonat cu succes la newsletter!';
+            
+            // Clear the form
+            form.reset();
+            
+            // Re-enable button
+            submitButton.disabled = false;
+            submitButton.textContent = 'Abonează-te';
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.className = 'newsletter-message';
+                messageDiv.textContent = '';
+            }, 5000);
+        };
         
-        // Clean up after a short delay
-        setTimeout(() => {
-            document.body.removeChild(tempForm);
-            document.body.removeChild(iframe);
-        }, 1000);
+        xhr.onerror = function() {
+            // Even on "error", the form might have submitted successfully
+            // Google Forms CORS policy causes this
+            
+            // Show success message anyway (Google Forms submission likely worked)
+            messageDiv.className = 'newsletter-message success';
+            messageDiv.textContent = '✓ Mulțumim! Te-ai abonat cu succes la newsletter!';
+            
+            // Clear the form
+            form.reset();
+            
+            // Re-enable button
+            submitButton.disabled = false;
+            submitButton.textContent = 'Abonează-te';
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.className = 'newsletter-message';
+                messageDiv.textContent = '';
+            }, 5000);
+        };
         
-        // Show success message
-        messageDiv.className = 'newsletter-message success';
-        messageDiv.textContent = '✓ Mulțumim! Te-ai abonat cu succes la newsletter!';
-        
-        // Clear the form
-        form.reset();
-        
-        // Re-enable button
-        submitButton.disabled = false;
-        submitButton.textContent = 'Abonează-te';
-        
-        // Hide message after 5 seconds
-        setTimeout(() => {
-            messageDiv.className = 'newsletter-message';
-            messageDiv.textContent = '';
-        }, 5000);
+        // Send the request
+        xhr.send(formData);
     });
     
     // Email validation on input
