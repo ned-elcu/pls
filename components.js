@@ -1654,7 +1654,7 @@ function loadWeatherAlertSystem() {
     const script = document.createElement('script');
     script.id = 'weather-alert-script';
     script.src = 'weather-alert.js';
-    script.async = true;
+    script.async = false;
     script.onerror = () => {
         console.warn('Weather alert system could not be loaded - check if weather-alert.js is in the correct path');
     };
