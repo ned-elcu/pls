@@ -1649,37 +1649,41 @@ const FOOTER_HTML = `
 
 // Load Weather Alert System
 function loadWeatherAlertSystem() {
-    if (document.getElementById('weather-alert-script')) return;
+    // Check if already loaded
+    if (document.getElementById('weather-alert-script')) {
+        console.log('⚠️ Weather alert script already exists');
+        return;
+    }
+    
+    // Check if weather system is already active
+    if (window.weatherSystemActive) {
+        console.log('⚠️ Weather system already active');
+        return;
+    }
+    
+    console.log('📡 Loading weather alert system...');
     
     const script = document.createElement('script');
     script.id = 'weather-alert-script';
     script.src = 'weather-alert.js';
-    script.async = false;
+    script.async = false;  // CRITICAL: Load synchronously
+    script.defer = false;
+    
     script.onerror = () => {
-        console.warn('Weather alert system could not be loaded - check if weather-alert.js is in the correct path');
+        console.error('❌ Weather alert system could not be loaded');
+        console.error('   Check if weather-alert.js is in the same directory as your HTML files');
+        console.error('   Current page location:', window.location.href);
     };
+    
     script.onload = () => {
-        console.log('Weather alert script loaded successfully');
+        console.log('✅ Weather alert script loaded successfully');
+        console.log('   Weather system will auto-initialize...');
     };
+    
     document.head.appendChild(script);
 }
 
-function initWeatherAlert() {
-    const checkWeatherSystem = () => {
-        if (window.WeatherAlertSystem) {
-            try {
-                window.weatherAlert = new WeatherAlertSystem();
-                console.log('Weather Alert System initialized successfully');
-            } catch (error) {
-                console.error('Error initializing Weather Alert System:', error);
-            }
-        } else {
-            setTimeout(checkWeatherSystem, 100);
-        }
-    };
-    
-    setTimeout(checkWeatherSystem, 500);
-}
+
 
 document.addEventListener('DOMContentLoaded', function() {
     if (!document.querySelector('link[rel="icon"]')) {
@@ -1723,7 +1727,6 @@ function initializeComponents() {
     initResponsiveHeader();
     fixIconAlignment();
     initNewsletterForm();
-    initWeatherAlert();
 }
 
 function initIntroScreen() {
