@@ -17,7 +17,7 @@ const CONFIG = {
     mobile: {
         autoCollapseDelay: 10000, // Auto-collapse after 10s of inactivity
         scrollThreshold: 50, // Hide when scrolled down this many pixels
-        enableScrollHide: true // Enable scroll-based hiding
+        enableScrollHide: false // Disabled - widget always visible
     }
 };
 
