@@ -201,9 +201,17 @@ const TEXT = {
 function injectCSS() {
     if (document.getElementById('weather-alert-css')) return;
     
+    // Load Material Icons if not already present
+    if (!document.querySelector('link[href*="material-icons"]')) {
+        const iconLink = document.createElement('link');
+        iconLink.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+        iconLink.rel = 'stylesheet';
+        document.head.appendChild(iconLink);
+    }
+    
     const css = `
 /* =============================================================================
-   WEATHER ALERT SYSTEM v4.2 - Ultra-Polished Premium UX
+   WEATHER ALERT SYSTEM v4.2 - Fixed Button Layout
    ============================================================================= */
 
 /* === BASE CONTAINER === */
@@ -212,7 +220,7 @@ function injectCSS() {
     bottom: 20px;
     right: 20px;
     width: 290px;
-    min-height: 80px;
+    min-height: 90px;
     background: rgba(26, 47, 95, 0.94);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -326,27 +334,27 @@ function injectCSS() {
 /* === LAYOUT === */
 .weather-content {
     padding: 16px;
-    padding-right: 60px;
+    padding-right: 56px;
     position: relative;
     z-index: 2;
 }
 
-/* === CONTROL BUTTONS === */
+/* === CONTROL BUTTONS - FIXED === */
 .weather-controls {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 10px;
+    right: 10px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     z-index: 10;
 }
 
 .weather-btn {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    min-height: 36px;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -436,7 +444,7 @@ function injectCSS() {
 }
 
 .weather-btn i {
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1;
     font-family: 'Material Icons';
     position: relative;
@@ -449,7 +457,7 @@ function injectCSS() {
     text-align: center;
     padding: 12px 16px;
     margin: -16px -16px 16px;
-    margin-right: -60px;
+    margin-right: -56px;
     background: rgba(255, 255, 255, 0.12);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
@@ -965,6 +973,7 @@ function injectCSS() {
         bottom: 12px;
         right: 12px;
         width: min(270px, calc(100vw - 24px));
+        min-height: 86px;
     }
     
     .weather-alert.expanded {
@@ -974,7 +983,7 @@ function injectCSS() {
     
     .weather-content {
         padding: 14px;
-        padding-right: 56px;
+        padding-right: 52px;
     }
     
     .weather-icon-box {
@@ -1000,25 +1009,25 @@ function injectCSS() {
     }
     
     .weather-btn {
-        width: 38px;
-        height: 38px;
-        min-width: 38px;
-        min-height: 38px;
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        min-height: 34px;
     }
     
     .weather-btn i {
-        font-size: 16px;
+        font-size: 15px;
     }
     
     .weather-controls {
         top: 10px;
-        right: 10px;
-        gap: 8px;
+        right: 8px;
+        gap: 6px;
     }
     
     .weather-alert-header {
         padding: 10px 14px;
-        margin-right: -56px;
+        margin-right: -52px;
     }
     
     .weather-tips li {
@@ -1157,7 +1166,7 @@ class WeatherAlertSystem {
                 }
             }, 2000);
             
-            console.log('✅ Weather Alert System v4.2 - Ultra-Polished');
+            console.log('✅ Weather Alert System v4.2 - Fixed Layout');
             
         } catch (error) {
             console.error('❌ Failed to initialize:', error);
@@ -1179,14 +1188,12 @@ class WeatherAlertSystem {
     setupEventListeners() {
         if (!this.container) return;
         
-        // Click to expand
         this.container.addEventListener('click', (e) => {
             if (!e.target.closest('.weather-controls')) {
                 this.toggleExpanded();
             }
         });
         
-        // Accessibility button
         const accessBtn = this.container.querySelector('.accessibility-btn');
         if (accessBtn) {
             accessBtn.addEventListener('click', (e) => {
@@ -1196,7 +1203,6 @@ class WeatherAlertSystem {
             });
         }
         
-        // Expand button
         const expandBtn = this.container.querySelector('.expand-btn');
         if (expandBtn) {
             expandBtn.addEventListener('click', (e) => {
@@ -1206,7 +1212,6 @@ class WeatherAlertSystem {
             });
         }
         
-        // Keyboard navigation
         this.container.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -1223,7 +1228,6 @@ class WeatherAlertSystem {
             }
         });
         
-        // Remove focus on blur
         this.container.addEventListener('blur', (e) => {
             if (e.target.classList.contains('weather-btn')) {
                 e.target.blur();
@@ -1232,14 +1236,10 @@ class WeatherAlertSystem {
     }
     
     handleButtonClick(button) {
-        // Add ripple effect
         button.classList.add('ripple');
         setTimeout(() => button.classList.remove('ripple'), 400);
-        
-        // Blur to remove focus after click (mouse users)
         setTimeout(() => button.blur(), 100);
         
-        // Vibrate on mobile
         if ('vibrate' in navigator) {
             navigator.vibrate(30);
         }
@@ -1467,7 +1467,6 @@ class WeatherAlertSystem {
             accessBtn.classList.toggle('active', this.accessibility.highContrast);
         }
         
-        // Show notification
         this.showNotification(
             this.accessibility.highContrast ? TEXT.contrastEnabled : TEXT.contrastDisabled
         );
@@ -1476,20 +1475,16 @@ class WeatherAlertSystem {
     }
     
     showNotification(message) {
-        // Remove existing notification
         const existing = this.container.querySelector('.weather-notification');
         if (existing) existing.remove();
         
-        // Create notification
         const notification = document.createElement('div');
         notification.className = 'weather-notification';
         notification.textContent = message;
         this.container.appendChild(notification);
         
-        // Animate in
         setTimeout(() => notification.classList.add('show'), 10);
         
-        // Animate out
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 400);
@@ -1664,7 +1659,7 @@ if (document.readyState === 'loading') {
     new WeatherAlertSystem();
 }
 
-console.log('🏛️ Weather Alert System v4.2 - Ultra-Polished');
+console.log('✅ Weather Alert System v4.2 - Fixed Button Layout');
 console.log('📍 Slobozia, Ialomița County, Romania');
-console.log('✨ Premium UX with polished interactions');
+console.log('🔧 Fixed: Button positioning, Material Icons loading');
 console.log('🧪 Test: weatherTest.cycle() | weatherTest.toggleAccessibility()');
