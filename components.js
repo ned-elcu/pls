@@ -1980,7 +1980,7 @@ function fixIconAlignment() {
     }, 100);
 }
 
-// GOOGLE FORMS NEWSLETTER INTEGRATION - Using CORS Proxy
+// FORMSPREE NEWSLETTER INTEGRATION - Configured and ready
 function initNewsletterForm() {
     const form = document.getElementById('newsletter-form');
     const emailInput = document.getElementById('newsletter-email');
@@ -1991,9 +1991,8 @@ function initNewsletterForm() {
         return;
     }
     
-    // Google Form URL with CORS proxy
-    const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdG8I17JU1TiMG5o7IXZeQKvul6YH6a0huf1wFG0uZ_ccBctQ/formResponse';
-    const CORS_PROXY = 'https://corsproxy.io/?';
+    // Your Formspree endpoint
+    const FORMSPREE_URL = 'https://formspree.io/f/mblwrrbj';
     
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -2017,25 +2016,27 @@ function initNewsletterForm() {
         messageDiv.textContent = '';
         
         try {
-            // Create form data
-            const formData = new URLSearchParams();
-            formData.append('entry.367514333', email);
-            
-            // Submit through CORS proxy
-            const response = await fetch(CORS_PROXY + encodeURIComponent(GOOGLE_FORM_URL), {
+            const response = await fetch(FORMSPREE_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: formData.toString()
+                body: JSON.stringify({
+                    email: email,
+                    _subject: 'New Newsletter Subscription - PLS'
+                })
             });
             
-            // Show success message
-            messageDiv.className = 'newsletter-message success';
-            messageDiv.textContent = '✓ Mulțumim! Te-ai abonat cu succes la newsletter!';
-            
-            // Clear the form
-            form.reset();
+            if (response.ok) {
+                // Show success message
+                messageDiv.className = 'newsletter-message success';
+                messageDiv.textContent = '✓ Mulțumim! Te-ai abonat cu succes la newsletter!';
+                
+                // Clear the form
+                form.reset();
+            } else {
+                throw new Error('Submission failed');
+            }
             
         } catch (error) {
             console.error('Newsletter subscription error:', error);
