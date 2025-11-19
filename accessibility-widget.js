@@ -841,108 +841,138 @@ class AccessibilityWidget {
         
         document.body.appendChild(icon);
         
-        // Monitor weather widget for dynamic positioning
-        this.monitorWeatherWidget();
+        // TEMPORARY: Weather monitoring disabled for debugging
+        console.log('ℹ️ Weather widget monitoring DISABLED (debugging)');
+        // this.monitorWeatherWidget();
     }
     
     monitorWeatherWidget() {
-        const icon = document.querySelector('.access-float-icon');
-        if (!icon) return;
-        
-        let isUpdating = false; // Prevent infinite loop
-        
-        // Check for weather widget presence and state
-        const checkWeatherPosition = () => {
-            // Prevent recursive calls
-            if (isUpdating) return;
-            isUpdating = true;
+        // Make this feature completely optional and fail-safe
+        try {
+            const icon = document.querySelector('.access-float-icon');
+            if (!icon) {
+                console.log('⚠️ Weather monitoring: Icon not found');
+                return;
+            }
             
-            const weatherWidget = document.querySelector('.weather-widget');
+            let isUpdating = false;
+            let updateCount = 0;
+            const MAX_UPDATES = 10; // Prevent runaway updates
             
-            if (!weatherWidget) {
-                // No weather widget - default position
-                icon.classList.remove('weather-active', 'weather-expanded');
-            } else {
-                // Weather widget exists
-                icon.classList.add('weather-active');
+            // Check for weather widget presence and state
+            const checkWeatherPosition = () => {
+                // Multiple safety checks
+                if (isUpdating) {
+                    console.log('⚠️ Weather check already in progress, skipping');
+                    return;
+                }
                 
-                // Check if expanded
-                const isExpanded = weatherWidget.classList.contains('expanded');
-                if (isExpanded) {
-                    icon.classList.add('weather-expanded');
-                } else {
-                    icon.classList.remove('weather-expanded');
+                if (updateCount > MAX_UPDATES) {
+                    console.warn('⚠️ Weather monitoring disabled: too many updates');
+                    if (this.weatherObserver) this.weatherObserver.disconnect();
+                    if (this.weatherWidgetObserver) this.weatherWidgetObserver.disconnect();
+                    return;
                 }
-            }
-            
-            // Allow next update after a small delay
-            setTimeout(() => {
-                isUpdating = false;
-            }, 50);
-        };
-        
-        // Initial check
-        checkWeatherPosition();
-        
-        // Monitor ONLY for weather widget changes, not entire DOM
-        const observer = new MutationObserver((mutations) => {
-            // Only react to changes that might affect weather widget
-            let shouldCheck = false;
-            
-            for (const mutation of mutations) {
-                // Check if mutation involves weather widget specifically
-                if (mutation.type === 'childList') {
-                    // Check if weather widget was added/removed
-                    const addedWidget = Array.from(mutation.addedNodes).some(
-                        node => node.classList && node.classList.contains('weather-widget')
-                    );
-                    const removedWidget = Array.from(mutation.removedNodes).some(
-                        node => node.classList && node.classList.contains('weather-widget')
-                    );
+                
+                isUpdating = true;
+                updateCount++;
+                
+                try {
+                    const weatherWidget = document.querySelector('.weather-widget');
                     
-                    if (addedWidget || removedWidget) {
-                        shouldCheck = true;
-                        break;
+                    if (!weatherWidget) {
+                        icon.classList.remove('weather-active', 'weather-expanded');
+                    } else {
+                        icon.classList.add('weather-active');
+                        
+                        const isExpanded = weatherWidget.classList.contains('expanded');
+                        if (isExpanded) {
+                            icon.classList.add('weather-expanded');
+                        } else {
+                            icon.classList.remove('weather-expanded');
+                        }
                     }
-                } else if (mutation.type === 'attributes') {
-                    // Only check if the weather widget's class changed
-                    if (mutation.target.classList && 
-                        mutation.target.classList.contains('weather-widget')) {
-                        shouldCheck = true;
-                        break;
-                    }
+                } catch (error) {
+                    console.error('⚠️ Error in weather position check:', error);
                 }
+                
+                // Reset after delay
+                setTimeout(() => {
+                    isUpdating = false;
+                }, 100);
+            };
+            
+            // Initial check
+            checkWeatherPosition();
+            
+            // Optional: Don't monitor if weather widget doesn't exist initially
+            const weatherWidget = document.querySelector('.weather-widget');
+            if (!weatherWidget) {
+                console.log('ℹ️ No weather widget found, skipping monitoring setup');
+                return;
             }
             
-            if (shouldCheck) {
-                checkWeatherPosition();
+            // Monitor ONLY for weather widget changes
+            const observer = new MutationObserver((mutations) => {
+                try {
+                    let shouldCheck = false;
+                    
+                    for (const mutation of mutations) {
+                        if (mutation.type === 'childList') {
+                            const addedWidget = Array.from(mutation.addedNodes).some(
+                                node => node.classList && node.classList.contains('weather-widget')
+                            );
+                            const removedWidget = Array.from(mutation.removedNodes).some(
+                                node => node.classList && node.classList.contains('weather-widget')
+                            );
+                            
+                            if (addedWidget || removedWidget) {
+                                shouldCheck = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (shouldCheck) {
+                        checkWeatherPosition();
+                    }
+                } catch (error) {
+                    console.error('⚠️ Error in mutation observer:', error);
+                }
+            });
+            
+            // Watch ONLY document.body direct children
+            observer.observe(document.body, {
+                childList: true,
+                subtree: false,
+                attributes: false
+            });
+            
+            // Watch weather widget specifically
+            if (weatherWidget) {
+                const widgetObserver = new MutationObserver(() => {
+                    try {
+                        checkWeatherPosition();
+                    } catch (error) {
+                        console.error('⚠️ Error in widget observer:', error);
+                    }
+                });
+                
+                widgetObserver.observe(weatherWidget, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+                
+                this.weatherWidgetObserver = widgetObserver;
             }
-        });
-        
-        // Watch ONLY document.body for direct children changes (less aggressive)
-        observer.observe(document.body, {
-            childList: true,     // Watch for weather widget add/remove
-            subtree: false,      // Don't watch entire DOM tree (CRITICAL FIX)
-            attributes: false    // Don't watch all attributes
-        });
-        
-        // Separately watch weather widget specifically if it exists
-        const weatherWidget = document.querySelector('.weather-widget');
-        if (weatherWidget) {
-            const widgetObserver = new MutationObserver(() => {
-                checkWeatherPosition();
-            });
             
-            widgetObserver.observe(weatherWidget, {
-                attributes: true,
-                attributeFilter: ['class'] // Only watch class changes on weather widget
-            });
+            this.weatherObserver = observer;
+            console.log('✅ Weather widget monitoring active');
             
-            this.weatherWidgetObserver = widgetObserver;
+        } catch (error) {
+            console.error('❌ Failed to setup weather monitoring:', error);
+            console.log('   Accessibility widget will work without weather awareness');
         }
-        
-        // Store observer for cleanup if needed
-        this.weatherObserver = observer;
     }
     
     showToast(message) {
