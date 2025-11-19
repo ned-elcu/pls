@@ -2545,7 +2545,7 @@ function loadAccessibilityWidget() {
     // Create and inject the accessibility widget script
     const script = document.createElement('script');
     script.id = 'accessibility-widget-script';
-    script.src = '/js/accessibility-widget.js';
+    script.src = '/accessibility-widget.js';
     script.async = false; // Load synchronously to ensure proper initialization
     
     script.onload = function() {
@@ -2554,8 +2554,8 @@ function loadAccessibilityWidget() {
     };
     
     script.onerror = function() {
-        console.warn('⚠️ Failed to load accessibility widget script from /js/accessibility-widget.js');
-        console.log('💡 Make sure accessibility-widget.js is uploaded to /js/ directory');
+        console.warn('⚠️ Failed to load accessibility widget script from /accessibility-widget.js');
+        console.log('💡 Make sure accessibility-widget.js is uploaded to the root directory');
     };
     
     document.head.appendChild(script);
