@@ -1,663 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Components.js initialization started');
-    
-    try {
-        // Favicon
-        if (!document.querySelector('link[rel="icon"]')) {
-            const faviconLink = document.createElement('link');
-            faviconLink.rel = "icon";
-            faviconLink.href = "https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png";
-            faviconLink.type = "image/png";
-            document.head.appendChild(faviconLink);
-            console.log('✅ Favicon loaded');
-        }
-
-        // CSS
-        if (!document.getElementById('components-css')) {
-            const styleEl = document.createElement('style');
-            styleEl.id = 'components-css';
-            styleEl.textContent = COMPONENTS_CSS;
-            document.head.appendChild(styleEl);
-            console.log('✅ Component styles loaded');
-        }
-        
-        // Material Icons
-        if (!document.querySelector('link[href*="material-icons"]')) {
-            const iconLink = document.createElement('link');
-            iconLink.href = "https://fonts.googleapis.com/icon?family=Material+Icons";
-            iconLink.rel = "stylesheet";
-            document.head.appendChild(iconLink);
-            console.log('✅ Material Icons loaded');
-        }
-        
-        // === UNIFIED CITIZEN WIDGET (replaces weather + accessibility) ===
-        try {
-            loadUnifiedCitizenWidget();
-        } catch (error) {
-            console.error('⚠️ Unified citizen widget error:', error);
-            console.log('   Site will continue without weather and accessibility widgets');
-        }
-        
-        // Header & Footer
-        const headerContainer = document.getElementById('header-container');
-        const footerContainer = document.getElementById('footer-container');
-        
-        if (headerContainer) {
-            headerContainer.innerHTML = HEADER_HTML;
-            console.log('✅ Header loaded');
-        }
-        if (footerContainer) {
-            footerContainer.innerHTML = FOOTER_HTML;
-            console.log('✅ Footer loaded');
-        }
-        
-        // Initialize all components
-        initializeComponents();
-        console.log('✅ All components initialized');
-        
-    } catch (error) {
-        console.error('❌ CRITICAL ERROR in components initialization:', error);
-        console.error('   Stack trace:', error.stack);
-        
-        // EMERGENCY: Force remove intro screen even if everything fails
-        const introScreen = document.getElementById('intro-screen');
-        if (introScreen) {
-            console.log('🚨 Emergency intro screen removal');
-            introScreen.style.display = 'none';
-            introScreen.remove();
-        }
-    }
-});
-
-function initializeComponents() {
-    console.log('🔧 Initializing components...');
-    
-    try {
-        initIntroScreen();
-        console.log('  ✓ Intro screen initialized');
-    } catch (error) {
-        console.error('  ✗ Intro screen error:', error);
-    }
-    
-    try {
-        initHeaderEffects();
-        console.log('  ✓ Header effects initialized');
-    } catch (error) {
-        console.error('  ✗ Header effects error:', error);
-    }
-    
-    try {
-        initMobileMenu();
-        console.log('  ✓ Mobile menu initialized');
-    } catch (error) {
-        console.error('  ✗ Mobile menu error:', error);
-    }
-    
-    try {
-        initDropdownMenu();
-        console.log('  ✓ Dropdown menu initialized');
-    } catch (error) {
-        console.error('  ✗ Dropdown menu error:', error);
-    }
-    
-    try {
-        initResponsiveHeader();
-        console.log('  ✓ Responsive header initialized');
-    } catch (error) {
-        console.error('  ✗ Responsive header error:', error);
-    }
-    
-    try {
-        fixIconAlignment();
-        console.log('  ✓ Icon alignment fixed');
-    } catch (error) {
-        console.error('  ✗ Icon alignment error:', error);
-    }
-    
-    try {
-        initNewsletterForm();
-        console.log('  ✓ Newsletter form initialized');
-    } catch (error) {
-        console.error('  ✗ Newsletter form error:', error);
-    }
-    
-    console.log('✅ Component initialization complete');
-}
-
-function initIntroScreen() {
-    const introScreen = document.getElementById('intro-screen');
-    if (!introScreen) {
-        console.log('ℹ️ No intro screen found');
-        return;
-    }
-    
-    // CRITICAL: Guarantee intro screen removal even if scripts fail
-    const removeIntro = () => {
-        if (introScreen && introScreen.style.display !== 'none') {
-            console.log('✅ Removing intro screen');
-            introScreen.style.opacity = '0';
-            setTimeout(() => {
-                introScreen.style.display = 'none';
-                introScreen.remove(); // Completely remove from DOM
-            }, 500);
-        }
-    };
-    
-    // Primary removal after 3 seconds
-    setTimeout(removeIntro, 3000);
-    
-    // FAILSAFE: Force removal after 5 seconds no matter what
-    setTimeout(() => {
-        if (introScreen && introScreen.style.display !== 'none') {
-            console.warn('⚠️ Intro screen forced removal (failsafe triggered)');
-            introScreen.style.display = 'none';
-            introScreen.remove();
-        }
-    }, 5000);
-}
-
-function initHeaderEffects() {
-    const headerTop = document.getElementById('header-top');
-    const headerMain = document.getElementById('header-main');
-    
-    if (headerTop && headerMain) {
-        if (window.scrollY > 50) {
-            headerTop.classList.add('scrolled');
-            headerMain.classList.add('scrolled');
-        }
-        
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 50) {
-                headerTop.classList.add('scrolled');
-                headerMain.classList.add('scrolled');
-            } else {
-                headerTop.classList.remove('scrolled');
-                headerMain.classList.remove('scrolled');
-            }
-        });
-    }
-}
-
-function initMobileMenu() {
-    const hamburger = document.getElementById('mobile-menu-toggle');
-    const menu = document.getElementById('main-nav');
-    const closeBtn = document.getElementById('mobile-menu-close-btn');
-    const backdrop = document.getElementById('mobile-menu-backdrop');
-    
-    // Validate all elements exist
-    if (!hamburger || !menu || !backdrop) {
-        console.error('Mobile menu: Required elements missing');
-        return;
-    }
-    
-    let isOpen = false;
-    
-    // === CORE FUNCTIONS ===
-    
-    const openMenu = () => {
-        isOpen = true;
-        menu.classList.add('active');
-        backdrop.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        hamburger.setAttribute('aria-expanded', 'true');
-        hamburger.innerHTML = '<i class="material-icons">close</i>';
-    };
-    
-    const closeMenu = () => {
-        isOpen = false;
-        menu.classList.remove('active');
-        backdrop.classList.remove('active');
-        document.body.style.overflow = '';
-        hamburger.setAttribute('aria-expanded', 'false');
-        hamburger.innerHTML = '<i class="material-icons">menu</i>';
-        
-        // Auto-close all dropdowns when menu closes
-        document.querySelectorAll('.main-nav .has-dropdown.active').forEach(dropdown => {
-            dropdown.classList.remove('active');
-        });
-    };
-    
-    // === EVENT HANDLERS ===
-    
-    // Hamburger click
-    hamburger.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        isOpen ? closeMenu() : openMenu();
-    });
-    
-    // Close button click
-    if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            closeMenu();
-        });
-    }
-    
-    // Backdrop click
-    backdrop.addEventListener('click', closeMenu);
-    
-    // ESC key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && isOpen) {
-            closeMenu();
-        }
-    });
-    
-    // Smart link handling
-    menu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', (e) => {
-            // Only apply mobile logic on mobile devices
-            if (window.innerWidth > 992) return;
-            
-            const parentLi = link.closest('li');
-            const isDropdownParent = parentLi?.classList.contains('has-dropdown');
-            const isMainDropdownLink = isDropdownParent && link.parentElement === parentLi;
-            
-            if (isMainDropdownLink) {
-                // Dropdown parent clicked - toggle accordion
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Store the position of the clicked element before toggle
-                const linkRect = link.getBoundingClientRect();
-                const menuScrollTop = menu.scrollTop;
-                const isCurrentlyActive = parentLi.classList.contains('active');
-                
-                // Close other dropdowns
-                document.querySelectorAll('.main-nav .has-dropdown').forEach(item => {
-                    if (item !== parentLi) item.classList.remove('active');
-                });
-                
-                // Toggle this dropdown
-                parentLi.classList.toggle('active');
-                
-                // If we just OPENED the dropdown, scroll to keep header visible
-                if (!isCurrentlyActive) {
-                    // Wait for the dropdown animation to start
-                    setTimeout(() => {
-                        // Calculate where the link is now after expansion
-                        const newLinkRect = link.getBoundingClientRect();
-                        
-                        // If the link got pushed up (negative movement), scroll to compensate
-                        if (newLinkRect.top < linkRect.top) {
-                            const scrollOffset = linkRect.top - newLinkRect.top;
-                            menu.scrollTo({
-                                top: menuScrollTop - scrollOffset + 16, // +16 for padding
-                                behavior: 'smooth'
-                            });
-                        }
-                    }, 50);
-                }
-            } else if (link.closest('.dropdown-menu') || !isDropdownParent) {
-                // Regular link or dropdown child - close menu after short delay
-                setTimeout(closeMenu, 150);
-            }
-        });
-    });
-    
-    // Window resize handler
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            if (window.innerWidth > 992 && isOpen) {
-                closeMenu();
-            }
-        }, 100);
-    });
-}
-
-function initDropdownMenu() {
-    const dropdownItems = document.querySelectorAll('.main-nav .has-dropdown');
-    
-    dropdownItems.forEach(item => {
-        const link = item.querySelector('a');
-        const dropdownIcon = item.querySelector('.dropdown-icon');
-        
-        // Handle clicks on mobile
-        const handleClick = function(e) {
-            if (window.innerWidth <= 992) {
-                // Only toggle if clicking the parent link or dropdown icon
-                if (e.target === link || 
-                    e.target === dropdownIcon || 
-                    link.contains(e.target) && !e.target.closest('.dropdown-menu')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    // Store position before toggle
-                    const linkRect = link.getBoundingClientRect();
-                    const menu = document.getElementById('main-nav');
-                    const menuScrollTop = menu ? menu.scrollTop : 0;
-                    const isCurrentlyActive = item.classList.contains('active');
-                    
-                    // Close other dropdowns
-                    dropdownItems.forEach(otherItem => {
-                        if (otherItem !== item) {
-                            otherItem.classList.remove('active');
-                        }
-                    });
-                    
-                    // Toggle current dropdown
-                    item.classList.toggle('active');
-                    
-                    // If we just OPENED the dropdown, scroll to keep header visible
-                    if (!isCurrentlyActive && menu) {
-                        setTimeout(() => {
-                            const newLinkRect = link.getBoundingClientRect();
-                            
-                            // If link moved up, adjust scroll
-                            if (newLinkRect.top < linkRect.top) {
-                                const scrollOffset = linkRect.top - newLinkRect.top;
-                                menu.scrollTo({
-                                    top: menuScrollTop - scrollOffset + 16,
-                                    behavior: 'smooth'
-                                });
-                            }
-                        }, 50);
-                    }
-                }
-            }
-        };
-        
-        // Add click event
-        link.addEventListener('click', handleClick);
-        
-        // Add touch event for better mobile responsiveness
-        link.addEventListener('touchend', function(e) {
-            if (window.innerWidth <= 992) {
-                e.preventDefault();
-                handleClick(e);
-            }
-        }, { passive: false });
-    });
-    
-    // Close dropdowns on window resize to desktop
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 992) {
-            dropdownItems.forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            const mainNav = document.getElementById('main-nav');
-            const backdrop = document.getElementById('mobile-menu-backdrop');
-            if (mainNav) {
-                mainNav.classList.remove('active');
-            }
-            if (backdrop) {
-                backdrop.classList.remove('active');
-            }
-            document.body.style.overflow = '';
-            
-            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-            if (mobileMenuToggle) {
-                mobileMenuToggle.innerHTML = '<i class="material-icons">menu</i>';
-                mobileMenuToggle.setAttribute('aria-expanded', 'false');
-            }
-        }
-    });
-}
-
-function initResponsiveHeader() {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupResponsiveHeader);
-    } else {
-        setupResponsiveHeader();
-    }
-    
-    function setupResponsiveHeader() {
-        const applyResponsiveClasses = () => {
-            const screenWidth = window.innerWidth;
-            
-            const optionalTextItems = document.querySelectorAll('.main-nav ul li a .menu-text-optional');
-            const iconOnlySmallItems = document.querySelectorAll('.main-nav ul li a.icon-only-small');
-            
-            if (screenWidth <= 1366 && screenWidth > 992) {
-                optionalTextItems.forEach(item => {
-                    item.style.display = 'none';
-                });
-                
-                iconOnlySmallItems.forEach(item => {
-                    item.classList.add('icon-only');
-                });
-            } else if (screenWidth > 1366) {
-                optionalTextItems.forEach(item => {
-                    item.style.display = 'inline';
-                });
-                
-                iconOnlySmallItems.forEach(item => {
-                    item.classList.remove('icon-only');
-                });
-            }
-            
-            if (screenWidth <= 1199 && screenWidth > 992) {
-                createOverflowMenu();
-            } else {
-                const overflowMenu = document.querySelector('.overflow-menu-item');
-                if (overflowMenu) {
-                    overflowMenu.style.display = 'none';
-                }
-                
-                const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
-                lowPriorityItems.forEach(item => {
-                    item.style.display = 'flex';
-                });
-            }
-        };
-        
-        const createOverflowMenu = () => {
-            let overflowMenu = document.querySelector('.overflow-menu-item');
-            
-            if (!overflowMenu) {
-                const mainNav = document.querySelector('.main-nav ul');
-                if (!mainNav) return;
-                
-                overflowMenu = document.createElement('li');
-                overflowMenu.className = 'has-dropdown overflow-menu-item';
-                
-                const overflowLink = document.createElement('a');
-                overflowLink.href = '#';
-                overflowLink.setAttribute('data-tooltip', 'Mai mult');
-                
-                const moreIcon = document.createElement('i');
-                moreIcon.className = 'material-icons menu-icon';
-                moreIcon.textContent = 'more_horiz';
-                
-                const moreText = document.createElement('span');
-                moreText.className = 'menu-text';
-                moreText.textContent = 'Mai mult';
-                
-                const dropdownIcon = document.createElement('i');
-                dropdownIcon.className = 'material-icons dropdown-icon';
-                dropdownIcon.textContent = 'keyboard_arrow_down';
-                
-                overflowLink.appendChild(moreIcon);
-                overflowLink.appendChild(moreText);
-                overflowLink.appendChild(dropdownIcon);
-                overflowMenu.appendChild(overflowLink);
-                
-                const dropdownMenu = document.createElement('ul');
-                dropdownMenu.className = 'dropdown-menu';
-                overflowMenu.appendChild(dropdownMenu);
-                
-                mainNav.appendChild(overflowMenu);
-                updateOverflowMenuItems();
-            } else {
-                overflowMenu.style.display = 'flex';
-                updateOverflowMenuItems();
-            }
-            
-            const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
-            lowPriorityItems.forEach(item => {
-                item.style.display = 'none';
-            });
-        };
-        
-        const updateOverflowMenuItems = () => {
-            const overflowMenu = document.querySelector('.overflow-menu-item');
-            if (!overflowMenu) return;
-            
-            const dropdownMenu = overflowMenu.querySelector('.dropdown-menu');
-            if (!dropdownMenu) return;
-            
-            dropdownMenu.innerHTML = '';
-            
-            const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
-            lowPriorityItems.forEach(item => {
-                const clonedItem = item.cloneNode(true);
-                clonedItem.classList.remove('low-priority');
-                
-                const optionalText = clonedItem.querySelector('.menu-text-optional');
-                if (optionalText) {
-                    optionalText.style.display = 'inline';
-                }
-                
-                dropdownMenu.appendChild(clonedItem);
-            });
-        };
-        
-        applyResponsiveClasses();
-        
-        let resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(applyResponsiveClasses, 100);
-        });
-    }
-}
-
-function fixIconAlignment() {
-    setTimeout(function() {
-        const menuIcons = document.querySelectorAll('.menu-icon, .dropdown-icon, .dropdown-icon-item');
-        
-        if (menuIcons.length > 0) {
-            menuIcons.forEach(icon => {
-                if (icon.classList.contains('menu-icon') || icon.classList.contains('dropdown-icon')) {
-                    icon.style.display = 'inline-flex';
-                    icon.style.alignItems = 'center';
-                    icon.style.justifyContent = 'center';
-                    icon.style.position = 'relative';
-                    icon.style.top = '2px';
-                }
-            });
-        }
-        
-        const menuItems = document.querySelectorAll('.main-nav ul li a');
-        if (menuItems.length > 0) {
-            menuItems.forEach(item => {
-                item.style.display = 'inline-flex';
-                item.style.alignItems = 'center';
-                item.style.height = '45px';
-            });
-        }
-        
-        const dropdownItems = document.querySelectorAll('.dropdown-menu li a');
-        if (dropdownItems.length > 0) {
-            dropdownItems.forEach(item => {
-                const icon = item.querySelector('.dropdown-icon-item');
-                if (icon) {
-                    icon.style.display = 'inline-flex';
-                    icon.style.alignItems = 'center';
-                    icon.style.position = 'relative';
-                    icon.style.top = '2px';
-                }
-            });
-        }
-    }, 100);
-}
-
-// FORMSPREE NEWSLETTER INTEGRATION - Configured and ready
-function initNewsletterForm() {
-    const form = document.getElementById('newsletter-form');
-    const emailInput = document.getElementById('newsletter-email');
-    const messageDiv = document.getElementById('newsletter-message');
-    
-    if (!form) {
-        console.error('Newsletter form not found');
-        return;
-    }
-    
-    // Your Formspree endpoint
-    const FORMSPREE_URL = 'https://formspree.io/f/mblwrrbj';
-    
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const email = emailInput.value.trim();
-        const submitButton = form.querySelector('button[type="submit"]');
-        
-        // Validate email
-        if (!email || !emailInput.validity.valid) {
-            messageDiv.className = 'newsletter-message error';
-            messageDiv.textContent = '✗ Te rugăm să introduci o adresă de email validă.';
-            return;
-        }
-        
-        // Disable button and show loading state
-        submitButton.disabled = true;
-        submitButton.textContent = 'Se trimite...';
-        
-        // Hide any previous messages
-        messageDiv.className = 'newsletter-message';
-        messageDiv.textContent = '';
-        
-        try {
-            const response = await fetch(FORMSPREE_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email,
-                    _subject: 'New Newsletter Subscription - PLS'
-                })
-            });
-            
-            if (response.ok) {
-                // Show success message
-                messageDiv.className = 'newsletter-message success';
-                messageDiv.textContent = '✓ Mulțumim! Te-ai abonat cu succes la newsletter!';
-                
-                // Clear the form
-                form.reset();
-            } else {
-                throw new Error('Submission failed');
-            }
-            
-        } catch (error) {
-            console.error('Newsletter subscription error:', error);
-            
-            // Show error message
-            messageDiv.className = 'newsletter-message error';
-            messageDiv.textContent = '✗ A apărut o eroare. Te rugăm să încerci din nou.';
-        } finally {
-            // Re-enable button
-            submitButton.disabled = false;
-            submitButton.textContent = 'Abonează-te';
-            
-            // Hide message after 5 seconds
-            setTimeout(() => {
-                messageDiv.className = 'newsletter-message';
-                messageDiv.textContent = '';
-            }, 5000);
-        }
-    });
-    
-    // Email validation on input
-    if (emailInput) {
-        emailInput.addEventListener('input', function() {
-            if (this.validity.valid) {
-                this.style.borderColor = '';
-            } else {
-                this.style.borderColor = '#e53935';
-            }
-        });
-    }
-}
-
-console.log('✅ Components.js v1.0 loaded - Unified widget integration active');// COMPONENTS.JS - Enhanced version with search disabled, bigger text, and UNIFIED CITIZEN WIDGET
-// Simply include this file in your HTML pages to automatically load the header, footer, and unified widget
+// COMPONENTS.JS - Enhanced version with search disabled, bigger text, weather alert integration, and GOOGLE FORMS NEWSLETTER
+// Simply include this file in your HTML pages to automatically load the header, footer, and weather alerts
 
 // CSS for header and footer as a string
 const COMPONENTS_CSS = `
@@ -1180,6 +522,8 @@ const COMPONENTS_CSS = `
     background-color: transparent;
 }
 
+/* Remove old group styling classes - no longer needed */
+
 .dropdown-menu li {
     display: block !important;
     width: 100% !important;
@@ -1264,6 +608,8 @@ const COMPONENTS_CSS = `
 .mobile-menu-toggle:hover {
     color: var(--secondary-color);
 }
+
+/* No mobile menu header needed - using hamburger toggle */
 
 /* INNOVATION MENU ANIMATIONS */
 .main-nav ul li a[href="/pls/inovatii"] {
@@ -1903,6 +1249,7 @@ footer {
         -webkit-overflow-scrolling: touch;
         display: flex;
         flex-direction: column;
+        /* Ensure we can scroll all the way to top */
         scroll-behavior: smooth;
     }
     
@@ -2366,3 +1713,1049 @@ body {
     }
 }
 `;
+
+// HTML Components - Newsletter form updated with Google Forms integration
+const HEADER_HTML = `
+<div class="intro-screen" id="intro-screen">
+    <div class="intro-content">
+        <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS" class="intro-badge">
+        <h1 class="intro-title">POLIȚIA LOCALĂ SLOBOZIA</h1>
+        <p class="intro-subtitle">Inovăm securitatea publică • Împreună pentru comunitate</p>
+        <div class="intro-loader">
+            <div class="intro-loader-bar"></div>
+        </div>
+        <p class="intro-message">Inițializare conexiune securizată...</p>
+    </div>
+</div>
+
+<div class="header-container">
+    <div class="header-top" id="header-top">
+        <div class="logo">
+            <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS" class="logo-badge">
+            <div class="logo-text">
+                <h1>POLIȚIA LOCALĂ SLOBOZIA</h1>
+                <span class="logo-subtitle">Inovăm securitatea publică</span>
+            </div>
+        </div>
+        <div class="utility-menu">
+            <a href="#" class="utility-item" id="accessibility-settings-link">Setări</a>
+            <a href="/pls/recrutare" class="utility-item">Oportunități de Carieră</a>
+            <a href="/pls/transparenta" class="utility-item">Registre Publice</a>
+            <a href="/pls/petitii" class="utility-item">Depunere Sesizare</a>
+            <a href="tel:0243955" class="utility-item emergency">
+                <i class="material-icons">phone_in_talk</i> (0243) 955
+            </a>
+        </div>
+    </div>
+    <div class="accent-line"></div>
+    <div class="header-main" id="header-main">
+        <nav class="main-nav" id="main-nav">
+            <div class="mobile-menu-close">
+                <button class="mobile-menu-close-btn" id="mobile-menu-close-btn" aria-label="Close menu">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
+            <ul>
+                <li class="active">
+                    <a href="/pls/" data-tooltip="Acasă">
+                        <i class="material-icons menu-icon">home</i>
+                        <span class="menu-text">Acasă</span>
+                    </a>
+                </li>
+                <li class="has-dropdown">
+                    <a href="/pls/atributii" data-tooltip="Despre Noi">
+                        <i class="material-icons menu-icon">info</i>
+                        <span class="menu-text">Despre Noi</span>
+                        <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-group-header">Informații generale</li>
+                        <li><a href="/pls/acte-normative"><i class="material-icons dropdown-icon-item">gavel</i> Acte normative</a></li>
+                        <li><a href="/pls/atributii"><i class="material-icons dropdown-icon-item">assignment</i> Atribuții</a></li>
+                        <li><a href="/pls/regulament"><i class="material-icons dropdown-icon-item">description</i> Regulament</a></li>
+                        <li class="dropdown-group-header">Structură și facilități</li>
+                        <li><a href="/pls/organigrama"><i class="material-icons dropdown-icon-item">account_tree</i> Organigrama</a></li>
+                        <li><a href="/pls/poligon"><i class="material-icons dropdown-icon-item">track_changes</i> Poligonul de tragere</a></li>
+                        <li class="dropdown-group-header">Media</li>
+                        <li><a href="/pls/reportaj"><i class="material-icons dropdown-icon-item">play_circle_filled</i> Reportaje și înregistrări video</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <a href="/pls/petitii" data-tooltip="Petiții">
+                        <i class="material-icons menu-icon">feedback</i>
+                        <span class="menu-text">Petiții</span>
+                        <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/pls/petitii"><i class="material-icons dropdown-icon-item">edit_note</i> Petiții</a></li>
+                        <li><a href="/pls/raspunsuri"><i class="material-icons dropdown-icon-item">question_answer</i> Răspunsuri</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <a href="/pls/relatii-cu-publicul" data-tooltip="Contact">
+                        <i class="material-icons menu-icon">phone</i>
+                        <span class="menu-text">Contact</span>
+                        <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/pls/conducere"><i class="material-icons dropdown-icon-item">supervisor_account</i> Conducere</a></li>
+                        <li><a href="/pls/relatii-cu-publicul"><i class="material-icons dropdown-icon-item">people</i> Relații cu publicul</a></li>
+                        <li><a href="/pls/sediu"><i class="material-icons dropdown-icon-item">location_on</i> Sediul operativ și administrativ</a></li>
+                        <li><a href="/pls/conducere/#program-de-audiente"><i class="material-icons dropdown-icon-item">event</i> Program de audiențe</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <a href="/pls/integritate" data-tooltip="Integritate instituțională">
+                        <i class="material-icons menu-icon">verified_user</i>
+                        <span class="menu-text">Integritate instituțională</span>
+                        <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/pls/integritate/#strategie-anticoruptie"><i class="material-icons dropdown-icon-item">policy</i> Strategia Națională Anticorupție</a></li>
+                        <li><a href="/pls/integritate/#cod-etic"><i class="material-icons dropdown-icon-item">format_quote</i> Cod etic</a></li>
+                        <li><a href="/pls/integritate/#declarare-cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Declararea cadourilor</a></li>
+                        <li><a href="/pls/gdpr"><i class="material-icons dropdown-icon-item">security</i> GDPR</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <a href="/pls/transparenta" data-tooltip="Informații de interes public">
+                        <i class="material-icons menu-icon">public</i>
+                        <span class="menu-text">Informații de interes public</span>
+                        <i class="material-icons dropdown-icon">keyboard_arrow_down</i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-group-header">Financiare</li>
+                        <li><a href="/pls/transparenta/financiara/#raportare-salariala"><i class="material-icons dropdown-icon-item">payments</i> Raportare salarială</a></li>
+                        <li><a href="/pls/transparenta/financiara/#bilanturi-bugete"><i class="material-icons dropdown-icon-item">account_balance</i> Bilanțuri și bugete</a></li>
+                        <li><a href="/pls/transparenta/financiara/#program-achizitii"><i class="material-icons dropdown-icon-item">shopping_cart</i> Program achiziții anuale</a></li>
+                        <li class="dropdown-group-header">Transparență</li>
+                        <li><a href="/pls/transparenta/#declaratii-interese"><i class="material-icons dropdown-icon-item">assignment_ind</i> Declarații interese</a></li>
+                        <li><a href="/pls/transparenta/#declaratii-avere"><i class="material-icons dropdown-icon-item">account_balance_wallet</i> Declarații avere</a></li>
+                        <li><a href="/pls/transparenta/#rapoarte-544"><i class="material-icons dropdown-icon-item">description</i> Aplicare a Legii nr. 544/2001</a></li>
+                        <li><a href="/pls/transparenta/documente"><i class="material-icons dropdown-icon-item">folder_shared</i> Documente gst. conf. legii</a></li>
+                        <li class="dropdown-group-header">Dezvoltare</li>
+                        <li><a href="/pls/transparenta/formare"><i class="material-icons dropdown-icon-item">school</i> Program formare profesională</a></li>
+                        <li><a href="/pls/transparenta/cadouri"><i class="material-icons dropdown-icon-item">card_giftcard</i> Declararea cadourilor</a></li>
+                    </ul>
+                </li>
+                <li class="low-priority">
+                    <a href="/pls/inovatii" data-tooltip="Inovații" class="icon-only-small">
+                        <i class="material-icons menu-icon">lightbulb</i>
+                        <span class="menu-text-optional">Inovații</span>
+                    </a>
+                </li>
+                <li class="low-priority">
+                    <a href="/pls/camere" data-tooltip="CCTV Public" class="icon-only-small">
+                        <i class="material-icons menu-icon">videocam</i>
+                        <span class="menu-text-optional">CCTV Public</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+            <i class="material-icons">menu</i>
+        </button>
+    </div>
+</div>
+<div class="mobile-menu-backdrop" id="mobile-menu-backdrop"></div>
+`;
+
+const FOOTER_HTML = `
+<footer>
+    <div class="footer-bg-pattern"></div>
+    <div class="footer-content">
+        <div class="footer-top">
+            <div class="footer-column">
+                <div class="footer-logo">
+                    <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS" class="footer-logo-badge">
+                    <div class="footer-logo-text">Poliția Locală Slobozia</div>
+                </div>
+                <p class="footer-description">Servim comunitatea noastră cu integritate, profesionalism și dedicare față de siguranța publică. Misiunea noastră este să lucrăm în parteneriat cu comunitatea noastră pentru a proteja viața și proprietatea, a rezolva probleme și a îmbunătăți calitatea vieții.</p>
+                <div class="footer-social">
+                    <a href="https://www.facebook.com/sloboziapolloc/" class="social-icon"><i class="material-icons">facebook</i></a>
+                    <a href="/pls/relatii-cu-publicul" class="social-icon"><i class="material-icons">alternate_email</i></a>
+                    <a href="/pls/reportaj" class="social-icon"><i class="material-icons">play_circle_filled</i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3 class="footer-title">Link-uri Rapide</h3>
+                <div class="footer-links">
+                    <a href="https://sts.ro/ro/servicii/despre-112/" class="footer-link"><i class="material-icons">arrow_right</i> Servicii de Urgență</a>
+                    <a href="/pls/petitii" class="footer-link"><i class="material-icons">arrow_right</i> Raportează o Infracțiune</a>
+                    <a href="/pls/amenzi" class="footer-link"><i class="material-icons">arrow_right</i> Plătește Amenzi (INDISPONIBIL)</a>
+                    <a href="/pls/relatii-cu-publicul/" class="footer-link"><i class="material-icons">arrow_right</i> Solicită Înregistrări</a>
+                    <a href="/pls/petitii" class="footer-link"><i class="material-icons">arrow_right</i> Depune o Reclamație</a>
+                    <a href="/pls/recrutare" class="footer-link"><i class="material-icons">arrow_right</i> Oportunități de Carieră</a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3 class="footer-title">Contactează-ne</h3>
+                <div class="footer-contact-item">
+                    <div class="footer-contact-icon"><i class="material-icons">location_on</i></div>
+                    <div class="footer-contact-text">
+                        <h4>Sediul Central</h4>
+                        <p>Strada Răzoare nr. 3</p>
+                        <p>Slobozia, județul Ialomița</p>
+                    </div>
+                </div>
+                <div class="footer-contact-item">
+                    <div class="footer-contact-icon"><i class="material-icons">call</i></div>
+                    <div class="footer-contact-text">
+                        <h4>Dispecerat: (0243) 955</h4>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="footer-contact-item">
+                    <div class="footer-contact-icon"><i class="material-icons">email</i></div>
+                    <div class="footer-contact-text">
+                        <h4>Email</h4>
+                        <p>info@politialocala-slobozia.ro</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3 class="footer-title">Newsletter</h3>
+                <p class="footer-description">Rămâi informat despre alertele de siguranță, evenimentele comunitare și actualizările departamentului abonându-te la newsletter-ul nostru.</p>
+                <form class="footer-form" id="newsletter-form">
+                    <input type="email" id="newsletter-email" name="entry.367514333" placeholder="Adresa ta de Email" required>
+                    <button type="submit">Abonează-te</button>
+                </form>
+                <div id="newsletter-message" class="newsletter-message"></div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-copyright">
+                &copy; 2025 Poliția Locală Slobozia. Toate drepturile rezervate.
+            </div>
+            <div class="footer-links-bottom">
+                <a href="/pls/gdpr" class="footer-bottom-link">GDPR</a>
+                <a href="/pls/termeni" class="footer-bottom-link">Termeni de Utilizare</a>
+                <a href="/pls/accesibilitate" class="footer-bottom-link">Accesibilitate</a>
+                <a href="/pls/sitemap" class="footer-bottom-link">Hartă Site</a>
+            </div>
+        </div>
+    </div>
+</footer>
+`;
+
+// Load Weather Alert System
+function loadWeatherAlertSystem() {
+    // Check if already loaded
+    if (document.getElementById('weather-alert-script')) {
+        console.log('ℹ️ Weather alert script already exists');
+        return;
+    }
+    
+    // Check if weather system is already active
+    if (window.weatherSystemActive) {
+        console.log('ℹ️ Weather system already active');
+        return;
+    }
+    
+    console.log('📡 Loading weather alert system...');
+    
+    const script = document.createElement('script');
+    script.id = 'weather-alert-script';
+    
+    // Try multiple possible paths
+    const possiblePaths = [
+        'weather-alert.js',
+        '/pls/weather-alert.js',
+        './weather-alert.js',
+        '../weather-alert.js'
+    ];
+    
+    let currentPathIndex = 0;
+    
+    const tryLoadScript = () => {
+        if (currentPathIndex >= possiblePaths.length) {
+            console.error('❌ Weather alert system could not be loaded from any path');
+            console.error('   Tried paths:', possiblePaths);
+            console.error('   Current page:', window.location.href);
+            console.log('💡 Weather widget will not be available, but site will continue loading');
+            return;
+        }
+        
+        script.src = possiblePaths[currentPathIndex];
+        console.log(`   Trying path ${currentPathIndex + 1}/${possiblePaths.length}: ${script.src}`);
+        
+        script.onerror = () => {
+            console.warn(`⚠️ Failed to load from: ${script.src}`);
+            currentPathIndex++;
+            script.remove(); // Remove failed script
+            tryLoadScript(); // Try next path
+        };
+        
+        script.onload = () => {
+            console.log('✅ Weather alert script loaded successfully from:', script.src);
+        };
+        
+        script.async = false;  // Load synchronously
+        script.defer = false;
+        
+        document.head.appendChild(script);
+    };
+    
+    // Start trying paths
+    tryLoadScript();
+}
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Components.js initialization started');
+    
+    try {
+        // Favicon
+        if (!document.querySelector('link[rel="icon"]')) {
+            const faviconLink = document.createElement('link');
+            faviconLink.rel = "icon";
+            faviconLink.href = "https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png";
+            faviconLink.type = "image/png";
+            document.head.appendChild(faviconLink);
+            console.log('✅ Favicon loaded');
+        }
+
+        // CSS
+        if (!document.getElementById('components-css')) {
+            const styleEl = document.createElement('style');
+            styleEl.id = 'components-css';
+            styleEl.textContent = COMPONENTS_CSS;
+            document.head.appendChild(styleEl);
+            console.log('✅ Component styles loaded');
+        }
+        
+        // Material Icons
+        if (!document.querySelector('link[href*="material-icons"]')) {
+            const iconLink = document.createElement('link');
+            iconLink.href = "https://fonts.googleapis.com/icon?family=Material+Icons";
+            iconLink.rel = "stylesheet";
+            document.head.appendChild(iconLink);
+            console.log('✅ Material Icons loaded');
+        }
+        
+        // Weather Alert System (non-blocking)
+        try {
+            loadWeatherAlertSystem();
+        } catch (error) {
+            console.error('⚠️ Weather alert system error:', error);
+            console.log('   Site will continue without weather alerts');
+        }
+        
+        // Header & Footer
+        const headerContainer = document.getElementById('header-container');
+        const footerContainer = document.getElementById('footer-container');
+        
+        if (headerContainer) {
+            headerContainer.innerHTML = HEADER_HTML;
+            console.log('✅ Header loaded');
+        }
+        if (footerContainer) {
+            footerContainer.innerHTML = FOOTER_HTML;
+            console.log('✅ Footer loaded');
+        }
+        
+        // Initialize all components
+        initializeComponents();
+        console.log('✅ All components initialized');
+        
+    } catch (error) {
+        console.error('❌ CRITICAL ERROR in components initialization:', error);
+        console.error('   Stack trace:', error.stack);
+        
+        // EMERGENCY: Force remove intro screen even if everything fails
+        const introScreen = document.getElementById('intro-screen');
+        if (introScreen) {
+            console.log('🚨 Emergency intro screen removal');
+            introScreen.style.display = 'none';
+            introScreen.remove();
+        }
+    }
+});
+
+function initializeComponents() {
+    console.log('🔧 Initializing components...');
+    
+    try {
+        initIntroScreen();
+        console.log('  ✓ Intro screen initialized');
+    } catch (error) {
+        console.error('  ✗ Intro screen error:', error);
+    }
+    
+    try {
+        initHeaderEffects();
+        console.log('  ✓ Header effects initialized');
+    } catch (error) {
+        console.error('  ✗ Header effects error:', error);
+    }
+    
+    try {
+        initMobileMenu();
+        console.log('  ✓ Mobile menu initialized');
+    } catch (error) {
+        console.error('  ✗ Mobile menu error:', error);
+    }
+    
+    try {
+        initDropdownMenu();
+        console.log('  ✓ Dropdown menu initialized');
+    } catch (error) {
+        console.error('  ✗ Dropdown menu error:', error);
+    }
+    
+    try {
+        initResponsiveHeader();
+        console.log('  ✓ Responsive header initialized');
+    } catch (error) {
+        console.error('  ✗ Responsive header error:', error);
+    }
+    
+    try {
+        fixIconAlignment();
+        console.log('  ✓ Icon alignment fixed');
+    } catch (error) {
+        console.error('  ✗ Icon alignment error:', error);
+    }
+    
+    try {
+        initNewsletterForm();
+        console.log('  ✓ Newsletter form initialized');
+    } catch (error) {
+        console.error('  ✗ Newsletter form error:', error);
+    }
+    
+    console.log('✅ Component initialization complete');
+}
+
+function initIntroScreen() {
+    const introScreen = document.getElementById('intro-screen');
+    if (!introScreen) {
+        console.log('ℹ️ No intro screen found');
+        return;
+    }
+    
+    // CRITICAL: Guarantee intro screen removal even if scripts fail
+    const removeIntro = () => {
+        if (introScreen && introScreen.style.display !== 'none') {
+            console.log('✅ Removing intro screen');
+            introScreen.style.opacity = '0';
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                introScreen.remove(); // Completely remove from DOM
+            }, 500);
+        }
+    };
+    
+    // Primary removal after 3 seconds
+    setTimeout(removeIntro, 3000);
+    
+    // FAILSAFE: Force removal after 5 seconds no matter what
+    setTimeout(() => {
+        if (introScreen && introScreen.style.display !== 'none') {
+            console.warn('⚠️ Intro screen forced removal (failsafe triggered)');
+            introScreen.style.display = 'none';
+            introScreen.remove();
+        }
+    }, 5000);
+}
+
+function initHeaderEffects() {
+    const headerTop = document.getElementById('header-top');
+    const headerMain = document.getElementById('header-main');
+    
+    if (headerTop && headerMain) {
+        if (window.scrollY > 50) {
+            headerTop.classList.add('scrolled');
+            headerMain.classList.add('scrolled');
+        }
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                headerTop.classList.add('scrolled');
+                headerMain.classList.add('scrolled');
+            } else {
+                headerTop.classList.remove('scrolled');
+                headerMain.classList.remove('scrolled');
+            }
+        });
+    }
+}
+
+function initMobileMenu() {
+    const hamburger = document.getElementById('mobile-menu-toggle');
+    const menu = document.getElementById('main-nav');
+    const closeBtn = document.getElementById('mobile-menu-close-btn');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    
+    // Validate all elements exist
+    if (!hamburger || !menu || !backdrop) {
+        console.error('Mobile menu: Required elements missing');
+        return;
+    }
+    
+    let isOpen = false;
+    
+    // === CORE FUNCTIONS ===
+    
+    const openMenu = () => {
+        isOpen = true;
+        menu.classList.add('active');
+        backdrop.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        hamburger.setAttribute('aria-expanded', 'true');
+        hamburger.innerHTML = '<i class="material-icons">close</i>';
+    };
+    
+    const closeMenu = () => {
+        isOpen = false;
+        menu.classList.remove('active');
+        backdrop.classList.remove('active');
+        document.body.style.overflow = '';
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.innerHTML = '<i class="material-icons">menu</i>';
+        
+        // Auto-close all dropdowns when menu closes
+        document.querySelectorAll('.main-nav .has-dropdown.active').forEach(dropdown => {
+            dropdown.classList.remove('active');
+        });
+    };
+    
+    // === EVENT HANDLERS ===
+    
+    // Hamburger click
+    hamburger.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isOpen ? closeMenu() : openMenu();
+    });
+    
+    // Close button click
+    if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeMenu();
+        });
+    }
+    
+    // Backdrop click
+    backdrop.addEventListener('click', closeMenu);
+    
+    // ESC key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isOpen) {
+            closeMenu();
+        }
+    });
+    
+    // Smart link handling
+    menu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            // Only apply mobile logic on mobile devices
+            if (window.innerWidth > 992) return;
+            
+            const parentLi = link.closest('li');
+            const isDropdownParent = parentLi?.classList.contains('has-dropdown');
+            const isMainDropdownLink = isDropdownParent && link.parentElement === parentLi;
+            
+            if (isMainDropdownLink) {
+                // Dropdown parent clicked - toggle accordion
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Store the position of the clicked element before toggle
+                const linkRect = link.getBoundingClientRect();
+                const menuScrollTop = menu.scrollTop;
+                const isCurrentlyActive = parentLi.classList.contains('active');
+                
+                // Close other dropdowns
+                document.querySelectorAll('.main-nav .has-dropdown').forEach(item => {
+                    if (item !== parentLi) item.classList.remove('active');
+                });
+                
+                // Toggle this dropdown
+                parentLi.classList.toggle('active');
+                
+                // If we just OPENED the dropdown, scroll to keep header visible
+                if (!isCurrentlyActive) {
+                    // Wait for the dropdown animation to start
+                    setTimeout(() => {
+                        // Calculate where the link is now after expansion
+                        const newLinkRect = link.getBoundingClientRect();
+                        
+                        // If the link got pushed up (negative movement), scroll to compensate
+                        if (newLinkRect.top < linkRect.top) {
+                            const scrollOffset = linkRect.top - newLinkRect.top;
+                            menu.scrollTo({
+                                top: menuScrollTop - scrollOffset + 16, // +16 for padding
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 50);
+                }
+            } else if (link.closest('.dropdown-menu') || !isDropdownParent) {
+                // Regular link or dropdown child - close menu after short delay
+                setTimeout(closeMenu, 150);
+            }
+        });
+    });
+    
+    // Window resize handler
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (window.innerWidth > 992 && isOpen) {
+                closeMenu();
+            }
+        }, 100);
+    });
+}
+
+function initDropdownMenu() {
+    const dropdownItems = document.querySelectorAll('.main-nav .has-dropdown');
+    
+    dropdownItems.forEach(item => {
+        const link = item.querySelector('a');
+        const dropdownIcon = item.querySelector('.dropdown-icon');
+        
+        // Handle clicks on mobile
+        const handleClick = function(e) {
+            if (window.innerWidth <= 992) {
+                // Only toggle if clicking the parent link or dropdown icon
+                if (e.target === link || 
+                    e.target === dropdownIcon || 
+                    link.contains(e.target) && !e.target.closest('.dropdown-menu')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Store position before toggle
+                    const linkRect = link.getBoundingClientRect();
+                    const menu = document.getElementById('main-nav');
+                    const menuScrollTop = menu ? menu.scrollTop : 0;
+                    const isCurrentlyActive = item.classList.contains('active');
+                    
+                    // Close other dropdowns
+                    dropdownItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current dropdown
+                    item.classList.toggle('active');
+                    
+                    // If we just OPENED the dropdown, scroll to keep header visible
+                    if (!isCurrentlyActive && menu) {
+                        setTimeout(() => {
+                            const newLinkRect = link.getBoundingClientRect();
+                            
+                            // If link moved up, adjust scroll
+                            if (newLinkRect.top < linkRect.top) {
+                                const scrollOffset = linkRect.top - newLinkRect.top;
+                                menu.scrollTo({
+                                    top: menuScrollTop - scrollOffset + 16,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }, 50);
+                    }
+                }
+            }
+        };
+        
+        // Add click event
+        link.addEventListener('click', handleClick);
+        
+        // Add touch event for better mobile responsiveness
+        link.addEventListener('touchend', function(e) {
+            if (window.innerWidth <= 992) {
+                e.preventDefault();
+                handleClick(e);
+            }
+        }, { passive: false });
+    });
+    
+    // Close dropdowns on window resize to desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 992) {
+            dropdownItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const mainNav = document.getElementById('main-nav');
+            const backdrop = document.getElementById('mobile-menu-backdrop');
+            if (mainNav) {
+                mainNav.classList.remove('active');
+            }
+            if (backdrop) {
+                backdrop.classList.remove('active');
+            }
+            document.body.style.overflow = '';
+            
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            if (mobileMenuToggle) {
+                mobileMenuToggle.innerHTML = '<i class="material-icons">menu</i>';
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            }
+        }
+    });
+}
+
+function initResponsiveHeader() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupResponsiveHeader);
+    } else {
+        setupResponsiveHeader();
+    }
+    
+    function setupResponsiveHeader() {
+        const applyResponsiveClasses = () => {
+            const screenWidth = window.innerWidth;
+            
+            const optionalTextItems = document.querySelectorAll('.main-nav ul li a .menu-text-optional');
+            const iconOnlySmallItems = document.querySelectorAll('.main-nav ul li a.icon-only-small');
+            
+            if (screenWidth <= 1366 && screenWidth > 992) {
+                optionalTextItems.forEach(item => {
+                    item.style.display = 'none';
+                });
+                
+                iconOnlySmallItems.forEach(item => {
+                    item.classList.add('icon-only');
+                });
+            } else if (screenWidth > 1366) {
+                optionalTextItems.forEach(item => {
+                    item.style.display = 'inline';
+                });
+                
+                iconOnlySmallItems.forEach(item => {
+                    item.classList.remove('icon-only');
+                });
+            }
+            
+            if (screenWidth <= 1199 && screenWidth > 992) {
+                createOverflowMenu();
+            } else {
+                const overflowMenu = document.querySelector('.overflow-menu-item');
+                if (overflowMenu) {
+                    overflowMenu.style.display = 'none';
+                }
+                
+                const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
+                lowPriorityItems.forEach(item => {
+                    item.style.display = 'flex';
+                });
+            }
+        };
+        
+        const createOverflowMenu = () => {
+            let overflowMenu = document.querySelector('.overflow-menu-item');
+            
+            if (!overflowMenu) {
+                const mainNav = document.querySelector('.main-nav ul');
+                if (!mainNav) return;
+                
+                overflowMenu = document.createElement('li');
+                overflowMenu.className = 'has-dropdown overflow-menu-item';
+                
+                const overflowLink = document.createElement('a');
+                overflowLink.href = '#';
+                overflowLink.setAttribute('data-tooltip', 'Mai mult');
+                
+                const moreIcon = document.createElement('i');
+                moreIcon.className = 'material-icons menu-icon';
+                moreIcon.textContent = 'more_horiz';
+                
+                const moreText = document.createElement('span');
+                moreText.className = 'menu-text';
+                moreText.textContent = 'Mai mult';
+                
+                const dropdownIcon = document.createElement('i');
+                dropdownIcon.className = 'material-icons dropdown-icon';
+                dropdownIcon.textContent = 'keyboard_arrow_down';
+                
+                overflowLink.appendChild(moreIcon);
+                overflowLink.appendChild(moreText);
+                overflowLink.appendChild(dropdownIcon);
+                overflowMenu.appendChild(overflowLink);
+                
+                const dropdownMenu = document.createElement('ul');
+                dropdownMenu.className = 'dropdown-menu';
+                overflowMenu.appendChild(dropdownMenu);
+                
+                mainNav.appendChild(overflowMenu);
+                updateOverflowMenuItems();
+            } else {
+                overflowMenu.style.display = 'flex';
+                updateOverflowMenuItems();
+            }
+            
+            const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
+            lowPriorityItems.forEach(item => {
+                item.style.display = 'none';
+            });
+        };
+        
+        const updateOverflowMenuItems = () => {
+            const overflowMenu = document.querySelector('.overflow-menu-item');
+            if (!overflowMenu) return;
+            
+            const dropdownMenu = overflowMenu.querySelector('.dropdown-menu');
+            if (!dropdownMenu) return;
+            
+            dropdownMenu.innerHTML = '';
+            
+            const lowPriorityItems = document.querySelectorAll('.main-nav ul li.low-priority');
+            lowPriorityItems.forEach(item => {
+                const clonedItem = item.cloneNode(true);
+                clonedItem.classList.remove('low-priority');
+                
+                const optionalText = clonedItem.querySelector('.menu-text-optional');
+                if (optionalText) {
+                    optionalText.style.display = 'inline';
+                }
+                
+                dropdownMenu.appendChild(clonedItem);
+            });
+        };
+        
+        applyResponsiveClasses();
+        
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(applyResponsiveClasses, 100);
+        });
+    }
+}
+
+function fixIconAlignment() {
+    setTimeout(function() {
+        const menuIcons = document.querySelectorAll('.menu-icon, .dropdown-icon, .dropdown-icon-item');
+        
+        if (menuIcons.length > 0) {
+            menuIcons.forEach(icon => {
+                if (icon.classList.contains('menu-icon') || icon.classList.contains('dropdown-icon')) {
+                    icon.style.display = 'inline-flex';
+                    icon.style.alignItems = 'center';
+                    icon.style.justifyContent = 'center';
+                    icon.style.position = 'relative';
+                    icon.style.top = '2px';
+                }
+            });
+        }
+        
+        const menuItems = document.querySelectorAll('.main-nav ul li a');
+        if (menuItems.length > 0) {
+            menuItems.forEach(item => {
+                item.style.display = 'inline-flex';
+                item.style.alignItems = 'center';
+                item.style.height = '45px';
+            });
+        }
+        
+        const dropdownItems = document.querySelectorAll('.dropdown-menu li a');
+        if (dropdownItems.length > 0) {
+            dropdownItems.forEach(item => {
+                const icon = item.querySelector('.dropdown-icon-item');
+                if (icon) {
+                    icon.style.display = 'inline-flex';
+                    icon.style.alignItems = 'center';
+                    icon.style.position = 'relative';
+                    icon.style.top = '2px';
+                }
+            });
+        }
+    }, 100);
+}
+
+// FORMSPREE NEWSLETTER INTEGRATION - Configured and ready
+function initNewsletterForm() {
+    const form = document.getElementById('newsletter-form');
+    const emailInput = document.getElementById('newsletter-email');
+    const messageDiv = document.getElementById('newsletter-message');
+    
+    if (!form) {
+        console.error('Newsletter form not found');
+        return;
+    }
+    
+    // Your Formspree endpoint
+    const FORMSPREE_URL = 'https://formspree.io/f/mblwrrbj';
+    
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = emailInput.value.trim();
+        const submitButton = form.querySelector('button[type="submit"]');
+        
+        // Validate email
+        if (!email || !emailInput.validity.valid) {
+            messageDiv.className = 'newsletter-message error';
+            messageDiv.textContent = '✗ Te rugăm să introduci o adresă de email validă.';
+            return;
+        }
+        
+        // Disable button and show loading state
+        submitButton.disabled = true;
+        submitButton.textContent = 'Se trimite...';
+        
+        // Hide any previous messages
+        messageDiv.className = 'newsletter-message';
+        messageDiv.textContent = '';
+        
+        try {
+            const response = await fetch(FORMSPREE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    _subject: 'New Newsletter Subscription - PLS'
+                })
+            });
+            
+            if (response.ok) {
+                // Show success message
+                messageDiv.className = 'newsletter-message success';
+                messageDiv.textContent = '✓ Mulțumim! Te-ai abonat cu succes la newsletter!';
+                
+                // Clear the form
+                form.reset();
+            } else {
+                throw new Error('Submission failed');
+            }
+            
+        } catch (error) {
+            console.error('Newsletter subscription error:', error);
+            
+            // Show error message
+            messageDiv.className = 'newsletter-message error';
+            messageDiv.textContent = '✗ A apărut o eroare. Te rugăm să încerci din nou.';
+        } finally {
+            // Re-enable button
+            submitButton.disabled = false;
+            submitButton.textContent = 'Abonează-te';
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.className = 'newsletter-message';
+                messageDiv.textContent = '';
+            }, 5000);
+        }
+    });
+    
+    // Email validation on input
+    if (emailInput) {
+        emailInput.addEventListener('input', function() {
+            if (this.validity.valid) {
+                this.style.borderColor = '';
+            } else {
+                this.style.borderColor = '#e53935';
+            }
+        });
+    }
+}
+
+// === ACCESSIBILITY WIDGET INTEGRATION ===
+function loadAccessibilityWidget() {
+    // Check if accessibility widget script already exists
+    if (document.getElementById('accessibility-widget-script')) {
+        console.log('ℹ️ Accessibility widget script already loaded');
+        connectAccessibilityWidget();
+        return;
+    }
+    
+    console.log('📡 Loading accessibility widget...');
+    
+    // Create and inject the accessibility widget script
+    const script = document.createElement('script');
+    script.id = 'accessibility-widget-script';
+    
+    // Try multiple possible paths
+    const possiblePaths = [
+        '/pls/accessibility-widget.js',
+        'accessibility-widget.js',
+        './accessibility-widget.js',
+        '../accessibility-widget.js'
+    ];
+    
+    let currentPathIndex = 0;
+    
+    const tryLoadScript = () => {
+        if (currentPathIndex >= possiblePaths.length) {
+            console.error('❌ Accessibility widget could not be loaded from any path');
+            console.error('   Tried paths:', possiblePaths);
+            console.log('💡 Accessibility features will not be available, but site will continue loading');
+            return;
+        }
+        
+        script.src = possiblePaths[currentPathIndex];
+        console.log(`   Trying path ${currentPathIndex + 1}/${possiblePaths.length}: ${script.src}`);
+        
+        script.onerror = () => {
+            console.warn(`⚠️ Failed to load accessibility widget from: ${script.src}`);
+            currentPathIndex++;
+            script.remove(); // Remove failed script
+            tryLoadScript(); // Try next path
+        };
+        
+        script.onload = () => {
+            console.log('✅ Accessibility widget loaded successfully from:', script.src);
+            connectAccessibilityWidget();
+        };
+        
+        script.async = false; // Load synchronously
+        script.defer = false;
+        
+        document.head.appendChild(script);
+    };
+    
+    // Start trying paths
+    tryLoadScript();
+}
+
+function connectAccessibilityWidget() {
+    // Wait for the accessibility widget to be initialized
+    const maxAttempts = 50; // 5 seconds (50 * 100ms)
+    let attempts = 0;
+    
+    const checkWidget = setInterval(() => {
+        attempts++;
+        
+        if (window.accessibilityWidget) {
+            clearInterval(checkWidget);
+            
+            // Attach event listener to "Setari" link
+            const settingsLink = document.getElementById('accessibility-settings-link');
+            if (settingsLink) {
+                settingsLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.accessibilityWidget.showPanel();
+                });
+                console.log('✅ Setări link connected to accessibility widget');
+            } else {
+                console.warn('⚠️ Setări link not found in DOM');
+            }
+        } else if (attempts >= maxAttempts) {
+            clearInterval(checkWidget);
+            console.warn('⚠️ Accessibility widget not initialized after 5 seconds');
+        }
+    }, 100);
+}
+
+// Load accessibility widget when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadAccessibilityWidget);
+} else {
+    loadAccessibilityWidget();
+}
+
+console.log('📢 Accessibility Widget Auto-Loader initialized');
