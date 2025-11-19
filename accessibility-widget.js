@@ -132,7 +132,7 @@ function injectAccessibilityCSS() {
         /* === ACCESSIBILITY PANEL === */
         .access-panel {
             position: fixed;
-            top: 140px;
+            top: 12rem;
             right: 2rem;
             width: 400px;
             background: white;
@@ -308,8 +308,8 @@ function injectAccessibilityCSS() {
         /* === FLOATING ICON === */
         .access-float-icon {
             position: fixed;
-            bottom: 2rem;
-            right: 2rem;
+            bottom: 8rem;
+            right: 1rem;
             width: 56px;
             height: 56px;
             background: linear-gradient(135deg, #1a2f5f 0%, #0f1a36 100%);
