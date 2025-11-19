@@ -1267,6 +1267,14 @@ footer {
         margin: 0;
         width: 100%;
         border-bottom: 1px solid rgba(0,0,0,0.06);
+        display: block !important;
+        flex-direction: column !important;
+    }
+    
+    .main-nav ul li.has-dropdown {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
     }
     
     .main-nav ul li:last-child {
@@ -1367,10 +1375,13 @@ footer {
         opacity: 1 !important;
         transform: none !important;
         max-height: 0 !important;
+        position: static !important;
     }
     
-    /* DROPDOWN MENU - ACCORDION STYLE */
-    .main-nav ul li.has-dropdown .dropdown-menu {
+    /* DROPDOWN MENU - ACCORDION STYLE - ULTRA SPECIFIC */
+    .main-nav ul li.has-dropdown .dropdown-menu,
+    .main-nav ul li.has-dropdown > .dropdown-menu,
+    ul li.has-dropdown .dropdown-menu {
         position: static !important;
         opacity: 1 !important;
         visibility: visible !important;
@@ -1383,14 +1394,18 @@ footer {
         transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         width: 100% !important;
         min-width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
         margin-top: 0 !important;
         margin-left: 0 !important;
+        margin-right: 0 !important;
         border-radius: 0 !important;
         top: auto !important;
         left: auto !important;
         right: auto !important;
         bottom: auto !important;
         display: block !important;
+        float: none !important;
     }
     
     .dropdown-menu::before {
