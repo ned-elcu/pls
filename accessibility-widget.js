@@ -52,6 +52,9 @@ function injectAccessibilityCSS() {
     const style = document.createElement('style');
     style.id = 'accessibility-widget-styles';
     style.textContent = `
+        /* Import Material Symbols font */
+        @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+        
         /* === ACCESSIBILITY BANNER === */
         .access-banner {
             position: fixed;
@@ -449,17 +452,31 @@ function injectAccessibilityCSS() {
         
         /* Prevent icon scaling */
         body.access-larger-text i.material-icons,
-        body.access-larger-text .material-icons {
+        body.access-larger-text .material-icons,
+        body.access-larger-text .material-symbols-outlined {
             font-size: 24px !important;
         }
         
-        /* High Contrast Mode - Comprehensive Coverage */
-        body.access-high-contrast *:hover:not(.material-icons):not(i):not(.access-float-icon):not(.access-panel):not(.access-panel *):not(.access-banner):not(.access-banner *):not(.access-toast):not(.weather-widget):not(.weather-widget *) {
-            background: #000 !important;
+        /* High Contrast Mode - Text and Interactive Elements Only */
+        /* Excludes: backgrounds, images, icons, widgets */
+        body.access-high-contrast *:hover:not(img):not(svg):not(.material-icons):not(.material-symbols-outlined):not(i):not(.access-float-icon):not(.access-panel):not(.access-panel *):not(.access-banner):not(.access-banner *):not(.access-toast):not(.weather-widget):not(.weather-widget *):not([class*="background"]):not([class*="bg-"]):not([style*="background"]) {
+            background-color: #000 !important;
+            background-image: none !important;
             color: #ffca28 !important;
             outline: 3px solid #ffca28 !important;
             outline-offset: 2px;
             border-radius: 4px;
+        }
+        
+        /* Images and backgrounds should never be affected */
+        body.access-high-contrast img,
+        body.access-high-contrast [style*="background-image"],
+        body.access-high-contrast [class*="background"],
+        body.access-high-contrast [class*="bg-"],
+        body.access-high-contrast .logo,
+        body.access-high-contrast .logo-badge {
+            background: inherit !important;
+            outline: none !important;
         }
         
         /* Specific elements that need text decoration */
@@ -482,14 +499,17 @@ function injectAccessibilityCSS() {
         
         /* Prevent Material Icons from getting outline */
         body.access-high-contrast i.material-icons:hover,
-        body.access-high-contrast .material-icons:hover {
+        body.access-high-contrast .material-icons:hover,
+        body.access-high-contrast .material-symbols-outlined:hover {
             background: transparent !important;
             outline: none !important;
         }
         
         /* Ensure parent button/link still gets highlight even if icon is hovered */
         body.access-high-contrast button:hover i.material-icons,
-        body.access-high-contrast a:hover i.material-icons {
+        body.access-high-contrast a:hover i.material-icons,
+        body.access-high-contrast button:hover .material-symbols-outlined,
+        body.access-high-contrast a:hover .material-symbols-outlined {
             color: #ffca28 !important;
             background: transparent !important;
             outline: none !important;
@@ -668,7 +688,7 @@ class AccessibilityWidget {
         panel.innerHTML = `
             <div class="access-panel-header">
                 <div class="access-panel-title">
-                    <i class="material-icons">symptoms</i>
+                    <span class="material-symbols-outlined">symptoms</span>
                     ${ACCESS_TEXT.panel.title}
                 </div>
                 <button class="access-panel-close" aria-label="Închide panoul">
@@ -817,7 +837,7 @@ class AccessibilityWidget {
         icon.setAttribute('aria-label', ACCESS_TEXT.icon.ariaLabel);
         icon.setAttribute('title', ACCESS_TEXT.icon.tooltip);
         icon.setAttribute('tabindex', '0');
-        icon.innerHTML = '<i class="material-icons">symptoms</i>';
+        icon.innerHTML = '<span class="material-symbols-outlined">symptoms</span>';
         
         icon.addEventListener('click', () => {
             const panel = document.querySelector('.access-panel');
@@ -841,9 +861,64 @@ class AccessibilityWidget {
         
         document.body.appendChild(icon);
         
-        // TEMPORARY: Weather monitoring disabled for debugging
-        console.log('ℹ️ Weather widget monitoring DISABLED (debugging)');
-        // this.monitorWeatherWidget();
+        // Monitor weather widget for dynamic positioning using simple polling
+        this.monitorWeatherWidget();
+    }
+    
+    monitorWeatherWidget() {
+        // Use simple polling instead of MutationObserver to avoid infinite loops
+        const icon = document.querySelector('.access-float-icon');
+        if (!icon) {
+            console.log('⚠️ Weather monitoring: Icon not found');
+            return;
+        }
+        
+        let lastWeatherState = null;
+        
+        const checkWeatherPosition = () => {
+            try {
+                const weatherWidget = document.querySelector('.weather-widget');
+                
+                // Create state snapshot
+                const currentState = {
+                    exists: !!weatherWidget,
+                    expanded: weatherWidget ? weatherWidget.classList.contains('expanded') : false
+                };
+                
+                // Only update if state changed (prevents unnecessary DOM manipulation)
+                const stateChanged = !lastWeatherState || 
+                                    lastWeatherState.exists !== currentState.exists ||
+                                    lastWeatherState.expanded !== currentState.expanded;
+                
+                if (stateChanged) {
+                    if (!currentState.exists) {
+                        // No weather widget - default position
+                        icon.classList.remove('weather-active', 'weather-expanded');
+                    } else {
+                        // Weather widget exists
+                        icon.classList.add('weather-active');
+                        
+                        if (currentState.expanded) {
+                            icon.classList.add('weather-expanded');
+                        } else {
+                            icon.classList.remove('weather-expanded');
+                        }
+                    }
+                    
+                    lastWeatherState = currentState;
+                }
+            } catch (error) {
+                console.error('⚠️ Weather monitoring error:', error);
+            }
+        };
+        
+        // Initial check
+        checkWeatherPosition();
+        
+        // Poll every 500ms (very lightweight, only updates on state change)
+        this.weatherMonitorInterval = setInterval(checkWeatherPosition, 500);
+        
+        console.log('✅ Weather widget monitoring active (polling mode)');
     }
     
     monitorWeatherWidget() {
