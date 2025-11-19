@@ -2535,9 +2535,40 @@ function initNewsletterForm() {
 }
 
 // === ACCESSIBILITY WIDGET INTEGRATION ===
-function initAccessibilityWidget() {
+function loadAccessibilityWidget() {
+    // Check if accessibility widget script already exists
+    if (document.getElementById('accessibility-widget-script')) {
+        console.log('ℹ️ Accessibility widget script already loaded');
+        return;
+    }
+    
+    // Create and inject the accessibility widget script
+    const script = document.createElement('script');
+    script.id = 'accessibility-widget-script';
+    script.src = '/js/accessibility-widget.js';
+    script.async = false; // Load synchronously to ensure proper initialization
+    
+    script.onload = function() {
+        console.log('✅ Accessibility widget script loaded');
+        connectAccessibilityWidget();
+    };
+    
+    script.onerror = function() {
+        console.warn('⚠️ Failed to load accessibility widget script from /js/accessibility-widget.js');
+        console.log('💡 Make sure accessibility-widget.js is uploaded to /js/ directory');
+    };
+    
+    document.head.appendChild(script);
+}
+
+function connectAccessibilityWidget() {
     // Wait for the accessibility widget to be initialized
+    const maxAttempts = 50; // 5 seconds (50 * 100ms)
+    let attempts = 0;
+    
     const checkWidget = setInterval(() => {
+        attempts++;
+        
         if (window.accessibilityWidget) {
             clearInterval(checkWidget);
             
@@ -2549,19 +2580,21 @@ function initAccessibilityWidget() {
                     window.accessibilityWidget.showPanel();
                 });
                 console.log('✅ Setări link connected to accessibility widget');
+            } else {
+                console.warn('⚠️ Setări link not found in DOM');
             }
+        } else if (attempts >= maxAttempts) {
+            clearInterval(checkWidget);
+            console.warn('⚠️ Accessibility widget not initialized after 5 seconds');
         }
     }, 100);
-    
-    // Timeout after 5 seconds if widget not found
-    setTimeout(() => {
-        clearInterval(checkWidget);
-    }, 5000);
 }
 
-// Initialize accessibility widget handler when DOM is ready
+// Load accessibility widget when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAccessibilityWidget);
+    document.addEventListener('DOMContentLoaded', loadAccessibilityWidget);
 } else {
-    initAccessibilityWidget();
+    loadAccessibilityWidget();
 }
+
+console.log('📢 Accessibility Widget Auto-Loader initialized');
