@@ -609,6 +609,8 @@ const COMPONENTS_CSS = `
     color: var(--secondary-color);
 }
 
+/* No mobile menu header needed - using hamburger toggle */
+
 /* INNOVATION MENU ANIMATIONS */
 .main-nav ul li a[href="/pls/inovatii"] {
     position: relative;
@@ -1244,10 +1246,12 @@ footer {
         right: 0;
     }
     
+    /* Simplified - no separate mobile header, using hamburger toggle */
+    
     /* MOBILE MENU LIST */
     .main-nav ul {
         flex-direction: column;
-        padding: 0.5rem 0 100vh 0;
+        padding: 0.5rem 0 2rem 0;
     }
     
     .main-nav ul li {
@@ -1984,6 +1988,7 @@ function initHeaderEffects() {
 function initMobileMenu() {
     const hamburger = document.getElementById('mobile-menu-toggle');
     const menu = document.getElementById('main-nav');
+    const closeBtn = document.getElementById('mobile-menu-close');
     const backdrop = document.getElementById('mobile-menu-backdrop');
     
     // Validate all elements exist
@@ -2028,6 +2033,15 @@ function initMobileMenu() {
         isOpen ? closeMenu() : openMenu();
     });
     
+    // Close button click
+    if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeMenu();
+        });
+    }
+    
     // Backdrop click
     backdrop.addEventListener('click', closeMenu);
     
@@ -2053,9 +2067,6 @@ function initMobileMenu() {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Check if we're opening this dropdown
-                const isOpening = !parentLi.classList.contains('active');
-                
                 // Close other dropdowns
                 document.querySelectorAll('.main-nav .has-dropdown').forEach(item => {
                     if (item !== parentLi) item.classList.remove('active');
@@ -2063,14 +2074,6 @@ function initMobileMenu() {
                 
                 // Toggle this dropdown
                 parentLi.classList.toggle('active');
-                
-                // If opening a dropdown, scroll the menu to ensure header is visible
-                if (isOpening) {
-                    // Small delay to let the dropdown animate
-                    setTimeout(() => {
-                        menu.scrollTop = 0;
-                    }, 50);
-                }
             } else if (link.closest('.dropdown-menu') || !isDropdownParent) {
                 // Regular link or dropdown child - close menu after short delay
                 setTimeout(closeMenu, 150);
