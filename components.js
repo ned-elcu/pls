@@ -609,11 +609,6 @@ const COMPONENTS_CSS = `
     color: var(--secondary-color);
 }
 
-/* Hide mobile menu header on desktop */
-.mobile-menu-header {
-    display: none;
-}
-
 /* INNOVATION MENU ANIMATIONS */
 .main-nav ul li a[href="/pls/inovatii"] {
     position: relative;
@@ -1249,66 +1244,10 @@ footer {
         right: 0;
     }
     
-    /* MOBILE MENU HEADER - STICKY AT TOP */
-    .mobile-menu-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1.5rem 1.5rem;
-        background-color: var(--primary-color);
-        border-bottom: 3px solid var(--accent-color);
-        position: sticky;
-        top: 0;
-        z-index: 1001;
-        flex-shrink: 0;
-    }
-    
-    .mobile-menu-logo {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-    }
-    
-    .mobile-menu-logo img {
-        width: 40px;
-        height: 46px;
-    }
-    
-    .mobile-menu-logo-text {
-        color: white;
-        font-size: 1.1rem;
-        font-weight: 700;
-        line-height: 1.2;
-    }
-    
-    .mobile-menu-close {
-        background: rgba(255, 255, 255, 0.15);
-        border: none;
-        color: white;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-    }
-    
-    .mobile-menu-close:active {
-        background: rgba(255, 255, 255, 0.25);
-        transform: scale(0.95);
-    }
-    
-    .mobile-menu-close .material-icons {
-        font-size: 24px;
-    }
-    
     /* MOBILE MENU LIST */
     .main-nav ul {
         flex-direction: column;
-        padding: 0.5rem 0 2rem 0;
+        padding: 0.5rem 0 100vh 0;
     }
     
     .main-nav ul li {
@@ -1739,15 +1678,6 @@ const HEADER_HTML = `
     <div class="accent-line"></div>
     <div class="header-main" id="header-main">
         <nav class="main-nav" id="main-nav">
-            <div class="mobile-menu-header">
-                <div class="mobile-menu-logo">
-                    <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS">
-                    <div class="mobile-menu-logo-text">Poliția Locală<br>Slobozia</div>
-                </div>
-                <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Închide meniu">
-                    <i class="material-icons">close</i>
-                </button>
-            </div>
             <ul>
                 <li class="active">
                     <a href="/pls/" data-tooltip="Acasă">
@@ -2054,7 +1984,6 @@ function initHeaderEffects() {
 function initMobileMenu() {
     const hamburger = document.getElementById('mobile-menu-toggle');
     const menu = document.getElementById('main-nav');
-    const closeBtn = document.getElementById('mobile-menu-close');
     const backdrop = document.getElementById('mobile-menu-backdrop');
     
     // Validate all elements exist
@@ -2098,15 +2027,6 @@ function initMobileMenu() {
         e.stopPropagation();
         isOpen ? closeMenu() : openMenu();
     });
-    
-    // Close button click
-    if (closeBtn) {
-        closeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            closeMenu();
-        });
-    }
     
     // Backdrop click
     backdrop.addEventListener('click', closeMenu);
