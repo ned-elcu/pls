@@ -609,7 +609,10 @@ const COMPONENTS_CSS = `
     color: var(--secondary-color);
 }
 
-/* No mobile menu header needed - using hamburger toggle */
+/* Hide mobile menu header on desktop */
+.mobile-menu-header {
+    display: none;
+}
 
 /* INNOVATION MENU ANIMATIONS */
 .main-nav ul li a[href="/pls/inovatii"] {
@@ -1246,7 +1249,61 @@ footer {
         right: 0;
     }
     
-    /* Simplified - no separate mobile header, using hamburger toggle */
+    /* MOBILE MENU HEADER - STICKY AT TOP */
+    .mobile-menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem 1.5rem;
+        background-color: var(--primary-color);
+        border-bottom: 3px solid var(--accent-color);
+        position: sticky;
+        top: 0;
+        z-index: 1001;
+        flex-shrink: 0;
+    }
+    
+    .mobile-menu-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .mobile-menu-logo img {
+        width: 40px;
+        height: 46px;
+    }
+    
+    .mobile-menu-logo-text {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+    
+    .mobile-menu-close {
+        background: rgba(255, 255, 255, 0.15);
+        border: none;
+        color: white;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+    
+    .mobile-menu-close:active {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(0.95);
+    }
+    
+    .mobile-menu-close .material-icons {
+        font-size: 24px;
+    }
     
     /* MOBILE MENU LIST */
     .main-nav ul {
@@ -1682,6 +1739,15 @@ const HEADER_HTML = `
     <div class="accent-line"></div>
     <div class="header-main" id="header-main">
         <nav class="main-nav" id="main-nav">
+            <div class="mobile-menu-header">
+                <div class="mobile-menu-logo">
+                    <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS">
+                    <div class="mobile-menu-logo-text">Poliția Locală<br>Slobozia</div>
+                </div>
+                <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Închide meniu">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
             <ul>
                 <li class="active">
                     <a href="/pls/" data-tooltip="Acasă">
@@ -2067,6 +2133,9 @@ function initMobileMenu() {
                 e.preventDefault();
                 e.stopPropagation();
                 
+                // Check if we're opening this dropdown
+                const isOpening = !parentLi.classList.contains('active');
+                
                 // Close other dropdowns
                 document.querySelectorAll('.main-nav .has-dropdown').forEach(item => {
                     if (item !== parentLi) item.classList.remove('active');
@@ -2074,6 +2143,14 @@ function initMobileMenu() {
                 
                 // Toggle this dropdown
                 parentLi.classList.toggle('active');
+                
+                // If opening a dropdown, scroll the menu to ensure header is visible
+                if (isOpening) {
+                    // Small delay to let the dropdown animate
+                    setTimeout(() => {
+                        menu.scrollTop = 0;
+                    }, 50);
+                }
             } else if (link.closest('.dropdown-menu') || !isDropdownParent) {
                 // Regular link or dropdown child - close menu after short delay
                 setTimeout(closeMenu, 150);
