@@ -1736,6 +1736,7 @@ const HEADER_HTML = `
             </div>
         </div>
         <div class="utility-menu">
+            <a href="#" class="utility-item" id="accessibility-settings-link">Setări</a>
             <a href="/pls/recrutare" class="utility-item">Oportunități de Carieră</a>
             <a href="/pls/transparenta" class="utility-item">Registre Publice</a>
             <a href="/pls/petitii" class="utility-item">Depunere Sesizare</a>
@@ -2531,4 +2532,36 @@ function initNewsletterForm() {
             }
         });
     }
+}
+
+// === ACCESSIBILITY WIDGET INTEGRATION ===
+function initAccessibilityWidget() {
+    // Wait for the accessibility widget to be initialized
+    const checkWidget = setInterval(() => {
+        if (window.accessibilityWidget) {
+            clearInterval(checkWidget);
+            
+            // Attach event listener to "Setari" link
+            const settingsLink = document.getElementById('accessibility-settings-link');
+            if (settingsLink) {
+                settingsLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.accessibilityWidget.showPanel();
+                });
+                console.log('✅ Setări link connected to accessibility widget');
+            }
+        }
+    }, 100);
+    
+    // Timeout after 5 seconds if widget not found
+    setTimeout(() => {
+        clearInterval(checkWidget);
+    }, 5000);
+}
+
+// Initialize accessibility widget handler when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAccessibilityWidget);
+} else {
+    initAccessibilityWidget();
 }
