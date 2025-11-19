@@ -1361,8 +1361,16 @@ footer {
         color: var(--secondary-color);
     }
     
+    /* DISABLE DESKTOP HOVER ON MOBILE */
+    .main-nav ul li.has-dropdown:hover .dropdown-menu {
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
+        max-height: 0 !important;
+    }
+    
     /* DROPDOWN MENU - ACCORDION STYLE */
-    .dropdown-menu {
+    .main-nav ul li.has-dropdown .dropdown-menu {
         position: static !important;
         opacity: 1 !important;
         visibility: visible !important;
@@ -1374,8 +1382,15 @@ footer {
         overflow: hidden !important;
         transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         width: 100% !important;
+        min-width: 100% !important;
         margin-top: 0 !important;
+        margin-left: 0 !important;
         border-radius: 0 !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        display: block !important;
     }
     
     .dropdown-menu::before {
