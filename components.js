@@ -1164,6 +1164,11 @@ footer {
         flex: 1 1 0 !important;
     }
     
+    /* Hide mobile menu close button on desktop */
+    .mobile-menu-close {
+        display: none !important;
+    }
+    
     .main-nav ul {
         justify-content: space-evenly !important;
         width: 100% !important;
@@ -1240,13 +1245,73 @@ footer {
         overflow-x: hidden;
         z-index: 1000;
         -webkit-overflow-scrolling: touch;
+        display: flex;
+        flex-direction: column;
+        /* Ensure we can scroll all the way to top */
+        scroll-behavior: smooth;
     }
     
     .main-nav.active {
         right: 0;
     }
     
-    /* Simplified - no separate mobile header, using hamburger toggle */
+    /* CLOSE BUTTON INSIDE MOBILE MENU - STICKY AT TOP */
+    .mobile-menu-close {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background-color: white;
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+        z-index: 10;
+        flex-shrink: 0;
+    }
+    
+    .mobile-menu-close-btn {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 50%;
+        position: relative;
+    }
+    
+    .mobile-menu-close-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--secondary-color);
+        opacity: 0;
+        border-radius: 50%;
+        transition: opacity 0.3s ease;
+    }
+    
+    .mobile-menu-close-btn:active::before {
+        opacity: 0.1;
+    }
+    
+    .mobile-menu-close-btn .material-icons {
+        font-size: 28px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Hide mobile menu elements on desktop */
+    .main-nav > .mobile-menu-close {
+        display: flex;
+    }
     
     /* MOBILE MENU LIST */
     .main-nav ul {
@@ -1682,6 +1747,11 @@ const HEADER_HTML = `
     <div class="accent-line"></div>
     <div class="header-main" id="header-main">
         <nav class="main-nav" id="main-nav">
+            <div class="mobile-menu-close">
+                <button class="mobile-menu-close-btn" id="mobile-menu-close-btn" aria-label="Close menu">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
             <ul>
                 <li class="active">
                     <a href="/pls/" data-tooltip="Acasă">
@@ -1988,7 +2058,7 @@ function initHeaderEffects() {
 function initMobileMenu() {
     const hamburger = document.getElementById('mobile-menu-toggle');
     const menu = document.getElementById('main-nav');
-    const closeBtn = document.getElementById('mobile-menu-close');
+    const closeBtn = document.getElementById('mobile-menu-close-btn');
     const backdrop = document.getElementById('mobile-menu-backdrop');
     
     // Validate all elements exist
@@ -2067,6 +2137,11 @@ function initMobileMenu() {
                 e.preventDefault();
                 e.stopPropagation();
                 
+                // Store the position of the clicked element before toggle
+                const linkRect = link.getBoundingClientRect();
+                const menuScrollTop = menu.scrollTop;
+                const isCurrentlyActive = parentLi.classList.contains('active');
+                
                 // Close other dropdowns
                 document.querySelectorAll('.main-nav .has-dropdown').forEach(item => {
                     if (item !== parentLi) item.classList.remove('active');
@@ -2074,6 +2149,24 @@ function initMobileMenu() {
                 
                 // Toggle this dropdown
                 parentLi.classList.toggle('active');
+                
+                // If we just OPENED the dropdown, scroll to keep header visible
+                if (!isCurrentlyActive) {
+                    // Wait for the dropdown animation to start
+                    setTimeout(() => {
+                        // Calculate where the link is now after expansion
+                        const newLinkRect = link.getBoundingClientRect();
+                        
+                        // If the link got pushed up (negative movement), scroll to compensate
+                        if (newLinkRect.top < linkRect.top) {
+                            const scrollOffset = linkRect.top - newLinkRect.top;
+                            menu.scrollTo({
+                                top: menuScrollTop - scrollOffset + 16, // +16 for padding
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 50);
+                }
             } else if (link.closest('.dropdown-menu') || !isDropdownParent) {
                 // Regular link or dropdown child - close menu after short delay
                 setTimeout(closeMenu, 150);
@@ -2110,6 +2203,12 @@ function initDropdownMenu() {
                     e.preventDefault();
                     e.stopPropagation();
                     
+                    // Store position before toggle
+                    const linkRect = link.getBoundingClientRect();
+                    const menu = document.getElementById('main-nav');
+                    const menuScrollTop = menu ? menu.scrollTop : 0;
+                    const isCurrentlyActive = item.classList.contains('active');
+                    
                     // Close other dropdowns
                     dropdownItems.forEach(otherItem => {
                         if (otherItem !== item) {
@@ -2119,6 +2218,22 @@ function initDropdownMenu() {
                     
                     // Toggle current dropdown
                     item.classList.toggle('active');
+                    
+                    // If we just OPENED the dropdown, scroll to keep header visible
+                    if (!isCurrentlyActive && menu) {
+                        setTimeout(() => {
+                            const newLinkRect = link.getBoundingClientRect();
+                            
+                            // If link moved up, adjust scroll
+                            if (newLinkRect.top < linkRect.top) {
+                                const scrollOffset = linkRect.top - newLinkRect.top;
+                                menu.scrollTo({
+                                    top: menuScrollTop - scrollOffset + 16,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }, 50);
+                    }
                 }
             }
         };
