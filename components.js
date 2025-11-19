@@ -1148,6 +1148,13 @@ footer {
     top: 2px;
 }
 
+/* Hide mobile menu close button on all desktop sizes */
+@media screen and (min-width: 993px) {
+    .mobile-menu-close {
+        display: none !important;
+    }
+}
+
 /* Responsive adjustments with bigger text */
 @media screen and (min-width: 993px) and (max-width: 1920px) {
     .header-top,
@@ -1162,11 +1169,6 @@ footer {
     
     .main-nav {
         flex: 1 1 0 !important;
-    }
-    
-    /* Hide mobile menu close button on desktop */
-    .mobile-menu-close {
-        display: none !important;
     }
     
     .main-nav ul {
@@ -2545,7 +2547,7 @@ function loadAccessibilityWidget() {
     // Create and inject the accessibility widget script
     const script = document.createElement('script');
     script.id = 'accessibility-widget-script';
-    script.src = '/pls/accessibility-widget.js';
+    script.src = '/accessibility-widget.js';
     script.async = false; // Load synchronously to ensure proper initialization
     
     script.onload = function() {
@@ -2554,7 +2556,7 @@ function loadAccessibilityWidget() {
     };
     
     script.onerror = function() {
-        console.warn('⚠️ Failed to load accessibility widget script from /pls/accessibility-widget.js');
+        console.warn('⚠️ Failed to load accessibility widget script from /accessibility-widget.js');
         console.log('💡 Make sure accessibility-widget.js is uploaded to the root directory');
     };
     
