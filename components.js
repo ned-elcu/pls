@@ -1946,13 +1946,13 @@ const FOOTER_HTML = `
 function loadWeatherAlertSystem() {
     // Check if already loaded
     if (document.getElementById('weather-alert-script')) {
-        console.log('⚠️ Weather alert script already exists');
+        console.log('ℹ️ Weather alert script already exists');
         return;
     }
     
     // Check if weather system is already active
     if (window.weatherSystemActive) {
-        console.log('⚠️ Weather system already active');
+        console.log('ℹ️ Weather system already active');
         return;
     }
     
@@ -1960,80 +1960,208 @@ function loadWeatherAlertSystem() {
     
     const script = document.createElement('script');
     script.id = 'weather-alert-script';
-    script.src = 'weather-alert.js';
-    script.async = false;  // CRITICAL: Load synchronously
-    script.defer = false;
     
-    script.onerror = () => {
-        console.error('❌ Weather alert system could not be loaded');
-        console.error('   Check if weather-alert.js is in the same directory as your HTML files');
-        console.error('   Current page location:', window.location.href);
+    // Try multiple possible paths
+    const possiblePaths = [
+        'weather-alert.js',
+        '/pls/weather-alert.js',
+        './weather-alert.js',
+        '../weather-alert.js'
+    ];
+    
+    let currentPathIndex = 0;
+    
+    const tryLoadScript = () => {
+        if (currentPathIndex >= possiblePaths.length) {
+            console.error('❌ Weather alert system could not be loaded from any path');
+            console.error('   Tried paths:', possiblePaths);
+            console.error('   Current page:', window.location.href);
+            console.log('💡 Weather widget will not be available, but site will continue loading');
+            return;
+        }
+        
+        script.src = possiblePaths[currentPathIndex];
+        console.log(`   Trying path ${currentPathIndex + 1}/${possiblePaths.length}: ${script.src}`);
+        
+        script.onerror = () => {
+            console.warn(`⚠️ Failed to load from: ${script.src}`);
+            currentPathIndex++;
+            script.remove(); // Remove failed script
+            tryLoadScript(); // Try next path
+        };
+        
+        script.onload = () => {
+            console.log('✅ Weather alert script loaded successfully from:', script.src);
+        };
+        
+        script.async = false;  // Load synchronously
+        script.defer = false;
+        
+        document.head.appendChild(script);
     };
     
-    script.onload = () => {
-        console.log('✅ Weather alert script loaded successfully');
-        console.log('   Weather system will auto-initialize...');
-    };
-    
-    document.head.appendChild(script);
+    // Start trying paths
+    tryLoadScript();
 }
 
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    if (!document.querySelector('link[rel="icon"]')) {
-        const faviconLink = document.createElement('link');
-        faviconLink.rel = "icon";
-        faviconLink.href = "https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png";
-        faviconLink.type = "image/png";
-        document.head.appendChild(faviconLink);
-    }
+    console.log('🚀 Components.js initialization started');
+    
+    try {
+        // Favicon
+        if (!document.querySelector('link[rel="icon"]')) {
+            const faviconLink = document.createElement('link');
+            faviconLink.rel = "icon";
+            faviconLink.href = "https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png";
+            faviconLink.type = "image/png";
+            document.head.appendChild(faviconLink);
+            console.log('✅ Favicon loaded');
+        }
 
-    if (!document.getElementById('components-css')) {
-        const styleEl = document.createElement('style');
-        styleEl.id = 'components-css';
-        styleEl.textContent = COMPONENTS_CSS;
-        document.head.appendChild(styleEl);
+        // CSS
+        if (!document.getElementById('components-css')) {
+            const styleEl = document.createElement('style');
+            styleEl.id = 'components-css';
+            styleEl.textContent = COMPONENTS_CSS;
+            document.head.appendChild(styleEl);
+            console.log('✅ Component styles loaded');
+        }
+        
+        // Material Icons
+        if (!document.querySelector('link[href*="material-icons"]')) {
+            const iconLink = document.createElement('link');
+            iconLink.href = "https://fonts.googleapis.com/icon?family=Material+Icons";
+            iconLink.rel = "stylesheet";
+            document.head.appendChild(iconLink);
+            console.log('✅ Material Icons loaded');
+        }
+        
+        // Weather Alert System (non-blocking)
+        try {
+            loadWeatherAlertSystem();
+        } catch (error) {
+            console.error('⚠️ Weather alert system error:', error);
+            console.log('   Site will continue without weather alerts');
+        }
+        
+        // Header & Footer
+        const headerContainer = document.getElementById('header-container');
+        const footerContainer = document.getElementById('footer-container');
+        
+        if (headerContainer) {
+            headerContainer.innerHTML = HEADER_HTML;
+            console.log('✅ Header loaded');
+        }
+        if (footerContainer) {
+            footerContainer.innerHTML = FOOTER_HTML;
+            console.log('✅ Footer loaded');
+        }
+        
+        // Initialize all components
+        initializeComponents();
+        console.log('✅ All components initialized');
+        
+    } catch (error) {
+        console.error('❌ CRITICAL ERROR in components initialization:', error);
+        console.error('   Stack trace:', error.stack);
+        
+        // EMERGENCY: Force remove intro screen even if everything fails
+        const introScreen = document.getElementById('intro-screen');
+        if (introScreen) {
+            console.log('🚨 Emergency intro screen removal');
+            introScreen.style.display = 'none';
+            introScreen.remove();
+        }
     }
-    
-    if (!document.querySelector('link[href*="material-icons"]')) {
-        const iconLink = document.createElement('link');
-        iconLink.href = "https://fonts.googleapis.com/icon?family=Material+Icons";
-        iconLink.rel = "stylesheet";
-        document.head.appendChild(iconLink);
-    }
-    
-    loadWeatherAlertSystem();
-    
-    const headerContainer = document.getElementById('header-container');
-    const footerContainer = document.getElementById('footer-container');
-    
-    if (headerContainer) headerContainer.innerHTML = HEADER_HTML;
-    if (footerContainer) footerContainer.innerHTML = FOOTER_HTML;
-    
-    initializeComponents();
 });
 
 function initializeComponents() {
-    initIntroScreen();
-    initHeaderEffects();
-    initMobileMenu();
-    initDropdownMenu();
-    initResponsiveHeader();
-    fixIconAlignment();
-    initNewsletterForm();
+    console.log('🔧 Initializing components...');
+    
+    try {
+        initIntroScreen();
+        console.log('  ✓ Intro screen initialized');
+    } catch (error) {
+        console.error('  ✗ Intro screen error:', error);
+    }
+    
+    try {
+        initHeaderEffects();
+        console.log('  ✓ Header effects initialized');
+    } catch (error) {
+        console.error('  ✗ Header effects error:', error);
+    }
+    
+    try {
+        initMobileMenu();
+        console.log('  ✓ Mobile menu initialized');
+    } catch (error) {
+        console.error('  ✗ Mobile menu error:', error);
+    }
+    
+    try {
+        initDropdownMenu();
+        console.log('  ✓ Dropdown menu initialized');
+    } catch (error) {
+        console.error('  ✗ Dropdown menu error:', error);
+    }
+    
+    try {
+        initResponsiveHeader();
+        console.log('  ✓ Responsive header initialized');
+    } catch (error) {
+        console.error('  ✗ Responsive header error:', error);
+    }
+    
+    try {
+        fixIconAlignment();
+        console.log('  ✓ Icon alignment fixed');
+    } catch (error) {
+        console.error('  ✗ Icon alignment error:', error);
+    }
+    
+    try {
+        initNewsletterForm();
+        console.log('  ✓ Newsletter form initialized');
+    } catch (error) {
+        console.error('  ✗ Newsletter form error:', error);
+    }
+    
+    console.log('✅ Component initialization complete');
 }
 
 function initIntroScreen() {
     const introScreen = document.getElementById('intro-screen');
-    if (introScreen) {
-        setTimeout(function() {
-            introScreen.style.opacity = '0';
-            setTimeout(function() {
-                introScreen.style.display = 'none';
-            }, 500);
-        }, 3000);
+    if (!introScreen) {
+        console.log('ℹ️ No intro screen found');
+        return;
     }
+    
+    // CRITICAL: Guarantee intro screen removal even if scripts fail
+    const removeIntro = () => {
+        if (introScreen && introScreen.style.display !== 'none') {
+            console.log('✅ Removing intro screen');
+            introScreen.style.opacity = '0';
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                introScreen.remove(); // Completely remove from DOM
+            }, 500);
+        }
+    };
+    
+    // Primary removal after 3 seconds
+    setTimeout(removeIntro, 3000);
+    
+    // FAILSAFE: Force removal after 5 seconds no matter what
+    setTimeout(() => {
+        if (introScreen && introScreen.style.display !== 'none') {
+            console.warn('⚠️ Intro screen forced removal (failsafe triggered)');
+            introScreen.style.display = 'none';
+            introScreen.remove();
+        }
+    }, 5000);
 }
 
 function initHeaderEffects() {
@@ -2541,26 +2669,57 @@ function loadAccessibilityWidget() {
     // Check if accessibility widget script already exists
     if (document.getElementById('accessibility-widget-script')) {
         console.log('ℹ️ Accessibility widget script already loaded');
+        connectAccessibilityWidget();
         return;
     }
+    
+    console.log('📡 Loading accessibility widget...');
     
     // Create and inject the accessibility widget script
     const script = document.createElement('script');
     script.id = 'accessibility-widget-script';
-    script.src = '/pls/accessibility-widget.js';
-    script.async = false; // Load synchronously to ensure proper initialization
     
-    script.onload = function() {
-        console.log('✅ Accessibility widget script loaded');
-        connectAccessibilityWidget();
+    // Try multiple possible paths
+    const possiblePaths = [
+        '/pls/accessibility-widget.js',
+        'accessibility-widget.js',
+        './accessibility-widget.js',
+        '../accessibility-widget.js'
+    ];
+    
+    let currentPathIndex = 0;
+    
+    const tryLoadScript = () => {
+        if (currentPathIndex >= possiblePaths.length) {
+            console.error('❌ Accessibility widget could not be loaded from any path');
+            console.error('   Tried paths:', possiblePaths);
+            console.log('💡 Accessibility features will not be available, but site will continue loading');
+            return;
+        }
+        
+        script.src = possiblePaths[currentPathIndex];
+        console.log(`   Trying path ${currentPathIndex + 1}/${possiblePaths.length}: ${script.src}`);
+        
+        script.onerror = () => {
+            console.warn(`⚠️ Failed to load accessibility widget from: ${script.src}`);
+            currentPathIndex++;
+            script.remove(); // Remove failed script
+            tryLoadScript(); // Try next path
+        };
+        
+        script.onload = () => {
+            console.log('✅ Accessibility widget loaded successfully from:', script.src);
+            connectAccessibilityWidget();
+        };
+        
+        script.async = false; // Load synchronously
+        script.defer = false;
+        
+        document.head.appendChild(script);
     };
     
-    script.onerror = function() {
-        console.warn('⚠️ Failed to load accessibility widget script from /pls/accessibility-widget.js');
-        console.log('💡 Make sure accessibility-widget.js is uploaded to the root directory');
-    };
-    
-    document.head.appendChild(script);
+    // Start trying paths
+    tryLoadScript();
 }
 
 function connectAccessibilityWidget() {
