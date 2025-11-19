@@ -618,10 +618,7 @@ const COMPONENTS_CSS = `
     color: var(--secondary-color);
 }
 
-/* HIDE MOBILE MENU HEADER ON DESKTOP */
-.mobile-menu-header {
-    display: none;
-}
+/* No mobile menu header needed - using hamburger toggle */
 
 /* INNOVATION MENU ANIMATIONS */
 .main-nav ul li a[href="/pls/inovatii"] {
@@ -1258,60 +1255,7 @@ footer {
         right: 0;
     }
     
-    /* MOBILE MENU HEADER */
-    .mobile-menu-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1.5rem 1.5rem;
-        background-color: var(--primary-color);
-        border-bottom: 3px solid var(--accent-color);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-    
-    .mobile-menu-logo {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-    }
-    
-    .mobile-menu-logo img {
-        width: 40px;
-        height: 46px;
-    }
-    
-    .mobile-menu-logo-text {
-        color: white;
-        font-size: 1.1rem;
-        font-weight: 700;
-        line-height: 1.2;
-    }
-    
-    .mobile-menu-close {
-        background: rgba(255, 255, 255, 0.15);
-        border: none;
-        color: white;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-    }
-    
-    .mobile-menu-close:active {
-        background: rgba(255, 255, 255, 0.25);
-        transform: scale(0.95);
-    }
-    
-    .mobile-menu-close .material-icons {
-        font-size: 24px;
-    }
+    /* Simplified - no separate mobile header, using hamburger toggle */
     
     /* MOBILE MENU LIST */
     .main-nav ul {
@@ -1713,15 +1657,6 @@ const HEADER_HTML = `
     <div class="accent-line"></div>
     <div class="header-main" id="header-main">
         <nav class="main-nav" id="main-nav">
-            <div class="mobile-menu-header">
-                <div class="mobile-menu-logo">
-                    <img src="https://images4.imagebam.com/12/a5/89/ME11HXQJ_o.png" alt="Insigna PLS">
-                    <div class="mobile-menu-logo-text">Poliția Locală<br>Slobozia</div>
-                </div>
-                <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Închide meniu">
-                    <i class="material-icons">close</i>
-                </button>
-            </div>
             <ul>
                 <li class="active">
                     <a href="/pls/" data-tooltip="Acasă">
@@ -2038,71 +1973,110 @@ function initHeaderEffects() {
 }
 
 function initMobileMenu() {
-    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const mobileMenuClose = document.getElementById('mobile-menu-close');
-    const mainNav = document.getElementById('main-nav');
+    const hamburger = document.getElementById('mobile-menu-toggle');
+    const menu = document.getElementById('main-nav');
+    const closeBtn = document.getElementById('mobile-menu-close');
     const backdrop = document.getElementById('mobile-menu-backdrop');
     
-    if (!mobileMenuToggle || !mainNav || !backdrop) return;
+    // Validate all elements exist
+    if (!hamburger || !menu || !backdrop) {
+        console.error('Mobile menu: Required elements missing');
+        return;
+    }
     
-    // Function to open menu
+    let isOpen = false;
+    
+    // === CORE FUNCTIONS ===
+    
     const openMenu = () => {
-        mainNav.classList.add('active');
+        isOpen = true;
+        menu.classList.add('active');
         backdrop.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent background scroll
-        if (mobileMenuToggle) {
-            mobileMenuToggle.setAttribute('aria-expanded', 'true');
-            mobileMenuToggle.innerHTML = '<i class="material-icons">close</i>';
-        }
+        document.body.style.overflow = 'hidden';
+        hamburger.setAttribute('aria-expanded', 'true');
+        hamburger.innerHTML = '<i class="material-icons">close</i>';
     };
     
-    // Function to close menu
     const closeMenu = () => {
-        mainNav.classList.remove('active');
+        isOpen = false;
+        menu.classList.remove('active');
         backdrop.classList.remove('active');
-        document.body.style.overflow = ''; // Restore background scroll
-        if (mobileMenuToggle) {
-            mobileMenuToggle.setAttribute('aria-expanded', 'false');
-            mobileMenuToggle.innerHTML = '<i class="material-icons">menu</i>';
-        }
+        document.body.style.overflow = '';
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.innerHTML = '<i class="material-icons">menu</i>';
+        
+        // Auto-close all dropdowns when menu closes
+        document.querySelectorAll('.main-nav .has-dropdown.active').forEach(dropdown => {
+            dropdown.classList.remove('active');
+        });
     };
     
-    // Toggle menu on hamburger click
-    mobileMenuToggle.addEventListener('click', function(e) {
+    // === EVENT HANDLERS ===
+    
+    // Hamburger click
+    hamburger.addEventListener('click', (e) => {
+        e.preventDefault();
         e.stopPropagation();
-        if (mainNav.classList.contains('active')) {
-            closeMenu();
-        } else {
-            openMenu();
-        }
+        isOpen ? closeMenu() : openMenu();
     });
     
-    // Close menu on close button click
-    if (mobileMenuClose) {
-        mobileMenuClose.addEventListener('click', function(e) {
+    // Close button click
+    if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             e.stopPropagation();
             closeMenu();
         });
     }
     
-    // Close menu on backdrop click
-    backdrop.addEventListener('click', function() {
-        closeMenu();
-    });
+    // Backdrop click
+    backdrop.addEventListener('click', closeMenu);
     
-    // Prevent menu clicks from closing (except links)
-    mainNav.addEventListener('click', function(e) {
-        // Only close if clicking a link that's not a dropdown toggle
-        if (e.target.tagName === 'A' && !e.target.closest('.has-dropdown')) {
+    // ESC key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isOpen) {
             closeMenu();
         }
     });
     
-    // Close menu on escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && mainNav.classList.contains('active')) {
-            closeMenu();
-        }
+    // Smart link handling
+    menu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            // Only apply mobile logic on mobile devices
+            if (window.innerWidth > 992) return;
+            
+            const parentLi = link.closest('li');
+            const isDropdownParent = parentLi?.classList.contains('has-dropdown');
+            const isMainDropdownLink = isDropdownParent && link.parentElement === parentLi;
+            
+            if (isMainDropdownLink) {
+                // Dropdown parent clicked - toggle accordion
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Close other dropdowns
+                document.querySelectorAll('.main-nav .has-dropdown').forEach(item => {
+                    if (item !== parentLi) item.classList.remove('active');
+                });
+                
+                // Toggle this dropdown
+                parentLi.classList.toggle('active');
+            } else if (link.closest('.dropdown-menu') || !isDropdownParent) {
+                // Regular link or dropdown child - close menu after short delay
+                setTimeout(closeMenu, 150);
+            }
+        });
+    });
+    
+    // Window resize handler
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            if (window.innerWidth > 992 && isOpen) {
+                closeMenu();
+            }
+        }, 100);
     });
 }
 
