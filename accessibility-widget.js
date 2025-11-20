@@ -1,6 +1,7 @@
 // =============================================================================
-// ACCESSIBILITY WIDGET v1.0 - Inclusive & Non-Intrusive
+// ACCESSIBILITY WIDGET v1.1 - Inclusive & Non-Intrusive
 // Poliția Locală Slobozia | Production-Ready | Government Standards
+// Updated: Fixed Mobile Scaling & High Contrast Focus Mode
 // =============================================================================
 
 // === CONFIGURATION ===
@@ -25,11 +26,11 @@ const ACCESS_TEXT = {
         title: 'Setări de Accesibilitate',
         largerText: {
             label: 'Text mai mare',
-            description: 'Face textul mai ușor de citit'
+            description: 'Mărește textul inteligent pentru citire ușoară'
         },
         highContrast: {
-            label: 'Evidențiere contrast ridicat',
-            description: 'Evidențiază cuvintele importante la trecerea mouse-ului'
+            label: 'Mod Focus (Contrast)',
+            description: 'Evidențiază paragrafele și titlurile la trecerea mouse-ului'
         },
         saveBtn: 'Salvează preferințele',
         resetBtn: 'Resetează'
@@ -55,534 +56,251 @@ function injectAccessibilityCSS() {
         /* Import Material Symbols font */
         @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
         
-        /* === ACCESSIBILITY BANNER === */
+        /* =========================================
+           1. ROBUST TEXT SCALING (Fixes Mobile Breakage)
+           ========================================= */
+        
+        /* DESKTOP: Scale everything up by 25% relatively */
+        body.access-larger-text {
+            font-size: 125% !important; 
+            line-height: 1.6 !important;
+        }
+
+        /* MOBILE: Cap the scaling to avoid breaking layout */
+        @media (max-width: 768px) {
+            body.access-larger-text {
+                font-size: 115% !important; /* Smaller bump for mobile */
+                line-height: 1.5 !important;
+            }
+        }
+
+        /* Prevent layout explosions on fixed-height elements */
+        body.access-larger-text .material-icons,
+        body.access-larger-text .material-symbols-outlined,
+        body.access-larger-text i {
+            font-size: 1.2em !important; 
+            vertical-align: middle;
+        }
+
+        /* =========================================
+           2. INTELLIGENT HIGH CONTRAST (Focus Mode)
+           ========================================= */
+        
+        :root {
+            --hc-highlight-bg: #ffff00; /* Bright Yellow */
+            --hc-highlight-text: #000000; /* Pure Black */
+            --hc-outline: #000000;
+        }
+
+        /* DEFINE READABLE CONTENT: Targets only text blocks, avoiding "Blackout" of containers */
+        body.access-high-contrast :is(p, h1, h2, h3, h4, h5, h6, li, blockquote, td, th, cite, caption, legend, label, input, textarea) {
+            transition: all 0.1s ease !important;
+        }
+
+        /* THE HOVER EFFECT: "Pop" the text out */
+        body.access-high-contrast :is(p, h1, h2, h3, h4, h5, h6, li, blockquote, td, th, legend, label):hover {
+            background-color: var(--hc-highlight-bg) !important;
+            color: var(--hc-highlight-text) !important;
+            
+            /* Create a solid box around the text */
+            outline: 4px solid var(--hc-highlight-bg) !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+            border-radius: 4px !important;
+            
+            /* VITAL: Bring this element to the front so it covers neighbors */
+            position: relative !important; 
+            z-index: 10000 !important;
+            cursor: help; 
+        }
+
+        /* Handle Interactive Elements (Buttons/Links) in High Contrast */
+        body.access-high-contrast a:hover,
+        body.access-high-contrast button:hover,
+        body.access-high-contrast [role="button"]:hover {
+            background-color: #000000 !important;
+            color: #ffff00 !important;
+            outline: 3px solid #ffff00 !important;
+            z-index: 10001 !important;
+            position: relative !important;
+            text-decoration: underline !important;
+        }
+
+        /* Links INSIDE highlighted paragraphs need to be readable */
+        body.access-high-contrast :is(p, li, td) a {
+            text-decoration: underline !important;
+            font-weight: bold !important;
+            color: inherit !important; /* Inherit black from the parent hover */
+        }
+
+        /* Image handling - Slight filter to reduce glare, border for definition */
+        body.access-high-contrast img {
+            filter: contrast(110%);
+            border: 2px solid #ffff00;
+        }
+
+        /* EXCLUSIONS: Protect the widget UI from being affected by High Contrast */
+        .access-panel, .access-panel *, 
+        .access-banner, .access-banner *, 
+        .access-float-icon, .access-float-icon * {
+            font-size: initial !important; /* Reset size for widget */
+            line-height: initial !important;
+            background-color: inherit;
+            color: inherit;
+            outline: inherit;
+            z-index: auto;
+        }
+        
+        /* Explicit Widget Z-Indices (Always on top of High Contrast content) */
+        .access-banner { z-index: 100002 !important; }
+        .access-panel { z-index: 100002 !important; }
+        .access-float-icon { z-index: 100001 !important; }
+        .access-toast { z-index: 100003 !important; }
+
+        /* =========================================
+           3. WIDGET UI STYLES
+           ========================================= */
+        
+        /* BANNER */
         .access-banner {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             background: linear-gradient(135deg, #1a2f5f 0%, #0f1a36 100%);
             color: white;
             padding: 1.25rem 2rem;
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-            z-index: 9998;
             transform: translateY(100%);
             transition: transform 400ms cubic-bezier(0.4, 0.0, 0.2, 1);
             border-top: 3px solid #ffca28;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-        
-        .access-banner.show {
-            transform: translateY(0);
-        }
+        .access-banner.show { transform: translateY(0); }
         
         .access-banner-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 2rem;
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; gap: 2rem;
         }
-        
-        .access-banner-text {
-            flex: 1;
-            font-size: 1.05rem;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-        
-        .access-banner-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-shrink: 0;
-        }
+        .access-banner-text { flex: 1; font-size: 1.05rem; font-weight: 500; }
+        .access-banner-buttons { display: flex; gap: 1rem; flex-shrink: 0; }
         
         .access-banner-btn {
-            padding: 0.75rem 1.75rem;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
+            padding: 0.75rem 1.75rem; border: none; border-radius: 6px;
+            font-size: 0.95rem; font-weight: 600; cursor: pointer;
+            text-transform: uppercase; white-space: nowrap;
+            transition: all 0.2s ease;
         }
-        
-        .access-banner-btn.primary {
-            background: #ffca28;
-            color: #0f1a36;
-        }
-        
-        .access-banner-btn.primary:hover {
-            background: #ffd54f;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 202, 40, 0.4);
-        }
-        
-        .access-banner-btn.secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .access-banner-btn.secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        
-        /* === ACCESSIBILITY PANEL === */
+        .access-banner-btn.primary { background: #ffca28; color: #0f1a36; }
+        .access-banner-btn.secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); }
+
+        /* PANEL */
         .access-panel {
-            position: fixed;
-            top: 12rem;
-            right: 2rem;
-            width: 400px;
-            background: white;
-            border-radius: 12px;
+            position: fixed; top: 12rem; right: 2rem; width: 400px;
+            background: white; border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            z-index: 9997;
-            opacity: 0;
-            transform: translateY(-20px) scale(0.95);
-            pointer-events: none;
-            transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
-            overflow: hidden;
+            opacity: 0; transform: translateY(-20px) scale(0.95);
+            pointer-events: none; transition: all 350ms cubic-bezier(0.4, 0.0, 0.2, 1);
+            overflow: hidden; font-family: 'Segoe UI', Roboto, sans-serif;
         }
-        
-        .access-panel.show {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: all;
-        }
+        .access-panel.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
         
         .access-panel-header {
             background: linear-gradient(135deg, #1a2f5f 0%, #0f1a36 100%);
-            color: white;
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            color: white; padding: 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
             border-bottom: 3px solid #ffca28;
         }
-        
-        .access-panel-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .access-panel-title i {
-            font-size: 1.5rem;
-        }
+        .access-panel-title { font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem; }
         
         .access-panel-close {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 250ms ease;
+            background: rgba(255,255,255,0.1); border: none; color: white;
+            width: 32px; height: 32px; border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
         
-        .access-panel-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: rotate(90deg);
-        }
-        
-        .access-panel-body {
-            padding: 1.75rem;
-        }
+        .access-panel-body { padding: 1.75rem; }
         
         .access-option {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-            transition: all 250ms ease;
-            border: 2px solid transparent;
+            background: #f8f9fa; border-radius: 10px; padding: 1.25rem;
+            margin-bottom: 1rem; border: 2px solid transparent;
         }
+        .access-option:hover { background: #f0f2f5; border-color: #e0e0e0; }
         
-        .access-option:hover {
-            background: #f0f2f5;
-            border-color: #e0e0e0;
-        }
+        .access-option-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+        .access-option-label { font-size: 1.05rem; font-weight: 600; color: #1a2f5f; }
+        .access-option-description { font-size: 0.9rem; color: #666; line-height: 1.5; }
         
-        .access-option-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-        
-        .access-option-label {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #1a2f5f;
-        }
-        
-        .access-option-description {
-            font-size: 0.9rem;
-            color: #666;
-            line-height: 1.5;
-        }
-        
-        /* === TOGGLE SWITCH === */
+        /* TOGGLE SWITCH */
         .access-toggle {
-            position: relative;
-            width: 56px;
-            height: 28px;
-            background: #ccc;
-            border-radius: 14px;
-            cursor: pointer;
+            position: relative; width: 56px; height: 28px;
+            background: #ccc; border-radius: 14px; cursor: pointer;
             transition: background 250ms ease;
         }
-        
-        .access-toggle.active {
-            background: #43a047;
-        }
-        
+        .access-toggle.active { background: #43a047; }
         .access-toggle::after {
-            content: '';
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 22px;
-            height: 22px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 250ms cubic-bezier(0.4, 0.0, 0.2, 1);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            content: ''; position: absolute; top: 3px; left: 3px;
+            width: 22px; height: 22px; background: white; border-radius: 50%;
+            transition: transform 250ms; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
+        .access-toggle.active::after { transform: translateX(28px); }
         
-        .access-toggle.active::after {
-            transform: translateX(28px);
-        }
-        
-        /* === PANEL BUTTONS === */
-        .access-panel-buttons {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 2px solid #e0e0e0;
-        }
-        
+        /* PANEL BUTTONS */
+        .access-panel-buttons { display: flex; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e0e0e0; }
         .access-panel-btn {
-            flex: 1;
-            padding: 0.9rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 250ms ease;
+            flex: 1; padding: 0.9rem; border: none; border-radius: 8px;
+            font-size: 0.95rem; font-weight: 600; cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-        
-        .access-panel-btn.primary {
-            background: #1a2f5f;
-            color: white;
-        }
-        
-        .access-panel-btn.primary:hover {
-            background: #0f1a36;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(26, 47, 95, 0.3);
-        }
-        
-        .access-panel-btn.secondary {
-            background: #f0f0f0;
-            color: #666;
-        }
-        
-        .access-panel-btn.secondary:hover {
-            background: #e0e0e0;
-        }
-        
-        /* === FLOATING ICON === */
+        .access-panel-btn.primary { background: #1a2f5f; color: white; }
+        .access-panel-btn.secondary { background: #f0f0f0; color: #666; }
+
+        /* FLOATING ICON */
         .access-float-icon {
-            position: fixed;
-            bottom: 8rem;
-            right: 1rem;
-            width: 56px;
-            height: 56px;
+            position: fixed; bottom: 8rem; right: 1rem;
+            width: 56px; height: 56px;
             background: linear-gradient(135deg, #1a2f5f 0%, #0f1a36 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-            z-index: 9996;
-            transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: white; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.3);
             border: 3px solid #ffca28;
+            transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
         }
-        
-        /* Dynamic positioning when weather widget is present */
-        .access-float-icon.weather-active {
-            bottom: 14rem;
-        }
-        
-        /* When weather is expanded on mobile */
-        .access-float-icon.weather-expanded {
-            bottom: 24rem;
-        }
-        
-        .access-float-icon:hover {
-            transform: scale(1.1) translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        }
-        
-        .access-float-icon i {
-            font-size: 28px;
-        }
-        
-        /* === TOAST NOTIFICATION === */
+        .access-float-icon.weather-active { bottom: 14rem; }
+        .access-float-icon.weather-expanded { bottom: 24rem; }
+        .access-float-icon:hover { transform: scale(1.1) translateY(-2px); }
+
+        /* TOAST */
         .access-toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
+            position: fixed; bottom: 2rem; left: 50%;
             transform: translateX(-50%) translateY(150%);
-            background: #1a2f5f;
-            color: white;
-            padding: 1rem 1.75rem;
-            border-radius: 8px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-            z-index: 9999;
-            max-width: 600px;
-            font-size: 0.95rem;
-            font-weight: 500;
+            background: #1a2f5f; color: white; padding: 1rem 1.75rem;
+            border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            max-width: 600px; border-left: 4px solid #ffca28;
             text-align: center;
-            line-height: 1.5;
-            transition: transform 400ms cubic-bezier(0.4, 0.0, 0.2, 1);
-            border-left: 4px solid #ffca28;
         }
+        .access-toast.show { transform: translateX(-50%) translateY(0); }
         
-        .access-toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-        
-        /* === BACKDROP === */
+        /* BACKDROP */
         .access-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 9995;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 300ms ease;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.3); z-index: 100001;
+            opacity: 0; pointer-events: none; transition: opacity 300ms ease;
         }
-        
-        .access-backdrop.show {
-            opacity: 1;
-            pointer-events: all;
-        }
-        
-        /* === ACCESSIBILITY EFFECTS === */
-        /* WCAG AAA Compliant Text Scaling - Minimum 24px base */
-        body.access-larger-text {
-            font-size: 24px !important;
-        }
-        
-        body.access-larger-text *:not(i):not(.material-icons) {
-            font-size: inherit !important;
-        }
-        
-        body.access-larger-text p,
-        body.access-larger-text li,
-        body.access-larger-text span:not(.material-icons),
-        body.access-larger-text a,
-        body.access-larger-text div,
-        body.access-larger-text td,
-        body.access-larger-text th,
-        body.access-larger-text label,
-        body.access-larger-text input,
-        body.access-larger-text textarea,
-        body.access-larger-text button {
-            font-size: 1em !important;
-            line-height: 1.8 !important;
-            letter-spacing: 0.02em !important;
-        }
-        
-        body.access-larger-text h1 {
-            font-size: 3.25rem !important;
-            line-height: 1.3 !important;
-        }
-        
-        body.access-larger-text h2 {
-            font-size: 2.75rem !important;
-            line-height: 1.4 !important;
-        }
-        
-        body.access-larger-text h3 {
-            font-size: 2.25rem !important;
-            line-height: 1.5 !important;
-        }
-        
-        body.access-larger-text h4 {
-            font-size: 1.85rem !important;
-            line-height: 1.5 !important;
-        }
-        
-        body.access-larger-text h5 {
-            font-size: 1.5rem !important;
-            line-height: 1.5 !important;
-        }
-        
-        body.access-larger-text .main-nav ul li a {
-            font-size: 1.15rem !important;
-        }
-        
-        body.access-larger-text .footer-column h3 {
-            font-size: 1.75rem !important;
-        }
-        
-        /* Prevent icon scaling */
-        body.access-larger-text i.material-icons,
-        body.access-larger-text .material-icons,
-        body.access-larger-text .material-symbols-outlined {
-            font-size: 24px !important;
-        }
-        
-        /* High Contrast Mode - Text and Interactive Elements Only */
-        /* Excludes: backgrounds, images, icons, widgets */
-        body.access-high-contrast *:hover:not(img):not(svg):not(.material-icons):not(.material-symbols-outlined):not(i):not(.access-float-icon):not(.access-panel):not(.access-panel *):not(.access-banner):not(.access-banner *):not(.access-toast):not(.weather-widget):not(.weather-widget *):not([class*="background"]):not([class*="bg-"]):not([style*="background"]) {
-            background-color: #000 !important;
-            background-image: none !important;
-            color: #ffca28 !important;
-            outline: 3px solid #ffca28 !important;
-            outline-offset: 2px;
-            border-radius: 4px;
-        }
-        
-        /* Images and backgrounds should never be affected */
-        body.access-high-contrast img,
-        body.access-high-contrast [style*="background-image"],
-        body.access-high-contrast [class*="background"],
-        body.access-high-contrast [class*="bg-"],
-        body.access-high-contrast .logo,
-        body.access-high-contrast .logo-badge {
-            background: inherit !important;
-            outline: none !important;
-        }
-        
-        /* Specific elements that need text decoration */
-        body.access-high-contrast a:hover,
-        body.access-high-contrast button:hover,
-        body.access-high-contrast .main-nav ul li a:hover {
-            text-decoration: underline !important;
-            text-decoration-thickness: 2px !important;
-            text-underline-offset: 4px !important;
-        }
-        
-        /* Cards and containers */
-        body.access-high-contrast .card:hover,
-        body.access-high-contrast .service-card:hover,
-        body.access-high-contrast .info-card:hover {
-            outline: 4px solid #ffca28 !important;
-            outline-offset: 4px;
-            box-shadow: 0 0 0 8px rgba(255, 202, 40, 0.3) !important;
-        }
-        
-        /* Prevent Material Icons from getting outline */
-        body.access-high-contrast i.material-icons:hover,
-        body.access-high-contrast .material-icons:hover,
-        body.access-high-contrast .material-symbols-outlined:hover {
-            background: transparent !important;
-            outline: none !important;
-        }
-        
-        /* Ensure parent button/link still gets highlight even if icon is hovered */
-        body.access-high-contrast button:hover i.material-icons,
-        body.access-high-contrast a:hover i.material-icons,
-        body.access-high-contrast button:hover .material-symbols-outlined,
-        body.access-high-contrast a:hover .material-symbols-outlined {
-            color: #ffca28 !important;
-            background: transparent !important;
-            outline: none !important;
-        }
-        
-        /* === MOBILE RESPONSIVENESS === */
+        .access-backdrop.show { opacity: 1; pointer-events: all; }
+
+        /* MOBILE RESPONSIVENESS */
         @media (max-width: 768px) {
-            .access-banner {
-                padding: 1rem;
-            }
-            
-            .access-banner-content {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-            }
-            
-            .access-banner-buttons {
-                width: 100%;
-                flex-direction: column;
-            }
-            
-            .access-banner-btn {
-                width: 100%;
-            }
+            .access-banner { padding: 1rem; }
+            .access-banner-content { flex-direction: column; text-align: center; gap: 1rem; }
+            .access-banner-buttons { width: 100%; flex-direction: column; }
+            .access-banner-btn { width: 100%; }
             
             .access-panel {
-                top: auto;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                width: 100%;
-                border-radius: 16px 16px 0 0;
+                top: auto; bottom: 0; left: 0; right: 0;
+                width: 100%; border-radius: 16px 16px 0 0;
                 transform: translateY(100%);
             }
+            .access-panel.show { transform: translateY(0); }
             
-            .access-panel.show {
-                transform: translateY(0);
-            }
-            
-            .access-float-icon {
-                bottom: 5rem;
-                right: 1rem;
-                width: 52px;
-                height: 52px;
-            }
-            
-            .access-toast {
-                bottom: 7rem;
-                max-width: calc(100% - 2rem);
-                left: 1rem;
-                right: 1rem;
-                transform: translateX(0) translateY(150%);
-            }
-            
-            .access-toast.show {
-                transform: translateX(0) translateY(0);
-            }
-        }
-        
-        /* === SMOOTH TRANSITIONS === */
-        * {
-            transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
-        }
-        
-        /* === FOCUS STYLES === */
-        .access-banner-btn:focus,
-        .access-panel-btn:focus,
-        .access-panel-close:focus,
-        .access-toggle:focus,
-        .access-float-icon:focus {
-            outline: 3px solid #ffca28;
-            outline-offset: 3px;
+            .access-float-icon { bottom: 5rem; width: 52px; height: 52px; }
+            .access-toast { width: 90%; bottom: 6rem; }
         }
     `;
     
@@ -610,7 +328,7 @@ class AccessibilityWidget {
             setTimeout(() => this.showToast(ACCESS_TEXT.toast.applied), 500);
         }
         
-        console.log('✅ Accessibility Widget v1.0 initialized');
+        console.log('✅ Accessibility Widget v1.1 initialized');
         console.log('📊 Current preferences:', this.preferences);
     }
     
@@ -678,7 +396,7 @@ class AccessibilityWidget {
     createPanel() {
         if (document.querySelector('.access-panel')) return;
         
-        const currentPrefs = this.preferences || { largerText: true, highContrast: true };
+        const currentPrefs = this.preferences || { largerText: false, highContrast: false };
         
         const backdrop = document.createElement('div');
         backdrop.className = 'access-backdrop';
@@ -824,6 +542,9 @@ class AccessibilityWidget {
         const panel = document.querySelector('.access-panel');
         const backdrop = document.querySelector('.access-backdrop');
         
+        // Revert to saved preferences if user cancels without saving
+        this.applyPreferences();
+        
         if (panel) panel.classList.remove('show');
         if (backdrop) backdrop.classList.remove('show');
     }
@@ -861,193 +582,44 @@ class AccessibilityWidget {
         
         document.body.appendChild(icon);
         
-        // Monitor weather widget for dynamic positioning using simple polling
+        // Initialize weather widget monitoring
         this.monitorWeatherWidget();
     }
     
+    // CONSOLIDATED AND ROBUST WEATHER WIDGET MONITORING
     monitorWeatherWidget() {
-        // Use simple polling instead of MutationObserver to avoid infinite loops
         const icon = document.querySelector('.access-float-icon');
-        if (!icon) {
-            console.log('⚠️ Weather monitoring: Icon not found');
-            return;
-        }
-        
-        let lastWeatherState = null;
+        if (!icon) return;
         
         const checkWeatherPosition = () => {
             try {
                 const weatherWidget = document.querySelector('.weather-widget');
                 
-                // Create state snapshot
-                const currentState = {
-                    exists: !!weatherWidget,
-                    expanded: weatherWidget ? weatherWidget.classList.contains('expanded') : false
-                };
-                
-                // Only update if state changed (prevents unnecessary DOM manipulation)
-                const stateChanged = !lastWeatherState || 
-                                    lastWeatherState.exists !== currentState.exists ||
-                                    lastWeatherState.expanded !== currentState.expanded;
-                
-                if (stateChanged) {
-                    if (!currentState.exists) {
-                        // No weather widget - default position
-                        icon.classList.remove('weather-active', 'weather-expanded');
-                    } else {
-                        // Weather widget exists
-                        icon.classList.add('weather-active');
-                        
-                        if (currentState.expanded) {
-                            icon.classList.add('weather-expanded');
-                        } else {
-                            icon.classList.remove('weather-expanded');
-                        }
-                    }
+                if (!weatherWidget) {
+                    icon.classList.remove('weather-active', 'weather-expanded');
+                } else {
+                    icon.classList.add('weather-active');
                     
-                    lastWeatherState = currentState;
+                    const isExpanded = weatherWidget.classList.contains('expanded');
+                    if (isExpanded) {
+                        icon.classList.add('weather-expanded');
+                    } else {
+                        icon.classList.remove('weather-expanded');
+                    }
                 }
             } catch (error) {
-                console.error('⚠️ Weather monitoring error:', error);
+                console.warn('⚠️ Weather check failed:', error);
             }
         };
         
-        // Initial check
+        // 1. Immediate check
         checkWeatherPosition();
         
-        // Poll every 500ms (very lightweight, only updates on state change)
-        this.weatherMonitorInterval = setInterval(checkWeatherPosition, 500);
+        // 2. Observer for widget appearance/removal
+        const observer = new MutationObserver(() => checkWeatherPosition());
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
         
-        console.log('✅ Weather widget monitoring active (polling mode)');
-    }
-    
-    monitorWeatherWidget() {
-        // Make this feature completely optional and fail-safe
-        try {
-            const icon = document.querySelector('.access-float-icon');
-            if (!icon) {
-                console.log('⚠️ Weather monitoring: Icon not found');
-                return;
-            }
-            
-            let isUpdating = false;
-            let updateCount = 0;
-            const MAX_UPDATES = 10; // Prevent runaway updates
-            
-            // Check for weather widget presence and state
-            const checkWeatherPosition = () => {
-                // Multiple safety checks
-                if (isUpdating) {
-                    console.log('⚠️ Weather check already in progress, skipping');
-                    return;
-                }
-                
-                if (updateCount > MAX_UPDATES) {
-                    console.warn('⚠️ Weather monitoring disabled: too many updates');
-                    if (this.weatherObserver) this.weatherObserver.disconnect();
-                    if (this.weatherWidgetObserver) this.weatherWidgetObserver.disconnect();
-                    return;
-                }
-                
-                isUpdating = true;
-                updateCount++;
-                
-                try {
-                    const weatherWidget = document.querySelector('.weather-widget');
-                    
-                    if (!weatherWidget) {
-                        icon.classList.remove('weather-active', 'weather-expanded');
-                    } else {
-                        icon.classList.add('weather-active');
-                        
-                        const isExpanded = weatherWidget.classList.contains('expanded');
-                        if (isExpanded) {
-                            icon.classList.add('weather-expanded');
-                        } else {
-                            icon.classList.remove('weather-expanded');
-                        }
-                    }
-                } catch (error) {
-                    console.error('⚠️ Error in weather position check:', error);
-                }
-                
-                // Reset after delay
-                setTimeout(() => {
-                    isUpdating = false;
-                }, 100);
-            };
-            
-            // Initial check
-            checkWeatherPosition();
-            
-            // Optional: Don't monitor if weather widget doesn't exist initially
-            const weatherWidget = document.querySelector('.weather-widget');
-            if (!weatherWidget) {
-                console.log('ℹ️ No weather widget found, skipping monitoring setup');
-                return;
-            }
-            
-            // Monitor ONLY for weather widget changes
-            const observer = new MutationObserver((mutations) => {
-                try {
-                    let shouldCheck = false;
-                    
-                    for (const mutation of mutations) {
-                        if (mutation.type === 'childList') {
-                            const addedWidget = Array.from(mutation.addedNodes).some(
-                                node => node.classList && node.classList.contains('weather-widget')
-                            );
-                            const removedWidget = Array.from(mutation.removedNodes).some(
-                                node => node.classList && node.classList.contains('weather-widget')
-                            );
-                            
-                            if (addedWidget || removedWidget) {
-                                shouldCheck = true;
-                                break;
-                            }
-                        }
-                    }
-                    
-                    if (shouldCheck) {
-                        checkWeatherPosition();
-                    }
-                } catch (error) {
-                    console.error('⚠️ Error in mutation observer:', error);
-                }
-            });
-            
-            // Watch ONLY document.body direct children
-            observer.observe(document.body, {
-                childList: true,
-                subtree: false,
-                attributes: false
-            });
-            
-            // Watch weather widget specifically
-            if (weatherWidget) {
-                const widgetObserver = new MutationObserver(() => {
-                    try {
-                        checkWeatherPosition();
-                    } catch (error) {
-                        console.error('⚠️ Error in widget observer:', error);
-                    }
-                });
-                
-                widgetObserver.observe(weatherWidget, {
-                    attributes: true,
-                    attributeFilter: ['class']
-                });
-                
-                this.weatherWidgetObserver = widgetObserver;
-            }
-            
-            this.weatherObserver = observer;
-            console.log('✅ Weather widget monitoring active');
-            
-        } catch (error) {
-            console.error('❌ Failed to setup weather monitoring:', error);
-            console.log('   Accessibility widget will work without weather awareness');
-        }
+        console.log('✅ Widget positioning active');
     }
     
     showToast(message) {
@@ -1116,5 +688,5 @@ if (document.readyState === 'loading') {
     window.accessibilityWidget = new AccessibilityWidget();
 }
 
-console.log('✅ Accessibility Widget v1.0 loaded');
+console.log('✅ Accessibility Widget v1.1 loaded');
 console.log('♿ Inclusive design | Non-intrusive | Government standards');
