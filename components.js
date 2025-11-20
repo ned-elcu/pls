@@ -2664,32 +2664,36 @@ function initNewsletterForm() {
     }
 }
 
-// === UNIFIED CITIZEN WIDGET INTEGRATION ===
-function loadUnifiedCitizenWidget() {
-    if (document.getElementById('unified-citizen-widget-script')) {
-        console.log('ℹ️ Unified citizen widget script already loaded');
+// === ACCESSIBILITY WIDGET INTEGRATION ===
+function loadAccessibilityWidget() {
+    // Check if accessibility widget script already exists
+    if (document.getElementById('accessibility-widget-script')) {
+        console.log('ℹ️ Accessibility widget script already loaded');
+        connectAccessibilityWidget();
         return;
     }
     
-    console.log('📡 Loading unified citizen widget...');
+    console.log('📡 Loading accessibility widget...');
     
+    // Create and inject the accessibility widget script
     const script = document.createElement('script');
-    script.id = 'unified-citizen-widget-script';
+    script.id = 'accessibility-widget-script';
     
+    // Try multiple possible paths
     const possiblePaths = [
-        '/pls/unified-citizen-widget.js',
-        'unified-citizen-widget.js',
-        './unified-citizen-widget.js',
-        '../unified-citizen-widget.js'
+        '/pls/accessibility-widget.js',
+        'accessibility-widget.js',
+        './accessibility-widget.js',
+        '../accessibility-widget.js'
     ];
     
     let currentPathIndex = 0;
     
     const tryLoadScript = () => {
         if (currentPathIndex >= possiblePaths.length) {
-            console.error('❌ Unified citizen widget could not be loaded from any path');
+            console.error('❌ Accessibility widget could not be loaded from any path');
             console.error('   Tried paths:', possiblePaths);
-            console.log('💡 Widget features will not be available, but site will continue loading');
+            console.log('💡 Accessibility features will not be available, but site will continue loading');
             return;
         }
         
@@ -2697,29 +2701,61 @@ function loadUnifiedCitizenWidget() {
         console.log(`   Trying path ${currentPathIndex + 1}/${possiblePaths.length}: ${script.src}`);
         
         script.onerror = () => {
-            console.warn(`⚠️ Failed to load unified citizen widget from: ${script.src}`);
+            console.warn(`⚠️ Failed to load accessibility widget from: ${script.src}`);
             currentPathIndex++;
-            script.remove();
-            tryLoadScript();
+            script.remove(); // Remove failed script
+            tryLoadScript(); // Try next path
         };
         
         script.onload = () => {
-            console.log('✅ Unified citizen widget loaded successfully from:', script.src);
+            console.log('✅ Accessibility widget loaded successfully from:', script.src);
+            connectAccessibilityWidget();
         };
         
-        script.async = false;
+        script.async = false; // Load synchronously
         script.defer = false;
         
         document.head.appendChild(script);
     };
     
+    // Start trying paths
     tryLoadScript();
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadUnifiedCitizenWidget);
-} else {
-    loadUnifiedCitizenWidget();
+function connectAccessibilityWidget() {
+    // Wait for the accessibility widget to be initialized
+    const maxAttempts = 50; // 5 seconds (50 * 100ms)
+    let attempts = 0;
+    
+    const checkWidget = setInterval(() => {
+        attempts++;
+        
+        if (window.accessibilityWidget) {
+            clearInterval(checkWidget);
+            
+            // Attach event listener to "Setari" link
+            const settingsLink = document.getElementById('accessibility-settings-link');
+            if (settingsLink) {
+                settingsLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.accessibilityWidget.showPanel();
+                });
+                console.log('✅ Setări link connected to accessibility widget');
+            } else {
+                console.warn('⚠️ Setări link not found in DOM');
+            }
+        } else if (attempts >= maxAttempts) {
+            clearInterval(checkWidget);
+            console.warn('⚠️ Accessibility widget not initialized after 5 seconds');
+        }
+    }, 100);
 }
 
-console.log('📢 Unified Citizen Widget Auto-Loader initialized');
+// Load accessibility widget when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadAccessibilityWidget);
+} else {
+    loadAccessibilityWidget();
+}
+
+console.log('📢 Accessibility Widget Auto-Loader initialized');
