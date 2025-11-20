@@ -1,7 +1,7 @@
 // =============================================================================
-// ACCESSIBILITY WIDGET v1.1 - Inclusive & Non-Intrusive
+// ACCESSIBILITY WIDGET v1.3 - Inclusive & Non-Intrusive
 // Poliția Locală Slobozia | Production-Ready | Government Standards
-// Updated: Fixed Mobile Scaling & High Contrast Focus Mode
+// Updated: Removed Unstable Weather Widget Interaction
 // =============================================================================
 
 // === CONFIGURATION ===
@@ -160,6 +160,21 @@ function injectAccessibilityCSS() {
            3. WIDGET UI STYLES
            ========================================= */
         
+        /* GLOBAL SMOOTHING (Restored from original) */
+        .access-banner *, .access-panel *, .access-float-icon {
+            transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        /* KEYBOARD FOCUS STATES (Restored from original) */
+        .access-banner-btn:focus,
+        .access-panel-btn:focus,
+        .access-panel-close:focus,
+        .access-toggle:focus,
+        .access-float-icon:focus {
+            outline: 3px solid #ffca28;
+            outline-offset: 3px;
+        }
+
         /* BANNER */
         .access-banner {
             position: fixed;
@@ -262,8 +277,6 @@ function injectAccessibilityCSS() {
             border: 3px solid #ffca28;
             transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
         }
-        .access-float-icon.weather-active { bottom: 14rem; }
-        .access-float-icon.weather-expanded { bottom: 24rem; }
         .access-float-icon:hover { transform: scale(1.1) translateY(-2px); }
 
         /* TOAST */
@@ -328,7 +341,7 @@ class AccessibilityWidget {
             setTimeout(() => this.showToast(ACCESS_TEXT.toast.applied), 500);
         }
         
-        console.log('✅ Accessibility Widget v1.1 initialized');
+        console.log('✅ Accessibility Widget v1.3 initialized');
         console.log('📊 Current preferences:', this.preferences);
     }
     
@@ -581,45 +594,6 @@ class AccessibilityWidget {
         });
         
         document.body.appendChild(icon);
-        
-        // Initialize weather widget monitoring
-        this.monitorWeatherWidget();
-    }
-    
-    // CONSOLIDATED AND ROBUST WEATHER WIDGET MONITORING
-    monitorWeatherWidget() {
-        const icon = document.querySelector('.access-float-icon');
-        if (!icon) return;
-        
-        const checkWeatherPosition = () => {
-            try {
-                const weatherWidget = document.querySelector('.weather-widget');
-                
-                if (!weatherWidget) {
-                    icon.classList.remove('weather-active', 'weather-expanded');
-                } else {
-                    icon.classList.add('weather-active');
-                    
-                    const isExpanded = weatherWidget.classList.contains('expanded');
-                    if (isExpanded) {
-                        icon.classList.add('weather-expanded');
-                    } else {
-                        icon.classList.remove('weather-expanded');
-                    }
-                }
-            } catch (error) {
-                console.warn('⚠️ Weather check failed:', error);
-            }
-        };
-        
-        // 1. Immediate check
-        checkWeatherPosition();
-        
-        // 2. Observer for widget appearance/removal
-        const observer = new MutationObserver(() => checkWeatherPosition());
-        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
-        
-        console.log('✅ Widget positioning active');
     }
     
     showToast(message) {
@@ -688,5 +662,5 @@ if (document.readyState === 'loading') {
     window.accessibilityWidget = new AccessibilityWidget();
 }
 
-console.log('✅ Accessibility Widget v1.1 loaded');
+console.log('✅ Accessibility Widget v1.3 loaded');
 console.log('♿ Inclusive design | Non-intrusive | Government standards');
