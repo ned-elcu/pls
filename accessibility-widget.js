@@ -116,13 +116,67 @@ function injectAccessibilityCSS() {
         /* Handle Interactive Elements (Buttons/Links) in High Contrast */
         body.access-high-contrast a:hover,
         body.access-high-contrast button:hover,
-        body.access-high-contrast [role="button"]:hover {
+        body.access-high-contrast [role="button"]:hover,
+        body.access-high-contrast a:focus,
+        body.access-high-contrast button:focus,
+        body.access-high-contrast [role="button"]:focus {
             background-color: #000000 !important;
             color: #ffff00 !important;
             outline: 3px solid #ffff00 !important;
+            outline-offset: 2px !important;
             z-index: 10001 !important;
             position: relative !important;
             text-decoration: underline !important;
+        }
+        
+        /* Active state for buttons (when clicked) */
+        body.access-high-contrast button:active,
+        body.access-high-contrast [role="button"]:active,
+        body.access-high-contrast a:active {
+            background-color: #ffff00 !important;
+            color: #000000 !important;
+            outline: 3px solid #000000 !important;
+            outline-offset: 2px !important;
+        }
+        
+        /* Ensure buttons remain visible and clickable */
+        body.access-high-contrast button,
+        body.access-high-contrast [role="button"],
+        body.access-high-contrast a[role="button"] {
+            cursor: pointer !important;
+            transition: background-color 0.15s ease, color 0.15s ease, outline 0.15s ease !important;
+        }
+        
+        /* Buttons inside paragraphs should not inherit paragraph hover styles */
+        body.access-high-contrast :is(p, li, td, th):hover button,
+        body.access-high-contrast :is(p, li, td, th):hover [role="button"],
+        body.access-high-contrast :is(p, li, td, th):hover a[role="button"] {
+            background-color: #000000 !important;
+            color: #ffff00 !important;
+            outline: 3px solid #ffff00 !important;
+            outline-offset: 2px !important;
+            z-index: 10002 !important;
+            position: relative !important;
+        }
+        
+        /* Disabled buttons should be visible but clearly non-interactive */
+        body.access-high-contrast button:disabled,
+        body.access-high-contrast [role="button"][aria-disabled="true"],
+        body.access-high-contrast button[aria-disabled="true"] {
+            background-color: #666666 !important;
+            color: #cccccc !important;
+            outline: 2px solid #999999 !important;
+            cursor: not-allowed !important;
+            opacity: 0.7 !important;
+        }
+        
+        body.access-high-contrast button:disabled:hover,
+        body.access-high-contrast button:disabled:focus,
+        body.access-high-contrast [role="button"][aria-disabled="true"]:hover,
+        body.access-high-contrast [role="button"][aria-disabled="true"]:focus {
+            background-color: #666666 !important;
+            color: #cccccc !important;
+            outline: 2px solid #999999 !important;
         }
 
         /* Links INSIDE highlighted paragraphs need to be readable */
