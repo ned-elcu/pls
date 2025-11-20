@@ -57,159 +57,29 @@ function injectAccessibilityCSS() {
         @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
         
         /* =========================================
-           1. ROBUST TEXT SCALING (2x Increase - Intelligent Scaling)
+           1. ROBUST TEXT SCALING (Fixes Mobile Breakage)
            ========================================= */
         
-        /* DESKTOP: Scale base font size by 250% (2x the previous 125%) */
+        /* DESKTOP: Scale everything up by 25% relatively */
         body.access-larger-text {
-            font-size: 250% !important; 
-            line-height: 1.7 !important;
+            font-size: 125% !important; 
+            line-height: 1.6 !important;
         }
 
-        /* MOBILE: Scale base font size by 230% (2x the previous 115%) */
+        /* MOBILE: Cap the scaling to avoid breaking layout */
         @media (max-width: 768px) {
             body.access-larger-text {
-                font-size: 230% !important;
-                line-height: 1.6 !important;
+                font-size: 115% !important; /* Smaller bump for mobile */
+                line-height: 1.5 !important;
             }
         }
 
-        /* Scale all text content elements - use em to scale relative to body */
-        body.access-larger-text p,
-        body.access-larger-text span:not([class*="icon"]):not(.material-icons):not(.material-symbols-outlined),
-        body.access-larger-text div:not([class*="icon"]),
-        body.access-larger-text a,
-        body.access-larger-text li,
-        body.access-larger-text td,
-        body.access-larger-text th,
-        body.access-larger-text label,
-        body.access-larger-text cite,
-        body.access-larger-text blockquote,
-        body.access-larger-text caption {
-            font-size: 1em !important;
-        }
-        
-        /* Scale headings proportionally - larger than body text */
-        body.access-larger-text h1 { 
-            font-size: 2.2em !important; 
-            line-height: 1.3 !important;
-        }
-        body.access-larger-text h2 { 
-            font-size: 1.8em !important; 
-            line-height: 1.3 !important;
-        }
-        body.access-larger-text h3 { 
-            font-size: 1.5em !important; 
-            line-height: 1.4 !important;
-        }
-        body.access-larger-text h4 { 
-            font-size: 1.3em !important; 
-            line-height: 1.4 !important;
-        }
-        body.access-larger-text h5 { 
-            font-size: 1.15em !important; 
-            line-height: 1.5 !important;
-        }
-        body.access-larger-text h6 { 
-            font-size: 1.05em !important; 
-            line-height: 1.5 !important;
-        }
-
-        /* Scale icons intelligently - ensure they ALWAYS grow, never shrink */
+        /* Prevent layout explosions on fixed-height elements */
         body.access-larger-text .material-icons,
-        body.access-larger-text .material-symbols-outlined {
-            font-size: 3em !important;
-            width: 3em !important;
-            height: 3em !important;
-            line-height: 1 !important;
-            vertical-align: middle !important;
-            display: inline-block !important;
-        }
-        
-        /* Scale generic icon elements */
-        body.access-larger-text i:not(.material-icons):not(.material-symbols-outlined),
-        body.access-larger-text [class*="icon"]:not(.material-icons):not(.material-symbols-outlined) {
-            font-size: 2.5em !important;
-            vertical-align: middle !important;
-        }
-        
-        /* Ensure SVG icons scale up */
-        body.access-larger-text svg {
-            width: 2.5em !important;
-            height: 2.5em !important;
-            max-width: none !important;
-            min-width: 2.5em !important;
-            min-height: 2.5em !important;
-        }
-        
-        /* Scale buttons and interactive elements */
-        body.access-larger-text button:not(.access-panel-btn):not(.access-banner-btn):not(.access-panel-close),
-        body.access-larger-text .btn,
-        body.access-larger-text [role="button"]:not(.access-float-icon) {
-            font-size: 1.3em !important;
-            padding: 1em 2em !important;
-            min-height: 3em !important;
-        }
-        
-        /* Scale form input elements */
-        body.access-larger-text input[type="text"],
-        body.access-larger-text input[type="email"],
-        body.access-larger-text input[type="password"],
-        body.access-larger-text input[type="number"],
-        body.access-larger-text input[type="search"],
-        body.access-larger-text input[type="tel"],
-        body.access-larger-text input[type="url"],
-        body.access-larger-text textarea,
-        body.access-larger-text select {
-            font-size: 1.3em !important;
-            padding: 0.8em 1em !important;
-            min-height: 3em !important;
-        }
-        
-        /* Scale navigation and menu items */
-        body.access-larger-text nav a,
-        body.access-larger-text nav li,
-        body.access-larger-text .menu-item,
-        body.access-larger-text [class*="menu"] a {
-            font-size: 1.2em !important;
-        }
-        
-        /* Override any fixed pixel sizes that might prevent scaling */
-        body.access-larger-text [style*="font-size"] {
-            font-size: inherit !important;
-        }
-        
-        /* Ensure small text still scales up */
-        body.access-larger-text small,
-        body.access-larger-text .small,
-        body.access-larger-text [class*="small"] {
-            font-size: 0.9em !important;
-        }
-        
-        /* EXCLUSIONS: Protect the widget UI from being scaled by larger text */
-        body.access-larger-text .access-panel,
-        body.access-larger-text .access-panel *,
-        body.access-larger-text .access-banner,
-        body.access-larger-text .access-banner *,
-        body.access-larger-text .access-float-icon,
-        body.access-larger-text .access-float-icon *,
-        body.access-larger-text .access-toast,
-        body.access-larger-text .access-toast *,
-        body.access-larger-text .access-backdrop {
-            font-size: initial !important;
-            line-height: initial !important;
-        }
-        
-        /* Ensure widget icons don't get scaled */
-        body.access-larger-text .access-panel .material-icons,
-        body.access-larger-text .access-panel .material-symbols-outlined,
-        body.access-larger-text .access-banner .material-icons,
-        body.access-larger-text .access-banner .material-symbols-outlined,
-        body.access-larger-text .access-float-icon .material-icons,
-        body.access-larger-text .access-float-icon .material-symbols-outlined {
-            font-size: 24px !important;
-            width: 24px !important;
-            height: 24px !important;
+        body.access-larger-text .material-symbols-outlined,
+        body.access-larger-text i {
+            font-size: 1.2em !important; 
+            vertical-align: middle;
         }
 
         /* =========================================
@@ -246,67 +116,13 @@ function injectAccessibilityCSS() {
         /* Handle Interactive Elements (Buttons/Links) in High Contrast */
         body.access-high-contrast a:hover,
         body.access-high-contrast button:hover,
-        body.access-high-contrast [role="button"]:hover,
-        body.access-high-contrast a:focus,
-        body.access-high-contrast button:focus,
-        body.access-high-contrast [role="button"]:focus {
+        body.access-high-contrast [role="button"]:hover {
             background-color: #000000 !important;
             color: #ffff00 !important;
             outline: 3px solid #ffff00 !important;
-            outline-offset: 2px !important;
             z-index: 10001 !important;
             position: relative !important;
             text-decoration: underline !important;
-        }
-        
-        /* Active state for buttons (when clicked) */
-        body.access-high-contrast button:active,
-        body.access-high-contrast [role="button"]:active,
-        body.access-high-contrast a:active {
-            background-color: #ffff00 !important;
-            color: #000000 !important;
-            outline: 3px solid #000000 !important;
-            outline-offset: 2px !important;
-        }
-        
-        /* Ensure buttons remain visible and clickable */
-        body.access-high-contrast button,
-        body.access-high-contrast [role="button"],
-        body.access-high-contrast a[role="button"] {
-            cursor: pointer !important;
-            transition: background-color 0.15s ease, color 0.15s ease, outline 0.15s ease !important;
-        }
-        
-        /* Buttons inside paragraphs should not inherit paragraph hover styles */
-        body.access-high-contrast :is(p, li, td, th):hover button,
-        body.access-high-contrast :is(p, li, td, th):hover [role="button"],
-        body.access-high-contrast :is(p, li, td, th):hover a[role="button"] {
-            background-color: #000000 !important;
-            color: #ffff00 !important;
-            outline: 3px solid #ffff00 !important;
-            outline-offset: 2px !important;
-            z-index: 10002 !important;
-            position: relative !important;
-        }
-        
-        /* Disabled buttons should be visible but clearly non-interactive */
-        body.access-high-contrast button:disabled,
-        body.access-high-contrast [role="button"][aria-disabled="true"],
-        body.access-high-contrast button[aria-disabled="true"] {
-            background-color: #666666 !important;
-            color: #cccccc !important;
-            outline: 2px solid #999999 !important;
-            cursor: not-allowed !important;
-            opacity: 0.7 !important;
-        }
-        
-        body.access-high-contrast button:disabled:hover,
-        body.access-high-contrast button:disabled:focus,
-        body.access-high-contrast [role="button"][aria-disabled="true"]:hover,
-        body.access-high-contrast [role="button"][aria-disabled="true"]:focus {
-            background-color: #666666 !important;
-            color: #cccccc !important;
-            outline: 2px solid #999999 !important;
         }
 
         /* Links INSIDE highlighted paragraphs need to be readable */
