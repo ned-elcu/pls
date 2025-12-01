@@ -447,28 +447,6 @@ function injectUnifiedCSS() {
             letter-spacing: 0.1em !important;
         }
 
-        /* Link Highlighting */
-        body.uw-link-highlight a {
-            text-decoration: underline !important;
-            text-decoration-thickness: 2px !important;
-            text-underline-offset: 3px !important;
-            font-weight: 600 !important;
-            color: #0066cc !important;
-        }
-
-        /* Dark Mode */
-        body.uw-dark-mode {
-            filter: invert(1) hue-rotate(180deg);
-            background-color: #121212;
-        }
-
-        body.uw-dark-mode img,
-        body.uw-dark-mode video,
-        body.uw-dark-mode iframe,
-        body.uw-dark-mode .unified-widget {
-            filter: invert(1) hue-rotate(180deg);
-        }
-
         /* Stop Animations */
         body.uw-stop-animations *,
         body.uw-stop-animations *::before,
@@ -487,26 +465,29 @@ function injectUnifiedCSS() {
            3. WIDGET UI STRUCTURE
            ========================================= */
 
-        /* Mini Button (Collapsed State) */
+        /* Mini Weather Widget (Collapsed State - like old weather-alert.js) */
         .unified-widget {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--uw-primary) 0%, var(--uw-primary-dark) 100%);
-            border-radius: 50%;
-            border: 3px solid var(--uw-accent);
+            width: 290px;
+            min-height: 90px;
+            background: rgba(26, 47, 95, 0.94);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.24);
             z-index: var(--uw-z-widget);
-            transition: all var(--uw-transition-bounce);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             opacity: 0;
-            transform: translateY(100px);
+            transform: translateY(100%);
+            display: flex;
+            align-items: stretch;
+            padding: 0;
+            overflow: hidden;
         }
 
         .unified-widget.visible {
@@ -514,14 +495,116 @@ function injectUnifiedCSS() {
             transform: translateY(0);
         }
 
-        .unified-widget:hover {
-            transform: scale(1.1) translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        .unified-widget::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .unified-widget-icon {
+        .unified-widget:hover::before {
+            border-color: rgba(255, 202, 40, 0.3);
+        }
+
+        .unified-widget:hover {
+            background: rgba(26, 47, 95, 0.96);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        /* Mini Weather Display */
+        .uw-mini-weather {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .uw-mini-weather:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .uw-mini-icon-box {
+            width: 52px;
+            height: 52px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .uw-mini-icon {
+            font-size: 26px !important;
+            color: #e3f2fd;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .uw-mini-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .uw-mini-temp {
             font-size: 24px;
-            font-family: 'Material Icons';
+            font-weight: 700;
+            line-height: 1;
+            color: white;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .uw-mini-condition {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* Mini Controls */
+        .uw-mini-controls {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 8px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .uw-mini-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            color: var(--uw-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 0;
+        }
+
+        .uw-mini-btn:hover {
+            transform: scale(1.1);
+            background: white;
+            border-color: var(--uw-accent);
+        }
+
+        .uw-mini-btn i {
+            font-size: 20px;
         }
 
         /* Mobile Mini Mode */
@@ -980,6 +1063,96 @@ function injectUnifiedCSS() {
             background: var(--uw-gray-700);
             border-radius: 4px;
         }
+
+        /* === WEATHER ICON ANIMATIONS === */
+        @keyframes sunny {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .uw-mini-icon.sunny,
+        .uw-weather-icon.sunny {
+            color: #ffeb3b;
+            animation: sunny 30s linear infinite;
+        }
+
+        @keyframes night {
+            0%, 100% { transform: scale(1); opacity: 0.95; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        .uw-mini-icon.night,
+        .uw-weather-icon.night {
+            color: #b3e5fc;
+            animation: night 8s ease-in-out infinite;
+        }
+
+        @keyframes partly-cloudy {
+            0%, 100% { transform: translateX(0) scale(1); }
+            50% { transform: translateX(1px) scale(1.02); }
+        }
+
+        .uw-mini-icon.partly-cloudy,
+        .uw-weather-icon.partly-cloudy {
+            color: #e3f2fd;
+            animation: partly-cloudy 6s ease-in-out infinite;
+        }
+
+        @keyframes rainy {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(-2px); opacity: 0.85; }
+        }
+
+        .uw-mini-icon.rainy,
+        .uw-weather-icon.rainy {
+            color: #2196f3;
+            animation: rainy 2s ease-in-out infinite;
+        }
+
+        @keyframes snowy {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-1px) rotate(5deg); }
+            75% { transform: translateY(1px) rotate(-5deg); }
+        }
+
+        .uw-mini-icon.snowy,
+        .uw-weather-icon.snowy {
+            color: #e3f2fd;
+            animation: snowy 4s ease-in-out infinite;
+        }
+
+        @keyframes thunderstorm {
+            0%, 90%, 100% { opacity: 1; }
+            5%, 85% { opacity: 0.3; }
+        }
+
+        .uw-mini-icon.thunderstorm,
+        .uw-weather-icon.thunderstorm {
+            color: #ff7043;
+            animation: thunderstorm 2s ease-in-out infinite;
+        }
+
+        @keyframes severe-storm {
+            0%, 85%, 100% { opacity: 1; transform: scale(1); }
+            5%, 80% { opacity: 0.4; transform: scale(1.1); }
+        }
+
+        .uw-mini-icon.severe-storm,
+        .uw-weather-icon.severe-storm {
+            color: #e53935;
+            animation: severe-storm 1s ease-in-out infinite;
+        }
+
+        @keyframes cloudy {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(1px); }
+        }
+
+        .uw-mini-icon.cloudy,
+        .uw-weather-icon.cloudy {
+            color: #78909c;
+            animation: cloudy 8s ease-in-out infinite;
+        }
     `;
 
     document.head.appendChild(style);
@@ -1069,7 +1242,7 @@ class UnifiedWidget {
     constructor() {
         this.version = UNIFIED_CONFIG.version;
         this.isExpanded = false;
-        this.activeTab = 'accessibility';
+        this.activeTab = 'weather'; // Weather first!
         this.preferences = this.loadPreferences();
         this.weatherData = null;
         this.weatherTimer = null;
@@ -1108,11 +1281,38 @@ class UnifiedWidget {
         const widget = document.createElement('div');
         widget.className = 'unified-widget';
         widget.setAttribute('role', 'button');
-        widget.setAttribute('aria-label', 'Deschide setările de accesibilitate și meteo');
+        widget.setAttribute('aria-label', 'Informații meteo și setări de accesibilitate');
         widget.setAttribute('tabindex', '0');
-        widget.innerHTML = `<i class="unified-widget-icon material-icons">accessibility</i>`;
+        widget.innerHTML = `
+            <div class="uw-mini-weather">
+                <div class="uw-mini-icon-box">
+                    <i class="material-icons uw-mini-icon">wb_sunny</i>
+                </div>
+                <div class="uw-mini-info">
+                    <div class="uw-mini-temp">--°C</div>
+                    <div class="uw-mini-condition">Se încarcă...</div>
+                </div>
+            </div>
+            <div class="uw-mini-controls">
+                <button class="uw-mini-btn" title="Setări accesibilitate" aria-label="Setări accesibilitate">
+                    <i class="material-icons">accessibility</i>
+                </button>
+            </div>
+        `;
 
-        widget.addEventListener('click', () => this.togglePanel());
+        // Click on weather area opens panel
+        widget.querySelector('.uw-mini-weather').addEventListener('click', () => {
+            this.activeTab = 'weather';
+            this.togglePanel();
+        });
+
+        // Click on accessibility button opens accessibility tab
+        widget.querySelector('.uw-mini-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.activeTab = 'accessibility';
+            this.togglePanel();
+        });
+
         widget.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -1142,23 +1342,23 @@ class UnifiedWidget {
             </div>
 
             <div class="uw-tab-bar">
-                <button class="uw-tab active" data-tab="accessibility">
-                    ♿ ${UNIFIED_TEXT.tabs.accessibility}
+                <button class="uw-tab active" data-tab="weather">
+                    <i class="material-icons" style="font-size: 18px; vertical-align: middle;">wb_sunny</i> ${UNIFIED_TEXT.tabs.weather}
                 </button>
-                <button class="uw-tab" data-tab="weather">
-                    🌤 ${UNIFIED_TEXT.tabs.weather}
+                <button class="uw-tab" data-tab="accessibility">
+                    <i class="material-icons" style="font-size: 18px; vertical-align: middle;">accessibility</i> ${UNIFIED_TEXT.tabs.accessibility}
                 </button>
             </div>
 
             <div class="uw-panel-body">
-                <!-- Accessibility Tab -->
-                <div class="uw-tab-content active" data-content="accessibility">
-                    ${this.createAccessibilityOptions()}
+                <!-- Weather Tab (First!) -->
+                <div class="uw-tab-content active" data-content="weather">
+                    ${this.createWeatherContent()}
                 </div>
 
-                <!-- Weather Tab -->
-                <div class="uw-tab-content" data-content="weather">
-                    ${this.createWeatherContent()}
+                <!-- Accessibility Tab -->
+                <div class="uw-tab-content" data-content="accessibility">
+                    ${this.createAccessibilityOptions()}
                 </div>
             </div>
 
@@ -1185,9 +1385,8 @@ class UnifiedWidget {
             { key: 'dyslexicFont', icon: '📖', text: UNIFIED_TEXT.accessibility.dyslexicFont },
             { key: 'readingGuide', icon: '📏', text: UNIFIED_TEXT.accessibility.readingGuide },
             { key: 'bigCursor', icon: '🖱', text: UNIFIED_TEXT.accessibility.bigCursor },
-            { key: 'linkHighlight', icon: '🔗', text: UNIFIED_TEXT.accessibility.linkHighlight },
-            { key: 'darkMode', icon: '🌙', text: UNIFIED_TEXT.accessibility.darkMode },
-            { key: 'stopAnimations', icon: '⏸', text: UNIFIED_TEXT.accessibility.stopAnimations }
+            { key: 'stopAnimations', icon: '⏸', text: UNIFIED_TEXT.accessibility.stopAnimations },
+            { key: 'monochrome', icon: '⚫', text: UNIFIED_TEXT.accessibility.monochrome }
         ];
 
         return features.map(feature => `
@@ -1416,12 +1615,6 @@ class UnifiedWidget {
             case 'letterSpacing':
                 body.classList.toggle('uw-letter-spacing-wide', enabled);
                 break;
-            case 'linkHighlight':
-                body.classList.toggle('uw-link-highlight', enabled);
-                break;
-            case 'darkMode':
-                body.classList.toggle('uw-dark-mode', enabled);
-                break;
             case 'stopAnimations':
                 body.classList.toggle('uw-stop-animations', enabled);
                 break;
@@ -1498,10 +1691,9 @@ class UnifiedWidget {
             // Cache weather data
             localStorage.setItem(UNIFIED_CONFIG.storageKeys.weatherCache, JSON.stringify(this.weatherData));
 
-            // Update display if weather tab is active
-            if (this.activeTab === 'weather') {
-                this.updateWeatherDisplay();
-            }
+            // Update both panel and mini widget display
+            this.updateWeatherDisplay();
+            this.updateMiniWeatherDisplay();
 
             console.log('🌤 Weather updated:', this.weatherData);
         } catch (error) {
@@ -1519,6 +1711,29 @@ class UnifiedWidget {
         const weatherContent = document.querySelector('[data-content="weather"]');
         if (weatherContent) {
             weatherContent.innerHTML = this.createWeatherContent();
+        }
+    }
+
+    updateMiniWeatherDisplay() {
+        if (!this.weatherData) return;
+
+        const condition = this.getWeatherCondition(this.weatherData.weatherCode, this.weatherData.isDay);
+
+        const miniIcon = document.querySelector('.uw-mini-icon');
+        const miniTemp = document.querySelector('.uw-mini-temp');
+        const miniCondition = document.querySelector('.uw-mini-condition');
+
+        if (miniIcon) {
+            miniIcon.textContent = condition.icon;
+            miniIcon.className = `material-icons uw-mini-icon ${condition.anim}`;
+        }
+
+        if (miniTemp) {
+            miniTemp.textContent = `${this.weatherData.temp}°C`;
+        }
+
+        if (miniCondition) {
+            miniCondition.textContent = condition.name;
         }
     }
 
