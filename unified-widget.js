@@ -344,18 +344,14 @@ function injectUnifiedCSS() {
            1. ACCESSIBILITY FEATURES (from v1.3)
            ========================================= */
 
-        /* Text Scaling - PURE RELATIVE approach (never caps!)
-           Uses 125% which is relative to inherited size
-           This way ALL text scales proportionally from its current size
+        /* Text Scaling - CONSERVATIVE approach
+           ONLY scales SMALL body text for accessibility
+           DOES NOT scale headings or large elements (preserves layout!)
 
-           Key insight: Don't use !important so elements with explicit
-           font-size keep their proportions, just inherit the scaling cascade
-
-           Benefits:
-           - 16px → 20px (1.25x)
-           - 32px → 40px (1.25x)
-           - Big text stays proportionally bigger
-           - Works with browser zoom settings
+           Philosophy:
+           - Scale: paragraphs, lists, table text (reading content)
+           - DON'T scale: headings, titles, hero text (layout elements)
+           - This improves readability WITHOUT breaking design
         */
         body.uw-larger-text p,
         body.uw-larger-text li,
@@ -364,48 +360,30 @@ function injectUnifiedCSS() {
         body.uw-larger-text dd,
         body.uw-larger-text dt,
         body.uw-larger-text blockquote,
-        body.uw-larger-text article,
-        body.uw-larger-text section,
-        body.uw-larger-text div:not([class*="widget"]):not([class*="menu"]):not([class*="nav"]):not([class*="toolbar"]) {
-            font-size: 125%;
-            line-height: 1.6;
+        body.uw-larger-text label:not([class*="uw-"]),
+        body.uw-larger-text small,
+        body.uw-larger-text caption,
+        body.uw-larger-text figcaption {
+            font-size: 1.125rem !important;  /* 18px if base is 16px */
+            line-height: 1.6 !important;
         }
 
-        /* Headings scale proportionally */
-        body.uw-larger-text h1 { font-size: 125%; line-height: 1.3; }
-        body.uw-larger-text h2 { font-size: 125%; line-height: 1.35; }
-        body.uw-larger-text h3 { font-size: 125%; line-height: 1.4; }
-        body.uw-larger-text h4 { font-size: 125%; line-height: 1.45; }
-        body.uw-larger-text h5 { font-size: 125%; line-height: 1.5; }
-        body.uw-larger-text h6 { font-size: 125%; line-height: 1.5; }
+        /* DO NOT TOUCH HEADINGS - they're layout elements */
+        /* h1, h2, h3, h4, h5, h6 are intentionally NOT included */
 
-        /* Labels scale slightly less */
-        body.uw-larger-text label:not([class*="uw-"]) {
-            font-size: 115%;
-        }
-
-        /* Links inherit from parent */
+        /* Links inherit from parent text */
         body.uw-larger-text a:not([class*="btn"]):not([class*="button"]):not(nav a):not([role="navigation"] a) {
             font-size: inherit;
         }
 
-        /* Mobile - gentler scaling */
+        /* Mobile - slightly smaller boost */
         @media (max-width: 768px) {
             body.uw-larger-text p,
             body.uw-larger-text li,
             body.uw-larger-text td,
             body.uw-larger-text th,
-            body.uw-larger-text div:not([class*="widget"]):not([class*="menu"]):not([class*="nav"]) {
-                font-size: 115%;
-            }
-
-            body.uw-larger-text h1,
-            body.uw-larger-text h2,
-            body.uw-larger-text h3,
-            body.uw-larger-text h4,
-            body.uw-larger-text h5,
-            body.uw-larger-text h6 {
-                font-size: 115%;
+            body.uw-larger-text label:not([class*="uw-"]) {
+                font-size: 1.0625rem !important;  /* 17px if base is 16px */
             }
         }
 
