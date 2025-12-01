@@ -286,6 +286,15 @@ function injectUnifiedCSS() {
         /* Import required fonts */
         @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
+        /* OpenDyslexic Font for Dyslexia Support */
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('OpenDyslexic-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
         /* =========================================
            UNIFIED WIDGET v2.0 - COMPREHENSIVE STYLES
            ========================================= */
@@ -317,6 +326,10 @@ function injectUnifiedCSS() {
             --uw-contrast-bg: #ffff00;
             --uw-contrast-text: #000000;
 
+            /* Text Scaling Variables (rem-based for accessibility) */
+            --uw-text-scale-normal: 1rem;
+            --uw-text-scale-large: 1.25rem;
+
             /* Transitions */
             --uw-transition: 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
             --uw-transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -331,25 +344,81 @@ function injectUnifiedCSS() {
            1. ACCESSIBILITY FEATURES (from v1.3)
            ========================================= */
 
-        /* Text Scaling */
-        body.uw-larger-text {
-            font-size: 125% !important;
+        /* Text Scaling - Modern rem-based approach
+           Based on WCAG 2.1 AA (1.4.4) & research from:
+           - Josh Comeau's accessibility guide
+           - Modern CSS best practices (2024)
+
+           Benefits:
+           - Respects browser font size settings
+           - Preserves layout with px-based spacing
+           - Targets content, preserves UI elements
+        */
+        body.uw-larger-text p,
+        body.uw-larger-text li,
+        body.uw-larger-text td,
+        body.uw-larger-text th,
+        body.uw-larger-text label,
+        body.uw-larger-text span:not(.material-icons):not(.material-symbols-outlined),
+        body.uw-larger-text div:not([class*="uw-"]):not([class*="widget"]):not([class*="menu"]):not([class*="nav"]),
+        body.uw-larger-text a:not([class*="btn"]):not([class*="button"]) {
+            font-size: var(--uw-text-scale-large) !important;
             line-height: 1.6 !important;
         }
 
+        body.uw-larger-text h1 { font-size: 2.5rem !important; line-height: 1.3 !important; }
+        body.uw-larger-text h2 { font-size: 2rem !important; line-height: 1.35 !important; }
+        body.uw-larger-text h3 { font-size: 1.75rem !important; line-height: 1.4 !important; }
+        body.uw-larger-text h4 { font-size: 1.5rem !important; line-height: 1.45 !important; }
+        body.uw-larger-text h5 { font-size: 1.25rem !important; line-height: 1.5 !important; }
+        body.uw-larger-text h6 { font-size: 1.125rem !important; line-height: 1.5 !important; }
+
+        /* Responsive scaling for mobile */
         @media (max-width: 768px) {
-            body.uw-larger-text {
-                font-size: 115% !important;
-                line-height: 1.5 !important;
+            body.uw-larger-text p,
+            body.uw-larger-text li,
+            body.uw-larger-text td,
+            body.uw-larger-text th,
+            body.uw-larger-text label,
+            body.uw-larger-text span:not(.material-icons):not(.material-symbols-outlined) {
+                font-size: 1.125rem !important;
+                line-height: 1.55 !important;
             }
+
+            body.uw-larger-text h1 { font-size: 2rem !important; }
+            body.uw-larger-text h2 { font-size: 1.75rem !important; }
+            body.uw-larger-text h3 { font-size: 1.5rem !important; }
         }
 
-        /* Preserve icon sizes */
+        /* Preserve UI elements - icons, buttons, inputs */
         body.uw-larger-text .material-icons,
         body.uw-larger-text .material-symbols-outlined,
-        body.uw-larger-text i {
-            font-size: 1.2em !important;
-            vertical-align: middle;
+        body.uw-larger-text i[class*="icon"],
+        body.uw-larger-text svg {
+            font-size: inherit !important;
+            width: auto !important;
+            height: auto !important;
+        }
+
+        body.uw-larger-text button,
+        body.uw-larger-text input,
+        body.uw-larger-text select,
+        body.uw-larger-text textarea,
+        body.uw-larger-text [class*="btn"],
+        body.uw-larger-text [class*="button"],
+        body.uw-larger-text nav,
+        body.uw-larger-text [role="navigation"],
+        body.uw-larger-text [class*="menu"],
+        body.uw-larger-text [class*="toolbar"] {
+            font-size: initial !important;
+        }
+
+        /* Preserve fixed-width containers */
+        body.uw-larger-text img,
+        body.uw-larger-text video,
+        body.uw-larger-text iframe {
+            max-width: 100% !important;
+            height: auto !important;
         }
 
         /* High Contrast Mode - PRESERVE EXACTLY from v1.3 */
@@ -371,10 +440,12 @@ function injectUnifiedCSS() {
             outline: 3px solid #ffff00 !important;
         }
 
-        /* Exclude widget UI from contrast mode */
+        /* Exclude widget UI from contrast mode and text scaling */
         .unified-widget, .unified-widget *,
         .uw-panel, .uw-panel *,
-        .uw-toast, .uw-toast * {
+        .uw-toast, .uw-toast *,
+        [class*="uw-"],
+        [id*="unified-widget"] {
             font-size: initial !important;
             line-height: initial !important;
             background-color: inherit;
@@ -387,9 +458,36 @@ function injectUnifiedCSS() {
            2. NEW ACCESSIBILITY FEATURES (v2.0)
            ========================================= */
 
-        /* Dyslexic Font */
-        body.uw-dyslexic-font {
-            font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+        /* Dyslexic Font - OpenDyslexic
+           Loaded from local file: OpenDyslexic-Regular.otf
+           Improves readability for people with dyslexia by using
+           weighted bottoms and unique character shapes
+        */
+        body.uw-dyslexic-font,
+        body.uw-dyslexic-font p,
+        body.uw-dyslexic-font li,
+        body.uw-dyslexic-font h1,
+        body.uw-dyslexic-font h2,
+        body.uw-dyslexic-font h3,
+        body.uw-dyslexic-font h4,
+        body.uw-dyslexic-font h5,
+        body.uw-dyslexic-font h6,
+        body.uw-dyslexic-font td,
+        body.uw-dyslexic-font th,
+        body.uw-dyslexic-font label,
+        body.uw-dyslexic-font a,
+        body.uw-dyslexic-font span,
+        body.uw-dyslexic-font div:not([class*="uw-"]) {
+            font-family: 'OpenDyslexic', 'Comic Sans MS', Verdana, sans-serif !important;
+        }
+
+        /* Keep widget UI in standard font */
+        body.uw-dyslexic-font .unified-widget,
+        body.uw-dyslexic-font .unified-widget *,
+        body.uw-dyslexic-font .uw-panel,
+        body.uw-dyslexic-font .uw-panel *,
+        body.uw-dyslexic-font [class*="uw-"] {
+            font-family: 'Segoe UI', Roboto, sans-serif !important;
         }
 
         /* Reading Guide */
