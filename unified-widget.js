@@ -344,69 +344,65 @@ function injectUnifiedCSS() {
            1. ACCESSIBILITY FEATURES (from v1.3)
            ========================================= */
 
-        /* Text Scaling - RELATIVE multiplier approach
-           Based on WCAG 2.1 AA (1.4.4) & research from:
-           - Josh Comeau's accessibility guide
-           - Modern CSS best practices (2024)
+        /* Text Scaling - SAFE approach that prevents capping
+           Uses max() to take larger of: absolute rem OR relative scaling
+           This way: small text scales to minimum, big text keeps growing
 
            Benefits:
-           - SCALES FROM CURRENT SIZE (no capping!)
-           - Large text gets larger, small text gets larger
-           - Preserves layout with px-based spacing
-           - Targets content, preserves UI elements
+           - No capping: max(1.25rem, 125%) means 20px becomes 25px, but 40px becomes 50px
+           - Preserves layout with targeted selectors
+           - Safe fallback for older browsers
         */
         body.uw-larger-text p,
         body.uw-larger-text li,
         body.uw-larger-text td,
         body.uw-larger-text th,
-        body.uw-larger-text label,
-        body.uw-larger-text span:not(.material-icons):not(.material-symbols-outlined):not([class*="icon"]),
-        body.uw-larger-text div:not([class*="uw-"]):not([class*="widget"]):not([class*="menu"]):not([class*="nav"]),
-        body.uw-larger-text a:not([class*="btn"]):not([class*="button"]) {
-            font-size: calc(1em * 1.25) !important;
+        body.uw-larger-text dd,
+        body.uw-larger-text dt,
+        body.uw-larger-text blockquote,
+        body.uw-larger-text article,
+        body.uw-larger-text section {
+            font-size: max(1.25rem, 125%) !important;
             line-height: 1.6 !important;
         }
 
-        /* Headings scale from their current size */
-        body.uw-larger-text h1 { font-size: calc(1em * 1.25) !important; line-height: 1.3 !important; }
-        body.uw-larger-text h2 { font-size: calc(1em * 1.25) !important; line-height: 1.35 !important; }
-        body.uw-larger-text h3 { font-size: calc(1em * 1.25) !important; line-height: 1.4 !important; }
-        body.uw-larger-text h4 { font-size: calc(1em * 1.25) !important; line-height: 1.45 !important; }
-        body.uw-larger-text h5 { font-size: calc(1em * 1.25) !important; line-height: 1.5 !important; }
-        body.uw-larger-text h6 { font-size: calc(1em * 1.25) !important; line-height: 1.5 !important; }
+        /* Headings use max() to prevent capping */
+        body.uw-larger-text h1 { font-size: max(2rem, 125%) !important; line-height: 1.3 !important; }
+        body.uw-larger-text h2 { font-size: max(1.75rem, 125%) !important; line-height: 1.35 !important; }
+        body.uw-larger-text h3 { font-size: max(1.5rem, 125%) !important; line-height: 1.4 !important; }
+        body.uw-larger-text h4 { font-size: max(1.35rem, 125%) !important; line-height: 1.45 !important; }
+        body.uw-larger-text h5 { font-size: max(1.25rem, 125%) !important; line-height: 1.5 !important; }
+        body.uw-larger-text h6 { font-size: max(1.125rem, 125%) !important; line-height: 1.5 !important; }
 
-        /* Responsive scaling for mobile - slightly less aggressive */
+        /* Labels and links - conservative targeting */
+        body.uw-larger-text label:not([class*="uw-"]) {
+            font-size: max(1.125rem, 115%) !important;
+        }
+
+        body.uw-larger-text a:not([class*="btn"]):not([class*="button"]):not(nav a):not([role="navigation"] a) {
+            font-size: inherit;
+        }
+
+        /* Mobile - smaller boost */
         @media (max-width: 768px) {
             body.uw-larger-text p,
             body.uw-larger-text li,
             body.uw-larger-text td,
-            body.uw-larger-text th,
-            body.uw-larger-text label,
-            body.uw-larger-text span:not(.material-icons):not(.material-symbols-outlined):not([class*="icon"]) {
-                font-size: calc(1em * 1.15) !important;
-                line-height: 1.55 !important;
+            body.uw-larger-text th {
+                font-size: max(1.125rem, 115%) !important;
             }
 
-            body.uw-larger-text h1,
-            body.uw-larger-text h2,
-            body.uw-larger-text h3,
-            body.uw-larger-text h4,
-            body.uw-larger-text h5,
-            body.uw-larger-text h6 {
-                font-size: calc(1em * 1.15) !important;
-            }
+            body.uw-larger-text h1 { font-size: max(1.75rem, 120%) !important; }
+            body.uw-larger-text h2 { font-size: max(1.5rem, 120%) !important; }
+            body.uw-larger-text h3 { font-size: max(1.35rem, 120%) !important; }
         }
 
-        /* Preserve UI elements - icons, buttons, inputs */
+        /* CRITICAL: Preserve UI elements from scaling */
         body.uw-larger-text .material-icons,
         body.uw-larger-text .material-symbols-outlined,
         body.uw-larger-text i[class*="icon"],
-        body.uw-larger-text svg {
-            font-size: inherit !important;
-            width: auto !important;
-            height: auto !important;
-        }
-
+        body.uw-larger-text i[class*="fa"],
+        body.uw-larger-text svg,
         body.uw-larger-text button,
         body.uw-larger-text input,
         body.uw-larger-text select,
@@ -414,13 +410,19 @@ function injectUnifiedCSS() {
         body.uw-larger-text [class*="btn"],
         body.uw-larger-text [class*="button"],
         body.uw-larger-text nav,
+        body.uw-larger-text nav *,
         body.uw-larger-text [role="navigation"],
+        body.uw-larger-text [role="navigation"] *,
+        body.uw-larger-text header,
+        body.uw-larger-text header *,
         body.uw-larger-text [class*="menu"],
-        body.uw-larger-text [class*="toolbar"] {
+        body.uw-larger-text [class*="toolbar"],
+        body.uw-larger-text [class*="topbar"],
+        body.uw-larger-text [class*="navbar"] {
             font-size: initial !important;
         }
 
-        /* Preserve fixed-width containers */
+        /* Preserve media */
         body.uw-larger-text img,
         body.uw-larger-text video,
         body.uw-larger-text iframe {
@@ -467,10 +469,8 @@ function injectUnifiedCSS() {
 
         /* Dyslexic Font - OpenDyslexic
            Loaded from local file: OpenDyslexic-Regular.otf
-           Improves readability for people with dyslexia by using
-           weighted bottoms and unique character shapes
+           CONSERVATIVE approach: only text content, not body/spans/divs
         */
-        body.uw-dyslexic-font,
         body.uw-dyslexic-font p,
         body.uw-dyslexic-font li,
         body.uw-dyslexic-font h1,
@@ -481,25 +481,39 @@ function injectUnifiedCSS() {
         body.uw-dyslexic-font h6,
         body.uw-dyslexic-font td,
         body.uw-dyslexic-font th,
-        body.uw-dyslexic-font label,
-        body.uw-dyslexic-font a,
-        body.uw-dyslexic-font span:not(.material-icons):not(.material-symbols-outlined):not([class*="icon"]),
-        body.uw-dyslexic-font div:not([class*="uw-"]):not([class*="widget"]) {
+        body.uw-dyslexic-font dd,
+        body.uw-dyslexic-font dt,
+        body.uw-dyslexic-font blockquote,
+        body.uw-dyslexic-font article > *,
+        body.uw-dyslexic-font section > p,
+        body.uw-dyslexic-font label:not([class*="uw-"]) {
             font-family: 'OpenDyslexic', 'Comic Sans MS', Verdana, sans-serif !important;
         }
 
-        /* Keep widget UI and icons in standard font - CRITICAL for Material Icons */
+        /* CRITICAL: Never apply to icons, buttons, inputs, or UI elements */
+        body.uw-dyslexic-font .material-icons,
+        body.uw-dyslexic-font .material-symbols-outlined,
+        body.uw-dyslexic-font i,
+        body.uw-dyslexic-font button,
+        body.uw-dyslexic-font button *,
+        body.uw-dyslexic-font input,
+        body.uw-dyslexic-font select,
+        body.uw-dyslexic-font textarea,
+        body.uw-dyslexic-font nav,
+        body.uw-dyslexic-font nav *,
+        body.uw-dyslexic-font header,
+        body.uw-dyslexic-font header *,
+        body.uw-dyslexic-font [class*="uw-"],
+        body.uw-dyslexic-font [class*="icon"],
+        body.uw-dyslexic-font [class*="btn"],
+        body.uw-dyslexic-font [class*="menu"],
+        body.uw-dyslexic-font [class*="toolbar"],
+        body.uw-dyslexic-font [class*="topbar"],
         body.uw-dyslexic-font .unified-widget,
         body.uw-dyslexic-font .unified-widget *,
         body.uw-dyslexic-font .uw-panel,
-        body.uw-dyslexic-font .uw-panel *,
-        body.uw-dyslexic-font [class*="uw-"],
-        body.uw-dyslexic-font .material-icons,
-        body.uw-dyslexic-font .material-symbols-outlined,
-        body.uw-dyslexic-font i[class*="icon"],
-        body.uw-dyslexic-font i.material-icons,
-        body.uw-dyslexic-font i.material-symbols-outlined {
-            font-family: 'Material Icons', 'Material Symbols Outlined', 'Segoe UI', Roboto, sans-serif !important;
+        body.uw-dyslexic-font .uw-panel * {
+            font-family: inherit !important;
         }
 
         /* Reading Guide */
@@ -566,21 +580,29 @@ function injectUnifiedCSS() {
             transition-duration: 0.01ms !important;
         }
 
-        /* Monochrome - with widget exclusion to prevent positioning issues
-           CSS filters create new stacking contexts, so we exclude widget
+        /* Monochrome - Simple approach with isolation
+           Apply filter to html, isolate widget with isolation property
         */
-        body.uw-monochrome *:not(.unified-widget):not(.unified-widget *):not(.uw-panel):not(.uw-panel *):not(.uw-backdrop):not([class*="uw-"]) {
+        html.uw-monochrome-active {
             filter: grayscale(100%);
         }
 
-        /* Ensure widget stays colorful */
-        body.uw-monochrome .unified-widget,
-        body.uw-monochrome .unified-widget *,
-        body.uw-monochrome .uw-panel,
-        body.uw-monochrome .uw-panel *,
-        body.uw-monochrome .uw-backdrop,
-        body.uw-monochrome [class*="uw-"] {
-            filter: none !important;
+        /* Isolate widget from parent filter using CSS isolation */
+        html.uw-monochrome-active .unified-widget,
+        html.uw-monochrome-active .uw-panel,
+        html.uw-monochrome-active .uw-backdrop,
+        html.uw-monochrome-active .uw-toast {
+            filter: none;
+            isolation: isolate;
+        }
+
+        /* Alternative: If website has fixed header/nav that breaks, use this */
+        html.uw-monochrome-active header,
+        html.uw-monochrome-active nav[class*="top"],
+        html.uw-monochrome-active [class*="topbar"],
+        html.uw-monochrome-active [class*="navbar"] {
+            filter: grayscale(100%);
+            isolation: isolate;
         }
 
         /* =========================================
@@ -1723,6 +1745,7 @@ class UnifiedWidget {
 
     applyPreference(feature, enabled) {
         const body = document.body;
+        const html = document.documentElement;
 
         switch(feature) {
             case 'largerText':
@@ -1753,7 +1776,8 @@ class UnifiedWidget {
                 body.classList.toggle('uw-stop-animations', enabled);
                 break;
             case 'monochrome':
-                body.classList.toggle('uw-monochrome', enabled);
+                // Apply to HTML element to avoid stacking context issues
+                html.classList.toggle('uw-monochrome-active', enabled);
                 break;
         }
     }
