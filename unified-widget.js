@@ -344,14 +344,18 @@ function injectUnifiedCSS() {
            1. ACCESSIBILITY FEATURES (from v1.3)
            ========================================= */
 
-        /* Text Scaling - SAFE approach that prevents capping
-           Uses max() to take larger of: absolute rem OR relative scaling
-           This way: small text scales to minimum, big text keeps growing
+        /* Text Scaling - PURE RELATIVE approach (never caps!)
+           Uses 125% which is relative to inherited size
+           This way ALL text scales proportionally from its current size
+
+           Key insight: Don't use !important so elements with explicit
+           font-size keep their proportions, just inherit the scaling cascade
 
            Benefits:
-           - No capping: max(1.25rem, 125%) means 20px becomes 25px, but 40px becomes 50px
-           - Preserves layout with targeted selectors
-           - Safe fallback for older browsers
+           - 16px → 20px (1.25x)
+           - 32px → 40px (1.25x)
+           - Big text stays proportionally bigger
+           - Works with browser zoom settings
         */
         body.uw-larger-text p,
         body.uw-larger-text li,
@@ -361,40 +365,48 @@ function injectUnifiedCSS() {
         body.uw-larger-text dt,
         body.uw-larger-text blockquote,
         body.uw-larger-text article,
-        body.uw-larger-text section {
-            font-size: max(1.25rem, 125%) !important;
-            line-height: 1.6 !important;
+        body.uw-larger-text section,
+        body.uw-larger-text div:not([class*="widget"]):not([class*="menu"]):not([class*="nav"]):not([class*="toolbar"]) {
+            font-size: 125%;
+            line-height: 1.6;
         }
 
-        /* Headings use max() to prevent capping */
-        body.uw-larger-text h1 { font-size: max(2rem, 125%) !important; line-height: 1.3 !important; }
-        body.uw-larger-text h2 { font-size: max(1.75rem, 125%) !important; line-height: 1.35 !important; }
-        body.uw-larger-text h3 { font-size: max(1.5rem, 125%) !important; line-height: 1.4 !important; }
-        body.uw-larger-text h4 { font-size: max(1.35rem, 125%) !important; line-height: 1.45 !important; }
-        body.uw-larger-text h5 { font-size: max(1.25rem, 125%) !important; line-height: 1.5 !important; }
-        body.uw-larger-text h6 { font-size: max(1.125rem, 125%) !important; line-height: 1.5 !important; }
+        /* Headings scale proportionally */
+        body.uw-larger-text h1 { font-size: 125%; line-height: 1.3; }
+        body.uw-larger-text h2 { font-size: 125%; line-height: 1.35; }
+        body.uw-larger-text h3 { font-size: 125%; line-height: 1.4; }
+        body.uw-larger-text h4 { font-size: 125%; line-height: 1.45; }
+        body.uw-larger-text h5 { font-size: 125%; line-height: 1.5; }
+        body.uw-larger-text h6 { font-size: 125%; line-height: 1.5; }
 
-        /* Labels and links - conservative targeting */
+        /* Labels scale slightly less */
         body.uw-larger-text label:not([class*="uw-"]) {
-            font-size: max(1.125rem, 115%) !important;
+            font-size: 115%;
         }
 
+        /* Links inherit from parent */
         body.uw-larger-text a:not([class*="btn"]):not([class*="button"]):not(nav a):not([role="navigation"] a) {
             font-size: inherit;
         }
 
-        /* Mobile - smaller boost */
+        /* Mobile - gentler scaling */
         @media (max-width: 768px) {
             body.uw-larger-text p,
             body.uw-larger-text li,
             body.uw-larger-text td,
-            body.uw-larger-text th {
-                font-size: max(1.125rem, 115%) !important;
+            body.uw-larger-text th,
+            body.uw-larger-text div:not([class*="widget"]):not([class*="menu"]):not([class*="nav"]) {
+                font-size: 115%;
             }
 
-            body.uw-larger-text h1 { font-size: max(1.75rem, 120%) !important; }
-            body.uw-larger-text h2 { font-size: max(1.5rem, 120%) !important; }
-            body.uw-larger-text h3 { font-size: max(1.35rem, 120%) !important; }
+            body.uw-larger-text h1,
+            body.uw-larger-text h2,
+            body.uw-larger-text h3,
+            body.uw-larger-text h4,
+            body.uw-larger-text h5,
+            body.uw-larger-text h6 {
+                font-size: 115%;
+            }
         }
 
         /* CRITICAL: Preserve UI elements from scaling */
@@ -490,10 +502,29 @@ function injectUnifiedCSS() {
             font-family: 'OpenDyslexic', 'Comic Sans MS', Verdana, sans-serif !important;
         }
 
-        /* CRITICAL: Never apply to icons, buttons, inputs, or UI elements */
+        /* CRITICAL: Material Icons MUST override parent font - higher specificity + placed after
+           Material Icons show text names if font-family is changed!
+           These rules must come AFTER dyslexic font rules to override inheritance
+        */
+        body.uw-dyslexic-font i,
         body.uw-dyslexic-font .material-icons,
         body.uw-dyslexic-font .material-symbols-outlined,
-        body.uw-dyslexic-font i,
+        body.uw-dyslexic-font i.material-icons,
+        body.uw-dyslexic-font i.material-symbols-outlined,
+        body.uw-dyslexic-font span.material-icons,
+        body.uw-dyslexic-font span.material-symbols-outlined,
+        body.uw-dyslexic-font p .material-icons,
+        body.uw-dyslexic-font p .material-symbols-outlined,
+        body.uw-dyslexic-font h1 .material-icons,
+        body.uw-dyslexic-font h2 .material-icons,
+        body.uw-dyslexic-font h3 .material-icons,
+        body.uw-dyslexic-font h4 .material-icons,
+        body.uw-dyslexic-font h5 .material-icons,
+        body.uw-dyslexic-font h6 .material-icons,
+        body.uw-dyslexic-font li .material-icons,
+        body.uw-dyslexic-font td .material-icons,
+        body.uw-dyslexic-font th .material-icons,
+        body.uw-dyslexic-font [class*="icon"],
         body.uw-dyslexic-font button,
         body.uw-dyslexic-font button *,
         body.uw-dyslexic-font input,
@@ -504,7 +535,6 @@ function injectUnifiedCSS() {
         body.uw-dyslexic-font header,
         body.uw-dyslexic-font header *,
         body.uw-dyslexic-font [class*="uw-"],
-        body.uw-dyslexic-font [class*="icon"],
         body.uw-dyslexic-font [class*="btn"],
         body.uw-dyslexic-font [class*="menu"],
         body.uw-dyslexic-font [class*="toolbar"],
@@ -513,7 +543,7 @@ function injectUnifiedCSS() {
         body.uw-dyslexic-font .unified-widget *,
         body.uw-dyslexic-font .uw-panel,
         body.uw-dyslexic-font .uw-panel * {
-            font-family: inherit !important;
+            font-family: 'Material Icons', 'Material Symbols Outlined', inherit !important;
         }
 
         /* Reading Guide */
