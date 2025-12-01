@@ -472,14 +472,16 @@ function injectUnifiedCSS() {
             right: 20px;
             width: 290px;
             min-height: 90px;
-            background: rgba(26, 47, 95, 0.94);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: linear-gradient(135deg, rgba(26, 47, 95, 0.95) 0%, rgba(15, 26, 54, 0.98) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+                        0 1px 0 rgba(255, 255, 255, 0.1) inset,
+                        0 -1px 0 rgba(0, 0, 0, 0.2) inset;
             color: white;
             cursor: pointer;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.24);
             z-index: var(--uw-z-widget);
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             opacity: 0;
@@ -488,6 +490,8 @@ function injectUnifiedCSS() {
             align-items: stretch;
             padding: 0;
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .unified-widget.visible {
@@ -511,9 +515,11 @@ function injectUnifiedCSS() {
         }
 
         .unified-widget:hover {
-            background: rgba(26, 47, 95, 0.96);
+            background: linear-gradient(135deg, rgba(26, 47, 95, 0.98) 0%, rgba(15, 26, 54, 1) 100%);
             transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4),
+                        0 1px 0 rgba(255, 255, 255, 0.15) inset,
+                        0 -1px 0 rgba(0, 0, 0, 0.3) inset;
         }
 
         /* Mini Weather Display */
@@ -644,7 +650,7 @@ function injectUnifiedCSS() {
             bottom: 20px;
             right: 20px;
             width: 420px;
-            max-height: 600px;
+            max-height: calc(100vh - 100px);
             background: white;
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
@@ -655,6 +661,8 @@ function injectUnifiedCSS() {
             transition: all var(--uw-transition);
             overflow: hidden;
             font-family: 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
         }
 
         .uw-panel.show {
@@ -739,8 +747,9 @@ function injectUnifiedCSS() {
         /* Panel Body */
         .uw-panel-body {
             padding: 1.5rem;
-            max-height: 450px;
             overflow-y: auto;
+            flex: 1;
+            min-height: 0;
         }
 
         .uw-tab-content {
@@ -1295,7 +1304,7 @@ class UnifiedWidget {
             </div>
             <div class="uw-mini-controls">
                 <button class="uw-mini-btn" title="Setări accesibilitate" aria-label="Setări accesibilitate">
-                    <i class="material-icons">accessibility</i>
+                    <i class="material-icons">visibility</i>
                 </button>
             </div>
         `;
@@ -1346,7 +1355,7 @@ class UnifiedWidget {
                     <i class="material-icons" style="font-size: 18px; vertical-align: middle;">wb_sunny</i> ${UNIFIED_TEXT.tabs.weather}
                 </button>
                 <button class="uw-tab" data-tab="accessibility">
-                    <i class="material-icons" style="font-size: 18px; vertical-align: middle;">accessibility</i> ${UNIFIED_TEXT.tabs.accessibility}
+                    <i class="material-icons" style="font-size: 18px; vertical-align: middle;">visibility</i> ${UNIFIED_TEXT.tabs.accessibility}
                 </button>
             </div>
 
@@ -1380,19 +1389,22 @@ class UnifiedWidget {
 
     createAccessibilityOptions() {
         const features = [
-            { key: 'largerText', icon: '📝', text: UNIFIED_TEXT.accessibility.largerText },
-            { key: 'highContrast', icon: '🎨', text: UNIFIED_TEXT.accessibility.highContrast },
-            { key: 'dyslexicFont', icon: '📖', text: UNIFIED_TEXT.accessibility.dyslexicFont },
-            { key: 'readingGuide', icon: '📏', text: UNIFIED_TEXT.accessibility.readingGuide },
-            { key: 'bigCursor', icon: '🖱', text: UNIFIED_TEXT.accessibility.bigCursor },
-            { key: 'stopAnimations', icon: '⏸', text: UNIFIED_TEXT.accessibility.stopAnimations },
-            { key: 'monochrome', icon: '⚫', text: UNIFIED_TEXT.accessibility.monochrome }
+            { key: 'largerText', icon: 'format_size', text: UNIFIED_TEXT.accessibility.largerText },
+            { key: 'highContrast', icon: 'contrast', text: UNIFIED_TEXT.accessibility.highContrast },
+            { key: 'dyslexicFont', icon: 'font_download', text: UNIFIED_TEXT.accessibility.dyslexicFont },
+            { key: 'readingGuide', icon: 'horizontal_rule', text: UNIFIED_TEXT.accessibility.readingGuide },
+            { key: 'bigCursor', icon: 'mouse', text: UNIFIED_TEXT.accessibility.bigCursor },
+            { key: 'stopAnimations', icon: 'pause_circle', text: UNIFIED_TEXT.accessibility.stopAnimations },
+            { key: 'monochrome', icon: 'filter_b_and_w', text: UNIFIED_TEXT.accessibility.monochrome }
         ];
 
         return features.map(feature => `
             <div class="uw-option">
                 <div class="uw-option-header">
-                    <div class="uw-option-label">${feature.icon} ${feature.text.label}</div>
+                    <div class="uw-option-label">
+                        <i class="material-icons" style="font-size: 20px; vertical-align: middle; margin-right: 8px;">${feature.icon}</i>
+                        ${feature.text.label}
+                    </div>
                     <div class="uw-toggle ${this.preferences[feature.key] ? 'active' : ''}"
                          data-feature="${feature.key}"
                          role="switch"
