@@ -1942,66 +1942,96 @@ const FOOTER_HTML = `
 </footer>
 `;
 
-// Load Weather Alert System
-function loadWeatherAlertSystem() {
+// Load Unified Widget (v2.0 - Accessibility + Weather)
+function loadUnifiedWidget() {
     // Check if already loaded
-    if (document.getElementById('weather-alert-script')) {
-        console.log('ℹ️ Weather alert script already exists');
+    if (document.getElementById('unified-widget-script')) {
+        console.log('ℹ️ Unified widget script already exists');
         return;
     }
-    
-    // Check if weather system is already active
-    if (window.weatherSystemActive) {
-        console.log('ℹ️ Weather system already active');
+
+    // Check if unified widget is already active
+    if (window.unifiedWidget) {
+        console.log('ℹ️ Unified widget already active');
         return;
     }
-    
-    console.log('📡 Loading weather alert system...');
-    
+
+    console.log('📡 Loading Unified Widget v2.0 (Accessibility + Weather)...');
+
     const script = document.createElement('script');
-    script.id = 'weather-alert-script';
-    
+    script.id = 'unified-widget-script';
+
     // Try multiple possible paths
     const possiblePaths = [
-        'weather-alert.js',
-        '/pls/weather-alert.js',
-        './weather-alert.js',
-        '../weather-alert.js'
+        'unified-widget.js',
+        '/pls/unified-widget.js',
+        './unified-widget.js',
+        '../unified-widget.js'
     ];
-    
+
     let currentPathIndex = 0;
-    
+
     const tryLoadScript = () => {
         if (currentPathIndex >= possiblePaths.length) {
-            console.error('❌ Weather alert system could not be loaded from any path');
+            console.error('❌ Unified widget could not be loaded from any path');
             console.error('   Tried paths:', possiblePaths);
             console.error('   Current page:', window.location.href);
-            console.log('💡 Weather widget will not be available, but site will continue loading');
+            console.log('💡 Accessibility and weather widgets will not be available, but site will continue loading');
             return;
         }
-        
+
         script.src = possiblePaths[currentPathIndex];
         console.log(`   Trying path ${currentPathIndex + 1}/${possiblePaths.length}: ${script.src}`);
-        
+
         script.onerror = () => {
             console.warn(`⚠️ Failed to load from: ${script.src}`);
             currentPathIndex++;
             script.remove(); // Remove failed script
             tryLoadScript(); // Try next path
         };
-        
+
         script.onload = () => {
-            console.log('✅ Weather alert script loaded successfully from:', script.src);
+            console.log('✅ Unified Widget v2.0 loaded successfully from:', script.src);
+            connectUnifiedWidget();
         };
-        
+
         script.async = false;  // Load synchronously
         script.defer = false;
-        
+
         document.head.appendChild(script);
     };
-    
+
     // Start trying paths
     tryLoadScript();
+}
+
+function connectUnifiedWidget() {
+    // Wait for the unified widget to be initialized
+    const maxAttempts = 50; // 5 seconds (50 * 100ms)
+    let attempts = 0;
+
+    const checkWidget = setInterval(() => {
+        attempts++;
+
+        if (window.unifiedWidget) {
+            clearInterval(checkWidget);
+
+            // Attach event listener to "Setari" link in footer
+            const settingsLink = document.getElementById('accessibility-settings-link');
+            if (settingsLink) {
+                settingsLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.unifiedWidget.openPanel();
+                });
+                console.log('✅ Setări link connected to unified widget');
+            } else {
+                console.warn('⚠️ Setări link not found in DOM');
+            }
+        } else if (attempts >= maxAttempts) {
+            clearInterval(checkWidget);
+            console.warn('⚠️ Unified widget not initialized after 5 seconds');
+        }
+    }, 100);
 }
 
 
@@ -2037,12 +2067,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.head.appendChild(iconLink);
             console.log('✅ Material Icons loaded');
         }
-        
-        // Weather Alert System (non-blocking)
+
+        // Unified Widget v2.0 - Accessibility + Weather (non-blocking)
         try {
-            loadWeatherAlertSystem();
+            loadUnifiedWidget();
         } catch (error) {
-            console.error('⚠️ Weather alert system error:', error);
+            console.error('⚠️ Unified widget error:', error);
             console.log('   Site will continue without weather alerts');
         }
         
@@ -2664,98 +2694,17 @@ function initNewsletterForm() {
     }
 }
 
-// === ACCESSIBILITY WIDGET INTEGRATION ===
-function loadAccessibilityWidget() {
-    // Check if accessibility widget script already exists
-    if (document.getElementById('accessibility-widget-script')) {
-        console.log('ℹ️ Accessibility widget script already loaded');
-        connectAccessibilityWidget();
-        return;
-    }
-    
-    console.log('📡 Loading accessibility widget...');
-    
-    // Create and inject the accessibility widget script
-    const script = document.createElement('script');
-    script.id = 'accessibility-widget-script';
-    
-    // Try multiple possible paths
-    const possiblePaths = [
-        '/pls/accessibility-widget.js',
-        'accessibility-widget.js',
-        './accessibility-widget.js',
-        '../accessibility-widget.js'
-    ];
-    
-    let currentPathIndex = 0;
-    
-    const tryLoadScript = () => {
-        if (currentPathIndex >= possiblePaths.length) {
-            console.error('❌ Accessibility widget could not be loaded from any path');
-            console.error('   Tried paths:', possiblePaths);
-            console.log('💡 Accessibility features will not be available, but site will continue loading');
-            return;
-        }
-        
-        script.src = possiblePaths[currentPathIndex];
-        console.log(`   Trying path ${currentPathIndex + 1}/${possiblePaths.length}: ${script.src}`);
-        
-        script.onerror = () => {
-            console.warn(`⚠️ Failed to load accessibility widget from: ${script.src}`);
-            currentPathIndex++;
-            script.remove(); // Remove failed script
-            tryLoadScript(); // Try next path
-        };
-        
-        script.onload = () => {
-            console.log('✅ Accessibility widget loaded successfully from:', script.src);
-            connectAccessibilityWidget();
-        };
-        
-        script.async = false; // Load synchronously
-        script.defer = false;
-        
-        document.head.appendChild(script);
-    };
-    
-    // Start trying paths
-    tryLoadScript();
-}
-
-function connectAccessibilityWidget() {
-    // Wait for the accessibility widget to be initialized
-    const maxAttempts = 50; // 5 seconds (50 * 100ms)
-    let attempts = 0;
-    
-    const checkWidget = setInterval(() => {
-        attempts++;
-        
-        if (window.accessibilityWidget) {
-            clearInterval(checkWidget);
-            
-            // Attach event listener to "Setari" link
-            const settingsLink = document.getElementById('accessibility-settings-link');
-            if (settingsLink) {
-                settingsLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.accessibilityWidget.showPanel();
-                });
-                console.log('✅ Setări link connected to accessibility widget');
-            } else {
-                console.warn('⚠️ Setări link not found in DOM');
-            }
-        } else if (attempts >= maxAttempts) {
-            clearInterval(checkWidget);
-            console.warn('⚠️ Accessibility widget not initialized after 5 seconds');
-        }
-    }, 100);
-}
-
-// Load accessibility widget when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadAccessibilityWidget);
-} else {
-    loadAccessibilityWidget();
-}
+// === LEGACY WIDGET LOADERS REMOVED ===
+// The old loadAccessibilityWidget() and loadWeatherAlertSystem() functions
+// have been replaced by loadUnifiedWidget() which combines both functionalities.
+// See unified-widget.js for the new implementation.
+//
+// Migration is automatic - user preferences from v1.3 are preserved.
+// The unified widget (v2.0) provides:
+// - All v1.3 accessibility features (larger text, high contrast mode)
+// - All v4.3 weather features (real-time alerts, safety advice)
+// - 10+ new accessibility enhancements (dyslexic font, reading aids, etc.)
+// - Mobile-first responsive design
+// - Unified tabbed interface
 
 console.log('📢 Accessibility Widget Auto-Loader initialized');
