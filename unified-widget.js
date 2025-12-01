@@ -344,13 +344,14 @@ function injectUnifiedCSS() {
            1. ACCESSIBILITY FEATURES (from v1.3)
            ========================================= */
 
-        /* Text Scaling - Modern rem-based approach
+        /* Text Scaling - RELATIVE multiplier approach
            Based on WCAG 2.1 AA (1.4.4) & research from:
            - Josh Comeau's accessibility guide
            - Modern CSS best practices (2024)
 
            Benefits:
-           - Respects browser font size settings
+           - SCALES FROM CURRENT SIZE (no capping!)
+           - Large text gets larger, small text gets larger
            - Preserves layout with px-based spacing
            - Targets content, preserves UI elements
         */
@@ -359,35 +360,41 @@ function injectUnifiedCSS() {
         body.uw-larger-text td,
         body.uw-larger-text th,
         body.uw-larger-text label,
-        body.uw-larger-text span:not(.material-icons):not(.material-symbols-outlined),
+        body.uw-larger-text span:not(.material-icons):not(.material-symbols-outlined):not([class*="icon"]),
         body.uw-larger-text div:not([class*="uw-"]):not([class*="widget"]):not([class*="menu"]):not([class*="nav"]),
         body.uw-larger-text a:not([class*="btn"]):not([class*="button"]) {
-            font-size: var(--uw-text-scale-large) !important;
+            font-size: calc(1em * 1.25) !important;
             line-height: 1.6 !important;
         }
 
-        body.uw-larger-text h1 { font-size: 2.5rem !important; line-height: 1.3 !important; }
-        body.uw-larger-text h2 { font-size: 2rem !important; line-height: 1.35 !important; }
-        body.uw-larger-text h3 { font-size: 1.75rem !important; line-height: 1.4 !important; }
-        body.uw-larger-text h4 { font-size: 1.5rem !important; line-height: 1.45 !important; }
-        body.uw-larger-text h5 { font-size: 1.25rem !important; line-height: 1.5 !important; }
-        body.uw-larger-text h6 { font-size: 1.125rem !important; line-height: 1.5 !important; }
+        /* Headings scale from their current size */
+        body.uw-larger-text h1 { font-size: calc(1em * 1.25) !important; line-height: 1.3 !important; }
+        body.uw-larger-text h2 { font-size: calc(1em * 1.25) !important; line-height: 1.35 !important; }
+        body.uw-larger-text h3 { font-size: calc(1em * 1.25) !important; line-height: 1.4 !important; }
+        body.uw-larger-text h4 { font-size: calc(1em * 1.25) !important; line-height: 1.45 !important; }
+        body.uw-larger-text h5 { font-size: calc(1em * 1.25) !important; line-height: 1.5 !important; }
+        body.uw-larger-text h6 { font-size: calc(1em * 1.25) !important; line-height: 1.5 !important; }
 
-        /* Responsive scaling for mobile */
+        /* Responsive scaling for mobile - slightly less aggressive */
         @media (max-width: 768px) {
             body.uw-larger-text p,
             body.uw-larger-text li,
             body.uw-larger-text td,
             body.uw-larger-text th,
             body.uw-larger-text label,
-            body.uw-larger-text span:not(.material-icons):not(.material-symbols-outlined) {
-                font-size: 1.125rem !important;
+            body.uw-larger-text span:not(.material-icons):not(.material-symbols-outlined):not([class*="icon"]) {
+                font-size: calc(1em * 1.15) !important;
                 line-height: 1.55 !important;
             }
 
-            body.uw-larger-text h1 { font-size: 2rem !important; }
-            body.uw-larger-text h2 { font-size: 1.75rem !important; }
-            body.uw-larger-text h3 { font-size: 1.5rem !important; }
+            body.uw-larger-text h1,
+            body.uw-larger-text h2,
+            body.uw-larger-text h3,
+            body.uw-larger-text h4,
+            body.uw-larger-text h5,
+            body.uw-larger-text h6 {
+                font-size: calc(1em * 1.15) !important;
+            }
         }
 
         /* Preserve UI elements - icons, buttons, inputs */
@@ -476,18 +483,23 @@ function injectUnifiedCSS() {
         body.uw-dyslexic-font th,
         body.uw-dyslexic-font label,
         body.uw-dyslexic-font a,
-        body.uw-dyslexic-font span,
-        body.uw-dyslexic-font div:not([class*="uw-"]) {
+        body.uw-dyslexic-font span:not(.material-icons):not(.material-symbols-outlined):not([class*="icon"]),
+        body.uw-dyslexic-font div:not([class*="uw-"]):not([class*="widget"]) {
             font-family: 'OpenDyslexic', 'Comic Sans MS', Verdana, sans-serif !important;
         }
 
-        /* Keep widget UI in standard font */
+        /* Keep widget UI and icons in standard font - CRITICAL for Material Icons */
         body.uw-dyslexic-font .unified-widget,
         body.uw-dyslexic-font .unified-widget *,
         body.uw-dyslexic-font .uw-panel,
         body.uw-dyslexic-font .uw-panel *,
-        body.uw-dyslexic-font [class*="uw-"] {
-            font-family: 'Segoe UI', Roboto, sans-serif !important;
+        body.uw-dyslexic-font [class*="uw-"],
+        body.uw-dyslexic-font .material-icons,
+        body.uw-dyslexic-font .material-symbols-outlined,
+        body.uw-dyslexic-font i[class*="icon"],
+        body.uw-dyslexic-font i.material-icons,
+        body.uw-dyslexic-font i.material-symbols-outlined {
+            font-family: 'Material Icons', 'Material Symbols Outlined', 'Segoe UI', Roboto, sans-serif !important;
         }
 
         /* Reading Guide */
@@ -554,9 +566,21 @@ function injectUnifiedCSS() {
             transition-duration: 0.01ms !important;
         }
 
-        /* Monochrome */
-        body.uw-monochrome {
+        /* Monochrome - with widget exclusion to prevent positioning issues
+           CSS filters create new stacking contexts, so we exclude widget
+        */
+        body.uw-monochrome *:not(.unified-widget):not(.unified-widget *):not(.uw-panel):not(.uw-panel *):not(.uw-backdrop):not([class*="uw-"]) {
             filter: grayscale(100%);
+        }
+
+        /* Ensure widget stays colorful */
+        body.uw-monochrome .unified-widget,
+        body.uw-monochrome .unified-widget *,
+        body.uw-monochrome .uw-panel,
+        body.uw-monochrome .uw-panel *,
+        body.uw-monochrome .uw-backdrop,
+        body.uw-monochrome [class*="uw-"] {
+            filter: none !important;
         }
 
         /* =========================================
